@@ -43,13 +43,10 @@ private struct SidebarRow: View {
             HStack(spacing: 12) {
                 Image(systemName: systemImage)
                     .font(.system(size: 16, weight: .medium))
-                    .frame(width: iconSize, height: iconSize)
 
                 Text(title)
             }
-            .padding(.horizontal, 6)
-            .padding(.vertical, 5)
-            .padding(.leading, 16)
+            .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
