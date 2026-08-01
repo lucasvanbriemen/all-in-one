@@ -40,7 +40,7 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .transparentWindow(.blurred)
+        .transparentWindow()
     }
 }
 
