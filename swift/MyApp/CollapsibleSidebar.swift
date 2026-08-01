@@ -1,26 +1,14 @@
 import SwiftUI
 
-struct SidebarItem: Identifiable, Hashable {
-    let id: String
-    let title: String
-    let systemImage: String
-
-    init(id: String? = nil, title: String, systemImage: String) {
-        self.id = id ?? title
-        self.title = title
-        self.systemImage = systemImage
-    }
-}
-
 struct CollapsibleSidebar: View {
-    let items: [SidebarItem]
+    let items: [String]
     @Binding var selection: SidebarItem.ID?
 
     var body: some View {
         ScrollView {
-            ForEach(items) { item in
-                SidebarRow(title: item.title, systemImage: item.systemImage, isSelected: selection == item.id) {
-                    selection = item.id
+            ForEach(items, id: \.self) { item in
+                SidebarRow(title: item, isSelected: selection == item) {
+                    selection = item
                 }
             }
         }
@@ -32,7 +20,6 @@ struct CollapsibleSidebar: View {
 
 private struct SidebarRow: View {
     let title: String
-    let systemImage: String
     let isSelected: Bool
     let action: () -> Void
 
@@ -40,12 +27,7 @@ private struct SidebarRow: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 16, weight: .medium))
-
-                Text(title)
-            }
+            Text(title)
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
