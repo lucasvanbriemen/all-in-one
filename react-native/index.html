@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyApp</title>
+    <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: #fff;
+        overflow: hidden;
+      }
+
+      /* react-native-web mounts two nested Views, each `flex: 1`. A flex child
+         only stretches inside a flex container, and #root is display:block by
+         default — so without this the app collapses to content height. Setting
+         it here fixes both levels at once, since every RNW View is itself a
+         flex container. */
+      #root {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.web.tsx"></script>
+  </body>
+</html>

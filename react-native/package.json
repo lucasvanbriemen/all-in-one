@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "macos": "react-native run-macos",
+    "web": "vite",
+    "web:build": "vite build",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
@@ -11,9 +13,11 @@
   "dependencies": {
     "@react-native/new-app-screen": "0.81.6",
     "react": "19.1.4",
+    "react-dom": "^19.1.4",
     "react-native": "0.81.6",
     "react-native-macos": "^0.81.9",
-    "react-native-safe-area-context": "^5.5.2"
+    "react-native-safe-area-context": "^5.5.2",
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

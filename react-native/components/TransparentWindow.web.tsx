@@ -7,10 +7,8 @@ import {StyleSheet, View} from 'react-native';
  * This is NOT equivalent to the macOS version and can't be. `.behindWindow`
  * blending samples the desktop behind the window; a browser tab has no
  * desktop. `backdrop-filter` only blurs page content behind the element, so
- * here it blurs the page background rather than the OS.
- *
- * The result is decorative: correct layout, plausible frosted look, but the
- * window translucency that motivated the native app is simply absent.
+ * over a plain white page it has nothing to act on and renders flat. It is
+ * kept only so the surface still frosts if a background image is added later.
  *
  * `requireNativeComponent` is deliberately not imported — react-native-web
  * doesn't export it, and a static import would fail the Vite build. Resolving
@@ -19,7 +17,9 @@ import {StyleSheet, View} from 'react-native';
  */
 
 const WINDOW_BACKDROP = 'blur(30px) saturate(160%)';
-const SIDEBAR_TINT = 'rgba(255, 255, 255, 0.16)';
+
+/** Subtle separation from the content pane. Dark, because the page is white. */
+const SIDEBAR_TINT = 'rgba(0, 0, 0, 0.04)';
 
 export function TransparentWindow({children}: {children: React.ReactNode}) {
   return (
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   windowBackdrop: {
-    backgroundColor: 'rgba(30, 30, 30, 0.45)',
+    backgroundColor: 'transparent',
   },
   sidebarMaterial: {
     flexDirection: 'row',
