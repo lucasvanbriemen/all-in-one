@@ -1,15 +1,16 @@
+const path = require('path');
+
 module.exports = {
   root: true,
   extends: '@react-native',
 
   parserOptions: {
     // Source files are `.jsx` now, which `@react-native/eslint-config` parses
-    // with @babel/eslint-parser. Babel only finds a root `babel.config.js`
-    // when it is invoked from the project root, which isn't true of editor
-    // integrations — so name the preset here instead of relying on lookup.
-    requireConfigFile: false,
+    // with @babel/eslint-parser. Babel only discovers a root `babel.config.js`
+    // when it runs from the project root, which isn't true of editor
+    // integrations — so point at it explicitly.
     babelOptions: {
-      presets: ['module:@react-native/babel-preset'],
+      configFile: path.join(__dirname, 'babel.config.js'),
     },
   },
 

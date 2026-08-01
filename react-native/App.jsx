@@ -10,7 +10,7 @@ import {labelColor} from './components/theme';
 // traffic lights have to be cleared manually.
 const TITLEBAR_INSET = 32;
 
-const ITEMS = ['Email'];
+const ITEMS = ['Emails'];
 
 export default function App() {
   const [selection, setSelection] = useState(null);

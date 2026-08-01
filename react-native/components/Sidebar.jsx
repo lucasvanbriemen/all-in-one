@@ -5,16 +5,9 @@ import React from 'react';
 
 export function Sidebar({items, selection, onSelect}) {
   return (
-    <ScrollView
-      style={styles.sidebar}
-      contentContainerStyle={styles.sidebarContent}>
+    <ScrollView style={styles.sidebar} contentContainerStyle={styles.sidebarContent}>
       {items.map(item => (
-        <SidebarRow
-          key={item}
-          title={item}
-          isSelected={selection === item}
-          onPress={() => onSelect(item)}
-        />
+        <SidebarRow key={item} title={item} isSelected={selection === item} onPress={() => onSelect(item)} />
       ))}
     </ScrollView>
   );
