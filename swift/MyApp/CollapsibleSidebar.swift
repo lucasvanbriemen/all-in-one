@@ -18,7 +18,6 @@ struct SidebarItem: Identifiable, Hashable {
 
 /// A sidebar that collapses to an icon-only rail instead of disappearing.
 /// Rows stay tappable in both states; groups disclose inline when expanded
-/// and in a popover when collapsed.
 struct CollapsibleSidebar: View {
     let items: [SidebarItem]
     @Binding var selection: SidebarItem.ID?
@@ -29,7 +28,6 @@ struct CollapsibleSidebar: View {
     var expandedWidth: CGFloat = 240
 
     @State private var disclosedGroups: Set<SidebarItem.ID> = []
-    @State private var popoverGroup: SidebarItem.ID?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -75,7 +73,6 @@ struct CollapsibleSidebar: View {
     private func tap(_ item: SidebarItem) {
         guard item.hasChildren else {
             selection = item.id
-            popoverGroup = nil
             return
         }
     }
