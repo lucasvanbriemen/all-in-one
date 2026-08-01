@@ -25,8 +25,14 @@ struct CollapsibleSidebar: View {
         VStack(alignment: .leading, spacing: 2) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 2) {
-                    ForEach(items) { row in
-                        rowView(for: row)
+                    ForEach(items) { item in
+                        SidebarRow(
+                            title: item.title,
+                            systemImage: item.systemImage,
+                            isSelected: selection == item.id
+                        ) {
+                            selection = item.id
+                        }
                     }
                 }
             }
@@ -42,32 +48,12 @@ struct CollapsibleSidebar: View {
         .background(.ultraThinMaterial)
         .overlay(alignment: .trailing) { Divider() }
     }
-
-    @ViewBuilder
-    private func rowView(for row: SidebarItem) -> some View {
-        let item = row
-
-        SidebarRow(
-            title: item.title,
-            systemImage: item.systemImage,
-            depth: 0,
-            isSelected: selection == item.id,
-        ) {
-            tap(item)
-        }
-    }
-
-    private func tap(_ item: SidebarItem) {
-        selection = item.id
-    }
 }
 
 private struct SidebarRow: View {
     let title: String
     let systemImage: String
-    let depth: Int
     let isSelected: Bool
-    /// False on the collapsed rail, where only the icon should read.
     let action: () -> Void
 
     private let iconSize: CGFloat = 28
@@ -86,7 +72,7 @@ private struct SidebarRow: View {
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 5)
-            .padding(.leading, CGFloat(depth) * 16)
+            .padding(.leading, 16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
