@@ -17,10 +17,7 @@ export default function App() {
     <TransparentWindow>
       <View style={styles.layout}>
         <SidebarMaterial>
-          <Sidebar
-            selection={selection}
-            onSelect={setSelection}
-          />
+          <Sidebar selection={selection} onSelect={setSelection} />
         </SidebarMaterial>
 
         <View style={styles.content}>
