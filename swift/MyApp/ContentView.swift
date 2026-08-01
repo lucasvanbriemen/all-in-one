@@ -11,7 +11,6 @@ import Playgrounds
 }
 
 struct ContentView: View {
-    @State private var isSidebarExpanded = true
     @State private var selection: SidebarItem.ID? = "Home"
 
     var body: some View {
@@ -23,7 +22,6 @@ struct ContentView: View {
                     ])
                 ],
                 selection: $selection,
-                isExpanded: $isSidebarExpanded
             )
 
             Text(selection ?? "Hello, world!")

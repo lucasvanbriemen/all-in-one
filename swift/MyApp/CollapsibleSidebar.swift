@@ -22,7 +22,6 @@ struct SidebarItem: Identifiable, Hashable {
 struct CollapsibleSidebar: View {
     let items: [SidebarItem]
     @Binding var selection: SidebarItem.ID?
-    @Binding var isExpanded: Bool
 
     /// Width of the icon-only rail.
     var collapsedWidth: CGFloat = 80
@@ -34,17 +33,6 @@ struct CollapsibleSidebar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            SidebarRow(
-                title: isExpanded ? "Collapse" : "Expand",
-                systemImage: "sidebar.leading",
-                depth: 0,
-                state: .leaf,
-                isSelected: false,
-                showsLabel: isExpanded
-            ) {
-                isExpanded.toggle()
-            }
-
             Divider()
                 .padding(.vertical, 6)
 
@@ -60,14 +48,12 @@ struct CollapsibleSidebar: View {
             Spacer(minLength: 0)
         }
         .padding(8)
-        .frame(width: isExpanded ? expandedWidth : collapsedWidth, alignment: .leading)
+        .frame(width:expandedWidth, alignment: .leading)
         // The labels keep their natural width and overflow the rail; clipping
         // makes them slide out of view instead of truncating mid-animation.
         .clipped()
         .background(.ultraThinMaterial)
         .overlay(alignment: .trailing) { Divider() }
-        .animation(.snappy(duration: 0.25), value: isExpanded)
-        .onChange(of: isExpanded) { _, _ in popoverGroup = nil }
     }
 
     @ViewBuilder
@@ -81,7 +67,6 @@ struct CollapsibleSidebar: View {
             depth: row.depth,
             state: item.hasChildren ? .group(isDisclosed: isDisclosed) : .leaf,
             isSelected: selection == item.id,
-            showsLabel: isExpanded
         ) {
             tap(item)
         }
@@ -93,15 +78,6 @@ struct CollapsibleSidebar: View {
             popoverGroup = nil
             return
         }
-        if isExpanded {
-            if disclosedGroups.contains(item.id) {
-                disclosedGroups.remove(item.id)
-            } else {
-                disclosedGroups.insert(item.id)
-            }
-        } else {
-            popoverGroup = (popoverGroup == item.id) ? nil : item.id
-        }
     }
 
     /// Flattened list of rows currently on screen. Flattening here keeps the
@@ -112,7 +88,7 @@ struct CollapsibleSidebar: View {
             for item in items {
                 rows.append(VisibleRow(item: item, depth: depth))
                 // Nested rows only make sense in the wide state.
-                if isExpanded, item.hasChildren, disclosedGroups.contains(item.id) {
+                if item.hasChildren, disclosedGroups.contains(item.id) {
                     walk(item.children, depth: depth + 1)
                 }
             }
