@@ -6,13 +6,29 @@ import Playgrounds
         WindowGroup {
             ContentView()
         }
+        #if os(macOS)
+        .windowStyle(.hiddenTitleBar)
+        #endif
     }
 }
 
 struct ContentView: View {
+    @State private var isSidebarExpanded = true
+    @State private var selection: SidebarItem.ID? = "Home"
+
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        HStack(spacing: 0) {
+            CollapsibleSidebar(
+                items: SidebarItem.demo,
+                selection: $selection,
+                isExpanded: $isSidebarExpanded
+            )
+
+            Text(selection ?? "Hello, world!")
+                .font(.largeTitle)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .transparentWindow(.blurred)
     }
 }
 
