@@ -12,7 +12,6 @@ export function Sidebar({selection, onSelect}) {
     api
       .get('/meta_data')
       .then(data => {
-        console.log('Sidebar data', data.config);
         setItems(data.config.sidebar);
       })
   }, []);
