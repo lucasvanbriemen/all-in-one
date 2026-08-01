@@ -17,9 +17,7 @@ struct ContentView: View {
         HStack(spacing: 0) {
             CollapsibleSidebar(
                 items: [
-                    SidebarItem(title: "Email", systemImage: "mail", children: [
-                        SidebarItem(title: "Inbox", systemImage: "clock"),
-                    ])
+                    SidebarItem(title: "Email", systemImage: "mail")
                 ],
                 selection: $selection,
             )

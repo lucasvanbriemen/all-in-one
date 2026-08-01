@@ -4,20 +4,14 @@ struct SidebarItem: Identifiable, Hashable {
     let id: String
     let title: String
     let systemImage: String
-    let children: [SidebarItem]
 
-    init(id: String? = nil, title: String, systemImage: String, children: [SidebarItem] = []) {
+    init(id: String? = nil, title: String, systemImage: String) {
         self.id = id ?? title
         self.title = title
         self.systemImage = systemImage
-        self.children = children
     }
-
-    var hasChildren: Bool { !children.isEmpty }
 }
 
-/// A sidebar that collapses to an icon-only rail instead of disappearing.
-/// Rows stay tappable in both states; groups disclose inline when expanded
 struct CollapsibleSidebar: View {
     let items: [SidebarItem]
     @Binding var selection: SidebarItem.ID?
@@ -27,16 +21,11 @@ struct CollapsibleSidebar: View {
     /// Width when fully open.
     var expandedWidth: CGFloat = 240
 
-    @State private var disclosedGroups: Set<SidebarItem.ID> = []
-
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Divider()
-                .padding(.vertical, 6)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 2) {
-                    ForEach(visibleRows) { row in
+                    ForEach(items) { row in
                         rowView(for: row)
                     }
                 }
@@ -55,15 +44,14 @@ struct CollapsibleSidebar: View {
     }
 
     @ViewBuilder
-    private func rowView(for row: VisibleRow) -> some View {
-        let item = row.item
-        let isDisclosed = disclosedGroups.contains(item.id)
+    private func rowView(for row: SidebarItem) -> some View {
+        let item = row
 
         SidebarRow(
             title: item.title,
             systemImage: item.systemImage,
-            depth: row.depth,
-            state: item.hasChildren ? .group(isDisclosed: isDisclosed) : .leaf,
+            depth: 0,
+            state:  .leaf,
             isSelected: selection == item.id,
         ) {
             tap(item)
@@ -71,39 +59,14 @@ struct CollapsibleSidebar: View {
     }
 
     private func tap(_ item: SidebarItem) {
-        guard item.hasChildren else {
-            selection = item.id
-            return
-        }
-    }
-
-    /// Flattened list of rows currently on screen. Flattening here keeps the
-    /// view hierarchy non-recursive — a recursive `View` can't type-check.
-    private var visibleRows: [VisibleRow] {
-        var rows: [VisibleRow] = []
-        func walk(_ items: [SidebarItem], depth: Int) {
-            for item in items {
-                rows.append(VisibleRow(item: item, depth: depth))
-                // Nested rows only make sense in the wide state.
-                if item.hasChildren, disclosedGroups.contains(item.id) {
-                    walk(item.children, depth: depth + 1)
-                }
-            }
-        }
-        walk(items, depth: 0)
-        return rows
+        selection = item.id
     }
 }
 
-private struct VisibleRow: Identifiable {
-    let item: SidebarItem
-    let depth: Int
-    var id: SidebarItem.ID { item.id }
-}
+
 
 private enum RowState {
     case leaf
-    case group(isDisclosed: Bool)
 }
 
 private struct SidebarRow: View {
@@ -128,15 +91,6 @@ private struct SidebarRow: View {
                 Text(title)
                     .lineLimit(1)
                     .fixedSize()
-
-                Spacer(minLength: 4)
-
-                if case let .group(isDisclosed) = state {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .semibold))
-                        .rotationEffect(.degrees(isDisclosed ? 90 : 0))
-                        .foregroundStyle(.secondary)
-                }
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 5)
