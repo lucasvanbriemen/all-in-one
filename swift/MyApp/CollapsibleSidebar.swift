@@ -19,11 +19,7 @@ struct CollapsibleSidebar: View {
     var body: some View {
         ScrollView {
             ForEach(items) { item in
-                SidebarRow(
-                    title: item.title,
-                    systemImage: item.systemImage,
-                    isSelected: selection == item.id
-                ) {
+                SidebarRow(title: item.title, systemImage: item.systemImage, isSelected: selection == item.id) {
                     selection = item.id
                 }
             }
@@ -47,12 +43,9 @@ private struct SidebarRow: View {
             HStack(spacing: 12) {
                 Image(systemName: systemImage)
                     .font(.system(size: 16, weight: .medium))
-                    // Fixed box keeps the icon in place as the rail resizes.
                     .frame(width: iconSize, height: iconSize)
 
                 Text(title)
-                    .lineLimit(1)
-                    .fixedSize()
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 5)
@@ -67,7 +60,5 @@ private struct SidebarRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help(title)
-        .accessibilityLabel(title)
     }
 }
