@@ -12,7 +12,7 @@ export function Sidebar({selection, onSelect}) {
     api
       .get('/meta_data')
       .then(data => {
-        setItems(data.config.sidebar);
+        setItems(data.config.email);
       })
   }, []);
 
@@ -23,7 +23,7 @@ export function Sidebar({selection, onSelect}) {
       </Pressable>
 
       {items.map(item => (
-        <SidebarRow key={item.title} title={item.title} isSelected={selection === item.title} onPress={() => onSelect(item.title)} />
+        <SidebarRow key={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} />
       ))}
     </View>
   );

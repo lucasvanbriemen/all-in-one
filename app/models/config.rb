@@ -1,10 +1,5 @@
 module Config
   CONFIG = {
-    sidebar: [
-      {
-        title: "Email"
-      }
-    ],
     email: [
       {
         path: "home",
