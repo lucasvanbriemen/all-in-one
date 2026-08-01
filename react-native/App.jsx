@@ -13,7 +13,7 @@ const TITLEBAR_INSET = 32;
 const ITEMS = ['Email'];
 
 export default function App() {
-  const [selection, setSelection] = useState<string | null>(null);
+  const [selection, setSelection] = useState(null);
 
   return (
     <TransparentWindow>

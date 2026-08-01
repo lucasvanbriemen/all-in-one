@@ -3,7 +3,7 @@
  *
  * `PlatformColor` isn't implemented by react-native-web, so the AppKit system
  * colors have to be spelled out. The native build uses the real system values
- * via `theme.native.ts`, which Metro prefers over this file.
+ * via `theme.native.js`, which Metro prefers over this file.
  *
  * These are light-theme values because the web page background is white. The
  * native app is a translucent dark window over the desktop, so the two will

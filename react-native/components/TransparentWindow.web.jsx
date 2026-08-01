@@ -1,5 +1,6 @@
-import React from 'react';
 import {StyleSheet, View} from 'react-native';
+
+import React from 'react';
 
 /**
  * Web stand-in for the AppKit visual-effect background.
@@ -12,7 +13,7 @@ import {StyleSheet, View} from 'react-native';
  *
  * `requireNativeComponent` is deliberately not imported — react-native-web
  * doesn't export it, and a static import would fail the Vite build. Resolving
- * this file ahead of `TransparentWindow.tsx` on web keeps that import off the
+ * this file ahead of `TransparentWindow.jsx` on web keeps that import off the
  * web bundle entirely.
  */
 
@@ -21,14 +22,14 @@ const WINDOW_BACKDROP = 'blur(30px) saturate(160%)';
 /** Subtle separation from the content pane. Dark, because the page is white. */
 const SIDEBAR_TINT = 'rgba(0, 0, 0, 0.04)';
 
-export function TransparentWindow({children}: {children: React.ReactNode}) {
+export function TransparentWindow({children}) {
   return (
     <View style={styles.root}>
       <View
         style={[
           StyleSheet.absoluteFill,
           styles.windowBackdrop,
-          // @ts-expect-error — web-only CSS, not part of the RN style types.
+          // Web-only CSS — react-native-web passes it straight through.
           {backdropFilter: WINDOW_BACKDROP, WebkitBackdropFilter: WINDOW_BACKDROP},
         ]}
         pointerEvents="none"
@@ -38,7 +39,7 @@ export function TransparentWindow({children}: {children: React.ReactNode}) {
   );
 }
 
-export function SidebarMaterial({children}: {children: React.ReactNode}) {
+export function SidebarMaterial({children}) {
   return (
     <View style={styles.sidebarMaterial}>
       <View

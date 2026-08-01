@@ -3,13 +3,7 @@ import {accentColor, labelColor} from './theme';
 
 import React from 'react';
 
-type Props = {
-  items: string[];
-  selection: string | null;
-  onSelect: (item: string) => void;
-};
-
-export function Sidebar({items, selection, onSelect}: Props) {
+export function Sidebar({items, selection, onSelect}) {
   return (
     <ScrollView
       style={styles.sidebar}
@@ -26,15 +20,7 @@ export function Sidebar({items, selection, onSelect}: Props) {
   );
 }
 
-function SidebarRow({
-  title,
-  isSelected,
-  onPress,
-}: {
-  title: string;
-  isSelected: boolean;
-  onPress: () => void;
-}) {
+function SidebarRow({title, isSelected, onPress}) {
   return (
     <Pressable onPress={onPress} style={styles.row}>
       {/* SwiftUI's `.fill(accent.opacity(0.18))` — a tinted plate behind the

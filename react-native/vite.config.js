@@ -8,18 +8,20 @@ export default defineConfig({
       // react-native-web implements the RN primitives on DOM elements.
       'react-native': 'react-native-web',
     },
-    // `.web.tsx` first, so TransparentWindow.web.tsx wins over the native file
+    // `.web.jsx` first, so TransparentWindow.web.jsx wins over the native file
     // and requireNativeComponent never enters the web bundle. Mirrors how
-    // Metro prefers `.native.tsx` / `.macos.tsx` on the native side.
+    // Metro prefers `.native.jsx` / `.macos.jsx` on the native side.
+    //
+    // `.tsx` / `.ts` stay in the list only for react-native-web's own deps.
     extensions: [
-      '.web.tsx',
-      '.web.ts',
       '.web.jsx',
       '.web.js',
-      '.tsx',
-      '.ts',
+      '.web.tsx',
+      '.web.ts',
       '.jsx',
       '.js',
+      '.tsx',
+      '.ts',
       '.json',
     ],
   },

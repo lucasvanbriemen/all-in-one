@@ -15,14 +15,8 @@ const NATIVE_NAME = 'VisualEffectBackground';
 
 const hasNativeBlur = UIManager.getViewManagerConfig?.(NATIVE_NAME) != null;
 
-type NativeProps = {
-  materialName?: string;
-  blendsBehindWindow?: boolean;
-  style?: any;
-};
-
 const NativeVisualEffect = hasNativeBlur
-  ? requireNativeComponent<NativeProps>(NATIVE_NAME)
+  ? requireNativeComponent(NATIVE_NAME)
   : null;
 
 /**
@@ -44,12 +38,12 @@ const WINDOW_MATERIAL = 'hudWindow';
  * Set this to a material name (e.g. 'underWindowBackground') to go back to a
  * real second blur.
  */
-const SIDEBAR_MATERIAL: string | null = null;
+const SIDEBAR_MATERIAL = null;
 
 /** Tint strength when SIDEBAR_MATERIAL is null. 0 = invisible, 1 = white. */
 const SIDEBAR_TINT = 'rgba(255, 255, 255, 0.16)';
 
-export function TransparentWindow({children}: {children: React.ReactNode}) {
+export function TransparentWindow({children}) {
   return (
     <View style={styles.root}>
       {NativeVisualEffect ? (
@@ -66,7 +60,7 @@ export function TransparentWindow({children}: {children: React.ReactNode}) {
   );
 }
 
-export function SidebarMaterial({children}: {children: React.ReactNode}) {
+export function SidebarMaterial({children}) {
   return (
     <View style={styles.sidebarMaterial}>
       {NativeVisualEffect && SIDEBAR_MATERIAL ? (
