@@ -1,8 +1,5 @@
 import SwiftUI
-
-#if os(macOS)
 import AppKit
-#endif
 
 enum WindowTransparencyStyle {
     /// Frosted glass: the desktop behind the window is blurred, content stays readable.
