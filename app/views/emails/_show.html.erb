@@ -1,0 +1,27 @@
+<div class="email-header">
+  <img src="<%= email.sender.image_url %>" class="sender-image" loading="lazy">
+  <div class="email-info">
+    <h3 class="sender-name"><%= email.subject %></h3>
+    <div class="meta">
+      <span class="sender"><%= email.sender.name %></span>
+      <span class="separator"></span>
+      <span class="sender-email"><%= email.sender.email %></span>
+      <span class="separator"></span>
+      <span class="timestamp"><%= time_ago_in_words(email.created_at) %></span>
+    </div>
+
+    <p class="to">to: <%= email.to %></p>
+  </div>
+
+  <button class="email-close" data-action="email-page#close"">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
+<% if email.internal? %>
+  <iframe src="<%= email.html_body %>" data-controller="iframe-resize"></iframe>
+<% else %>
+  <iframe srcdoc="<%= email.html_body %><%= iframe_resize_script %>" sandbox='allow-scripts allow-top-navigation allow-forms' data-controller="iframe-resize"></iframe>
+<% end %>
