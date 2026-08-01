@@ -13,18 +13,9 @@ enum WindowTransparencyStyle {
 // the window buttons.
 
 extension View {
-    /// Makes the window this view lives in translucent. No-op off macOS —
-    /// iOS and visionOS don't expose window compositing to the app.
     @ViewBuilder
     func transparentWindow() -> some View {
-        // .ignoresSafeArea is load-bearing: with a hidden titlebar the window's
-        // content view is full-size but SwiftUI still lays out inside a 32pt
-        // titlebar safe area. Without it the glass stops short and that strip
-        // renders as raw transparency, since the window itself is not opaque.
-        self.background(
-            VisualEffectBackground(material: .hudWindow)
-                .ignoresSafeArea()
-        )
+        self.background(VisualEffectBackground(material: .hudWindow).ignoresSafeArea())
     }
 }
 

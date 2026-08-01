@@ -25,7 +25,7 @@ struct CollapsibleSidebar: View {
     @Binding var isExpanded: Bool
 
     /// Width of the icon-only rail.
-    var collapsedWidth: CGFloat = 60
+    var collapsedWidth: CGFloat = 80
     /// Width when fully open.
     var expandedWidth: CGFloat = 240
 

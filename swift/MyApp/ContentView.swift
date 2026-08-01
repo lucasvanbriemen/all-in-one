@@ -18,18 +18,8 @@ struct ContentView: View {
         HStack(spacing: 0) {
             CollapsibleSidebar(
                 items: [
-                    SidebarItem(title: "Email", systemImage: "mail"),
-                    SidebarItem(title: "Library", systemImage: "books.vertical", children: [
-                        SidebarItem(title: "Recents", systemImage: "clock"),
-                        SidebarItem(title: "Playlists", systemImage: "music.note.list", children: [
-                            SidebarItem(title: "Focus", systemImage: "circle"),
-                            SidebarItem(title: "Workout", systemImage: "circle"),
-                        ]),
-                    ]),
-                    SidebarItem(title: "Favorites", systemImage: "star"),
-                    SidebarItem(title: "Settings", systemImage: "gearshape", children: [
-                        SidebarItem(title: "General", systemImage: "slider.horizontal.3"),
-                        SidebarItem(title: "Advanced", systemImage: "wrench.and.screwdriver"),
+                    SidebarItem(title: "Email", systemImage: "mail", children: [
+                        SidebarItem(title: "Inbox", systemImage: "clock"),
                     ])
                 ],
                 selection: $selection,
