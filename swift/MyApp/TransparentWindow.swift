@@ -17,7 +17,6 @@ extension View {
     /// iOS and visionOS don't expose window compositing to the app.
     @ViewBuilder
     func transparentWindow(_ style: WindowTransparencyStyle = .blurred) -> some View {
-        #if os(macOS)
         // .ignoresSafeArea is load-bearing: with a hidden titlebar the window's
         // content view is full-size but SwiftUI still lays out inside a 32pt
         // titlebar safe area. Without it the glass stops short and that strip
@@ -33,15 +32,9 @@ extension View {
             background(Color.clear.ignoresSafeArea())
                 .background(WindowConfigurator())
         }
-        #else
-        self
-        #endif
     }
 }
 
-#if os(macOS)
-/// Reaches the hosting `NSWindow` and drops its opaque background so a
-/// translucent SwiftUI background can show what's behind the window.
 private struct WindowConfigurator: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
@@ -80,4 +73,3 @@ private struct VisualEffectBackground: NSViewRepresentable {
         nsView.material = material
     }
 }
-#endif
