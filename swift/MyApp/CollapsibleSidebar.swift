@@ -17,31 +17,20 @@ struct CollapsibleSidebar: View {
     @Binding var selection: SidebarItem.ID?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 2) {
-                    ForEach(items) { item in
-                        SidebarRow(
-                            title: item.title,
-                            systemImage: item.systemImage,
-                            isSelected: selection == item.id
-                        ) {
-                            selection = item.id
-                        }
-                    }
+        ScrollView {
+            ForEach(items) { item in
+                SidebarRow(
+                    title: item.title,
+                    systemImage: item.systemImage,
+                    isSelected: selection == item.id
+                ) {
+                    selection = item.id
                 }
             }
-            .scrollBounceBehavior(.basedOnSize)
-
-            Spacer(minLength: 0)
         }
         .padding(8)
         .frame(width:240, alignment: .leading)
-        // The labels keep their natural width and overflow the rail; clipping
-        // makes them slide out of view instead of truncating mid-animation.
-        .clipped()
         .background(.ultraThinMaterial)
-        .overlay(alignment: .trailing) { Divider() }
     }
 }
 
