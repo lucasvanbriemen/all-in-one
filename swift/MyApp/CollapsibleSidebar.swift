@@ -104,13 +104,6 @@ struct CollapsibleSidebar: View {
         }
     }
 
-    private func popoverBinding(for item: SidebarItem) -> Binding<Bool> {
-        Binding(
-            get: { !isExpanded && item.hasChildren && popoverGroup == item.id },
-            set: { shown in if !shown { popoverGroup = nil } }
-        )
-    }
-
     /// Flattened list of rows currently on screen. Flattening here keeps the
     /// view hierarchy non-recursive — a recursive `View` can't type-check.
     private var visibleRows: [VisibleRow] {
