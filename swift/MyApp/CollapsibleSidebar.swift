@@ -51,7 +51,6 @@ struct CollapsibleSidebar: View {
             title: item.title,
             systemImage: item.systemImage,
             depth: 0,
-            state:  .leaf,
             isSelected: selection == item.id,
         ) {
             tap(item)
@@ -63,17 +62,10 @@ struct CollapsibleSidebar: View {
     }
 }
 
-
-
-private enum RowState {
-    case leaf
-}
-
 private struct SidebarRow: View {
     let title: String
     let systemImage: String
     let depth: Int
-    let state: RowState
     let isSelected: Bool
     /// False on the collapsed rail, where only the icon should read.
     let action: () -> Void
