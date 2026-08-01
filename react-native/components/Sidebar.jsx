@@ -1,4 +1,4 @@
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {accentColor, labelColor} from './theme';
 
@@ -6,7 +6,7 @@ export function Sidebar({items, selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
 
   return (
-    <ScrollView style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
+    <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
       <Pressable onPress={() => setIsMinimized(!isMinimized)} style={styles.row}>
         <Text style={styles.label}>{isMinimized ? 'Open' : 'Close'}</Text>
       </Pressable>
@@ -14,7 +14,7 @@ export function Sidebar({items, selection, onSelect}) {
       {items.map(item => (
         <SidebarRow key={item} title={item} isSelected={selection === item} onPress={() => onSelect(item)} />
       ))}
-    </ScrollView>
+    </View>
   );
 }
 
@@ -36,8 +36,6 @@ const styles = StyleSheet.create({
     width: 240,
     flexGrow: 0,
     flexShrink: 0,
-    // RCTScrollView paints its own backdrop on macOS, which would sit on top
-    // of the material and cancel out the blur.
     backgroundColor: 'transparent',
   },
   sidebarMinimized: {
