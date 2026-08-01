@@ -85,17 +85,6 @@ struct CollapsibleSidebar: View {
         ) {
             tap(item)
         }
-        // Collapsed rail has no room to disclose inline, so children arrive
-        // in a popover anchored to the icon.
-        .popover(
-            isPresented: popoverBinding(for: item),
-            attachmentAnchor: .rect(.bounds),
-            arrowEdge: .trailing
-        ) {
-            ChildPopover(item: item, selection: $selection) {
-                popoverGroup = nil
-            }
-        }
     }
 
     private func tap(_ item: SidebarItem) {
@@ -201,42 +190,5 @@ private struct SidebarRow: View {
         .buttonStyle(.plain)
         .help(title)
         .accessibilityLabel(title)
-    }
-}
-
-/// Children of a group, shown when the sidebar is collapsed to the rail.
-private struct ChildPopover: View {
-    let item: SidebarItem
-    @Binding var selection: SidebarItem.ID?
-    let dismiss: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(item.title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 6)
-                .padding(.bottom, 2)
-
-            ForEach(item.children) { child in
-                Button {
-                    selection = child.id
-                    dismiss()
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: child.systemImage)
-                            .frame(width: 18)
-                        Text(child.title)
-                        Spacer(minLength: 0)
-                    }
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(8)
-        .frame(minWidth: 160, alignment: .leading)
     }
 }
