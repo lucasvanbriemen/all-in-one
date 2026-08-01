@@ -1,13 +1,6 @@
 import SwiftUI
 import AppKit
 
-enum WindowTransparencyStyle {
-    /// Frosted glass: the desktop behind the window is blurred, content stays readable.
-    case blurred
-    /// Fully see-through. Anything you don't paint shows the raw desktop.
-    case clear
-}
-
 // Note: no manual traffic-light inset is needed. Even with a hidden titlebar,
 // SwiftUI lays content out inside a 32pt top safe area, which already clears
 // the window buttons.
