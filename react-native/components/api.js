@@ -1,3 +1,5 @@
+const BASE_URL = "http://localhost:3000";
+
 export const api = {
   // A getter so every request reads the *current* CSRF token — Turbo swaps
   // the meta tag on navigation, and a token cached at module load goes stale.
@@ -5,7 +7,6 @@ export const api = {
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content"),
       Authorization: "Bearer DEV_TOKEN",
     };
   },
@@ -39,8 +40,9 @@ export const api = {
       options.body = JSON.stringify(data);
     }
 
-    // fetch resolves relative URLs against the current page itself.
-    return fetch(url, options)
+    // React Native has no page to resolve relative URLs against, so every
+    // request is prefixed with the API host.
+    return fetch(BASE_URL + url, options)
       .then(async (response) => {
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();

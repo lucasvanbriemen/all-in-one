@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   get "/emails/:id", to: "emails#show", as: :email
 
-    get "meta_data", to: "account#show"
+  get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

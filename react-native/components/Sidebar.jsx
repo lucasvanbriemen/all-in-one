@@ -1,9 +1,21 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {accentColor, labelColor} from './theme';
 
-export function Sidebar({items, selection, onSelect}) {
+import {api} from './api';
+
+export function Sidebar({selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    api
+      .get('/meta_data')
+      .then(data => {
+        console.log('Sidebar data', data.config);
+        setItems(data.config.sidebar);
+      })
+  }, []);
 
   return (
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
@@ -12,7 +24,7 @@ export function Sidebar({items, selection, onSelect}) {
       </Pressable>
 
       {items.map(item => (
-        <SidebarRow key={item} title={item} isSelected={selection === item} onPress={() => onSelect(item)} />
+        <SidebarRow key={item.title} title={item.title} isSelected={selection === item.title} onPress={() => onSelect(item.title)} />
       ))}
     </View>
   );

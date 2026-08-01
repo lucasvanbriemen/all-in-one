@@ -1,5 +1,10 @@
 module Config
-  CONFIG = [
+  CONFIG = {
+    sidebar: [
+      {
+        title: "Email"
+      }
+    ],
     email: [
       {
         path: "home",
@@ -32,5 +37,5 @@ module Config
         rules: { from: %w[*@service.pathe.nl] }
       }
     ]
-  ].freeze
+  }.freeze
 end
