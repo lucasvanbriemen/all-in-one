@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, PlatformColor} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {CollapsibleSidebar} from './components/CollapsibleSidebar';
 import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow';
+import {labelColor} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
 // window buttons for free. React Native has no such inset on macOS, so the
@@ -46,6 +47,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: '400',
-    color: PlatformColor('labelColor'),
+    color: labelColor,
   },
 });

@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  PlatformColor,
-} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {accentColor, labelColor} from './theme';
 
 type Props = {
   items: string[];
@@ -74,13 +68,13 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 8,
     opacity: 0.18,
-    backgroundColor: PlatformColor('controlAccentColor'),
+    backgroundColor: accentColor,
   },
   label: {
     fontSize: 13,
-    color: PlatformColor('labelColor'),
+    color: labelColor,
   },
   labelSelected: {
-    color: PlatformColor('controlAccentColor'),
+    color: accentColor,
   },
 });
