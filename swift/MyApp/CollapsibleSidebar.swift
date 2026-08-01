@@ -113,7 +113,6 @@ private struct SidebarRow: View {
     let state: RowState
     let isSelected: Bool
     /// False on the collapsed rail, where only the icon should read.
-    var showsLabel: Bool = true
     let action: () -> Void
 
     private let iconSize: CGFloat = 28
@@ -129,7 +128,6 @@ private struct SidebarRow: View {
                 Text(title)
                     .lineLimit(1)
                     .fixedSize()
-                    .opacity(showsLabel ? 1 : 0)
 
                 Spacer(minLength: 4)
 
@@ -138,7 +136,6 @@ private struct SidebarRow: View {
                         .font(.system(size: 11, weight: .semibold))
                         .rotationEffect(.degrees(isDisclosed ? 90 : 0))
                         .foregroundStyle(.secondary)
-                        .opacity(showsLabel ? 1 : 0)
                 }
             }
             .padding(.horizontal, 6)
