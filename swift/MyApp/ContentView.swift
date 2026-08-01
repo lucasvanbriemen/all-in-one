@@ -11,7 +11,7 @@ import Playgrounds
 }
 
 struct ContentView: View {
-    @State private var selection: SidebarItem.ID? = "Home"
+    @State private var selection: String? = nil
 
     var body: some View {
         HStack(spacing: 0) {

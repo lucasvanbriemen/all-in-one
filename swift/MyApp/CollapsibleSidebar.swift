@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CollapsibleSidebar: View {
     let items: [String]
-    @Binding var selection: SidebarItem.ID?
+    @Binding var selection: String?
 
     var body: some View {
         ScrollView {
