@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {CollapsibleSidebar} from './components/CollapsibleSidebar';
 import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow';
+import {StyleSheet, Text, View} from 'react-native';
+
+import {Sidebar} from './components/Sidebar';
 import {labelColor} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
@@ -18,7 +19,7 @@ export default function App() {
     <TransparentWindow>
       <View style={styles.layout}>
         <SidebarMaterial>
-          <CollapsibleSidebar
+          <Sidebar
             items={ITEMS}
             selection={selection}
             onSelect={setSelection}

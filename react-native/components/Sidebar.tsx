@@ -1,6 +1,7 @@
-import React from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {accentColor, labelColor} from './theme';
+
+import React from 'react';
 
 type Props = {
   items: string[];
@@ -8,7 +9,7 @@ type Props = {
   onSelect: (item: string) => void;
 };
 
-export function CollapsibleSidebar({items, selection, onSelect}: Props) {
+export function Sidebar({items, selection, onSelect}: Props) {
   return (
     <ScrollView
       style={styles.sidebar}
