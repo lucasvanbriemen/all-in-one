@@ -19,7 +19,21 @@ struct ContentView: View {
     var body: some View {
         HStack(spacing: 0) {
             CollapsibleSidebar(
-                items: SidebarItem.demo,
+                items: [
+                    SidebarItem(title: "Home", systemImage: "house"),
+                    SidebarItem(title: "Library", systemImage: "books.vertical", children: [
+                        SidebarItem(title: "Recents", systemImage: "clock"),
+                        SidebarItem(title: "Playlists", systemImage: "music.note.list", children: [
+                            SidebarItem(title: "Focus", systemImage: "circle"),
+                            SidebarItem(title: "Workout", systemImage: "circle"),
+                        ]),
+                    ]),
+                    SidebarItem(title: "Favorites", systemImage: "star"),
+                    SidebarItem(title: "Settings", systemImage: "gearshape", children: [
+                        SidebarItem(title: "General", systemImage: "slider.horizontal.3"),
+                        SidebarItem(title: "Advanced", systemImage: "wrench.and.screwdriver"),
+                    ])
+                ],
                 selection: $selection,
                 isExpanded: $isSidebarExpanded
             )

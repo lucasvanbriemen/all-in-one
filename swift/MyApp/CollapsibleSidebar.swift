@@ -270,21 +270,3 @@ private struct SidebarDemo: View {
         .frame(minWidth: 520, minHeight: 360)
     }
 }
-
-extension SidebarItem {
-    static let demo: [SidebarItem] = [
-        SidebarItem(title: "Home", systemImage: "house"),
-        SidebarItem(title: "Library", systemImage: "books.vertical", children: [
-            SidebarItem(title: "Recents", systemImage: "clock"),
-            SidebarItem(title: "Playlists", systemImage: "music.note.list", children: [
-                SidebarItem(title: "Focus", systemImage: "circle"),
-                SidebarItem(title: "Workout", systemImage: "circle"),
-            ]),
-        ]),
-        SidebarItem(title: "Favorites", systemImage: "star"),
-        SidebarItem(title: "Settings", systemImage: "gearshape", children: [
-            SidebarItem(title: "General", systemImage: "slider.horizontal.3"),
-            SidebarItem(title: "Advanced", systemImage: "wrench.and.screwdriver"),
-        ]),
-    ]
-}
