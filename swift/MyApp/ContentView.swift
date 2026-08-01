@@ -20,7 +20,7 @@ struct ContentView: View {
         HStack(spacing: 0) {
             CollapsibleSidebar(
                 items: [
-                    SidebarItem(title: "Home", systemImage: "house"),
+                    SidebarItem(title: "Email", systemImage: "mail"),
                     SidebarItem(title: "Library", systemImage: "books.vertical", children: [
                         SidebarItem(title: "Recents", systemImage: "clock"),
                         SidebarItem(title: "Playlists", systemImage: "music.note.list", children: [

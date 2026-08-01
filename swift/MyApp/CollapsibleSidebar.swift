@@ -240,33 +240,3 @@ private struct ChildPopover: View {
         .frame(minWidth: 160, alignment: .leading)
     }
 }
-
-#Preview("Expanded") {
-    SidebarDemo(startExpanded: true)
-}
-
-#Preview("Collapsed") {
-    SidebarDemo(startExpanded: false)
-}
-
-private struct SidebarDemo: View {
-    @State private var isExpanded: Bool
-    @State private var selection: SidebarItem.ID? = "Home"
-
-    init(startExpanded: Bool) {
-        _isExpanded = State(initialValue: startExpanded)
-    }
-
-    var body: some View {
-        HStack(spacing: 0) {
-            CollapsibleSidebar(
-                items: SidebarItem.demo,
-                selection: $selection,
-                isExpanded: $isExpanded
-            )
-            Text(selection ?? "Nothing selected")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .frame(minWidth: 520, minHeight: 360)
-    }
-}
