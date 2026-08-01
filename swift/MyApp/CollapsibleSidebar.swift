@@ -16,11 +16,6 @@ struct CollapsibleSidebar: View {
     let items: [SidebarItem]
     @Binding var selection: SidebarItem.ID?
 
-    /// Width of the icon-only rail.
-    var collapsedWidth: CGFloat = 80
-    /// Width when fully open.
-    var expandedWidth: CGFloat = 240
-
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             ScrollView {
@@ -41,7 +36,7 @@ struct CollapsibleSidebar: View {
             Spacer(minLength: 0)
         }
         .padding(8)
-        .frame(width:expandedWidth, alignment: .leading)
+        .frame(width:240, alignment: .leading)
         // The labels keep their natural width and overflow the rail; clipping
         // makes them slide out of view instead of truncating mid-animation.
         .clipped()
