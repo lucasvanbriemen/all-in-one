@@ -1,5 +1,4 @@
 class Email < ApplicationRecord
-  paginates_per 50
   belongs_to :sender, optional: true
 
   INTERNAL_EMAILS = [
