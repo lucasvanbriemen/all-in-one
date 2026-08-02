@@ -6,7 +6,14 @@ class EmailsController < ApplicationController
     @page = params[:page] || 1
 
     @emails = Email.in_group(params[:path]).order(created_at: :desc).limit(50).offset((@page.to_i - 1) * 50)
-    render json: @emails
+
+    @total_pages = (Email.in_group(params[:path]).count / 50.0).ceil
+
+    render json: {
+      emails: @emails.as_json(only: [ :id, :subject, :from, :to, :created_at ]),
+      total_pages: @total_pages,
+      current_page: @page
+    }
   end
 
   def create
