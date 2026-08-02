@@ -3,16 +3,10 @@ class EmailsController < ApplicationController
   end
 
   def index
-    @emails = Email.in_group(params[:path]).order(created_at: :desc)
+    @page = params[:page] || 1
 
-    if params[:q].present?
-      @emails = @emails.where(
-        "emails.subject LIKE :q OR emails.sender_name LIKE :q",
-        q: "%#{Email.sanitize_sql_like(params[:q])}%"
-      )
-    end
-
-    @emails = @emails.page(params[:page])
+    @emails = Email.in_group(params[:path]).order(created_at: :desc).limit(50).offset((@page.to_i - 1) * 50)
+    render json: @emails
   end
 
   def create
