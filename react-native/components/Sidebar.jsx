@@ -1,13 +1,13 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {accentColor, labelColor} from './theme';
-
 import {SidebarIcon} from './icons';
+import {useTheme} from './theme';
 import {api} from './api';
 
 export function Sidebar({selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
+  const {onSurface} = useTheme();
 
   useEffect(() => {
     api
@@ -20,7 +20,9 @@ export function Sidebar({selection, onSelect}) {
   return (
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
       <Pressable onPress={() => setIsMinimized(!isMinimized)} style={styles.row}>
-        <Text style={styles.label}>{isMinimized ? 'Open' : 'Close'}</Text>
+        <Text style={[styles.label, {color: onSurface}]}>
+          {isMinimized ? 'Open' : 'Close'}
+        </Text>
       </Pressable>
 
       {items.map(item => (
@@ -31,15 +33,18 @@ export function Sidebar({selection, onSelect}) {
 }
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
+  const {primary, onPrimary, onSurface} = useTheme();
+  const foreground = isSelected ? onPrimary : onSurface;
+
   return (
-    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
+    <Pressable onPress={onPress} style={[styles.row, isSelected && {backgroundColor: primary}, !useLabels && styles.rowMinimized]}>
       <SidebarIcon
         name={icon}
         size={16}
-        color={isSelected ? "#fff" : labelColor}
+        color={foreground}
       />
       {useLabels && (
-        <Text style={[styles.label, isSelected && styles.labelSelected]}>
+        <Text style={[styles.label, {color: foreground}]}>
           {title}
         </Text>
       )}
@@ -65,15 +70,7 @@ const styles = StyleSheet.create({
   rowMinimized: {
     justifyContent: 'center',
   },
-  selectedRow: {
-    opacity: 1,
-    backgroundColor: accentColor,
-  },
   label: {
     fontSize: 14,
-    color: labelColor,
-  },
-  labelSelected: {
-    color: "#fff",
   },
 });
