@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {accentColor, labelColor} from './theme';
 
+import {SidebarIcon} from './icons';
 import {api} from './api';
 
 export function Sidebar({selection, onSelect}) {
@@ -23,18 +24,23 @@ export function Sidebar({selection, onSelect}) {
       </Pressable>
 
       {items.map(item => (
-        <SidebarRow key={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} />
+        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} />
       ))}
     </View>
   );
 }
 
-function SidebarRow({title, isSelected, onPress}) {
+function SidebarRow({icon, title, isSelected, onPress}) {
   return (
     <Pressable onPress={onPress} style={styles.row}>
       {/* SwiftUI's `.fill(accent.opacity(0.18))` — a tinted plate behind the
           label, rather than a faded label. */}
       {isSelected && <View style={styles.selectedFill} pointerEvents="none" />}
+      <SidebarIcon
+        name={icon}
+        size={16}
+        color={isSelected ? accentColor : labelColor}
+      />
       <Text style={[styles.label, isSelected && styles.labelSelected]}>
         {title}
       </Text>
@@ -59,7 +65,9 @@ const styles = StyleSheet.create({
   // behaves this way, so no `.contentShape(Rectangle())` equivalent is needed.
   row: {
     padding: 16,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   selectedFill: {
     ...StyleSheet.absoluteFillObject,

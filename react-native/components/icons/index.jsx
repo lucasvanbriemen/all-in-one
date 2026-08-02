@@ -1,0 +1,22 @@
+import React from 'react';
+import {GithubIcon} from './github';
+import {HomeIcon} from './home';
+import {PatheIcon} from './pathe';
+import {WorkIcon} from './work';
+
+// Keyed by the `path` of each entry in Config::CONFIG (app/models/config.rb),
+// which is what the sidebar rows are identified by. An entry without an icon
+// renders nothing rather than a placeholder, so adding a mailbox server-side
+// doesn't break the client.
+const ICONS = {
+  home: HomeIcon,
+  work: WorkIcon,
+  github: GithubIcon,
+  pathe: PatheIcon,
+};
+
+export function SidebarIcon({name, size, color}) {
+  const Icon = ICONS[name];
+
+  return Icon ? <Icon size={size} color={color} /> : null;
+}
