@@ -32,10 +32,7 @@ export function Sidebar({selection, onSelect}) {
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   return (
-    <Pressable onPress={onPress} style={styles.row}>
-      {/* SwiftUI's `.fill(accent.opacity(0.18))` — a tinted plate behind the
-          label, rather than a faded label. */}
-      {isSelected && <View style={styles.selectedFill} pointerEvents="none" />}
+    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow]}>
       <SidebarIcon
         name={icon}
         size={16}
@@ -63,14 +60,12 @@ const styles = StyleSheet.create({
   },
   row: {
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 100,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  selectedFill: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 100,
+  selectedRow: {
     opacity: 0.5,
     backgroundColor: accentColor,
   },
