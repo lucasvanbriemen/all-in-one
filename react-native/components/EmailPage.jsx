@@ -4,7 +4,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
-export function Email({selection, onSelect}) {
+export function EmailPage({selection, onSelect}) {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 

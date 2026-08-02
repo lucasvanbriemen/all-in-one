@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow';
 import {StyleSheet, View} from 'react-native';
 
-import {Email} from './components/Email';
+import {EmailPage} from './components/EmailPage';
 import {Sidebar} from './components/Sidebar';
 import {useThemedStyles} from './components/theme';
 
@@ -11,9 +11,9 @@ import {useThemedStyles} from './components/theme';
 // traffic lights have to be cleared manually.
 const TITLEBAR_INSET = 32;
 
-const APPLICATIONS = {Email};
+const APPLICATIONS = {EmailPage};
 
-const APPLICATION = "Email";
+const APPLICATION = "EmailPage";
 
 export default function App() {
   const [selection, setSelection] = useState(null);
