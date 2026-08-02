@@ -39,7 +39,7 @@ function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
       <SidebarIcon
         name={icon}
         size={16}
-        color={isSelected ? accentColor : labelColor}
+        color={isSelected ? "#fff" : labelColor}
       />
       {useLabels && (
         <Text style={[styles.label, isSelected && styles.labelSelected]}>
@@ -70,15 +70,15 @@ const styles = StyleSheet.create({
   },
   selectedFill: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 8,
-    opacity: 0.18,
+    borderRadius: 100,
+    opacity: 0.5,
     backgroundColor: accentColor,
   },
   label: {
-    fontSize: 13,
+    fontSize: 14,
     color: labelColor,
   },
   labelSelected: {
-    color: accentColor,
+    color: "#fff",
   },
 });
