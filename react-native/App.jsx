@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
+import {Email} from './components/Email';
 import {Sidebar} from './components/Sidebar';
 import {useThemedStyles} from './components/theme';
 
@@ -10,9 +11,14 @@ import {useThemedStyles} from './components/theme';
 // traffic lights have to be cleared manually.
 const TITLEBAR_INSET = 32;
 
+const APPLICATIONS = {Email};
+
+const APPLICATION = "Email";
+
 export default function App() {
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
+  const ActiveApplication = APPLICATIONS[APPLICATION];
 
   return (
     <TransparentWindow>
@@ -21,9 +27,7 @@ export default function App() {
           <Sidebar selection={selection} onSelect={setSelection} />
         </SidebarMaterial>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>{selection ?? 'Hello, world!'}</Text>
-        </View>
+        <ActiveApplication selection={selection} onSelect={setSelection} />
       </View>
     </TransparentWindow>
   );
