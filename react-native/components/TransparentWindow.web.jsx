@@ -1,7 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 
 import React from 'react';
-import {useTheme} from './theme';
+import {useThemedStyles} from './theme';
 
 /**
  * Web stand-in for the AppKit visual-effect background.

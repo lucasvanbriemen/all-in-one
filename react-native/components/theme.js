@@ -66,6 +66,9 @@ function resolve(colors, scheme) {
 /**
  * Every color of the palette for the current appearance, e.g.
  * `const {primary, onSurface} = useTheme()`.
+ *
+ * Prefer `useThemedStyles` for anything that ends up in a stylesheet; this is
+ * for colors passed as props, like an SVG icon's fill.
  */
 export function useTheme() {
   // `useColorScheme` is null while the OS preference is unknown. Both the web
@@ -88,4 +91,28 @@ export function useTheme() {
   }, []);
 
   return useMemo(() => resolve(colors, scheme), [colors, scheme]);
+}
+
+/**
+ * Keeps colors inside the stylesheet instead of scattered through the markup:
+ *
+ *   export default function App() {
+ *     const styles = useThemedStyles(createStyles);
+ *     ...
+ *   }
+ *
+ *   const createStyles = colors =>
+ *     StyleSheet.create({title: {fontSize: 26, color: colors.onSurface}});
+ *
+ * A module-level `StyleSheet.create` can't do this. It runs once at import,
+ * which is before the palette has been fetched and before the app knows the
+ * OS appearance — so the styles have to be built during render instead, and
+ * anything built during render has to come from a hook. Passing the factory
+ * in keeps that to a single line per component; the result is rebuilt only
+ * when the palette or the appearance actually changes.
+ */
+export function useThemedStyles(createStyles) {
+  const colors = useTheme();
+
+  return useMemo(() => createStyles(colors), [createStyles, colors]);
 }

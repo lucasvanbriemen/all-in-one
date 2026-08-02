@@ -1,13 +1,14 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {useTheme, useThemedStyles} from './theme';
+
 import {SidebarIcon} from './icons';
-import {useTheme} from './theme';
 import {api} from './api';
 
 export function Sidebar({selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
-  const {onSurface} = useTheme();
+  const styles = useThemedStyles(createStyles);
 
   useEffect(() => {
     api
@@ -20,9 +21,7 @@ export function Sidebar({selection, onSelect}) {
   return (
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
       <Pressable onPress={() => setIsMinimized(!isMinimized)} style={styles.row}>
-        <Text style={[styles.label, {color: onSurface}]}>
-          {isMinimized ? 'Open' : 'Close'}
-        </Text>
+        <Text style={styles.label}>{isMinimized ? 'Open' : 'Close'}</Text>
       </Pressable>
 
       {items.map(item => (
@@ -33,18 +32,19 @@ export function Sidebar({selection, onSelect}) {
 }
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
-  const {primary, onPrimary, onSurface} = useTheme();
-  const foreground = isSelected ? onPrimary : onSurface;
+  const styles = useThemedStyles(createStyles);
+  // The icon paints an SVG fill, not a style, so it needs the raw value.
+  const {onPrimary, onSurface} = useTheme();
 
   return (
-    <Pressable onPress={onPress} style={[styles.row, isSelected && {backgroundColor: primary}, !useLabels && styles.rowMinimized]}>
+    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
       <SidebarIcon
         name={icon}
         size={16}
-        color={foreground}
+        color={isSelected ? onPrimary : onSurface}
       />
       {useLabels && (
-        <Text style={[styles.label, {color: foreground}]}>
+        <Text style={[styles.label, isSelected && styles.labelSelected]}>
           {title}
         </Text>
       )}
@@ -52,7 +52,7 @@ function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
     padding: 16,
@@ -70,7 +70,14 @@ const styles = StyleSheet.create({
   rowMinimized: {
     justifyContent: 'center',
   },
+  selectedRow: {
+    backgroundColor: colors.primary,
+  },
   label: {
     fontSize: 14,
+    color: colors.onSurface,
+  },
+  labelSelected: {
+    color: colors.onPrimary,
   },
 });

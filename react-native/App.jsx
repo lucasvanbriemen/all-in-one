@@ -3,7 +3,7 @@ import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow
 import {StyleSheet, Text, View} from 'react-native';
 
 import {Sidebar} from './components/Sidebar';
-import {useTheme} from './components/theme';
+import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
 // window buttons for free. React Native has no such inset on macOS, so the
@@ -12,7 +12,7 @@ const TITLEBAR_INSET = 32;
 
 export default function App() {
   const [selection, setSelection] = useState(null);
-  const {onSurface} = useTheme();
+  const styles = useThemedStyles(createStyles);
 
   return (
     <TransparentWindow>
@@ -22,16 +22,14 @@ export default function App() {
         </SidebarMaterial>
 
         <View style={styles.content}>
-          <Text style={[styles.title, {color: onSurface}]}>
-            {selection ?? 'Hello, world!'}
-          </Text>
+          <Text style={styles.title}>{selection ?? 'Hello, world!'}</Text>
         </View>
       </View>
     </TransparentWindow>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   layout: {
     flex: 1,
     flexDirection: 'row',
@@ -45,5 +43,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: '400',
+    color: colors.onSurface,
   },
 });
