@@ -50,9 +50,6 @@ function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
 const styles = StyleSheet.create({
   sidebar: {
     width: 240,
-    flexGrow: 0,
-    flexShrink: 0,
-    backgroundColor: 'transparent',
     padding: 16,
   },
   sidebarMinimized: {
