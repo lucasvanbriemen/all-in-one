@@ -1,6 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 
 import React from 'react';
+import {useThemedStyles} from './theme';
 
 /**
  * Web stand-in for the AppKit visual-effect background.
@@ -19,19 +20,13 @@ import React from 'react';
 
 const WINDOW_BACKDROP = 'blur(30px) saturate(160%)';
 
-/** Subtle separation from the content pane. Dark, because the page is white. */
-const SIDEBAR_TINT = 'rgba(0, 0, 0, 0.04)';
-
 export function TransparentWindow({children}) {
+  const styles = useThemedStyles(createStyles);
+
   return (
     <View style={styles.root}>
       <View
-        style={[
-          StyleSheet.absoluteFill,
-          styles.windowBackdrop,
-          // Web-only CSS — react-native-web passes it straight through.
-          {backdropFilter: WINDOW_BACKDROP, WebkitBackdropFilter: WINDOW_BACKDROP},
-        ]}
+        style={[StyleSheet.absoluteFill, styles.windowBackdrop]}
         pointerEvents="none"
       />
       {children}
@@ -40,10 +35,12 @@ export function TransparentWindow({children}) {
 }
 
 export function SidebarMaterial({children}) {
+  const styles = useThemedStyles(createStyles);
+
   return (
     <View style={styles.sidebarMaterial}>
       <View
-        style={[StyleSheet.absoluteFill, {backgroundColor: SIDEBAR_TINT}]}
+        style={[StyleSheet.absoluteFill, styles.sidebarTint]}
         pointerEvents="none"
       />
       {children}
@@ -51,14 +48,24 @@ export function SidebarMaterial({children}) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   root: {
     flex: 1,
   },
   windowBackdrop: {
-    backgroundColor: 'transparent',
+    // The window has no desktop to be translucent over, so it paints the
+    // palette's own background. Without it the app would draw dark-mode text
+    // over index.html's white body.
+    backgroundColor: colors.background,
+    // Web-only CSS — react-native-web passes it straight through.
+    backdropFilter: WINDOW_BACKDROP,
+    WebkitBackdropFilter: WINDOW_BACKDROP,
   },
   sidebarMaterial: {
     flexDirection: 'row',
+  },
+  /** Subtle separation from the content pane, in both appearances. */
+  sidebarTint: {
+    backgroundColor: colors.surfaceAt2,
   },
 });

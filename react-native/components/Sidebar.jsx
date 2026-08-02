@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {accentColor, labelColor} from './theme';
+import {useTheme, useThemedStyles} from './theme';
 
 import {SidebarIcon} from './icons';
 import {api} from './api';
@@ -8,6 +8,7 @@ import {api} from './api';
 export function Sidebar({selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
+  const styles = useThemedStyles(createStyles);
 
   useEffect(() => {
     api
@@ -31,12 +32,15 @@ export function Sidebar({selection, onSelect}) {
 }
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
+  const styles = useThemedStyles(createStyles);
+  const {onPrimary, onSurface} = useTheme();
+
   return (
     <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
       <SidebarIcon
         name={icon}
         size={16}
-        color={isSelected ? "#fff" : labelColor}
+        color={isSelected ? onPrimary : onSurface}
       />
       {useLabels && (
         <Text style={[styles.label, isSelected && styles.labelSelected]}>
@@ -47,7 +51,7 @@ function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
     padding: 16,
@@ -66,14 +70,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selectedRow: {
-    opacity: 1,
-    backgroundColor: accentColor,
+    backgroundColor: colors.primary,
   },
   label: {
     fontSize: 14,
-    color: labelColor,
+    color: colors.onSurface,
   },
   labelSelected: {
-    color: "#fff",
+    color: colors.onPrimary,
   },
 });
