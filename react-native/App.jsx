@@ -13,12 +13,12 @@ const TITLEBAR_INSET = 32;
 
 const APPLICATIONS = {EmailPage};
 
-const APPLICATION = "EmailPage";
+const APPLICATION_TO_RENDER = "EmailPage";
 
 export default function App() {
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[APPLICATION];
+  const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
 
   return (
     <TransparentWindow>
