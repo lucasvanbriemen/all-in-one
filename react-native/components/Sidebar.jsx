@@ -24,13 +24,13 @@ export function Sidebar({selection, onSelect}) {
       </Pressable>
 
       {items.map(item => (
-        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} />
+        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} useLabels={!isMinimized} />
       ))}
     </View>
   );
 }
 
-function SidebarRow({icon, title, isSelected, onPress}) {
+function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   return (
     <Pressable onPress={onPress} style={styles.row}>
       {/* SwiftUI's `.fill(accent.opacity(0.18))` — a tinted plate behind the
@@ -41,9 +41,11 @@ function SidebarRow({icon, title, isSelected, onPress}) {
         size={16}
         color={isSelected ? accentColor : labelColor}
       />
-      <Text style={[styles.label, isSelected && styles.labelSelected]}>
-        {title}
-      </Text>
+      {useLabels && (
+        <Text style={[styles.label, isSelected && styles.labelSelected]}>
+          {title}
+        </Text>
+      )}
     </Pressable>
   );
 }
@@ -65,9 +67,8 @@ const styles = StyleSheet.create({
   // behaves this way, so no `.contentShape(Rectangle())` equivalent is needed.
   row: {
     padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    display: 'flex',
+    justifyContent: 'center',
   },
   selectedFill: {
     ...StyleSheet.absoluteFillObject,
