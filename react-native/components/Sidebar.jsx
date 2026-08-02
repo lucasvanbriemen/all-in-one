@@ -32,7 +32,7 @@ export function Sidebar({selection, onSelect}) {
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   return (
-    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow]}>
+    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
       <SidebarIcon
         name={icon}
         size={16}
@@ -62,8 +62,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  rowMinimized: {
+    justifyContent: 'center',
+  },
   selectedRow: {
-    opacity: 0.5,
+    opacity: 1,
     backgroundColor: accentColor,
   },
   label: {
