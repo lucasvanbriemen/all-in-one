@@ -56,19 +56,17 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0,
     backgroundColor: 'transparent',
+    padding: 16,
   },
   sidebarMinimized: {
     width: 100,
   },
-  sidebarContent: {
-    padding: 8,
-  },
-  // The whole row is the hit target, including the padding — Pressable already
-  // behaves this way, so no `.contentShape(Rectangle())` equivalent is needed.
   row: {
     padding: 16,
-    display: 'flex',
-    justifyContent: 'center',
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   selectedFill: {
     ...StyleSheet.absoluteFillObject,
