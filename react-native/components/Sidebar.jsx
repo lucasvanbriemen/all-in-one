@@ -33,7 +33,6 @@ export function Sidebar({selection, onSelect}) {
 
 function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   const styles = useThemedStyles(createStyles);
-  // The icon paints an SVG fill, not a style, so it needs the raw value.
   const {onPrimary, onSurface} = useTheme();
 
   return (
