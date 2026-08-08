@@ -13,13 +13,13 @@ export function EmailListItem({item}) {
       <SidebarMaterial style={[styles.card, hovered && styles.cardHovered]}>
         <View>
           <Image source={{uri: item.sender_image_url}} style={{width: 32, height: 32, borderRadius: 16, marginBottom: 8}} />
-        <Text style={styles.title}>
-          {item.subject}
-        </Text>
+          <Text style={styles.title}>
+            {item.subject}
+          </Text>
 
-        <Text style={styles.title}>
-          {item.sender_name}
-        </Text>
+          <Text style={styles.title}>
+            {item.sender_name}
+          </Text>
         </View>
       </SidebarMaterial>
     </Pressable>
