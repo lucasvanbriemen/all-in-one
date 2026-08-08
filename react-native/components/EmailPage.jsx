@@ -1,22 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
-import {api} from './api';
+import React from 'react';
 import {useThemedStyles} from './theme';
 
 export function EmailPage({selection, onSelect}) {
-  const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
-
-  useEffect(() => {
-    api
-      .get('/email/' + selection)
-      .then(data => {
-        setItems(data?.emails ?? []);
-      })
-  }, [selection]);
 
   return (
     <View style={styles.content}>
