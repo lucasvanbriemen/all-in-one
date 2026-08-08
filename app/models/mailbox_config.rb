@@ -1,4 +1,5 @@
 module MailboxConfig
+  DEFAULT_GROUP = "home".freeze
   GROUPS = [
     {
       path: "home",
