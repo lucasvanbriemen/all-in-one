@@ -11,8 +11,9 @@ export function EmailListItem({item}) {
   return (
     <Pressable onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)}>
       <SidebarMaterial style={[styles.card, hovered && styles.cardHovered]}>
-        <View>
-          <Image source={{uri: item.sender_image_url}} style={{width: 32, height: 32, borderRadius: 16, marginBottom: 8}} />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image source={{uri: item.sender_image_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
+          <View>
           <Text style={styles.title}>
             {item.subject}
           </Text>
@@ -20,6 +21,7 @@ export function EmailListItem({item}) {
           <Text style={styles.title}>
             {item.sender_name}
           </Text>
+          </View>
         </View>
       </SidebarMaterial>
     </Pressable>
