@@ -44,6 +44,9 @@ export const api = {
     // request is prefixed with the API host.
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`${method} ${url} failed with ${response.status}`);
+        }
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();
       });

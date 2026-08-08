@@ -10,15 +10,19 @@ export function EmailPage({selection, onSelect}) {
 
   useEffect(() => {
     api
-      .get('/meta_data')
+      .get('/email/' + selection)
       .then(data => {
-        setItems(data.config.email);
+        setItems(data?.emails ?? []);
       })
-  }, []);
+  }, [selection]);
 
   return (
     <View style={styles.content}>
-      <Text style={styles.title}>Hey</Text>
+      <Text style={styles.title}>{selection}</Text>
+
+      {items.map(item => (
+        <Text key={item.id} style={styles.title}>{item.subject}</Text>
+      ))}
     </View>
   );
 }
