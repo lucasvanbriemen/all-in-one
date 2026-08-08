@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import {EmailListItem} from './EmailListItem';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
@@ -22,7 +23,7 @@ export function EmailListing({selection, onSelect}) {
         <Text style={styles.title}>{selection}</Text>
 
         {items.map(item => (
-          <Text key={item.id} style={styles.title}>{item.subject}</Text>
+          <EmailListItem key={item.id} item={item} />
         ))}
       </ScrollView>
     </View>
@@ -32,6 +33,9 @@ export function EmailListing({selection, onSelect}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
+  },
+  list: {
+    padding: 12,
   },
   title: {
     fontSize: 26,

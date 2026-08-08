@@ -60,9 +60,9 @@ export function TransparentWindow({children}) {
   );
 }
 
-export function SidebarMaterial({children}) {
+export function SidebarMaterial({children, style}) {
   return (
-    <View style={styles.sidebarMaterial}>
+    <View style={[styles.sidebarMaterial, style]}>
       {NativeVisualEffect && SIDEBAR_MATERIAL ? (
         <NativeVisualEffect
           materialName={SIDEBAR_MATERIAL}
@@ -89,5 +89,8 @@ const styles = StyleSheet.create({
   },
   sidebarMaterial: {
     flexDirection: 'row',
+    // The material is an absolutely-filled child, so a `borderRadius` passed
+    // in through `style` only rounds the corners if the fill is clipped.
+    overflow: 'hidden',
   },
 });
