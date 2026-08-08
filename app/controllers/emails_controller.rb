@@ -5,12 +5,12 @@ class EmailsController < ApplicationController
   def index
     @page = params[:page] || 1
 
-    @emails = Email.in_group(params[:path]).order(created_at: :desc).limit(Email::ITEMS_PER_PAGE).offset((@page.to_i - 1) * Email::ITEMS_PER_PAGE)
+    @emails = Email.in_group(params[:path]).includes(:sender).order(created_at: :desc).limit(Email::ITEMS_PER_PAGE).offset((@page.to_i - 1) * Email::ITEMS_PER_PAGE)
 
     @total_pages = (Email.in_group(params[:path]).count / Email::ITEMS_PER_PAGE.to_f).ceil
 
     render json: {
-      emails: @emails.as_json(only: [ :id, :subject, :from, :to, :created_at, :sender_name ]),
+      emails: @emails.as_json(only: [ :id, :subject, :from, :to, :created_at, :sender_name ], methods: [ :sender_image_url ]),
       total_pages: @total_pages,
       current_page: @page
     }

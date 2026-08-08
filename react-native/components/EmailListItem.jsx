@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 
 import {SidebarMaterial} from './TransparentWindow';
@@ -12,6 +12,7 @@ export function EmailListItem({item}) {
     <Pressable onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)}>
       <SidebarMaterial style={[styles.card, hovered && styles.cardHovered]}>
         <View>
+          <Image source={{uri: item.sender_image_url}} style={{width: 32, height: 32, borderRadius: 16, marginBottom: 8}} />
         <Text style={styles.title}>
           {item.subject}
         </Text>

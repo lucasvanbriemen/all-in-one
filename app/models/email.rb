@@ -1,6 +1,8 @@
 class Email < ApplicationRecord
   belongs_to :sender, optional: true
 
+  delegate :image_url, to: :sender, prefix: true, allow_nil: true
+
   INTERNAL_EMAILS = [
     "ntfy@ltvb.nl"
   ].freeze
