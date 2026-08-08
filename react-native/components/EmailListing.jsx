@@ -20,8 +20,6 @@ export function EmailListing({selection, onSelect}) {
   return (
     <View style={styles.content}>
       <ScrollView>
-        <Text style={styles.title}>{selection}</Text>
-
         {items.map(item => (
           <EmailListItem key={item.id} item={item} />
         ))}
@@ -33,9 +31,6 @@ export function EmailListing({selection, onSelect}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
-  },
-  list: {
-    padding: 12,
   },
   title: {
     fontSize: 26,
