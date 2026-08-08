@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, useWindowDimensions} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {EmailContent} from './EmailContent';
-import {EmailListing} from './EmailListing';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
-export function EmailPage({selection, onSelect}) {
+export function EmailListing({selection, onSelect}) {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
@@ -20,12 +18,13 @@ export function EmailPage({selection, onSelect}) {
 
   return (
     <View style={styles.content}>
-      <View style={styles.listing}>
-        <EmailListing selection={selection} onSelect={onSelect} />
-      </View>
-      <View style={styles.body}>
-        <EmailContent />
-      </View>
+      <ScrollView>
+        <Text style={styles.title}>{selection}</Text>
+
+        {items.map(item => (
+          <Text key={item.id} style={styles.title}>{item.subject}</Text>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -33,12 +32,10 @@ export function EmailPage({selection, onSelect}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
-    flexDirection: 'row',
   },
-  listing: {
-    flex: 1,
-  },
-  body: {
-    flex: 2,
+  title: {
+    fontSize: 26,
+    fontWeight: '400',
+    color: colors.onSurface,
   },
 });
