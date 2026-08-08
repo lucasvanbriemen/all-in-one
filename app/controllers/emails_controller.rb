@@ -10,7 +10,7 @@ class EmailsController < ApplicationController
     @total_pages = (Email.in_group(params[:path]).count / Email::ITEMS_PER_PAGE.to_f).ceil
 
     render json: {
-      emails: @emails.as_json(only: [ :id, :subject, :from, :to, :created_at ]),
+      emails: @emails.as_json(only: [ :id, :subject, :from, :to, :created_at, :sender_name ]),
       total_pages: @total_pages,
       current_page: @page
     }

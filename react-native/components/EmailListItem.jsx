@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 
 import {SidebarMaterial} from './TransparentWindow';
@@ -9,13 +9,17 @@ export function EmailListItem({item}) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Pressable
-      onHoverIn={() => setHovered(true)}
-      onHoverOut={() => setHovered(false)}>
+    <Pressable onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)}>
       <SidebarMaterial style={[styles.card, hovered && styles.cardHovered]}>
-        <Text style={styles.title} numberOfLines={1}>
+        <View>
+        <Text style={styles.title}>
           {item.subject}
         </Text>
+
+        <Text style={styles.title}>
+          {item.sender_name}
+        </Text>
+        </View>
       </SidebarMaterial>
     </Pressable>
   );
@@ -24,7 +28,7 @@ export function EmailListItem({item}) {
 const createStyles = colors => StyleSheet.create({
   card: {
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 16,
     marginBottom: 8,
     marginLeft: 12,
   },
@@ -37,8 +41,7 @@ const createStyles = colors => StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 26,
-    fontWeight: '400',
+    fontSize: 16,
     color: colors.onSurface,
   },
 });

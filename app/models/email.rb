@@ -59,6 +59,18 @@ class Email < ApplicationRecord
     scope.where(clauses.join(" OR "), *binds)
   end
 
+  def sender_name
+    db_value = read_attribute(:sender_name)
+
+    if db_value.present?
+      db_value
+    elsif sender.present?
+      sender.name
+    else
+      "must be the wind"
+    end
+  end
+
   def internal?
     sender&.email.in?(INTERNAL_EMAILS)
   end
