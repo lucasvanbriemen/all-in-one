@@ -11,6 +11,11 @@ class Email < ApplicationRecord
     path = path || "home"
 
     group = MailboxConfig.find(path)
+
+    if group.nil?
+      group = MailboxConfig.find(MailboxConfig::DEFAULT_GROUP)
+    end
+
     rules = group[:rules]
 
     if rules[:exclude_from]
