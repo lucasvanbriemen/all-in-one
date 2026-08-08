@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {api} from './api';
 import {useThemedStyles} from './theme';
@@ -18,11 +18,13 @@ export function EmailPage({selection, onSelect}) {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.title}>{selection}</Text>
+      <ScrollView>
+        <Text style={styles.title}>{selection}</Text>
 
-      {items.map(item => (
-        <Text key={item.id} style={styles.title}>{item.subject}</Text>
-      ))}
+        {items.map(item => (
+          <Text key={item.id} style={styles.title}>{item.subject}</Text>
+        ))}
+      </ScrollView>
     </View>
   );
 }
