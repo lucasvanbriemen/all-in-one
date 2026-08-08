@@ -18,7 +18,7 @@ export function EmailListItem({item}) {
               {item.subject}
             </Text>
 
-            <Text style={styles.title}>
+            <Text style={styles.subtitle}>
               {item.sender_name}
             </Text>
           </View>
@@ -44,7 +44,11 @@ const createStyles = colors => StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
     color: colors.onSurface,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.onSurfaceVariant,
   },
 });
