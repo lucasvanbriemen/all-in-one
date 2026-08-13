@@ -22,7 +22,18 @@ class EmailsController < ApplicationController
   def show
     @email = Email.find(params[:id])
 
-    render partial: "show", locals: { email: @email }
+    render json: {
+      id: @email.id,
+      subject: @email.subject,
+      to: @email.to,
+      time_ago: helpers.time_ago_in_words(@email.created_at),
+      internal: @email.internal?,
+      html_body: @email.html_body,
+      sender_name: @email.sender&.name,
+      sender_email: @email.sender&.email,
+      sender_image_url: @email.sender_image_url,
+      resize_script: helpers.iframe_resize_script
+    }
   end
 
   private
