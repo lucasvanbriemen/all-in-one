@@ -5,7 +5,7 @@ import {EmailListItem} from './EmailListItem';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
-export function EmailListing({selection, onSelect}) {
+export function EmailListing({selection, onSelect, selectedEmail, onSelectEmail}) {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
@@ -14,6 +14,7 @@ export function EmailListing({selection, onSelect}) {
       .get('/email/' + selection)
       .then(data => {
         setItems(data?.emails ?? []);
+        onSelectEmail(null);
       })
   }, [selection]);
 
@@ -21,7 +22,12 @@ export function EmailListing({selection, onSelect}) {
     <View style={styles.content}>
       <ScrollView>
         {items.map(item => (
-          <EmailListItem key={item.id} item={item} />
+          <EmailListItem
+            key={item.id}
+            item={item}
+            isSelected={selectedEmail?.id === item.id}
+            onPress={() => onSelectEmail(item)}
+          />
         ))}
       </ScrollView>
     </View>

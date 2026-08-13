@@ -3,12 +3,12 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useThemedStyles} from './theme';
 
-export function EmailContent() {
+export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
 
   return (
     <View style={styles.content}>
-      <Text style={styles.title}>Hi</Text>
+      <Text style={styles.title}>{email ? email.subject : 'No email selected'}</Text>
     </View>
   );
 }
