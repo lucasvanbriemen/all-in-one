@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_05_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_13_000001) do
   create_table "attachments", id: { type: :bigint, unsigned: true }, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.timestamp "created_at"
     t.timestamp "updated_at"
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_05_000001) do
     t.bigint "sender_id", unsigned: true
     t.bigint "tag_id", unsigned: true
     t.string "message_id", comment: "RFC822 Message-ID, used to dedupe IMAP imports"
+    t.index ["created_at"], name: "emails_created_at_index"
     t.index ["folder_id"], name: "emails_folder_id_foreign"
     t.index ["has_read"], name: "emails_has_read_index"
     t.index ["html_body"], name: "ft_html_body", type: :fulltext

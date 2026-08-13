@@ -2,10 +2,16 @@
 # accessed through the trilogy adapter. Connection details come from the
 # environment (see .env for local development); they mirror the old Laravel
 # project's DB_* variables.
+#
+# The pool has to cover the widest thread count in any single process. The job
+# worker runs IMAP_FETCH_CONCURRENCY threads (see config/queue.yml), which is
+# far above RAILS_MAX_THREADS, so sizing on that alone would starve fetches of
+# connections and undo the parallelism.
+<% db_pool = [ ENV.fetch("RAILS_MAX_THREADS", 3).to_i, ENV.fetch("IMAP_FETCH_CONCURRENCY", 20).to_i ].max + 5 %>
 default: &default
   adapter: trilogy
   encoding: utf8mb4
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { db_pool } %>
   host: <%= ENV.fetch("DB_HOST", "127.0.0.1") %>
   port: <%= ENV.fetch("DB_PORT", 3306) %>
   username: <%= ENV.fetch("DB_USERNAME", "root") %>
@@ -15,7 +21,7 @@ default: &default
 # add framework tables to the shared email database.
 sqlite_default: &sqlite_default
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { db_pool } %>
   timeout: 5000
 
 development:
