@@ -18,7 +18,8 @@
     "react-native-macos": "^0.81.9",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-svg": "^15.15.5",
-    "react-native-web": "^0.21.2"
+    "react-native-web": "^0.21.2",
+    "react-native-webview": "^14.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
