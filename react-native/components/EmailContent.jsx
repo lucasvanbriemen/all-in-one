@@ -67,6 +67,7 @@ export function EmailContent({email}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
+    gap: 16,
   },
   placeholder: {
     flex: 1,
