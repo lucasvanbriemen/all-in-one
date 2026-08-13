@@ -14,7 +14,6 @@ export function EmailListing({selection, onSelect, selectedEmail, onSelectEmail}
       .get('/email/' + selection)
       .then(data => {
         setItems(data?.emails ?? []);
-        // The open email belongs to the previous mailbox.
         onSelectEmail(null);
       })
   }, [selection, onSelectEmail]);

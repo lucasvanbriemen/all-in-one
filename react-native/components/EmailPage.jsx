@@ -32,6 +32,7 @@ const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
     flexDirection: 'row',
+    gap: 16,
   },
   listing: {
     flex: 1,

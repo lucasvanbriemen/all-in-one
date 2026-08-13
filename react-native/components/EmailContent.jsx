@@ -2,18 +2,17 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {EmailBody} from './EmailBody';
+import {SidebarMaterial} from './TransparentWindow';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
 export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
   const [detail, setDetail] = useState(null);
-  const [error, setError] = useState(null);
   const emailId = email?.id;
 
   useEffect(() => {
     setDetail(null);
-    setError(null);
 
     if (!emailId) {
       return;
@@ -39,17 +38,9 @@ export function EmailContent({email}) {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.placeholder}>
-        <Text style={styles.placeholderText}>{error}</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.content}>
-      <View style={styles.header}>
+      <SidebarMaterial style={styles.header}>
         <Image source={{uri: email.sender_image_url}} style={styles.senderImage} />
         <View style={styles.headerInfo}>
           <Text style={styles.subject}>{email.subject}</Text>
@@ -66,7 +57,7 @@ export function EmailContent({email}) {
             </>
           )}
         </View>
-      </View>
+      </SidebarMaterial>
 
       {detail && <EmailBody detail={detail} />}
     </View>
@@ -91,6 +82,7 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     padding: 16,
+    borderRadius: 16,
   },
   senderImage: {
     width: 40,
