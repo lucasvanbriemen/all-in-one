@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://aio.ltvb.nl";
 
 export const api = {
   // A getter so every request reads the *current* CSRF token — Turbo swaps
