@@ -34,16 +34,20 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     marginBottom: 8,
     marginLeft: 12,
+    backgroundColor: colors.surfaceAt1,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
   },
   /**
    * Sits *behind* the material's tint layer rather than replacing it, so the
    * two stack and the row reads as slightly brighter on hover.
    */
   cardHovered: {
-    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    backgroundColor: colors.surfaceAt3,
   },
   cardSelected: {
-    backgroundColor: 'rgba(255, 255, 255, 0.24)',
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   title: {
     flex: 1,

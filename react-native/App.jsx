@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import {SidebarMaterial, TransparentWindow} from './components/TransparentWindow';
 import {StyleSheet, View} from 'react-native';
 
 import {EmailPage} from './components/EmailPage';
 import {Sidebar} from './components/Sidebar';
+import {SidebarMaterial} from './components/TransparentWindow';
 import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
@@ -21,15 +21,11 @@ export default function App() {
   const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
 
   return (
-    <TransparentWindow>
-      <View style={styles.layout}>
-        <SidebarMaterial>
-          <Sidebar selection={selection} onSelect={setSelection} />
-        </SidebarMaterial>
+    <View style={styles.layout}>
+      <Sidebar selection={selection} onSelect={setSelection} />
 
-        <ActiveApplication selection={selection} onSelect={setSelection} />
-      </View>
-    </TransparentWindow>
+      <ActiveApplication selection={selection} onSelect={setSelection} />
+    </View>
   );
 }
 
@@ -38,6 +34,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingTop: TITLEBAR_INSET,
+    backgroundColor: colors.surface,
   },
   content: {
     flex: 1,
