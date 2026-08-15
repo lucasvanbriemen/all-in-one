@@ -2,13 +2,14 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from './theme';
 
-import {SidebarIcon} from './icons';
+import {LogoIcon, SidebarIcon} from './icons';
 import {api} from './api';
 
 export function Sidebar({selection, onSelect}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
+  const {primary} = useTheme();
 
   useEffect(() => {
     api
@@ -20,8 +21,14 @@ export function Sidebar({selection, onSelect}) {
 
   return (
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
-      <Pressable onPress={() => setIsMinimized(!isMinimized)} style={styles.row}>
-        <Text style={styles.label}>{isMinimized ? 'Open' : 'Close'}</Text>
+      {/* The mark doubles as the collapse control, so the sidebar keeps its
+          identity in both widths without spending a row on a toggle. */}
+      <Pressable
+        onPress={() => setIsMinimized(!isMinimized)}
+        accessibilityRole="button"
+        accessibilityLabel={isMinimized ? 'Open sidebar' : 'Close sidebar'}
+        style={[styles.row, isMinimized && styles.rowMinimized]}>
+        <LogoIcon size={24} color={primary} />
       </Pressable>
 
       {items.map(item => (

@@ -1,8 +1,10 @@
-import React from 'react';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
+import React from 'react';
 import {WorkIcon} from './work';
+
+export {LogoIcon} from './logo';
 
 // Keyed by the `path` of each entry in Config::CONFIG (app/models/config.rb),
 // which is what the sidebar rows are identified by. An entry without an icon
