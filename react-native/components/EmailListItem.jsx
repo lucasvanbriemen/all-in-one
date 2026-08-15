@@ -29,10 +29,9 @@ export function EmailListItem({item, isSelected, onPress}) {
 
 const createStyles = colors => StyleSheet.create({
   card: {
-    padding: 12,
+    padding: 16,
     borderRadius: 16,
     marginBottom: 8,
-    marginLeft: 12,
     backgroundColor: colors.surfaceAt1,
     borderWidth: 1,
     borderColor: colors.outlineVariant,
