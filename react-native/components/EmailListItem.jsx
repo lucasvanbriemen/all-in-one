@@ -1,7 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 
-import {SidebarMaterial} from './TransparentWindow';
 import {useThemedStyles} from './theme';
 
 export function EmailListItem({item, isSelected, onPress}) {
@@ -10,7 +9,7 @@ export function EmailListItem({item, isSelected, onPress}) {
 
   return (
     <Pressable onPress={onPress} onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)}>
-      <SidebarMaterial style={[styles.card, hovered && styles.cardHovered, isSelected && styles.cardSelected]}>
+      <View style={[styles.card, hovered && styles.cardHovered, isSelected && styles.cardSelected]}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image source={{uri: item.sender_image_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
           <View>
@@ -23,7 +22,7 @@ export function EmailListItem({item, isSelected, onPress}) {
             </Text>
           </View>
         </View>
-      </SidebarMaterial>
+      </View>
     </Pressable>
   );
 }

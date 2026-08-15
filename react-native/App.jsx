@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 
 import {EmailPage} from './components/EmailPage';
 import {Sidebar} from './components/Sidebar';
-import {SidebarMaterial} from './components/TransparentWindow';
 import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
