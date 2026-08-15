@@ -35,10 +35,4 @@ class EmailsController < ApplicationController
       resize_script: helpers.iframe_resize_script
     }
   end
-
-  private
-
-  def session_params
-    params.fetch(:session, {}).permit(:email, :password, :redirect_to)
-  end
 end
