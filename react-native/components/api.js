@@ -1,3 +1,5 @@
+import secrets from './secerts.json';
+
 const BASE_URL = "https://aio.ltvb.nl";
 
 export const api = {
@@ -7,7 +9,7 @@ export const api = {
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: "Bearer DEV_TOKEN",
+      Authorization: `Bearer ${secrets.API_KEY}`,
     };
   },
 
