@@ -75,7 +75,6 @@ const createStyles = colors => StyleSheet.create({
     padding: 8,
     paddingTop: 16,
     paddingBottom: 16,
-    height:100,
   },
   row: {
     padding: 16,
