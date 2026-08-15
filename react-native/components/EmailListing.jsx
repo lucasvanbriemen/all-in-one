@@ -16,6 +16,7 @@ export function EmailListing({selection, onSelect, selectedEmail, onSelectEmail}
         setItems(data?.emails ?? []);
         onSelectEmail(null);
       })
+      .catch(() => setItems([]));
   }, [selection, onSelectEmail]);
 
   return (

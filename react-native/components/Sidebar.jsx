@@ -16,6 +16,10 @@ export function Sidebar({selection, onSelect}) {
       .then(data => {
         setItems(data.config.email);
       })
+      // Includes the AuthError raised on an expired token: App is already
+      // swapping this sidebar out for the login screen, so there is nothing to
+      // report here beyond not leaving the rejection unhandled.
+      .catch(() => setItems([]));
   }, []);
 
   return (

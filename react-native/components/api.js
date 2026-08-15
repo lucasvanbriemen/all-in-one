@@ -1,14 +1,24 @@
+import { auth } from "./auth";
+
 const BASE_URL = "https://aio.ltvb.nl";
 
+/** Thrown on a 401 so callers can tell "logged out" from "the request failed". */
+export class AuthError extends Error {}
+
 export const api = {
-  // A getter so every request reads the *current* CSRF token — Turbo swaps
-  // the meta tag on navigation, and a token cached at module load goes stale.
+  // A getter so every request reads the *current* token: it is absent until the
+  // stored session is restored, and gone again the moment the session ends.
   get defaultHeaders() {
-    return {
+    const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: "Bearer DEV_TOKEN",
     };
+
+    if (auth.token) {
+      headers.Authorization = `Bearer ${auth.token}`;
+    }
+
+    return headers;
   },
 
   get(url, headers = {}) {
@@ -44,6 +54,14 @@ export const api = {
     // request is prefixed with the API host.
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
+        // The week is up, or the token was revoked. Ending the session here
+        // means one 401 returns the whole app to the login screen, instead of
+        // every panel failing separately with nothing to act on.
+        if (response.status === 401) {
+          auth.signOut();
+          throw new AuthError(`${method} ${url} needs a login`);
+        }
+
         if (!response.ok) {
           throw new Error(`${method} ${url} failed with ${response.status}`);
         }
