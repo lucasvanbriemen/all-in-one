@@ -13,26 +13,26 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */; };
 		990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */; };
-		9C56D442527F143851522FDA /* libPods-MyApp-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-MyApp-macOS.a */; };
+		9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VisualEffectBackgroundManager.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* MyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		17ABD8ECD90521D405E4146A /* Pods-MyApp-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-macOS.debug.xcconfig"; path = "Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS.debug.xcconfig"; sourceTree = "<group>"; };
-		5048F9C2B2E49DE76DCA47F0 /* Pods-MyApp-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-macOS.release.xcconfig"; path = "Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		514201492437B4B30078DB4F /* MyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.debug.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		5048F9C2B2E49DE76DCA47F0 /* Pods-AllInOne-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.release.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.release.xcconfig"; sourceTree = "<group>"; };
+		514201492437B4B30078DB4F /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5142014B2437B4B30078DB4F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5142014C2437B4B30078DB4F /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		514201512437B4B40078DB4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		514201542437B4B40078DB4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201572437B4B40078DB4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		514201592437B4B40078DB4F /* MyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyApp.entitlements; sourceTree = "<group>"; };
-		51D7A7A288CDBC43DC190B35 /* libPods-MyApp-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		71E70C37A4A60F7215DC7DD6 /* MyApp-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MyApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		514201592437B4B40078DB4F /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
+		51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllInOne-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectBackground.swift; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C56D442527F143851522FDA /* libPods-MyApp-macOS.a in Frameworks */,
+				9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,12 +61,12 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				51D7A7A288CDBC43DC190B35 /* libPods-MyApp-macOS.a */,
+				51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		5142014A2437B4B30078DB4F /* MyApp-macOS */ = {
+		5142014A2437B4B30078DB4F /* AllInOne-macOS */ = {
 			isa = PBXGroup;
 			children = (
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
@@ -75,12 +75,12 @@
 				514201532437B4B40078DB4F /* Main.storyboard */,
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
-				514201592437B4B40078DB4F /* MyApp.entitlements */,
+				514201592437B4B40078DB4F /* AllInOne.entitlements */,
 				FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */,
 				0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */,
-				71E70C37A4A60F7215DC7DD6 /* MyApp-Bridging-Header.h */,
+				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
 			);
-			path = "MyApp-macOS";
+			path = "AllInOne-macOS";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -93,7 +93,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				5142014A2437B4B30078DB4F /* MyApp-macOS */,
+				5142014A2437B4B30078DB4F /* AllInOne-macOS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -108,8 +108,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* MyApp.app */,
-				514201492437B4B30078DB4F /* MyApp.app */,
+				13B07F961A680F5B00A75B9A /* AllInOne.app */,
+				514201492437B4B30078DB4F /* AllInOne.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,8 +117,8 @@
 		F6E35A70ABC442EF92FC8BEE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				17ABD8ECD90521D405E4146A /* Pods-MyApp-macOS.debug.xcconfig */,
-				5048F9C2B2E49DE76DCA47F0 /* Pods-MyApp-macOS.release.xcconfig */,
+				17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */,
+				5048F9C2B2E49DE76DCA47F0 /* Pods-AllInOne-macOS.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -127,9 +127,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* MyApp-iOS */ = {
+		13B07F861A680F5B00A75B9A /* AllInOne-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MyApp-iOS" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AllInOne-iOS" */;
 			buildPhases = (
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
@@ -140,14 +140,14 @@
 			);
 			dependencies = (
 			);
-			name = "MyApp-iOS";
-			productName = MyApp;
-			productReference = 13B07F961A680F5B00A75B9A /* MyApp.app */;
+			name = "AllInOne-iOS";
+			productName = AllInOne;
+			productReference = 13B07F961A680F5B00A75B9A /* AllInOne.app */;
 			productType = "com.apple.product-type.application";
 		};
-		514201482437B4B30078DB4F /* MyApp-macOS */ = {
+		514201482437B4B30078DB4F /* AllInOne-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "MyApp-macOS" */;
+			buildConfigurationList = 5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "AllInOne-macOS" */;
 			buildPhases = (
 				1A938104A937498D81B3BD3B /* [CP] Check Pods Manifest.lock */,
 				514201452437B4B30078DB4F /* Sources */,
@@ -161,9 +161,9 @@
 			);
 			dependencies = (
 			);
-			name = "MyApp-macOS";
-			productName = MyApp;
-			productReference = 514201492437B4B30078DB4F /* MyApp.app */;
+			name = "AllInOne-macOS";
+			productName = AllInOne;
+			productReference = 514201492437B4B30078DB4F /* AllInOne.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -183,7 +183,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "MyApp" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "AllInOne" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -196,8 +196,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* MyApp-iOS */,
-				514201482437B4B30078DB4F /* MyApp-macOS */,
+				13B07F861A680F5B00A75B9A /* AllInOne-iOS */,
+				514201482437B4B30078DB4F /* AllInOne-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -244,7 +244,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS-frameworks.sh",
 				"${PODS_ROOT}/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -253,7 +253,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1A938104A937498D81B3BD3B /* [CP] Check Pods Manifest.lock */ = {
@@ -271,7 +271,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MyApp-macOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-AllInOne-macOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -302,7 +302,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
@@ -321,7 +321,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MyApp-macOS/Pods-MyApp-macOS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -366,7 +366,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "MyApp-iOS/Info.plist";
+				INFOPLIST_FILE = "AllInOne-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -374,7 +374,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = MyApp;
+				PRODUCT_NAME = AllInOne;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -387,7 +387,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = "MyApp-iOS/Info.plist";
+				INFOPLIST_FILE = "AllInOne-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -395,7 +395,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = MyApp;
+				PRODUCT_NAME = AllInOne;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -403,14 +403,14 @@
 		};
 		5142015B2437B4B40078DB4F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17ABD8ECD90521D405E4146A /* Pods-MyApp-macOS.debug.xcconfig */;
+			baseConfigurationReference = 17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				INFOPLIST_FILE = "MyApp-macos/Info.plist";
+				INFOPLIST_FILE = "AllInOne-macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				OTHER_LDFLAGS = (
@@ -419,9 +419,9 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = MyApp;
+				PRODUCT_NAME = AllInOne;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "MyApp-macOS/MyApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne-macOS/AllInOne-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -429,13 +429,13 @@
 		};
 		5142015C2437B4B40078DB4F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5048F9C2B2E49DE76DCA47F0 /* Pods-MyApp-macOS.release.xcconfig */;
+			baseConfigurationReference = 5048F9C2B2E49DE76DCA47F0 /* Pods-AllInOne-macOS.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = "MyApp-macos/Info.plist";
+				INFOPLIST_FILE = "AllInOne-macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				OTHER_LDFLAGS = (
@@ -444,9 +444,9 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = MyApp;
+				PRODUCT_NAME = AllInOne;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "MyApp-macOS/MyApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne-macOS/AllInOne-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -572,7 +572,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MyApp-iOS" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AllInOne-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -581,7 +581,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "MyApp-macOS" */ = {
+		5142015A2437B4B40078DB4F /* Build configuration list for PBXNativeTarget "AllInOne-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5142015B2437B4B40078DB4F /* Debug */,
@@ -590,7 +590,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "MyApp" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "AllInOne" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

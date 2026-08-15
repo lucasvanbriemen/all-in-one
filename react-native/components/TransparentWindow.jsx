@@ -8,7 +8,7 @@ import React from 'react';
  * with sibling views, which is what makes the window itself look translucent.
  *
  * There is no built-in React Native equivalent — NSVisualEffectView has to be
- * bridged. See `macos/MyApp-macOS/VisualEffectBackground.swift`. The window is
+ * bridged. See `macos/AllInOne-macOS/VisualEffectBackground.swift`. The window is
  * already set up for it: AppDelegate clears `opaque`, the background colour and
  * the titlebar, so there is nothing opaque between this view and the desktop.
  *
