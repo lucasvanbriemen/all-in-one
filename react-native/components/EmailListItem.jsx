@@ -1,7 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-
-import {useThemedStyles} from './theme';
+import {glass, useThemedStyles} from './theme';
 
 export function EmailListItem({item, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);
@@ -32,20 +31,15 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginBottom: 8,
-    backgroundColor: colors.surfaceAt1,
-    borderWidth: 1,
-    borderColor: colors.outlineVariant,
+    ...glass(colors, {tint: 0.38}),
   },
-  /**
-   * Sits *behind* the material's tint layer rather than replacing it, so the
-   * two stack and the row reads as slightly brighter on hover.
-   */
   cardHovered: {
-    backgroundColor: colors.surfaceAt3,
+    ...glass(colors, {tone: "surfaceAt3"}),
   },
   cardSelected: {
-    borderWidth: 2,
     borderColor: colors.primary,
+    borderTopColor: colors.primary,
+    borderWidth: 2,
   },
   title: {
     flex: 1,

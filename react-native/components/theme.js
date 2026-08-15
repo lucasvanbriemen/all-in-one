@@ -75,3 +75,53 @@ export function useThemedStyles(createStyles) {
 
   return useMemo(() => createStyles(colors), [createStyles, colors]);
 }
+
+/**
+ * Makes a palette colour translucent.
+ *
+ * The endpoint hands back CSS colour strings — `rgb(17 19 24)`, and for the
+ * `-8`/`-12` steps `rgb(170 199 255 / 0.92)`. React Native renders both, but
+ * neither can be dimmed without taking it apart first. This is what keeps the
+ * translucent surfaces on the shared palette instead of the hardcoded
+ * `rgba(255, 255, 255, 0.16)` tints the glass used to be built from: only the
+ * *opacity* is a design constant, the colour always comes from the theme.
+ *
+ * Any alpha already on the token is multiplied through rather than discarded.
+ */
+export function withAlpha(color, alpha) {
+  if (!color) {
+    // useTheme() is empty until the fetch lands; a missing colour must not
+    // become an opaque black fill over the window's blur.
+    return 'transparent';
+  }
+
+  const parts = String(color).match(/[\d.]+/g);
+
+  if (!parts || parts.length < 3) {
+    return color;
+  }
+
+  const [red, green, blue] = parts;
+  const existing = parts.length > 3 ? Number(parts[3]) : 1;
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha * existing})`;
+}
+
+/**
+ * The glass recipe, in one place so every panel reads as the same material.
+ *
+ * Spread into a StyleSheet entry: `{...glass(colors), borderRadius: 16}`.
+ *
+ * `borderTopColor` is set after `borderColor` on purpose — a brighter top edge
+ * is the specular highlight that stops a translucent panel looking like a
+ * flat washed-out rectangle. It's the closest thing React Native has to an
+ * inset highlight, since it has no inner shadow.
+ */
+export function glass(colors, {tone = 'surfaceAt1', tint = 0.5, border = 0.25, highlight = 0.14} = {}) {
+  return {
+    backgroundColor: withAlpha(colors[tone], tint),
+    borderWidth: 1,
+    borderColor: withAlpha(colors.outline, border),
+    borderTopColor: withAlpha(colors.onSurface, highlight),
+  };
+}

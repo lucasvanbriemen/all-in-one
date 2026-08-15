@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useTheme, useThemedStyles} from './theme';
+import {glass, useTheme, useThemedStyles} from './theme';
 
 import {SidebarIcon} from './icons';
 import {api} from './api';
@@ -55,7 +55,10 @@ const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
     padding: 16,
-    backgroundColor: colors.surfaceAt1,
+    // Lighter tint than the content panels: the sidebar spans the full window
+    // height, so it is the surface most responsible for the window reading as
+    // translucent rather than merely decorated.
+    ...glass(colors, {tint: 0.42}),
     margin: 16,
     marginTop: 0,
     borderRadius: 16,

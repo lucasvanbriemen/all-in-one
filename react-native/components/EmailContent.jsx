@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 
 import {EmailBody} from './EmailBody';
 import {api} from './api';
-import {useThemedStyles} from './theme';
+import {glass, useThemedStyles} from './theme';
 
 export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
@@ -84,7 +84,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
-    backgroundColor: colors.surfaceAt1,
+    ...glass(colors, {tint: 0.5}),
   },
   senderImage: {
     width: 40,
