@@ -1,9 +1,9 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {glass, useThemedStyles} from './theme';
 
 import {EmailBody} from './EmailBody';
 import {api} from './api';
-import {glass, useThemedStyles} from './theme';
 
 export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
@@ -76,7 +76,6 @@ const createStyles = colors => StyleSheet.create({
   placeholderText: {
     fontSize: 32,
     fontWeight: '500',
-    color: colors.secondary,
     opacity: 0.5,
   },
   header: {
