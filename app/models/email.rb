@@ -7,6 +7,13 @@ class Email < ApplicationRecord
     "ntfy@ltvb.nl"
   ].freeze
 
+  IGNORED_EMAIL_SUBJECTS = [
+    "***SPAM***",
+    "Failure Notice",
+    "Returned to Sender",
+    "Undeliverable:"
+  ].freeze
+
   # Emails belonging to the mailbox group identified by `path`.
   # Unknown path -> all emails.
   def self.in_group(path)
@@ -29,6 +36,9 @@ class Email < ApplicationRecord
     else
       matching(rules)
     end
+
+    # Filter out ignored subjects, which are usually spam or bounce messages.
+    .where.not(IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
   end
 
   # Emails matching a rule set. The from/to/sender_name clauses are OR-ed,
