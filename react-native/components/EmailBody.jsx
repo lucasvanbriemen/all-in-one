@@ -26,6 +26,8 @@ export function EmailBody({detail}) {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: "white",
+    height: "99%",
+    borderRadius: 16,
   },
 });

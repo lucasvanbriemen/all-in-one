@@ -1,8 +1,8 @@
+import {LogoIcon, SidebarIcon} from './icons';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from './theme';
 
-import {LogoIcon, SidebarIcon} from './icons';
 import {api} from './api';
 
 export function Sidebar({selection, onSelect}) {
@@ -71,7 +71,11 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   sidebarMinimized: {
-    width: 100,
+    width: 60,
+    padding: 8,
+    paddingTop: 16,
+    paddingBottom: 16,
+    height:100,
   },
   row: {
     padding: 16,
@@ -81,6 +85,9 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
   },
   rowMinimized: {
+    padding: 8,
+    paddingTop: 16,
+    paddingBottom: 16,
     justifyContent: 'center',
   },
   selectedRow: {
