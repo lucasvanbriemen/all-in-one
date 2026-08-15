@@ -8,7 +8,7 @@ import {useThemedStyles} from './components/theme';
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
 // window buttons for free. React Native has no such inset on macOS, so the
 // traffic lights have to be cleared manually.
-const TITLEBAR_INSET = 32;
+const TITLEBAR_INSET = 48;
 
 const APPLICATIONS = {EmailPage};
 
@@ -39,10 +39,5 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '400',
-    color: colors.onSurface,
   },
 });

@@ -40,7 +40,7 @@ export function EmailContent({email}) {
 
   return (
     <View style={styles.content}>
-      <SidebarMaterial style={styles.header}>
+      <View style={styles.header}>
         <Image source={{uri: email.sender_image_url}} style={styles.senderImage} />
         <View style={styles.headerInfo}>
           <Text style={styles.subject}>{email.subject}</Text>
@@ -57,7 +57,7 @@ export function EmailContent({email}) {
             </>
           )}
         </View>
-      </SidebarMaterial>
+      </View>
 
       {detail && <EmailBody detail={detail} />}
     </View>
@@ -84,6 +84,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
+    backgroundColor: colors.surfaceAt1,
   },
   senderImage: {
     width: 40,

@@ -57,6 +57,7 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     backgroundColor: colors.surfaceAt1,
     margin: 16,
+    marginTop: 0,
     borderRadius: 16,
   },
   sidebarMinimized: {
