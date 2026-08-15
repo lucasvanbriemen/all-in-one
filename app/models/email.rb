@@ -27,18 +27,19 @@ class Email < ApplicationRecord
 
     rules = group[:rules]
 
-    if rules[:exclude_from]
-      # e.g. "home" = everything that doesn't match work/github/pathe
-      rules[:exclude_from].reduce(all) do |scope, other_path|
-        other = MailboxConfig.find(other_path)
-        other ? scope.where.not(id: matching(other[:rules]).select(:id)) : scope
+    scope =
+      if rules[:exclude_from]
+        # e.g. "home" = everything that doesn't match work/github/pathe
+        rules[:exclude_from].reduce(all) do |relation, other_path|
+          other = MailboxConfig.find(other_path)
+          other ? relation.where.not(id: matching(other[:rules]).select(:id)) : relation
+        end
+      else
+        matching(rules)
       end
-    else
-      matching(rules)
-    end
 
     # Filter out ignored subjects, which are usually spam or bounce messages.
-    .where.not(IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
+    scope.where.not(IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
   end
 
   # Emails matching a rule set. The from/to/sender_name clauses are OR-ed,
