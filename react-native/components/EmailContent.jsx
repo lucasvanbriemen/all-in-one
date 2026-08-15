@@ -2,7 +2,6 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {EmailBody} from './EmailBody';
-import {SidebarMaterial} from './TransparentWindow';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
