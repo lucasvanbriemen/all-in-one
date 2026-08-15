@@ -40,6 +40,7 @@ const createStyles = colors => StyleSheet.create({
     borderColor: colors.primary,
     borderTopColor: colors.primary,
     borderWidth: 2,
+    padding: 15,
   },
   title: {
     flex: 1,
