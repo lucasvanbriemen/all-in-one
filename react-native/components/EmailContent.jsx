@@ -75,9 +75,10 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
   },
   placeholderText: {
-    fontSize: 26,
-    fontWeight: '400',
-    color: colors.onSurface,
+    fontSize: 32,
+    fontWeight: '500',
+    color: colors.secondary,
+    opacity: 0.5,
   },
   header: {
     flexDirection: 'row',
