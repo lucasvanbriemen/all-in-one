@@ -11,7 +11,8 @@ class Email < ApplicationRecord
     "***SPAM***",
     "Failure Notice",
     "Returned to Sender",
-    "Undeliverable:"
+    "Undeliverable:",
+    "Mail delivery failed",
   ].freeze
 
   # Emails belonging to the mailbox group identified by `path`.
