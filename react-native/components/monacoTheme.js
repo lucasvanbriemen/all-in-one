@@ -41,9 +41,6 @@ export function toHex(color) {
 
 export function monacoTheme(colors, scheme) {
   const dark = scheme === 'dark';
-  // `useTheme()` is empty until the palette fetch lands, so every token needs
-  // a stand-in: `toHex` has nothing to parse out of `undefined`, and Monaco
-  // rejects a theme with an invalid colour in it.
   const surface = toHex(colors.surface ?? (dark ? '#111318' : '#ffffff'));
   const foreground = toHex(colors.onSurface ?? (dark ? '#e2e2e9' : '#1b1b1f'));
   const muted = toHex(colors.outline ?? (dark ? '#8e9099' : '#74777f'));
