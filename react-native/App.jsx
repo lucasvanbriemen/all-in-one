@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
+import {CodePage} from './components/CodePage';
 import {EmailPage} from './components/EmailPage';
 import {Sidebar} from './components/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
@@ -13,12 +14,12 @@ const TITLEBAR_INSET = 48;
 
 const APPLICATIONS = {
   email: EmailPage,
-  code: EmailPage,
+  code: CodePage,
 };
 
 
 export default function App() {
-  const [APPLICATION_TO_RENDER, setApplicationToRender] = useState(() => "email");
+  const [APPLICATION_TO_RENDER, setApplicationToRender] = useState(() => "code");
 
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
