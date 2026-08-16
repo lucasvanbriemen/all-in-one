@@ -1,10 +1,3 @@
-/**
- * Shared Monaco setup for both builds.
- *
- * Web loads Monaco through `@monaco-editor/react`; native loads the same
- * version off the CDN inside a WebView. Pinning the version and the theme here
- * is what keeps the two editors looking like one editor.
- */
 export const MONACO_VERSION = '0.52.2';
 export const MONACO_CDN = `https://cdn.jsdelivr.net/npm/monaco-editor@${MONACO_VERSION}/min`;
 
@@ -13,9 +6,9 @@ const TRANSPARENT = '#00000000';
 
 export const EDITOR_OPTIONS = {
   automaticLayout: true,
-  minimap: {enabled: false},
+  minimap: {enabled: true},
   scrollBeyondLastLine: false,
-  fontSize: 13,
+  fontSize: 14,
   padding: {top: 12, bottom: 12},
 };
 
@@ -24,7 +17,7 @@ export const EDITOR_OPTIONS = {
  * strings — `rgb(17 19 24)`, sometimes with an alpha step. Alpha is dropped:
  * the editor paints its own opaque surface.
  */
-export function toHex(color, fallback) {
+export function toHex(color) {
   const value = String(color ?? '');
 
   if (value.startsWith('#')) {
@@ -32,10 +25,6 @@ export function toHex(color, fallback) {
   }
 
   const parts = value.match(/\d+(?:\.\d+)?/g);
-
-  if (!parts || parts.length < 3) {
-    return fallback;
-  }
 
   return (
     '#' +
@@ -66,9 +55,9 @@ export function toHex(color, fallback) {
  */
 export function monacoTheme(colors, scheme) {
   const dark = scheme === 'dark';
-  const surface = toHex(colors.surfaceAt1, dark ? '#111318' : '#ffffff');
-  const foreground = toHex(colors.onSurface, dark ? '#e2e2e9' : '#1b1b1f');
-  const muted = toHex(colors.outline, dark ? '#8e9099' : '#74777f');
+  const surface = toHex(colors.surface);
+  const foreground = toHex(colors.onSurface);
+  const muted = toHex(colors.outline);
 
   return {
     base: dark ? 'vs-dark' : 'vs',
