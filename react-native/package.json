@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@react-native/new-app-screen": "0.81.6",
     "react": "19.1.4",
     "react-dom": "^19.1.4",
