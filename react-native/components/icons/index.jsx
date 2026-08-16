@@ -3,6 +3,7 @@ import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
 import React from 'react';
 import {WorkIcon} from './work';
+import {CodeIcon} from './code';
 
 export {LogoIcon} from './logo';
 
@@ -15,6 +16,7 @@ const ICONS = {
   work: WorkIcon,
   github: GithubIcon,
   pathe: PatheIcon,
+  code: CodeIcon,
 };
 
 export function SidebarIcon({name, size, color}) {

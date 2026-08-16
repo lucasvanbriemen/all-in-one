@@ -11,9 +11,12 @@ import {useThemedStyles} from './components/theme';
 // traffic lights have to be cleared manually.
 const TITLEBAR_INSET = 48;
 
-const APPLICATIONS = {EmailPage};
+const APPLICATIONS = {
+  email: EmailPage,
+  code: EmailPage,
+};
 
-const APPLICATION_TO_RENDER = "EmailPage";
+const APPLICATION_TO_RENDER = "email";
 
 export default function App() {
   const [selection, setSelection] = useState(null);
