@@ -1,5 +1,5 @@
 import {StyleSheet, UIManager, View, requireNativeComponent} from 'react-native';
-import {useTheme, withAlpha} from './theme';
+import {glass, useTheme} from './theme';
 
 import React from 'react';
 
@@ -50,10 +50,7 @@ export function TransparentWindow({children}) {
         <View
           style={[
             StyleSheet.absoluteFill,
-            // `glass()` returns a whole style object; assigning it to
-            // `backgroundColor` yields no fill at all, so the fallback used to
-            // degrade to nothing rather than to a translucent tint.
-            {backgroundColor: withAlpha(colors.surface, 0.5)},
+            {backgroundColor: glass(colors.surface)},
           ]}
           pointerEvents="none"
         />
