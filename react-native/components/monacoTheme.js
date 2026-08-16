@@ -39,20 +39,6 @@ export function toHex(color) {
   );
 }
 
-/**
- * Builds a Monaco theme from the shared palette.
- *
- * The editing surfaces are fully transparent so the window's blur reaches the
- * text: Monaco paints an opaque `editor.background` by default, and an opaque
- * fill this large is enough on its own to make the whole window read as solid.
- * Monaco accepts `#rrggbbaa`, so the panel behind it does the tinting.
- *
- * Floating widgets — find, suggest, hover — keep an opaque fill, since they
- * overlap the code and have to stay readable.
- *
- * Every colour has a fallback: `useTheme()` is empty until the palette fetch
- * lands, and Monaco rejects a theme with an undefined value in it.
- */
 export function monacoTheme(colors, scheme) {
   const dark = scheme === 'dark';
   const surface = toHex(colors.surface);
