@@ -34,7 +34,7 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
       <SidebarRow key="code" icon="code" title="code" isSelected={currentlyActive === "code"} onPress={() => setActiveApp("code")} useLabels={!isMinimized} />
 
       {items.map(item => (
-        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} useLabels={!isMinimized} />
+        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => {onSelect(item.path); setActiveApp("email")}} useLabels={!isMinimized} />
       ))}
     </View>
   );
