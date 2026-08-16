@@ -5,7 +5,7 @@ import {glass, useTheme, useThemedStyles} from './theme';
 
 import {api} from './api';
 
-export function Sidebar({selection, onSelect}) {
+export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
@@ -30,6 +30,8 @@ export function Sidebar({selection, onSelect}) {
         style={[styles.row, isMinimized && styles.rowMinimized]}>
         <LogoIcon size={24} color={primary} />
       </Pressable>
+
+      <SidebarRow key="code" icon="code" title="code" isSelected={currentlyActive === "code"} onPress={() => setActiveApp("code")} useLabels={!isMinimized} />
 
       {items.map(item => (
         <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => onSelect(item.path)} useLabels={!isMinimized} />

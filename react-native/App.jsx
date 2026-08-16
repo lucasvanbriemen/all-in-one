@@ -16,9 +16,10 @@ const APPLICATIONS = {
   code: EmailPage,
 };
 
-const APPLICATION_TO_RENDER = "email";
 
 export default function App() {
+  const [APPLICATION_TO_RENDER, setApplicationToRender] = useState(() => "email");
+
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
@@ -26,7 +27,7 @@ export default function App() {
   return (
     <TransparentWindow>
       <View style={styles.layout}>
-        <Sidebar selection={selection} onSelect={setSelection} />
+        <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
 
         <ActiveApplication selection={selection} onSelect={setSelection} />
       </View>
