@@ -41,15 +41,24 @@ export function toHex(color) {
 
 export function monacoTheme(colors, scheme) {
   const dark = scheme === 'dark';
-  const surface = toHex(colors.surface);
-  const foreground = toHex(colors.onSurface);
-  const muted = toHex(colors.outline);
+  // `useTheme()` is empty until the palette fetch lands, so every token needs
+  // a stand-in: `toHex` has nothing to parse out of `undefined`, and Monaco
+  // rejects a theme with an invalid colour in it.
+  const surface = toHex(colors.surface ?? (dark ? '#111318' : '#ffffff'));
+  const foreground = toHex(colors.onSurface ?? (dark ? '#e2e2e9' : '#1b1b1f'));
+  const muted = toHex(colors.outline ?? (dark ? '#8e9099' : '#74777f'));
 
   return {
     base: dark ? 'vs-dark' : 'vs',
     inherit: true,
     rules: [],
     colors: {
+      // Monaco inherits VS Code's chrome, which rings the focused editor in
+      // `#007fd4`. There is no surrounding IDE here for that ring to belong
+      // to — the panel's own border is the edge.
+      focusBorder: TRANSPARENT,
+      contrastBorder: TRANSPARENT,
+      contrastActiveBorder: TRANSPARENT,
       'editor.background': TRANSPARENT,
       'editor.foreground': foreground,
       'editorGutter.background': TRANSPARENT,

@@ -92,6 +92,12 @@ function editorHtml(value, language) {
         background: transparent;
       }
       .monaco-editor, .monaco-editor-background { background: transparent; }
+
+      /* WebKit rings the focused element in the system accent colour. Monaco
+         keeps focus on a hidden textarea, so the ring only ever traces the
+         editor's outer edge — it reads as a stray blue border. */
+      :focus, :focus-visible { outline: none; }
+      .monaco-editor .overflow-guard { outline: none; }
     </style>
   </head>
   <body>
