@@ -21,19 +21,21 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  if (relative.includes('..')) {
+  const wantedPath = relative || '';
+
+  if (wantedPath.includes('..')) {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'invalid path parameter' }));
     return;
   }
 
-  if (relative.startsWith('/') && pathname === '/file') {
+  if (wantedPath.startsWith('/') && pathname === '/file') {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'invalid path parameter' }));
     return;
   }
 
-  const absolute = path.resolve(ROOT, relative);
+  const absolute = path.resolve(ROOT, wantedPath);
 
 
   if (!absolute.startsWith(ROOT)) {
@@ -43,10 +45,10 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (pathname === '/file') {
-    return getFileContents(absolute, response, relative);
+    return getFileContents(absolute, response, wantedPath);
   } else if (pathname === '/files') {
-    let path = relative || '';
-    return getDirectoryContents(absolute, response, path);
+    let path = wantedPath || '';
+    return getDirectoryContents(absolute, response, wantedPath);
   }
 });
 
@@ -54,11 +56,11 @@ server.listen(4001, '127.0.0.1', () => {
   console.log('listening on http://127.0.0.1:4001');
 });
 
-async function getFileContents(absolutePath, response, relative) {
+async function getFileContents(absolutePath, response, wantedPath) {
   try {
     const contents = await fs.readFile(absolutePath, 'utf8');
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ path: relative, contents }));
+    response.end(JSON.stringify({ path: wantedPath, contents }));
   } catch (error) {
     console.error(`Failed to read file: ${absolutePath}; error: ${error}`);
     response.writeHead(404, { 'Content-Type': 'application/json' });
@@ -66,7 +68,7 @@ async function getFileContents(absolutePath, response, relative) {
   }
 }
 
-async function getDirectoryContents(absolutePath, response, relative) {
+async function getDirectoryContents(absolutePath, response, wantedPath) {
   try {
     const entries = await fs.readdir(absolutePath, { withFileTypes: true });
     const contents = entries.map(entry => ({
@@ -74,7 +76,7 @@ async function getDirectoryContents(absolutePath, response, relative) {
       isDirectory: entry.isDirectory(),
     }));
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ path: relative, contents }));
+    response.end(JSON.stringify({ path: wantedPath, contents }));
   } catch (error) {
     console.error(`Failed to read directory: ${absolutePath}; error: ${error}`);
     response.writeHead(404, { 'Content-Type': 'application/json' });
