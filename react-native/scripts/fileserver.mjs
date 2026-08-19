@@ -9,13 +9,13 @@ const server = http.createServer(async (request, response) => {
 
   const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one/react-native";
 
-  if (method !== 'GET' || pathname !== '/file') {
+  if (method !== 'GET' || (pathname !== '/file' && pathname !== '/files')) {
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'not found' }));
     return;
   }
 
-  if (!relative) {
+  if (!relative && pathname === '/file') {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'missing path parameter' }));
     return;
@@ -27,7 +27,7 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  if (relative.startsWith('/')) {
+  if (relative.startsWith('/') && pathname === '/file') {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'invalid path parameter' }));
     return;
@@ -35,17 +35,49 @@ const server = http.createServer(async (request, response) => {
 
   const absolute = path.resolve(ROOT, relative);
 
-  try {
-    const contents = await fs.readFile(absolute, 'utf8');
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ path: relative, contents }));
-  } catch (error) {
-    console.error(`Failed to read file: ${absolute}; error: ${error}`);
-    response.writeHead(404, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'not found' }));
+
+  if (!absolute.startsWith(ROOT)) {
+    response.writeHead(400, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: 'invalid path parameter' }));
+    return;
+  }
+
+  if (pathname === '/file') {
+    return getFileContents(absolute, response, relative);
+  } else if (pathname === '/files') {
+    let path = relative || '';
+    return getDirectoryContents(absolute, response, path);
   }
 });
 
 server.listen(4001, '127.0.0.1', () => {
   console.log('listening on http://127.0.0.1:4001');
 });
+
+async function getFileContents(absolutePath, response, relative) {
+  try {
+    const contents = await fs.readFile(absolutePath, 'utf8');
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ path: relative, contents }));
+  } catch (error) {
+    console.error(`Failed to read file: ${absolutePath}; error: ${error}`);
+    response.writeHead(404, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: 'not found' }));
+  }
+}
+
+async function getDirectoryContents(absolutePath, response, relative) {
+  try {
+    const entries = await fs.readdir(absolutePath, { withFileTypes: true });
+    const contents = entries.map(entry => ({
+      name: entry.name,
+      isDirectory: entry.isDirectory(),
+    }));
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ path: relative, contents }));
+  } catch (error) {
+    console.error(`Failed to read directory: ${absolutePath}; error: ${error}`);
+    response.writeHead(404, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: 'not found' }));
+  }
+}
