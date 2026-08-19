@@ -15,6 +15,7 @@ export const fileSystem = {
   },
 
   readFile(path) {
+    console.log("Reading file:", path);
     return this.makeRequest("/file", path);
   },
 

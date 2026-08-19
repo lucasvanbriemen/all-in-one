@@ -33,6 +33,23 @@ export function CodeEditor({
   const source = useRef(null);
   source.current ??= {html: editorHtml(value, language), baseUrl: `${MONACO_CDN}/`};
 
+  // Monaco owns the buffer, so a new `value` is pushed in as an edit rather
+  // than by rebuilding the document. `applied` is the last value the two sides
+  // agreed on — it keeps the editor's own change, which comes back through
+  // `onChange` as a new prop, from being injected straight back at it.
+  const applied = useRef(value);
+
+  useEffect(() => {
+    if (!loaded || value === applied.current) {
+      return;
+    }
+
+    applied.current = value;
+    webView.current?.injectJavaScript(
+      `window.setValue(${JSON.stringify(value)}); true;`,
+    );
+  }, [loaded, value]);
+
   // The palette arrives from a fetch, so the theme is pushed in rather than
   // baked into the document.
   useEffect(() => {
@@ -50,6 +67,7 @@ export function CodeEditor({
       const message = JSON.parse(event.nativeEvent.data);
 
       if (message.type === 'change') {
+        applied.current = message.value;
         onChange?.(message.value);
       }
     },
@@ -106,6 +124,7 @@ function editorHtml(value, language) {
     <script>
       var editor = null;
       var pendingTheme = null;
+      var pendingValue = null;
 
       // Monaco's language services run in workers. Pulled straight off a CDN
       // they would be cross-origin, so each worker is booted from a data: URL
@@ -131,7 +150,12 @@ function editorHtml(value, language) {
       };
 
       window.setValue = function (next) {
-        if (editor && editor.getValue() !== next) {
+        if (!editor) {
+          pendingValue = next;
+          return;
+        }
+
+        if (editor.getValue() !== next) {
           editor.setValue(next);
         }
       };
@@ -151,6 +175,11 @@ function editorHtml(value, language) {
 
         if (pendingTheme) {
           window.setTheme(pendingTheme);
+        }
+
+        if (pendingValue !== null) {
+          window.setValue(pendingValue);
+          pendingValue = null;
         }
 
         editor.onDidChangeModelContent(function () {
