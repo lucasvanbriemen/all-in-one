@@ -7,6 +7,8 @@ const server = http.createServer(async (request, response) => {
   const { pathname, searchParams } = new URL(url, 'http://localhost');
   const relative = searchParams.get('path');
 
+  const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one/react-native";
+
   if (method !== 'GET' || pathname !== '/file') {
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'not found' }));
@@ -19,7 +21,19 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  const absolute = path.resolve(relative);
+  if (relative.includes('..')) {
+    response.writeHead(400, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: 'invalid path parameter' }));
+    return;
+  }
+
+  if (relative.startsWith('/')) {
+    response.writeHead(400, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ error: 'invalid path parameter' }));
+    return;
+  }
+
+  const absolute = path.resolve(ROOT, relative);
 
   try {
     const contents = await fs.readFile(absolute, 'utf8');
