@@ -28,9 +28,8 @@ export function EmailPage({selection, onSelect}) {
   );
 }
 
-const createStyles = colors => StyleSheet.create({
+const createStyles = StyleSheet.create({
   content: {
-    flex: 1,
     flexDirection: 'row',
     gap: 32,
   },
