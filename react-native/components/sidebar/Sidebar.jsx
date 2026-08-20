@@ -3,6 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
+import {SidebarRow} from './SidebarRow';
 import {api} from '../api';
 
 export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
@@ -38,23 +39,6 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
     </View>
   );
 }
-
-function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
-  const styles = useThemedStyles(createStyles);
-  const {onPrimary, onSurface} = useTheme();
-
-  return (
-    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
-      <SidebarIcon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
-      {useLabels && (
-        <Text style={[styles.label, isSelected && styles.labelSelected]}>
-          {title}
-        </Text>
-      )}
-    </Pressable>
-  );
-}
-
 const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
