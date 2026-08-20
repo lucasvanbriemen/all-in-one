@@ -32,7 +32,7 @@ export function CodePage({selection, onSelect}) {
       {files.map(file => (
         <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
       ))}
-      <CodeEditor value={source} language="javascript" onChange={setSource} />
+      <CodeEditor value={source} path={currentFile} onChange={setSource} />
     </View>
   );
 }

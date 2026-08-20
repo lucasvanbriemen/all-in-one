@@ -18,7 +18,8 @@ import {useTheme} from './theme';
  */
 export function CodeEditor({
   value = '',
-  language = 'javascript',
+  language,
+  path,
   onChange,
   style,
 }) {
@@ -31,7 +32,10 @@ export function CodeEditor({
   // once. A `source` that changed identity on re-render would reload the frame
   // and throw away the user's edits along with the undo stack.
   const source = useRef(null);
-  source.current ??= {html: editorHtml(value, language), baseUrl: `${MONACO_CDN}/`};
+  source.current ??= {
+    html: editorHtml(value, {language, path}),
+    baseUrl: `${MONACO_CDN}/`,
+  };
 
   // Monaco owns the buffer, so a new `value` is pushed in as an edit rather
   // than by rebuilding the document. `applied` is the last value the two sides
@@ -49,6 +53,19 @@ export function CodeEditor({
       `window.setValue(${JSON.stringify(value)}); true;`,
     );
   }, [loaded, value]);
+
+  // The document is built once, so the mode is pushed in the same way the
+  // buffer is. `path` is resolved on the web side against Monaco's own
+  // extension registry — `.md` is only `markdown` because Monaco says so.
+  useEffect(() => {
+    if (!loaded) {
+      return;
+    }
+
+    webView.current?.injectJavaScript(
+      `window.setLanguage(${JSON.stringify({language, path})}); true;`,
+    );
+  }, [loaded, language, path]);
 
   // The palette arrives from a fetch, so the theme is pushed in rather than
   // baked into the document.
@@ -96,7 +113,7 @@ export function CodeEditor({
   );
 }
 
-function editorHtml(value, language) {
+function editorHtml(value, spec) {
   return `<!doctype html>
 <html>
   <head>
@@ -125,6 +142,7 @@ function editorHtml(value, language) {
       var editor = null;
       var pendingTheme = null;
       var pendingValue = null;
+      var pendingLanguage = null;
 
       // Monaco's language services run in workers. Pulled straight off a CDN
       // they would be cross-origin, so each worker is booted from a data: URL
@@ -149,6 +167,54 @@ function editorHtml(value, language) {
         monaco.editor.setTheme('app');
       };
 
+      // Monaco registers every mode with the extensions and filenames it
+      // claims, so the mode for a path is a lookup rather than a table we
+      // have to keep in step with it. Longest match wins, so '.d.ts' beats
+      // '.ts' and a full filename beats any extension.
+      function languageForPath(path) {
+        if (!path) {
+          return null;
+        }
+
+        var name = String(path).split('/').pop().toLowerCase();
+        var best = '';
+        var id = null;
+
+        monaco.languages.getLanguages().forEach(function (language) {
+          function consider(pattern, matches) {
+            if (matches && pattern.length > best.length) {
+              best = pattern;
+              id = language.id;
+            }
+          }
+
+          (language.filenames || []).forEach(function (filename) {
+            consider(filename, name === filename.toLowerCase());
+          });
+
+          (language.extensions || []).forEach(function (extension) {
+            consider(extension, name.endsWith(extension.toLowerCase()));
+          });
+        });
+
+        return id;
+      }
+
+      // Takes {language, path} — an explicit language wins, otherwise the
+      // path decides. Neither is fatal: an unknown extension stays plaintext.
+      window.setLanguage = function (next) {
+        if (!editor) {
+          pendingLanguage = next;
+          return;
+        }
+
+        var id = next.language || languageForPath(next.path);
+
+        if (id) {
+          monaco.editor.setModelLanguage(editor.getModel(), id);
+        }
+      };
+
       window.setValue = function (next) {
         if (!editor) {
           pendingValue = next;
@@ -168,10 +234,20 @@ function editorHtml(value, language) {
 
       require.config({paths: {vs: '${MONACO_CDN}/vs'}});
       require(['vs/editor/editor.main'], function () {
+        var spec = ${JSON.stringify(spec)};
+
         editor = monaco.editor.create(document.getElementById('container'), Object.assign(
           ${JSON.stringify(EDITOR_OPTIONS)},
-          {value: ${JSON.stringify(value)}, language: ${JSON.stringify(language)}}
+          {
+            value: ${JSON.stringify(value)},
+            language: spec.language || languageForPath(spec.path) || 'plaintext',
+          }
         ));
+
+        if (pendingLanguage) {
+          window.setLanguage(pendingLanguage);
+          pendingLanguage = null;
+        }
 
         if (pendingTheme) {
           window.setTheme(pendingTheme);
