@@ -27,17 +27,15 @@ export default function App() {
   const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
 
   return (
-      <TransparentWindow>
-    <View style={styles.appWrapper}>
+    <TransparentWindow>
+      <View style={styles.appWrapper}>
+       <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
 
-          <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
-
-          <View style={styles.content}>
-            <ActiveApplication selection={selection} onSelect={setSelection} />
-          </View>
-    </View>
-
-      </TransparentWindow>
+        <View style={styles.content}>
+          <ActiveApplication selection={selection} onSelect={setSelection} />
+        </View>
+      </View>
+    </TransparentWindow>
   );
 }
 
