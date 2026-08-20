@@ -48,7 +48,7 @@ const createStyles = colors => StyleSheet.create({
     paddingTop: TITLEBAR_INSET,
   },
   content: {
-    width: '100%',
+    flex: 1,
     padding: 16,
     paddingBottom: 0,
     paddingTop: 0,

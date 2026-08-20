@@ -63,8 +63,5 @@ export function CodePage({selection, onSelect}) {
 
 const createStyles = colors => StyleSheet.create({
   editor: {
-    ...glass(colors),
-    flex: 1,
-    borderRadius: 16,
   },
 });
