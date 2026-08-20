@@ -39,6 +39,7 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
     </View>
   );
 }
+
 const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
