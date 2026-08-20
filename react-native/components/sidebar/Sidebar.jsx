@@ -3,7 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {SidebarRow} from './SidebarRow';
+import {SidebarApplication} from './SidebarApplication';
 import {api} from '../api';
 
 export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
@@ -28,13 +28,9 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
         <LogoIcon size={24} color={primary} />
       </Pressable>
 
-      {Object.entries(items).map(([app, groups]) => (
-        <React.Fragment key={app}>
-          <Text style={styles.appLabel}>{app}</Text>
-          {groups.map(group => (
-            <SidebarRow key={`${app}-${group.path}`} icon={group.path} title={group.name} isSelected={currentlyActive === app && selection === group.path} onPress={() => {onSelect(group.path); setActiveApp(app)}} useLabels={!isMinimized} />
-          ))}
-        </React.Fragment>
+      {Object.entries(items).map(([key, item]) => (
+        console.log('item', item, 'key', key),
+        <SidebarApplication key={key + item.app} selection={selection} onSelect={onSelect} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
       ))}
     </View>
   );
