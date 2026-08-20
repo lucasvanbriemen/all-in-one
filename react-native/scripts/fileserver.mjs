@@ -9,6 +9,36 @@ const server = http.createServer(async (request, response) => {
 
   const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one/react-native";
 
+  if (method == "PUT" && pathname === "/file") {
+    return new Promise((resolve) => {
+      let body = '';
+      request.on('data', chunk => {
+        body += chunk.toString();
+      });
+      request.on('end', async () => {
+        const wantedPath = relative || '';
+        const absolute = path.resolve(ROOT, wantedPath);
+
+        if (!absolute.startsWith(ROOT)) {
+          response.writeHead(400, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify({ error: 'invalid path parameter' }));
+          return resolve();
+        }
+
+        try {
+          await fs.writeFile(absolute, body, 'utf8');
+          response.writeHead(200, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify({ path: wantedPath }));
+        } catch (error) {
+          console.error(`Failed to write file: ${absolute}; error: ${error}`);
+          response.writeHead(500, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify({ error: 'failed to write file' }));
+        }
+        resolve();
+      });
+    });
+  }
+
   if (method !== 'GET' || (pathname !== '/file' && pathname !== '/files')) {
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'not found' }));
