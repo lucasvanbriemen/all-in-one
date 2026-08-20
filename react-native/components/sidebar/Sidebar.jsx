@@ -39,10 +39,7 @@ const createStyles = colors => StyleSheet.create({
   sidebar: {
     width: 240,
     padding: 16,
-    // Lighter tint than the content panels: the sidebar spans the full window
-    // height, so it is the surface most responsible for the window reading as
-    // translucent rather than merely decorated.
-    ...glass(colors, {tint: 0.42}),
+    ...glass(colors, {tint: 0.25}),
     margin: 16,
     marginTop: 0,
     borderRadius: 16,
