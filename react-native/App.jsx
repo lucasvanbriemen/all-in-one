@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/CodePage';
 import {EmailPage} from './components/EmailPage';
-import {Sidebar} from './components/Sidebar';
+import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {useThemedStyles} from './components/theme';
 

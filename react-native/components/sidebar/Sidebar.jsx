@@ -1,9 +1,9 @@
-import {LogoIcon, SidebarIcon} from './icons';
+import {LogoIcon, SidebarIcon} from '../icons';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useTheme, useThemedStyles} from './theme';
+import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {api} from './api';
+import {api} from '../api';
 
 export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
   const [isMinimized, setIsMinimized] = useState(false);
