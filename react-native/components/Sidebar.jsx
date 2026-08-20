@@ -15,7 +15,7 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
     api
       .get('/meta_data')
       .then(data => {
-        setItems(data.config.email);
+        setItems(data.config);
       })
   }, []);
 
@@ -23,18 +23,17 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
       {/* The mark doubles as the collapse control, so the sidebar keeps its
           identity in both widths without spending a row on a toggle. */}
-      <Pressable
-        onPress={() => setIsMinimized(!isMinimized)}
-        accessibilityRole="button"
-        accessibilityLabel={isMinimized ? 'Open sidebar' : 'Close sidebar'}
-        style={[styles.row, isMinimized && styles.rowMinimized]}>
+      <Pressable onPress={() => setIsMinimized(!isMinimized)} style={[styles.row, isMinimized && styles.rowMinimized]}>
         <LogoIcon size={24} color={primary} />
       </Pressable>
 
-      <SidebarRow key="code" icon="code" title="code" isSelected={currentlyActive === "code"} onPress={() => setActiveApp("code")} useLabels={!isMinimized} />
-
-      {items.map(item => (
-        <SidebarRow key={item.path} icon={item.path} title={item.name} isSelected={selection === item.path} onPress={() => {onSelect(item.path); setActiveApp("email")}} useLabels={!isMinimized} />
+      {Object.entries(items).map(([app, groups]) => (
+        <React.Fragment key={app}>
+          <Text style={styles.appLabel}>{app}</Text>
+          {groups.map(group => (
+            <SidebarRow key={`${app}-${group.path}`} icon={group.path} title={group.name} isSelected={currentlyActive === app && selection === group.path} onPress={() => {onSelect(group.path); setActiveApp(app)}} useLabels={!isMinimized} />
+          ))}
+        </React.Fragment>
       ))}
     </View>
   );
@@ -46,11 +45,7 @@ function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
 
   return (
     <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
-      <SidebarIcon
-        name={icon}
-        size={16}
-        color={isSelected ? onPrimary : onSurface}
-      />
+      <SidebarIcon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
       {useLabels && (
         <Text style={[styles.label, isSelected && styles.labelSelected]}>
           {title}
