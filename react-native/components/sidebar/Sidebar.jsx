@@ -1,8 +1,8 @@
-import {LogoIcon, SidebarIcon} from '../icons';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
+import {useEffect, useState} from 'react';
 
+import {LogoIcon} from '../icons';
 import {SidebarApplication} from './SidebarApplication';
 import {api} from '../api';
 

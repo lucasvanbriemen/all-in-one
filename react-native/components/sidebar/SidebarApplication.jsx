@@ -1,10 +1,7 @@
-import {LogoIcon, SidebarIcon} from '../icons';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {glass, useTheme, useThemedStyles} from '../theme';
 
 import {SidebarRow} from './SidebarRow';
-import {api} from '../api';
+import {useThemedStyles} from '../theme';
 
 export function SidebarApplication({selection, onSelect, currentlyActive, setActiveApp, item, isMinimized, app}) {
   const styles = useThemedStyles(createStyles);
