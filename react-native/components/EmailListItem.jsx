@@ -30,7 +30,7 @@ const createStyles = colors => StyleSheet.create({
   card: {
     padding: 16,
     borderRadius: 16,
-    marginBottom: 8,
+    marginTop: 8,
     ...glass(colors, {tint: 0.38}),
   },
   cardHovered: {
