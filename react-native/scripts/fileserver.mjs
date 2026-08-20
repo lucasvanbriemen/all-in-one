@@ -19,6 +19,17 @@ const server = http.createServer(async (request, response) => {
         const wantedPath = relative || '';
         const absolute = path.resolve(ROOT, wantedPath);
 
+        // convert the body from json string to an object
+        try {
+          const parsedBody = JSON.parse(body);
+          body = parsedBody.contents;
+        } catch (error) {
+          console.error(`Failed to parse request body: ${body}; error: ${error}`);
+          response.writeHead(400, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify({ error: 'invalid request body' }));
+          return resolve();
+        }
+
         if (!absolute.startsWith(ROOT)) {
           response.writeHead(400, { 'Content-Type': 'application/json' });
           response.end(JSON.stringify({ error: 'invalid path parameter' }));
