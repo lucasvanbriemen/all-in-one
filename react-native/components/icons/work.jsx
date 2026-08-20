@@ -1,8 +1,8 @@
-import React from 'react';
-import {Path, Rect} from 'react-native-svg';
 import {Glyph, strokeProps} from './glyph';
+import {Path, Rect} from 'react-native-svg';
 
-// SF Symbols `suitcase` — the ios_icon for the "work" entry in Config::CONFIG.
+import React from 'react';
+
 export function WorkIcon({size, color}) {
   return (
     <Glyph size={size}>

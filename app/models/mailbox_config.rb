@@ -4,13 +4,11 @@ module MailboxConfig
     {
       path: "home",
       name: "Home",
-      ios_icon: "house",
       rules: { exclude_from: %w[work github pathe] }
     },
     {
       path: "work",
       name: "Work",
-      ios_icon: "suitcase",
       rules: {
         from: %w[*@webinargeek.com],
         to: %w[*@webinargeek.com]
@@ -19,7 +17,6 @@ module MailboxConfig
     {
       path: "github",
       name: "GitHub",
-      ios_icon: "chevron.left.forwardslash.chevron.right",
       rules: {
         from: %w[*@github.com *@notifications.github.com],
         sender_name: [ "github GUI" ]
@@ -28,7 +25,6 @@ module MailboxConfig
     {
       path: "pathe",
       name: "Pathe",
-      ios_icon: "popcorn",
       rules: { from: %w[*@service.pathe.nl] }
     }
   ].freeze

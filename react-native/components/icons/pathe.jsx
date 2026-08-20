@@ -1,9 +1,8 @@
-import React from 'react';
 import {Circle, Path} from 'react-native-svg';
 import {Glyph, strokeProps} from './glyph';
 
-// SF Symbols `popcorn` — the ios_icon for the "pathe" entry in Config::CONFIG,
-// i.e. the cinema row. Named after the config `path`, not the label.
+import React from 'react';
+
 export function PatheIcon({size, color}) {
   return (
     <Glyph size={size}>

@@ -1,10 +1,8 @@
-import React from 'react';
-import {Path} from 'react-native-svg';
 import {Glyph, strokeProps} from './glyph';
 
-// SF Symbols `chevron.left.forwardslash.chevron.right` — the ios_icon for the
-// "github" entry in Config::CONFIG. Not the Octocat: the native app shows the
-// `</>` glyph, and the two builds should agree.
+import {Path} from 'react-native-svg';
+import React from 'react';
+
 export function GithubIcon({size, color}) {
   return (
     <Glyph size={size}>

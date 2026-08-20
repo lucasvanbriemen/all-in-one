@@ -1,8 +1,8 @@
-import React from 'react';
-import {Path} from 'react-native-svg';
 import {Glyph, strokeProps} from './glyph';
 
-// SF Symbols `house` — the ios_icon for the "home" entry in Config::CONFIG.
+import {Path} from 'react-native-svg';
+import React from 'react';
+
 export function HomeIcon({size, color}) {
   return (
     <Glyph size={size}>
