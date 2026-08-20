@@ -1,13 +1,13 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {glass, useThemedStyles} from '../theme';
 
 import {SidebarRow} from './SidebarRow';
-import {useThemedStyles} from '../theme';
 
 export function SidebarApplication({selection, onSelect, currentlyActive, setActiveApp, item, isMinimized, app}) {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <View>
+    <View style={styles.appWrapper}>
       <Pressable onPress={() => setActiveApp(app)}>
         {!isMinimized && <Text style={styles.title}>{app}</Text>}
       </Pressable>
@@ -24,6 +24,13 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.onSurface,
-    marginTop: 16,
+    marginVertical: 8,
+    marginHorizontal: 0,
+  },
+  appWrapper: {
+    marginBottom: 16,
+    ...glass(colors, {tint: 0.25}),
+    padding: 8,
+    borderRadius: 16,
   },
 });

@@ -66,6 +66,8 @@ export function EmailContent({email}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flex: 1,
+    marginTop: 16,
+    marginBottom: 16,
     gap: 16,
   },
   placeholder: {
@@ -83,7 +85,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
-    ...glass(colors, {tint: 0.5}),
+    ...glass(colors, {tint: 0.25}),
   },
   senderImage: {
     width: 40,
