@@ -5,6 +5,7 @@ import {CodePage} from './components/CodePage';
 import {EmailPage} from './components/EmailPage';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
+import {glass} from './components/theme';
 import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
@@ -26,25 +27,34 @@ export default function App() {
   const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
 
   return (
-    <TransparentWindow>
-      <View style={styles.layout}>
-        <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
+      <TransparentWindow>
+    <View style={styles.appWrapper}>
 
-        <ActiveApplication selection={selection} onSelect={setSelection} />
-      </View>
-    </TransparentWindow>
+          <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
+
+          <View style={styles.content}>
+            <ActiveApplication selection={selection} onSelect={setSelection} />
+          </View>
+    </View>
+
+      </TransparentWindow>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  layout: {
+  appWrapper: {
     flex: 1,
+    padding: 16,
+    gap: 16,
     flexDirection: 'row',
     paddingTop: TITLEBAR_INSET,
   },
   content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%',
+    padding: 16,
+    paddingBottom: 0,
+    paddingTop: 0,
+    borderRadius: 16,
+    ...glass(colors, {tint: 0.25}),
   },
 });

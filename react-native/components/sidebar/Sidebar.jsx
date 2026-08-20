@@ -40,8 +40,6 @@ const createStyles = colors => StyleSheet.create({
     width: 240,
     padding: 16,
     ...glass(colors, {tint: 0.25}),
-    margin: 16,
-    marginTop: 0,
     borderRadius: 16,
   },
   sidebarMinimized: {
