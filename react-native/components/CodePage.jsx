@@ -10,6 +10,7 @@ export function CodePage({selection, onSelect}) {
   const [files, setFiles] = useState([]);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
+  const [currentDirectory, setCurrentDirectory] = useState('');
 
   useEffect(() => {
     fileSystem.listFiles('')
@@ -18,17 +19,40 @@ export function CodePage({selection, onSelect}) {
   }, []);
 
   function handleFileSelect(file) {
-    fileSystem.readFile(file.name)
-      .then(response => setSource(response.contents ?? ''))
-      .then(() => setCurrentFile(file.name))
-      .then(() => console.log('contents', source))
+    if (!file.isDirectory) {
+
+      const pathToRead = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
+
+      fileSystem.readFile(pathToRead)
+        .then(response => setSource(response.contents ?? ''))
+        .then(() => setCurrentFile(pathToRead))
+        .then(() => console.log('contents', source))
+        .catch(console.error);
+    } else {
+      const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
+      openDirectory(pathToOpen);
+      setCurrentDirectory(pathToOpen);
+    }
+  }
+
+  function openDirectory(path) {
+    fileSystem.listFiles(path)
+      .then(response => setFiles(response.contents ?? []))
       .catch(console.error);
+  }
+
+  function backToRoot() {
+    openDirectory('');
+    setCurrentDirectory('');
   }
 
   return (
     <View style={styles.editor}>
       <Text>test</Text>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
+      {currentDirectory && (
+        <Text onPress={backToRoot}>Back to root</Text>
+      )}
       {files.map(file => (
         <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
       ))}
