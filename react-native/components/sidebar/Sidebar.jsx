@@ -29,7 +29,6 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
       </Pressable>
 
       {Object.entries(items).map(([key, item]) => (
-        console.log('item', item, 'key', key),
         <SidebarApplication key={key + item.app} selection={selection} onSelect={onSelect} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
       ))}
     </View>
