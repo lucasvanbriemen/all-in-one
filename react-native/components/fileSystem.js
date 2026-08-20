@@ -19,6 +19,26 @@ export const fileSystem = {
     return this.makeRequest("/file", path);
   },
 
+  writeFile(path, contents) {
+    console.log("Writing file:", path);
+    const fullUrl = `/file?path=${encodeURIComponent(path)}`;
+    const options = {
+      method: "PUT",
+      headers: {
+        ...this.defaultHeaders,
+      },
+      body: JSON.stringify({ contents }),
+    };
+    return fetch(BASE_URL + fullUrl, options)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`PUT ${fullUrl} failed with ${response.status}`);
+        }
+        if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
+        return response.text();
+      });
+  },
+
   makeRequest(url, path = null, headers = {}) {
     const fullUrl = path ? `${url}?path=${encodeURIComponent(path)}` : url;
     const options = {

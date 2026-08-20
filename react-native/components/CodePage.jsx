@@ -9,6 +9,7 @@ export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
   const [source, setSource] = useState('// some comment\n');
+  const [currentFile, setCurrentFile] = useState(null);
 
   useEffect(() => {
     fileSystem.listFiles('')
@@ -19,6 +20,7 @@ export function CodePage({selection, onSelect}) {
   function handleFileSelect(file) {
     fileSystem.readFile(file.name)
       .then(response => setSource(response.contents ?? ''))
+      .then(() => setCurrentFile(file.name))
       .then(() => console.log('contents', source))
       .catch(console.error);
   }
@@ -26,6 +28,7 @@ export function CodePage({selection, onSelect}) {
   return (
     <View style={styles.editor}>
       <Text>test</Text>
+      <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
       {files.map(file => (
         <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
       ))}
