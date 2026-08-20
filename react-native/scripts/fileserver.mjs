@@ -7,7 +7,7 @@ const server = http.createServer(async (request, response) => {
   const { pathname, searchParams } = new URL(url, 'http://localhost');
   const relative = searchParams.get('path');
 
-  const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one/react-native";
+  const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one";
 
   if (method == "PUT" && pathname === "/file") {
     return new Promise((resolve) => {
