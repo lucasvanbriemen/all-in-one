@@ -1,5 +1,17 @@
 module MailboxConfig
   DEFAULT_GROUP = "home".freeze
+  IGNORED_EMAIL_SUBJECTS = [
+    "***SPAM***",
+    "Failure Notice",
+    "Returned to Sender",
+    "Undeliverable:",
+    "Mail delivery failed"
+  ].freeze
+
+  INTERNAL_EMAILS = [
+    "ntfy@ltvb.nl"
+  ].freeze
+
   GROUPS = [
     {
       path: "home",

@@ -3,18 +3,6 @@ class Email < ApplicationRecord
 
   delegate :image_url, to: :sender, prefix: true, allow_nil: true
 
-  INTERNAL_EMAILS = [
-    "ntfy@ltvb.nl"
-  ].freeze
-
-  IGNORED_EMAIL_SUBJECTS = [
-    "***SPAM***",
-    "Failure Notice",
-    "Returned to Sender",
-    "Undeliverable:",
-    "Mail delivery failed",
-  ].freeze
-
   # Emails belonging to the mailbox group identified by `path`.
   # Unknown path -> all emails.
   def self.in_group(path)
@@ -40,7 +28,7 @@ class Email < ApplicationRecord
       end
 
     # Filter out ignored subjects, which are usually spam or bounce messages.
-    scope.where.not(IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
+    scope.where.not(MailboxConfig::IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *MailboxConfig::IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
   end
 
   # Emails matching a rule set. The from/to/sender_name clauses are OR-ed,
@@ -86,6 +74,6 @@ class Email < ApplicationRecord
   end
 
   def internal?
-    sender&.email.in?(INTERNAL_EMAILS)
+    sender&.email.in?(MailboxConfig::INTERNAL_EMAILS)
   end
 end
