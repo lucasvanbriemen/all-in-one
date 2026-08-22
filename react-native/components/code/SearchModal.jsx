@@ -1,6 +1,6 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
-import {useCallback, useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 // Claimed so macOS stops handling these itself; the events reach JS either way.
 const KEY_DOWN_EVENTS = [{key: 'Escape'}, {key: 'p', metaKey: true}];
@@ -8,6 +8,9 @@ const KEY_DOWN_EVENTS = [{key: 'Escape'}, {key: 'p', metaKey: true}];
 export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const overlay = useRef(null);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   // Opened from the editor, focus is still inside Monaco's WebView, which eats
   // every key it is given — Escape included. Taking focus here is what makes
@@ -26,11 +29,11 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
   );
 
   return (
-    <View ref={overlay} focusable enableFocusRing={false} style={styles.overlay} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
+    <View focusable enableFocusRing={false} style={styles.overlay} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
       <Pressable style={styles.overlay} onPress={onClose} />
 
       <View style={styles.panel}>
-        <Text style={styles.label}>Search Modal</Text>
+        <TextInput ref={overlay} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
       </View>
     </View>
   );
@@ -48,7 +51,14 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     backgroundColor: colors.primaryContainer,
-    ...glass(colors, {tint: 0.75, tone: "surfaceAt1"}),
+    ...glass(colors, {tint: 0.75, tone: "surfaceAt4"}),
     top: 64,
-  }
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.outline,
+    borderRadius: 16,
+    padding: 16,
+    backgroundColor: colors.surface,
+  },
 });
