@@ -3,6 +3,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
+import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
 import {useThemedStyles} from '../theme';
 
@@ -13,6 +14,13 @@ export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
+  const [root, setRoot] = useState(null);
+
+  // Which folder the server is serving is its state, not this component's —
+  // it survives a reload of the app, so it is read rather than assumed.
+  useEffect(() => {
+    fileSystem.getRoot().then(response => setRoot(response.root));
+  }, []);
 
   const save = useCallback(
     async (contents = source) => {
@@ -40,6 +48,25 @@ export function CodePage({selection, onSelect}) {
     [save],
   );
 
+  const openFolder = useCallback(async () => {
+    const chosen = await NativeModules.FolderPicker.pick();
+
+    if (!chosen || chosen === root) {
+      return;
+    }
+
+    // Every path in flight is relative to the folder being left behind, so the
+    // buffer is written and released before the server moves. A debounced save
+    // landing after the swap would put the old file's contents at the same
+    // relative path inside the new folder.
+    await save();
+    setCurrentFile(null);
+    setSource('');
+
+    const response = await fileSystem.setRoot(chosen);
+    setRoot(response.root);
+  }, [root, save]);
+
   // The buffer is written once it stops moving. Clearing the timer on every
   // change is also what makes switching files safe: a write scheduled against
   // one path can never land on the next one.
@@ -56,7 +83,16 @@ export function CodePage({selection, onSelect}) {
   return (
     <View style={styles.editor}>
       <View style={styles.fileTree}>
-        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} />
+        {/* Keyed on the root so switching folders remounts the tree: every
+            FileNode holds its expanded children locally, and those point at
+            paths that no longer exist. */}
+        <FileTree
+          key={root}
+          root={root}
+          currentFile={currentFile}
+          onOpenFile={openFile}
+          onOpenFolder={openFolder}
+        />
       </View>
 
       <View style={styles.codeEditorContainer}>

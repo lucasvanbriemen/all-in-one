@@ -6,11 +6,15 @@ import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 
-export function FileTree({currentFile, onOpenFile, onSave}) {
+export function FileTree({root, currentFile, onOpenFile, onOpenFolder}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
+    if (!root) {
+      return;
+    }
+
     async function fetchFiles() {
       const unsortedFiles = await fileSystem.listFiles('');
       const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
@@ -18,7 +22,7 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
     }
 
     fetchFiles();
-  }, []);
+  }, [root]);
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
@@ -49,6 +53,14 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
 
   return (
     <ScrollView style={styles.editor}>
+      <View style={styles.header}>
+        <Text style={styles.root} numberOfLines={1}>
+          {root ? folderName(root) : 'Connecting…'}
+        </Text>
+
+        <Text style={styles.openFolder} onPress={onOpenFolder}>Open…</Text>
+      </View>
+
       {files.map(file => (
         <View key={file.name}>
           {!file.isDirectory && (
@@ -69,6 +81,11 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
   );
 }
 
+/** The last segment of the root, which is what the folder is called. */
+function folderName(root) {
+  return root.split('/').filter(Boolean).pop() ?? root;
+}
+
 const createStyles = colors => StyleSheet.create({
   editor: {
     ...glass(colors, {tint: 0.25}),
@@ -77,5 +94,20 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 12,
+  },
+  root: {
+    color: colors.onSurface,
+    fontWeight: '600',
+    flexShrink: 1,
+  },
+  openFolder: {
+    color: colors.primary,
   },
 });

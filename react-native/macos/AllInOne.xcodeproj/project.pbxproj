@@ -13,6 +13,8 @@
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */; };
 		990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */; };
+		AA11BB22CC33DD44EE550002 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550001 /* FolderPicker.swift */; };
+		AA11BB22CC33DD44EE550004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550003 /* FolderPicker.m */; };
 		9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
@@ -36,6 +38,8 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectBackground.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE550001 /* FolderPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FolderPicker.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE550003 /* FolderPicker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FolderPicker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,8 @@
 				514201592437B4B40078DB4F /* AllInOne.entitlements */,
 				FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */,
 				0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */,
+				AA11BB22CC33DD44EE550001 /* FolderPicker.swift */,
+				AA11BB22CC33DD44EE550003 /* FolderPicker.m */,
 				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
 			);
 			path = "AllInOne-macOS";
@@ -342,6 +348,8 @@
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
 				79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */,
 				990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */,
+				AA11BB22CC33DD44EE550002 /* FolderPicker.swift in Sources */,
+				AA11BB22CC33DD44EE550004 /* FolderPicker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
