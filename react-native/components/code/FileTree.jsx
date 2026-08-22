@@ -56,13 +56,12 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
     <View style={styles.editor}>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
       {files.map(file => (
-          <View key={file.name}>
+        <View key={file.name}>
+          <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
 
-        <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
-
-        {file?.items?.length > 0 && file.items.map(subFile => (
-          <Text key={subFile.name} onPress={() => handleFileSelect(subFile)} style={{marginLeft: 16}}>{subFile.name}</Text>
-        ))}
+          {file?.items?.length > 0 && file.items.map(subFile => (
+            <Text key={subFile.name} onPress={() => handleFileSelect(subFile)} style={{marginLeft: 16}}>{subFile.name}</Text>
+          ))}
         </View>
       ))}
     </View>
