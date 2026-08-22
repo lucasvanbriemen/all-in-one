@@ -6,7 +6,6 @@ import {FileTree} from './FileTree';
 import {fileSystem} from '../fileSystem';
 import {useThemedStyles} from '../theme';
 
-/** How long the buffer has to sit still before it is written on its own. */
 const AUTO_SAVE_DELAY = 800;
 
 export function CodePage({selection, onSelect}) {
@@ -23,7 +22,7 @@ export function CodePage({selection, onSelect}) {
 
       await fileSystem.writeFile(projectRoot, currentFile, contents);
     },
-    [currentFile, source],
+    [currentFile, source, projectRoot],
   );
 
   const openFile = useCallback(
