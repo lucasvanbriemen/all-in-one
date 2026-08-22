@@ -7,7 +7,6 @@ import {fileSystem} from '../fileSystem';
 export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
-  const [currentDirectory, setCurrentDirectory] = useState('');
 
   useEffect(() => {
     fileSystem.listFiles('')
@@ -19,7 +18,7 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
     console.log('file selected', file);
     console.log('all files', files);
     if (!file.isDirectory) {
-      const pathToRead = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
+      const pathToRead = file.fullPath;
 
       fileSystem.readFile(pathToRead)
         .then(response => setSource(response.contents ?? ''))
@@ -27,14 +26,12 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
         .then(() => console.log('contents', source))
         .catch(console.error);
     } else {
-      const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
       openDirectory(file);
-      setCurrentDirectory(pathToOpen);
     }
   }
 
   async function openDirectory(file) {
-    const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
+    const pathToOpen = file.fullPath;
 
     const response = await fileSystem.listFiles(pathToOpen);
     const folderItems = response.contents ?? [];

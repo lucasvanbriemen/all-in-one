@@ -115,6 +115,7 @@ async function getDirectoryContents(absolutePath, response, wantedPath) {
     const contents = entries.map(entry => ({
       name: entry.name,
       isDirectory: entry.isDirectory(),
+      fullPath: path.join(wantedPath, entry.name),
     }));
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ path: wantedPath, contents }));
