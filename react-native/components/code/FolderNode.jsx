@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
 
 import {fileSystem} from '../fileSystem';
+import {useState} from 'react';
+import {useThemedStyles} from '../theme';
 
 export function FolderNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
