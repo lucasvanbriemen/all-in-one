@@ -2,12 +2,14 @@ import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {fileSystem} from '../fileSystem';
+
 // Claimed so macOS stops handling these itself; the events reach JS either way.
 const KEY_DOWN_EVENTS = [{key: 'Escape'}, {key: 'p', metaKey: true}];
 
 export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
-  const overlay = useRef(null);
+  const input = useRef(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -16,8 +18,24 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
   // every key it is given — Escape included. Taking focus here is what makes
   // the modal closable, and later what will let the search field be typed in.
   useEffect(() => {
-    overlay.current?.focus?.();
+    input.current?.focus?.();
   }, []);
+
+  useEffect(() => {
+    async function search() {
+      if (!searchTerm) {
+        setSearchResults([]);
+        return;
+      }
+
+      console.log('search', searchTerm, projectRoot);
+      let results = await fileSystem.searchFiles(projectRoot, searchTerm);
+      console.log('search results', results);
+      setSearchResults(results);
+    }
+
+    search();
+  }, [searchTerm, projectRoot, folder]);
 
   const onKeyDown = useCallback(
     event => {
@@ -33,7 +51,11 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
       <Pressable style={styles.overlay} onPress={onClose} />
 
       <View style={styles.panel}>
-        <TextInput ref={overlay} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
+        <TextInput ref={input} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
+
+        {searchResults?.each(result => (
+          <Text key={result} onPress={() => onOpenFile(result)}>{result}</Text>
+        ))}
       </View>
     </View>
   );

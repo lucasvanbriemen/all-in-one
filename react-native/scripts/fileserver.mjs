@@ -150,6 +150,7 @@ async function searchFiles(response, projectRoot, searchTerm) {
 
 async function searchDirectory(directory, searchTerm, results) {
   const FoldersToIgnore = ['node_modules', '.git', 'build', 'dist', 'out', 'venv', '__pycache__'];
+  const MAX_RESULTS = 25;
 
   const entries = await fs.readdir(directory, { withFileTypes: true });
   for (const entry of entries) {
@@ -161,10 +162,14 @@ async function searchDirectory(directory, searchTerm, results) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       if (!FoldersToIgnore.includes(entry.name)) {
-        await searchDirectory(fullPath, searchTerm, results);
+        if (results.length < MAX_RESULTS) {
+          await searchDirectory(fullPath, searchTerm, results);
+        }
       }
     } else if (entryName.includes(searchTermLower)) {
-      results.push(fullPath);
+      if (results.length < MAX_RESULTS) {
+        results.push(fullPath);
+      }
     }
   }
 }

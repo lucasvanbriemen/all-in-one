@@ -18,6 +18,22 @@ export const fileSystem = {
     return this.makeRequest(projectRoot, "/file", path);
   },
 
+  searchFiles(projectRoot, searchTerm) {
+    const fullUrl = `/search?projectRoot=${encodeURIComponent(projectRoot)}&term=${encodeURIComponent(searchTerm)}`;
+    return fetch(BASE_URL + fullUrl, {
+      method: "GET",
+      headers: { ...this.defaultHeaders },
+    }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`GET ${fullUrl} failed with ${response.status}`);
+      }
+      const isJson = response.headers.get("content-type")?.includes("application/json");
+      const data = isJson ? await response.json() : await response.text();
+      console.log('fetch search', data);
+      return data;
+    });
+  },
+
   writeFile(projectRoot, path, contents) {
     const fullUrl = `/file?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {
@@ -51,6 +67,7 @@ export const fileSystem = {
     // request is prefixed with the API host.
     return fetch(BASE_URL + fullUrl, options)
       .then(async (response) => {
+        console.log('fetch', fullUrl, response.status);
         if (!response.ok) {
           throw new Error(`GET ${fullUrl} failed with ${response.status}`);
         }
