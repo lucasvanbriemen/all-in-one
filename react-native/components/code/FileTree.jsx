@@ -2,7 +2,6 @@ import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {ChevronIcon} from '../icons';
 import {fileSystem} from '../fileSystem';
 
 /** The API addresses the working directory itself as the empty path. */
@@ -188,12 +187,6 @@ const Row = React.memo(function Row({entry, depth, isOpen, isLoading, isSelected
         isSelected && styles.rowSelected,
         isLoading && styles.rowLoading,
       ]}>
-      {/* Fixed-width gutter whether or not there is a chevron in it, so a
-          file's icon sits under its siblings' rather than under their names. */}
-      <View style={styles.twisty}>
-        {entry.isDirectory && <ChevronIcon size={INDENT} color={color} open={isOpen} />}
-      </View>
-
       <Text style={[styles.label, {color}]} numberOfLines={1}>
         {entry.name}
       </Text>
