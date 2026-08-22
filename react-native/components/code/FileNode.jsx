@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 
 import {fileSystem} from '../fileSystem';
+import {sortFiles} from './sortFiles';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
 
@@ -21,8 +22,10 @@ export function FileNode({folder, onOpenFile, itemsDeep}) {
   }
 
   async function openDirectory() {
-    const response = await fileSystem.listFiles(folder.fullPath);
-    setChildren(response.contents ?? []);
+    const unsortedItems = await fileSystem.listFiles(folder.fullPath);
+    const sortedFiles = sortFiles(unsortedItems.contents ?? []);
+
+    setChildren(sortedFiles);
   }
 
   return (
