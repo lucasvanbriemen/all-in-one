@@ -43,8 +43,6 @@ export const api = {
       options.body = JSON.stringify(data);
     }
 
-    // React Native has no page to resolve relative URLs against, so every
-    // request is prefixed with the API host.
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
         if (!response.ok) {

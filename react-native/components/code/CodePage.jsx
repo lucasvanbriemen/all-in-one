@@ -38,7 +38,7 @@ export function CodePage({selection, onSelect}) {
       setSource(contents);
       setCurrentFile(path);
     },
-    [save],
+    [save, projectRoot],
   );
 
   // The buffer is written once it stops moving. Clearing the timer on every
