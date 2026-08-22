@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
+import {FileNode} from './FileNode';
 import {FolderNode} from './FolderNode';
 import {fileSystem} from '../fileSystem';
 
@@ -52,18 +53,17 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
       {files.map(file => (
         <View key={file.name}>
-          <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
+          <Text key={file.name} onPress={() => handleFileSelect(file)}>File: {file.name} {file?.items?.length}</Text>
 
-          {file.isDirectory && file.items?.map(subFile => (
+          {file.isDirectory && (
             <FolderNode
-              key={subFile.name}
-              source={source}
+              key={file.fullPath}
+              folder={file}
               setSource={setSource}
               currentFile={currentFile}
               setCurrentFile={setCurrentFile}
-              file={subFile}
             />
-          ))}
+          )}
         </View>
       ))}
     </View>

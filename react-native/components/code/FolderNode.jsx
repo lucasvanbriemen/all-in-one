@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
+import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 
-export function FolderNode({source, setSource, currentFile, setCurrentFile}) {
+export function FolderNode({folder, setSource, currentFile, setCurrentFile}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
@@ -48,15 +49,16 @@ export function FolderNode({source, setSource, currentFile, setCurrentFile}) {
 
   return (
     <View style={styles.editor}>
-      <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
-      {files.map(file => (
-        <View key={file.name}>
-          <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
+      <Text key={folder.name} onPress={() => handleFileSelect(folder)}>FOLDER: {folder.name} {folder?.items?.length}</Text>
 
-          {file?.items?.length > 0 && file.items.map(subFile => (
-            <Text key={subFile.name} onPress={() => handleFileSelect(subFile)} style={{marginLeft: 16}}>{subFile.name}</Text>
-          ))}
-        </View>
+      {folder.isDirectory && folder.items?.map(subFile => (
+        <FolderNode
+          key={subFile.fullPath}
+          folder={subFile}
+          setSource={setSource}
+          currentFile={currentFile}
+          setCurrentFile={setCurrentFile}
+        />
       ))}
     </View>
   );
@@ -64,7 +66,6 @@ export function FolderNode({source, setSource, currentFile, setCurrentFile}) {
 
 const createStyles = colors => StyleSheet.create({
   editor: {
-    ...glass(colors, {tint: 0.25}),
     marginBottom: 16,
     marginTop: 16,
     padding: 16,
