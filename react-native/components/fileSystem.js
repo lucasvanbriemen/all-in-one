@@ -15,12 +15,10 @@ export const fileSystem = {
   },
 
   readFile(path) {
-    console.log("Reading file:", path);
     return this.makeRequest("/file", path);
   },
 
   writeFile(path, contents) {
-    console.log("Writing file:", path);
     const fullUrl = `/file?path=${encodeURIComponent(path)}`;
     const options = {
       method: "PUT",

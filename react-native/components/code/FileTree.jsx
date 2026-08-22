@@ -12,11 +12,9 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   useEffect(() => {
     fileSystem.listFiles('')
       .then(response => setFiles(response.contents ?? []))
-      .catch(console.error);
   }, []);
 
   function handleFileSelect(file) {
-    console.log('file', file);
     if (file.isDirectory) {
       return openDirectory(file);
     }
@@ -25,8 +23,6 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
     fileSystem.readFile(pathToRead)
       .then(response => setSource(response.contents ?? ''))
       .then(() => setCurrentFile(pathToRead))
-      .then(() => console.log('contents', source))
-      .catch(console.error);
   }
 
   async function openDirectory(file) {

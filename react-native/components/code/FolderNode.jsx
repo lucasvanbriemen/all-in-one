@@ -9,8 +9,6 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
   const [children, setChildren] = useState([]);
 
   function handleFileSelect(file) {
-
-    console.log('file', file);
     if (file.isDirectory) {
       return openDirectory();
     }
@@ -19,8 +17,6 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
     fileSystem.readFile(pathToRead)
       .then(response => setSource(response.contents ?? ''))
       .then(() => setCurrentFile(pathToRead))
-      .then(() => console.log('contents', source))
-      .catch(console.error);
   }
 
   async function openDirectory() {
