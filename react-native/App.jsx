@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/EmailPage';
+import {HomePage} from './components/home/HomePage';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -15,21 +16,22 @@ const TITLEBAR_INSET = 48;
 
 const APPLICATIONS = {
   email: EmailPage,
+  home: HomePage,
   code: CodePage,
 };
 
 
 export default function App() {
-  const [APPLICATION_TO_RENDER, setApplicationToRender] = useState(() => "code");
+  const [appToRender, setAppToRender] = useState(() => "home");
 
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[APPLICATION_TO_RENDER];
+  const ActiveApplication = APPLICATIONS[appToRender];
 
   return (
     <TransparentWindow>
       <View style={styles.appWrapper}>
-       <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={APPLICATION_TO_RENDER} setActiveApp={setApplicationToRender} />
+       <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={appToRender} setActiveApp={setAppToRender} />
 
         <View style={styles.content}>
           <ActiveApplication selection={selection} onSelect={setSelection} />
