@@ -9,12 +9,6 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
 
-  useEffect(() => {
-    fileSystem.listFiles('')
-      .then(response => setChildren(response.contents ?? []))
-      .catch(console.error);
-  }, []);
-
   function handleFileSelect(file) {
     if (file.isDirectory) {
       return openDirectory(file);
