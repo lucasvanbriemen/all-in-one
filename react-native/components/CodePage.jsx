@@ -48,7 +48,6 @@ export function CodePage({selection, onSelect}) {
 
   return (
     <View style={styles.editor}>
-      <Text>test</Text>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
       {currentDirectory && (
         <Text onPress={backToRoot}>Back to root</Text>
