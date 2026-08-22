@@ -29,9 +29,8 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
       }
 
       console.log('search', searchTerm, projectRoot);
-      let results = await fileSystem.searchFiles(projectRoot, searchTerm);
-      console.log('search results', results);
-      setSearchResults(results);
+      const response = await fileSystem.searchFiles(projectRoot, searchTerm);
+      setSearchResults(response.results ?? []);
     }
 
     search();
@@ -53,8 +52,8 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
       <View style={styles.panel}>
         <TextInput ref={input} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
-        {searchResults?.each(result => (
-          <Text key={result} onPress={() => onOpenFile(result)}>{result}</Text>
+        {searchResults.map(searchResult => (
+          <Text key={searchResult} onPress={() => onOpenFile(searchResult)}>{searchResult}</Text>
         ))}
       </View>
     </View>

@@ -139,8 +139,10 @@ async function searchFiles(response, projectRoot, searchTerm) {
   try {
     const results = [];
     await searchDirectory(projectRoot, searchTerm, results);
+
+    let formattedResults = results.map(result => path.relative(projectRoot, result));
     response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ results }));
+    response.end(JSON.stringify({ results: formattedResults }));
   } catch (error) {
     console.error(`Failed to search files in: ${projectRoot}; error: ${error}`);
     response.writeHead(500, { 'Content-Type': 'application/json' });
