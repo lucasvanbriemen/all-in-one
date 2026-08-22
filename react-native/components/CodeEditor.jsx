@@ -1,4 +1,14 @@
-import {EDITOR_OPTIONS, MONACO_CDN, monacoTheme} from './monacoTheme';
+import {
+  EDITOR_OPTIONS,
+  EXTRA_LANGUAGES,
+  MONACO_CDN,
+  SHIKI_CDN,
+  SHIKI_LANGS,
+  SHIKI_LANG_ALIAS,
+  SHIKI_MONACO_CDN,
+  THEMES,
+  monacoTheme,
+} from './monacoTheme';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
 
@@ -140,9 +150,18 @@ function editorHtml(value, spec) {
     <script src="${MONACO_CDN}/vs/loader.js"></script>
     <script>
       var editor = null;
-      var pendingTheme = null;
+      var theme = null;
       var pendingValue = null;
       var pendingLanguage = null;
+
+      // The two VS Code theme files, whole. Shiki reads its grammars off a CDN,
+      // but a theme is the user's own file — it travels with the document.
+      var THEMES = ${JSON.stringify(THEMES)};
+
+      // Each theme run through textmateThemeToMonacoTheme, once Shiki is up.
+      // Until then Monaco is still tokenizing with Monarch, whose token names
+      // no TextMate rule would have matched anyway.
+      var converted = null;
 
       // Monaco's language services run in workers. Pulled straight off a CDN
       // they would be cross-origin, so each worker is booted from a data: URL
@@ -156,16 +175,76 @@ function editorHtml(value, spec) {
         },
       };
 
-      // Called from the native side; queues until Monaco is actually loaded.
-      window.setTheme = function (theme) {
-        if (!window.monaco) {
-          pendingTheme = theme;
+      // Called from the native side with the theme in force and the colours the
+      // app, rather than the theme, owns; queues until Monaco is loaded.
+      window.setTheme = function (next) {
+        theme = next;
+        applyTheme();
+      };
+
+      // The theme is defined twice over its life: once from the file alone, so
+      // the editor is transparent and the right shade from the first frame, and
+      // again once Shiki has converted the 211 TextMate rules the file carries.
+      // Either way the app's own colours go on last.
+      function applyTheme() {
+        if (!window.monaco || !theme) {
           return;
         }
 
-        monaco.editor.defineTheme('app', theme);
-        monaco.editor.setTheme('app');
-      };
+        var file = THEMES[theme.name];
+        var next = converted && converted[theme.name];
+
+        if (!next) {
+          // The file's colours without its scopes: Monarch still doing the
+          // tokenizing, but against the right surface.
+          next = {
+            base: file.type === 'dark' ? 'vs-dark' : 'vs',
+            inherit: true,
+            rules: [],
+            colors: file.colors,
+          };
+        }
+
+        monaco.editor.defineTheme(theme.name, Object.assign({}, next, {
+          colors: Object.assign({}, next.colors, theme.colors),
+        }));
+
+        monaco.editor.setTheme(theme.name);
+      }
+
+      // Shiki hands Monaco VS Code's own tokenizer, so the theme's scopes
+      // finally have scopes to match. It is a CDN import over WASM: slower to
+      // arrive than the editor is to boot, and allowed to fail — a miss leaves
+      // Monarch in place, which is what the editor came with.
+      async function startShiki() {
+        try {
+          var shiki = await import('${SHIKI_CDN}');
+          var bridge = await import('${SHIKI_MONACO_CDN}');
+          var names = Object.keys(THEMES);
+
+          var highlighter = await shiki.createHighlighter({
+            themes: names.map(function (name) { return THEMES[name]; }),
+            langs: ${JSON.stringify(SHIKI_LANGS)},
+            langAlias: ${JSON.stringify(SHIKI_LANG_ALIAS)},
+          });
+
+          // shikiToMonaco colours a token by looking its scope up by the
+          // colour it resolved, so the rules Monaco holds have to be the ones
+          // it derived — same function over the same themes. applyTheme then
+          // layers the app's colours back over the result.
+          converted = {};
+          names.forEach(function (name) {
+            converted[name] = bridge.textmateThemeToMonacoTheme(
+              highlighter.getTheme(name),
+            );
+          });
+
+          bridge.shikiToMonaco(highlighter, monaco);
+          applyTheme();
+        } catch (error) {
+          console.log('shiki unavailable, keeping Monarch: ' + error);
+        }
+      }
 
       // Monaco registers every mode with the extensions and filenames it
       // claims, so the mode for a path is a lookup rather than a table we
@@ -236,6 +315,12 @@ function editorHtml(value, spec) {
       require(['vs/editor/editor.main'], function () {
         var spec = ${JSON.stringify(spec)};
 
+        // Registered before Shiki, which pairs its grammars against whichever
+        // modes exist at the moment it runs.
+        ${JSON.stringify(EXTRA_LANGUAGES)}.forEach(function (language) {
+          monaco.languages.register(language);
+        });
+
         editor = monaco.editor.create(document.getElementById('container'), Object.assign(
           ${JSON.stringify(EDITOR_OPTIONS)},
           {
@@ -249,9 +334,7 @@ function editorHtml(value, spec) {
           pendingLanguage = null;
         }
 
-        if (pendingTheme) {
-          window.setTheme(pendingTheme);
-        }
+        applyTheme();
 
         if (pendingValue !== null) {
           window.setValue(pendingValue);
@@ -263,6 +346,8 @@ function editorHtml(value, spec) {
         });
 
         post({type: 'ready'});
+
+        startShiki();
       });
     </script>
   </body>
