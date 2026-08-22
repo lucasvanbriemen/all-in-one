@@ -1,33 +1,22 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
-import {fileSystem} from '../fileSystem';
 
 export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
 
-  function save() {
-    fileSystem.writeFile(currentFile, source).catch(console.error);
-  }
-
   return (
     <View style={styles.editor}>
       <View style={styles.fileTree}>
-        <FileTree currentFile={currentFile} setCurrentFile={setCurrentFile} setSource={setSource} />
+        <FileTree currentFile={currentFile} setCurrentFile={setCurrentFile} setSource={setSource} source={source} />
       </View>
 
       <View style={styles.codeEditorContainer}>
-        <View>
-          <Pressable onPress={save}>
-            <Text>Save</Text>
-          </Pressable>
-        </View>
-
         <CodeEditor value={source} path={currentFile} onChange={setSource} />
       </View>
     </View>
