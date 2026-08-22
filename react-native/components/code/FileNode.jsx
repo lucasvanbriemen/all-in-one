@@ -4,7 +4,7 @@ import {fileSystem} from '../fileSystem';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
 
-export function FolderNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
+export function FileNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
 

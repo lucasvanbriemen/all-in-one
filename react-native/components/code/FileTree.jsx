@@ -2,7 +2,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
-import {FolderNode} from './FolderNode';
+import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 
 export function FileTree({source, setSource, currentFile, setCurrentFile}) {
@@ -54,7 +54,7 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
           )}
 
           {file.isDirectory && (
-            <FolderNode
+            <FileNode
               key={file.fullPath}
               folder={file}
               source={source}
