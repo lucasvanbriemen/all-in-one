@@ -50,13 +50,14 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
   }
 
   async function openFolder() {
-    NativeModules.FolderPicker.pick().then(async path => {
-      if (!path) {
-        return;
-      }
+    console.log('opening folder');
+    const path = await NativeModules.FolderPicker.pick();
 
-      setProjectRoot(path);
-    });
+    if (!path) {
+      return;
+    }
+
+    setProjectRoot(path);
   }
 
   return (

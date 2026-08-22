@@ -22,7 +22,7 @@ const APPLICATIONS = {
 
 
 export default function App() {
-  const [appToRender, setAppToRender] = useState(() => "home");
+  const [appToRender, setAppToRender] = useState(() => "code");
 
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);

@@ -11,9 +11,12 @@ final class FolderPicker: NSObject {
         DispatchQueue.main.async {
             let panel = NSOpenPanel()
             panel.canChooseDirectories = true
+            panel.canChooseFiles = false
             panel.allowsMultipleSelection = false
             panel.message = "Choose the folder to make sexier"
             panel.prompt = "Start working"
+
+            NSApp.activate(ignoringOtherApps: true)
 
             panel.begin { response in
                 guard response == .OK, let url = panel.url else {
