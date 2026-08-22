@@ -10,16 +10,16 @@ export const fileSystem = {
       Authorization: `Bearer ${secrets.API_KEY}`,
     };
   },
-  listFiles(path) {
-    return this.makeRequest("/files", path);
+  listFiles(projectRoot, path) {
+    return this.makeRequest(projectRoot, "/files", path);
   },
 
-  readFile(path) {
-    return this.makeRequest("/file", path);
+  readFile(projectRoot, path) {
+    return this.makeRequest(projectRoot, "/file", path);
   },
 
-  writeFile(path, contents) {
-    const fullUrl = `/file?path=${encodeURIComponent(path)}`;
+  writeFile(projectRoot, path, contents) {
+    const fullUrl = `/file?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {
       method: "PUT",
       headers: {
@@ -37,8 +37,8 @@ export const fileSystem = {
       });
   },
 
-  makeRequest(url, path = null, headers = {}) {
-    const fullUrl = path ? `${url}?path=${encodeURIComponent(path)}` : url;
+  makeRequest(projectRoot, url, path = null, headers = {}) {
+    const fullUrl = path ? `${url}?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}` : `${url}?projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {
       method: "GET",
       headers: {
