@@ -1,9 +1,9 @@
+import {EDITOR_OPTIONS, MONACO_CDN, monacoTheme} from './monacoTheme';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
-import {WebView} from 'react-native-webview';
+import {glass, useTheme} from './theme';
 
-import {EDITOR_OPTIONS, MONACO_CDN, monacoTheme} from './monacoTheme';
-import {useTheme} from './theme';
+import {WebView} from 'react-native-webview';
 
 /**
  * Monaco, hosted in a WebView.
@@ -271,7 +271,7 @@ function editorHtml(value, spec) {
 
 const styles = StyleSheet.create({
   editor: {
-    flex: 1,
+    flex: 2,
     backgroundColor: 'transparent',
   },
 });
