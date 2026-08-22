@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {ChevronIcon, FileIcon, FolderIcon} from '../icons';
+import {ChevronIcon} from '../icons';
 import {fileSystem} from '../fileSystem';
 
 /** The API addresses the working directory itself as the empty path. */
@@ -193,12 +193,6 @@ const Row = React.memo(function Row({entry, depth, isOpen, isLoading, isSelected
       <View style={styles.twisty}>
         {entry.isDirectory && <ChevronIcon size={INDENT} color={color} open={isOpen} />}
       </View>
-
-      {entry.isDirectory ? (
-        <FolderIcon size={15} color={color} open={isOpen} />
-      ) : (
-        <FileIcon size={15} color={color} />
-      )}
 
       <Text style={[styles.label, {color}]} numberOfLines={1}>
         {entry.name}
