@@ -15,7 +15,7 @@ export function CodePage({selection, onSelect}) {
       <View style={styles.fileTree}>
         <FileTree source={source} setSource={setSource} currentFile={currentFile} setCurrentFile={setCurrentFile} />
       </View>
-
+      
       <View style={styles.codeEditorContainer}>
         <CodeEditor value={source} path={currentFile} onChange={setSource} />
       </View>
