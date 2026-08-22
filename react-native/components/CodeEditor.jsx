@@ -31,6 +31,7 @@ export function CodeEditor({
   language,
   path,
   onChange,
+  onSave,
   style,
 }) {
   const webView = useRef(null);
@@ -97,8 +98,16 @@ export function CodeEditor({
         applied.current = message.value;
         onChange?.(message.value);
       }
+
+      // The buffer the editor is asking us to write is the one it just handed
+      // over, so it counts as agreed on — otherwise a save mid-keystroke would
+      // come back as a `value` prop and get injected straight back at it.
+      if (message.type === 'save') {
+        applied.current = message.value;
+        onSave?.(message.value);
+      }
     },
-    [onChange],
+    [onChange, onSave],
   );
 
   return (
@@ -343,6 +352,20 @@ function editorHtml(value, spec) {
 
         editor.onDidChangeModelContent(function () {
           post({type: 'change', value: editor.getValue()});
+        });
+
+        // CtrlCmd is Cmd on macOS. Registering the binding with Monaco rather
+        // than on the document is also what keeps WebKit from opening its own
+        // save sheet — a handled keybinding never reaches the browser default.
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
+          post({type: 'save', value: editor.getValue()});
+        });
+
+        // Clicking away — into the file tree, or out of the window — is a save.
+        // The native side drops the write if nothing has changed, so this is
+        // free when the editor is only being tabbed through.
+        editor.onDidBlurEditorText(function () {
+          post({type: 'save', value: editor.getValue()});
         });
 
         post({type: 'ready'});

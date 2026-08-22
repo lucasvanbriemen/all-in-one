@@ -4,7 +4,7 @@ import {fileSystem} from '../fileSystem';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
 
-export function FileNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
+export function FileNode({folder, onOpenFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
 
@@ -16,11 +16,8 @@ export function FileNode({folder, source, setSource, currentFile, setCurrentFile
 
       return openDirectory();
     }
-    const pathToRead = file.fullPath;
 
-    fileSystem.readFile(pathToRead)
-      .then(response => setSource(response.contents ?? ''))
-      .then(() => setCurrentFile(pathToRead))
+    return onOpenFile(file.fullPath);
   }
 
   async function openDirectory() {
@@ -33,13 +30,10 @@ export function FileNode({folder, source, setSource, currentFile, setCurrentFile
       <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.isDirectory ? "Folder:" : "File:"} {folder.name}</Text>
 
       {children?.map(subFile => (
-        <FolderNode
+        <FileNode
           key={subFile.fullPath}
           folder={subFile}
-          source={source}
-          setSource={setSource}
-          currentFile={currentFile}
-          setCurrentFile={setCurrentFile}
+          onOpenFile={onOpenFile}
           itemsDeep={(itemsDeep ?? 0) + 1}
         />
       ))}

@@ -5,7 +5,7 @@ import {useEffect, useState} from 'react';
 import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 
-export function FileTree({source, setSource, currentFile, setCurrentFile}) {
+export function FileTree({currentFile, onOpenFile, onSave}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
@@ -18,11 +18,8 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
     if (file.isDirectory) {
       return openDirectory(file);
     }
-    const pathToRead = file.fullPath;
 
-    fileSystem.readFile(pathToRead)
-      .then(response => setSource(response.contents ?? ''))
-      .then(() => setCurrentFile(pathToRead))
+    return onOpenFile(file.fullPath);
   }
 
   async function openDirectory(file) {
@@ -46,7 +43,9 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
 
   return (
     <ScrollView style={styles.editor}>
-      <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
+      {/* Wrapped, so the press event is not handed to `save` as the contents
+          to write. */}
+      <Text onPress={() => onSave()}>save</Text>
       {files.map(file => (
         <View key={file.name}>
           {!file.isDirectory && (
@@ -57,10 +56,7 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
             <FileNode
               key={file.fullPath}
               folder={file}
-              source={source}
-              setSource={setSource}
-              currentFile={currentFile}
-              setCurrentFile={setCurrentFile}
+              onOpenFile={onOpenFile}
               itemsDeep={0}
             />
           )}
