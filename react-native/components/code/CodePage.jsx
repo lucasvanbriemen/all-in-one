@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
@@ -12,6 +12,7 @@ export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
+  const [openedFiles, setOpenedFiles] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
 
   const save = useCallback(
@@ -34,10 +35,18 @@ export function CodePage({selection, onSelect}) {
       const response = await fileSystem.readFile(projectRoot, path);
       const contents = response.contents ?? '';
 
+      let currentOpenedFiles = [...openedFiles];
+      if (!currentOpenedFiles.includes(path)) {
+        currentOpenedFiles.push(path);
+        setOpenedFiles(currentOpenedFiles);
+      }
+
+      setCurrentFile(path);
+
       setSource(contents);
       setCurrentFile(path);
     },
-    [save, projectRoot],
+    [save, projectRoot, openedFiles, setOpenedFiles],
   );
 
   // The buffer is written once it stops moving. Clearing the timer on every
@@ -56,10 +65,20 @@ export function CodePage({selection, onSelect}) {
   return (
     <View style={styles.editor}>
       <View style={styles.fileTree}>
-        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} />
+        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
       </View>
 
       <View style={styles.codeEditorContainer}>
+        {openedFiles.length > 0 && (
+          <View style={{flexDirection: 'row', gap: 8, marginBottom: 8}}>
+            {openedFiles.map(file => (
+              <View key={file} style={{padding: 4, backgroundColor: file === currentFile ? 'lightgray' : 'transparent', borderRadius: 4}}>
+                <Text onPress={() => openFile(file)}>{file.split('/').pop()}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         <CodeEditor
           value={source}
           path={currentFile}

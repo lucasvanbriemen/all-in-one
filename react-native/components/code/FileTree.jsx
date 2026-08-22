@@ -7,7 +7,7 @@ import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 
-export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot}) {
+export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot, openedFiles, setOpenedFiles}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
