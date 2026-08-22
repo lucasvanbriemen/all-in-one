@@ -9,10 +9,11 @@ import {useThemedStyles} from '../theme';
 /** How long the buffer has to sit still before it is written on its own. */
 const AUTO_SAVE_DELAY = 800;
 
-export function CodePage({selection, onSelect}) {
+export function CodePage({selection, onSelect, projectRoot}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
+  const [projectRoot, setProjectRoot] = useState(null);
 
   const save = useCallback(
     async (contents = source) => {
@@ -20,7 +21,7 @@ export function CodePage({selection, onSelect}) {
         return;
       }
 
-      await fileSystem.writeFile(currentFile, contents);
+      await fileSystem.writeFile(projectRoot, currentFile, contents);
     },
     [currentFile, source],
   );
@@ -31,7 +32,7 @@ export function CodePage({selection, onSelect}) {
       // it is cancelled the moment `currentFile` changes.
       await save();
 
-      const response = await fileSystem.readFile(path);
+      const response = await fileSystem.readFile(projectRoot, path);
       const contents = response.contents ?? '';
 
       setSource(contents);
@@ -56,7 +57,7 @@ export function CodePage({selection, onSelect}) {
   return (
     <View style={styles.editor}>
       <View style={styles.fileTree}>
-        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} />
+        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} />
       </View>
 
       <View style={styles.codeEditorContainer}>

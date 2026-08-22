@@ -5,7 +5,7 @@ import {sortFiles} from './sortFiles';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
 
-export function FileNode({folder, onOpenFile, itemsDeep}) {
+export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
 
@@ -22,7 +22,7 @@ export function FileNode({folder, onOpenFile, itemsDeep}) {
   }
 
   async function openDirectory() {
-    const unsortedItems = await fileSystem.listFiles(folder.fullPath);
+    const unsortedItems = await fileSystem.listFiles(projectRoot, folder.fullPath);
     const sortedFiles = sortFiles(unsortedItems.contents ?? []);
 
     setChildren(sortedFiles);
@@ -34,6 +34,7 @@ export function FileNode({folder, onOpenFile, itemsDeep}) {
 
       {children?.map(subFile => (
         <FileNode
+          projectRoot={projectRoot}
           key={subFile.fullPath}
           folder={subFile}
           onOpenFile={onOpenFile}

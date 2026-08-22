@@ -1,18 +1,19 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
+import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 
-export function FileTree({currentFile, onOpenFile, onSave}) {
+export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
     async function fetchFiles() {
-      const unsortedFiles = await fileSystem.listFiles('');
+      const unsortedFiles = await fileSystem.listFiles(projectRoot, '');
       const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
       setFiles(sortedFiles);
     }
@@ -31,7 +32,7 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
   async function openDirectory(file) {
     const pathToOpen = file.fullPath;
 
-    const response = await fileSystem.listFiles(pathToOpen);
+    const response = await fileSystem.listFiles(projectRoot, pathToOpen);
     const folderItems = response.contents ?? [];
 
     file.items = folderItems;
@@ -47,8 +48,23 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
     setFiles(updatedFiles);
   }
 
+  async function openFolder() {
+    NativeModules.FolderPicker.pick().then(async path => {
+      if (!path) {
+        return;
+      }
+
+      setProjectRoot(path);
+      openDirectory({fullPath: path, name: path.split('/').pop(), isDirectory: true});
+    });
+  }
+
   return (
     <ScrollView style={styles.editor}>
+      <Pressable onPress={() => openFolder()}>
+        <Text>Open folder</Text>
+      </Pressable>
+
       {files.map(file => (
         <View key={file.name}>
           {!file.isDirectory && (
@@ -57,6 +73,7 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
 
           {file.isDirectory && (
             <FileNode
+              projectRoot={projectRoot}
               key={file.fullPath}
               folder={file}
               onOpenFile={onOpenFile}
