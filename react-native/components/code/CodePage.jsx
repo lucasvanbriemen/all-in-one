@@ -3,8 +3,8 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
+import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
-import {folderPicker} from '../folderPicker';
 import {useThemedStyles} from '../theme';
 
 /** How long the buffer has to sit still before it is written on its own. */
@@ -49,7 +49,7 @@ export function CodePage({selection, onSelect}) {
   );
 
   const openFolder = useCallback(async () => {
-    const chosen = await folderPicker.pick();
+    const chosen = await NativeModules.FolderPicker.pick();
 
     if (!chosen || chosen === root) {
       return;

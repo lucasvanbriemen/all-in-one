@@ -4,7 +4,6 @@ import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
-import {folderPicker} from '../folderPicker';
 import {sortFiles} from './sortFiles';
 
 export function FileTree({root, currentFile, onOpenFile, onOpenFolder}) {
