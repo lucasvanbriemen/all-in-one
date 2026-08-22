@@ -1,9 +1,9 @@
+import {CodeIcon} from './code';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
 import React from 'react';
 import {WorkIcon} from './work';
-import {CodeIcon} from './code';
 
 export {LogoIcon} from './logo';
 
