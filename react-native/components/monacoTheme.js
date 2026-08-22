@@ -20,10 +20,11 @@ const TRANSPARENT = '#00000000';
 
 export const EDITOR_OPTIONS = {
   automaticLayout: true,
-  minimap: {enabled: true},
+  minimap: {enabled: false},
   scrollBeyondLastLine: false,
   fontSize: 14,
   padding: {top: 12, bottom: 12},
+  stickyScroll: {enabled: false},
 };
 
 /**
