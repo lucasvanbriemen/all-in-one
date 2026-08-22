@@ -2,10 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {FolderNode} from './FolderNode';
 import {fileSystem} from '../fileSystem';
 
-export function FileTree({source, setSource, currentFile, setCurrentFile}) {
+export function FolderNode({source, setSource, currentFile, setCurrentFile}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
 
@@ -54,15 +53,8 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
         <View key={file.name}>
           <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
 
-          {file.isDirectory && file.items?.map(subFile => (
-            <FolderNode
-              key={subFile.name}
-              source={source}
-              setSource={setSource}
-              currentFile={currentFile}
-              setCurrentFile={setCurrentFile}
-              file={subFile}
-            />
+          {file?.items?.length > 0 && file.items.map(subFile => (
+            <Text key={subFile.name} onPress={() => handleFileSelect(subFile)} style={{marginLeft: 16}}>{subFile.name}</Text>
           ))}
         </View>
       ))}
