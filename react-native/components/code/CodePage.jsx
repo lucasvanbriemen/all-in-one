@@ -14,25 +14,13 @@ export function CodePage({selection, onSelect}) {
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
 
-  // What the file on disk is known to hold. Every write is measured against
-  // it, so opening a file — or blurring one nobody typed in — costs no PUT.
-  const saved = useRef(null);
-
-  // Takes the contents rather than reading `source`, because the editor hands
-  // its own buffer over with the save: on the keystroke that triggers Cmd+S,
-  // Monaco is a render ahead of the state.
   const save = useCallback(
     async (contents = source) => {
-      if (!currentFile || contents === saved.current) {
+      if (!currentFile) {
         return;
       }
 
-      try {
-        await fileSystem.writeFile(currentFile, contents);
-        saved.current = contents;
-      } catch (error) {
-        console.warn(`could not save ${currentFile}: ${error.message}`);
-      }
+      await fileSystem.writeFile(currentFile, contents);
     },
     [currentFile, source],
   );
@@ -46,7 +34,6 @@ export function CodePage({selection, onSelect}) {
       const response = await fileSystem.readFile(path);
       const contents = response.contents ?? '';
 
-      saved.current = contents;
       setSource(contents);
       setCurrentFile(path);
     },
@@ -57,7 +44,7 @@ export function CodePage({selection, onSelect}) {
   // change is also what makes switching files safe: a write scheduled against
   // one path can never land on the next one.
   useEffect(() => {
-    if (!currentFile || source === saved.current) {
+    if (!currentFile) {
       return;
     }
 
