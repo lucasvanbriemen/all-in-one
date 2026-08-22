@@ -13,7 +13,7 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
 
     console.log('file', file);
     if (file.isDirectory) {
-      return openDirectory(file);
+      return openDirectory();
     }
     const pathToRead = file.fullPath;
 
@@ -24,10 +24,8 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
       .catch(console.error);
   }
 
-  async function openDirectory(file) {
-    const pathToOpen = file.fullPath;
-
-    const response = await fileSystem.listFiles(pathToOpen);
+  async function openDirectory() {
+    const response = await fileSystem.listFiles(folder.fullPath);
     setChildren(response.contents ?? []);
   }
 
