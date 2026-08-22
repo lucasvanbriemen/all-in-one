@@ -16,8 +16,9 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }, []);
 
   function handleFileSelect(file) {
+    console.log('file selected', file);
+    console.log('all files', files);
     if (!file.isDirectory) {
-
       const pathToRead = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
 
       fileSystem.readFile(pathToRead)
@@ -27,15 +28,33 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
         .catch(console.error);
     } else {
       const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
-      openDirectory(pathToOpen);
+      openDirectory(file);
       setCurrentDirectory(pathToOpen);
     }
   }
 
-  function openDirectory(path) {
-    fileSystem.listFiles(path)
-      .then(response => setFiles(response.contents ?? []))
-      .catch(console.error);
+  async function openDirectory(file) {
+    console.log('opening directory', file.name, 'in', currentDirectory);
+    const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
+
+    const response = await fileSystem.listFiles(pathToOpen);
+    const folderItems = response.contents ?? [];
+
+    file.items = folderItems;
+
+    let updatedFiles = [...files];
+    // swap out the old directory with the new one
+    updatedFiles = updatedFiles.map(f => {
+      if (f.name === file.name) {
+        console.log('updating file', f.name, 'with items', folderItems);
+        return file;
+      }
+
+      console.log('keeping file', f.name, 'with items', f.items);
+      return f;
+    });
+    setFiles(updatedFiles);
+    console.log('updated files', updatedFiles);
   }
 
   function backToRoot() {
@@ -46,11 +65,11 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   return (
     <View style={styles.editor}>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
-      {currentDirectory && (
-        <Text onPress={backToRoot}>Back to root</Text>
-      )}
+      {/* {currentDirectory && ( */}
+        {/* <Text onPress={backToRoot}>Back to root</Text> */}
+      {/* )} */}
       {files.map(file => (
-        <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
+        <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
       ))}
     </View>
   );
