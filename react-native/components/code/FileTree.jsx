@@ -34,7 +34,6 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }
 
   async function openDirectory(file) {
-    console.log('opening directory', file.name, 'in', currentDirectory);
     const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
 
     const response = await fileSystem.listFiles(pathToOpen);
@@ -43,31 +42,19 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
     file.items = folderItems;
 
     let updatedFiles = [...files];
-    // swap out the old directory with the new one
     updatedFiles = updatedFiles.map(f => {
       if (f.name === file.name) {
-        console.log('updating file', f.name, 'with items', folderItems);
         return file;
       }
 
-      console.log('keeping file', f.name, 'with items', f.items);
       return f;
     });
     setFiles(updatedFiles);
-    console.log('updated files', updatedFiles);
-  }
-
-  function backToRoot() {
-    openDirectory('');
-    setCurrentDirectory('');
   }
 
   return (
     <View style={styles.editor}>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
-      {/* {currentDirectory && ( */}
-        {/* <Text onPress={backToRoot}>Back to root</Text> */}
-      {/* )} */}
       {files.map(file => (
         <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name} {file?.items?.length}</Text>
       ))}
