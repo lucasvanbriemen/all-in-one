@@ -43,9 +43,6 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
 
   return (
     <ScrollView style={styles.editor}>
-      {/* Wrapped, so the press event is not handed to `save` as the contents
-          to write. */}
-      <Text onPress={() => onSave()}>save</Text>
       {files.map(file => (
         <View key={file.name}>
           {!file.isDirectory && (
