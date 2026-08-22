@@ -19,7 +19,7 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
     }
 
     fetchFiles();
-  }, []);
+  }, [projectRoot]);
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
@@ -46,6 +46,7 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
       return f;
     });
     setFiles(updatedFiles);
+    console.log('opened directory', file.name, folderItems);
   }
 
   async function openFolder() {
@@ -55,7 +56,6 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
       }
 
       setProjectRoot(path);
-      openDirectory({fullPath: path, name: path.split('/').pop(), isDirectory: true});
     });
   }
 

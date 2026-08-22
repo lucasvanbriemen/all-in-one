@@ -9,7 +9,7 @@ import {useThemedStyles} from '../theme';
 /** How long the buffer has to sit still before it is written on its own. */
 const AUTO_SAVE_DELAY = 800;
 
-export function CodePage({selection, onSelect, projectRoot}) {
+export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);

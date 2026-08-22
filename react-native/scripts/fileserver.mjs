@@ -6,9 +6,7 @@ const server = http.createServer(async (request, response) => {
   const { method, url } = request;
   const { pathname, searchParams } = new URL(url, 'http://localhost');
   const relative = searchParams.get('path');
-
-  // const ROOT = "/Users/lucas/Desktop/webinargeek/app";
-  const ROOT = "/Users/lucas/Desktop/personal/code/all-in-one"
+  const projectRoot = searchParams.get('projectRoot');
 
   if (method == "PUT" && pathname === "/file") {
     return new Promise((resolve) => {
@@ -18,7 +16,7 @@ const server = http.createServer(async (request, response) => {
       });
       request.on('end', async () => {
         const wantedPath = relative || '';
-        const absolute = path.resolve(ROOT, wantedPath);
+        const absolute = path.resolve(projectRoot, wantedPath);
 
         // convert the body from json string to an object
         try {
@@ -31,7 +29,7 @@ const server = http.createServer(async (request, response) => {
           return resolve();
         }
 
-        if (!absolute.startsWith(ROOT)) {
+        if (!absolute.startsWith(projectRoot)) {
           response.writeHead(400, { 'Content-Type': 'application/json' });
           response.end(JSON.stringify({ error: 'invalid path parameter' }));
           return resolve();
@@ -77,10 +75,10 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
-  const absolute = path.resolve(ROOT, wantedPath);
+  const absolute = path.resolve(projectRoot, wantedPath);
 
 
-  if (!absolute.startsWith(ROOT)) {
+  if (!absolute.startsWith(projectRoot)) {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ error: 'invalid path parameter' }));
     return;
