@@ -4,14 +4,11 @@ import {glass, useThemedStyles} from '../theme';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
-import {fileSystem} from '../fileSystem';
 
 export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
-  const [files, setFiles] = useState([]);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
-  const [currentDirectory, setCurrentDirectory] = useState('');
 
   return (
     <View style={styles.editor}>
