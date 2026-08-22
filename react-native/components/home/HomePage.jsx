@@ -1,18 +1,14 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
-import {EmailContent} from '../EmailContent';
-import {EmailListing} from '../EmailListing';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
-  // `selection` is the sidebar's mailbox path; which email is open within that
-  // mailbox is local to this page.
-  const [selectedEmail, setSelectedEmail] = useState(null);
 
   return (
     <View style={styles.content}>
+      <Text style={styles.text}>Home</Text>
     </View>
   );
 }
@@ -22,11 +18,14 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  listing: {
-    flex: 1,
-  },
-  body: {
-    flex: 2,
+  text: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    opacity: 0.5,
+    color: colors.onSurfaceVariant,
   },
 });
