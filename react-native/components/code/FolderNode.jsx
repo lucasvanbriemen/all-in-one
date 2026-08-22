@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 
 export function FolderNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
