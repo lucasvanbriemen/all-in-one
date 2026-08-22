@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {FileNode} from './FileNode';
@@ -17,6 +17,7 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }, []);
 
   function handleFileSelect(file) {
+    console.log('file', file);
     if (file.isDirectory) {
       return openDirectory(file);
     }
@@ -49,24 +50,28 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }
 
   return (
-    <View style={styles.editor}>
+    <ScrollView style={styles.editor}>
       <Text onPress={() => fileSystem.writeFile(currentFile, source)}>save</Text>
       {files.map(file => (
         <View key={file.name}>
-          <Text key={file.name} onPress={() => handleFileSelect(file)}>File: {file.name} {file?.items?.length}</Text>
+          {!file.isDirectory && (
+            <Text key={file.name} onPress={() => handleFileSelect(file)}>File: {file.name}</Text>
+          )}
 
           {file.isDirectory && (
             <FolderNode
               key={file.fullPath}
               folder={file}
+              source={source}
               setSource={setSource}
               currentFile={currentFile}
               setCurrentFile={setCurrentFile}
+              itemsDeep={0}
             />
           )}
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 

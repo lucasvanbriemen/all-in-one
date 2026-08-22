@@ -5,13 +5,13 @@ import {glass, useThemedStyles} from '../theme';
 import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
 
-export function FolderNode({folder, setSource, currentFile, setCurrentFile}) {
+export function FolderNode({folder, source, setSource, currentFile, setCurrentFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
-  const [files, setFiles] = useState([]);
+  const [children, setChildren] = useState([]);
 
   useEffect(() => {
     fileSystem.listFiles('')
-      .then(response => setFiles(response.contents ?? []))
+      .then(response => setChildren(response.contents ?? []))
       .catch(console.error);
   }, []);
 
@@ -36,7 +36,7 @@ export function FolderNode({folder, setSource, currentFile, setCurrentFile}) {
 
     file.items = folderItems;
 
-    let updatedFiles = [...files];
+    let updatedFiles = [...children];
     updatedFiles = updatedFiles.map(f => {
       if (f.name === file.name) {
         return file;
@@ -44,20 +44,22 @@ export function FolderNode({folder, setSource, currentFile, setCurrentFile}) {
 
       return f;
     });
-    setFiles(updatedFiles);
+    setChildren(updatedFiles);
   }
 
   return (
-    <View style={styles.editor}>
-      <Text key={folder.name} onPress={() => handleFileSelect(folder)}>FOLDER: {folder.name} {folder?.items?.length}</Text>
+    <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
+      <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.isDirectory ? "Folder:" : "File:"} {folder.name}</Text>
 
-      {folder.isDirectory && folder.items?.map(subFile => (
+      {folder.isDirectory && children?.map(subFile => (
         <FolderNode
           key={subFile.fullPath}
           folder={subFile}
+          source={source}
           setSource={setSource}
           currentFile={currentFile}
           setCurrentFile={setCurrentFile}
+          itemsDeep={(itemsDeep ?? 0) + 1}
         />
       ))}
     </View>
@@ -66,10 +68,5 @@ export function FolderNode({folder, setSource, currentFile, setCurrentFile}) {
 
 const createStyles = colors => StyleSheet.create({
   editor: {
-    marginBottom: 16,
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 16,
-    flex: 1,
   },
 });
