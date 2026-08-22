@@ -32,6 +32,7 @@ export function CodeEditor({
   path,
   onChange,
   onSave,
+  onSearch,
   style,
 }) {
   const webView = useRef(null);
@@ -106,8 +107,14 @@ export function CodeEditor({
         applied.current = message.value;
         onSave?.(message.value);
       }
+
+      // Cmd+P is the app's, not the editor's — Monaco is the only thing that
+      // sees the keystroke while the WebView holds focus, so it hands it back.
+      if (message.type === 'search') {
+        onSearch?.();
+      }
     },
-    [onChange, onSave],
+    [onChange, onSave, onSearch],
   );
 
   return (
@@ -359,6 +366,12 @@ function editorHtml(value, spec) {
         // save sheet — a handled keybinding never reaches the browser default.
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
           post({type: 'save', value: editor.getValue()});
+        });
+
+        // Same reasoning as save: bound here so the keystroke never reaches
+        // WebKit, which would otherwise open its own print dialog.
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP, function () {
+          post({type: 'search'});
         });
 
         // Clicking away — into the file tree, or out of the window — is a save.

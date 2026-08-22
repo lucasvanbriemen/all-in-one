@@ -3,10 +3,20 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
+import {SearchModal} from './SearchModal';
 import {fileSystem} from '../fileSystem';
 import {useThemedStyles} from '../theme';
 
 const AUTO_SAVE_DELAY = 800;
+
+// Listing a key here does not decide whether JS sees it — every key on the
+// first responder is emitted and bubbles as `onKeyDown` regardless. What this
+// does is claim the key so macOS stops handling it itself, which is what keeps
+// Cmd+P off the print dialog and Escape from beeping.
+const KEY_DOWN_EVENTS = [
+  {key: 'p', metaKey: true},
+  {key: 'Escape'},
+];
 
 export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
@@ -14,6 +24,8 @@ export function CodePage({selection, onSelect}) {
   const [currentFile, setCurrentFile] = useState(null);
   const [openedFiles, setOpenedFiles] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
+  const [searching, setSearching] = useState(false);
+  const page = useRef(null);
 
   const save = useCallback(
     async (contents = source) => {
@@ -62,8 +74,59 @@ export function CodePage({selection, onSelect}) {
     return () => clearTimeout(timer);
   }, [currentFile, source, save]);
 
+  // Cmd+P reaches us three ways depending on where focus sits: through the
+  // `keyDownEvents` chain when it is on a native view, through Monaco's own
+  // binding when it is in the editor's WebView, and through the document on
+  // the web build. All three land here.
+  const onKeyDown = useCallback(event => {
+    const {key, metaKey, ctrlKey} = event.nativeEvent ?? event;
+
+    if (key === 'p' && (metaKey || ctrlKey)) {
+      event.preventDefault?.();
+      setSearching(true);
+    }
+
+    if (key === 'Escape') {
+      setSearching(false);
+    }
+  }, []);
+
+  // Nothing in this tree takes focus on its own, and on macOS key events are
+  // only emitted from the first responder — a plain View never becomes one, and
+  // clicks deliberately don't move focus. Without this the shortcut only works
+  // while Monaco holds focus, because Monaco is the only thing here that does.
+  useEffect(() => {
+    page.current?.focus?.();
+  }, []);
+
+  // Closing hands focus back, so the next Cmd+P outside the editor still lands.
+  useEffect(() => {
+    if (!searching) {
+      page.current?.focus?.();
+    }
+  }, [searching]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [onKeyDown]);
+
+  const openSearchFile = useCallback(
+    async path => {
+      setSearching(false);
+      await openFile(path);
+    },
+    [openFile],
+  );
+
   return (
-    <View style={styles.editor}>
+    <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
+
       <View style={styles.fileTree}>
         <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
       </View>
@@ -84,8 +147,21 @@ export function CodePage({selection, onSelect}) {
           path={currentFile}
           onChange={setSource}
           onSave={save}
+          onSearch={() => setSearching(true)}
         />
       </View>
+
+      {/* Last child, absolutely filled: it covers the tree and the editor
+          both, and paints over them rather than taking a row of its own. */}
+      {searching && (
+        <SearchModal
+          projectRoot={projectRoot}
+          folder={null}
+          onOpenFile={openSearchFile}
+          onClose={() => setSearching(false)}
+          itemsDeep={0}
+        />
+      )}
     </View>
   );
 }
@@ -93,6 +169,7 @@ export function CodePage({selection, onSelect}) {
 const createStyles = colors => StyleSheet.create({
   editor: {
     flexDirection: 'row',
+    position: 'relative',
     gap: 16,
     flex: 1,
   },
