@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {CodeEditor} from '../CodeEditor';
@@ -22,15 +22,9 @@ export function CodePage({selection, onSelect}) {
       </View>
 
       <View style={styles.codeEditorContainer}>
-        {/* Saving lives with the buffer rather than with the tree: the tree
-            only ever hands a file over, it doesn't hold the edits. */}
-        <View style={styles.toolbar}>
-          <Text style={styles.path} numberOfLines={1}>
-            {currentFile ?? 'No file open'}
-          </Text>
-
-          <Pressable onPress={save} disabled={!currentFile} style={[styles.save, !currentFile && styles.saveDisabled]}>
-            <Text style={styles.saveLabel}>Save</Text>
+        <View>
+          <Pressable onPress={save}>
+            <Text>Save</Text>
           </Pressable>
         </View>
 
@@ -56,30 +50,5 @@ const createStyles = colors => StyleSheet.create({
   },
   fileTree: {
     flex: 1,
-  },
-  toolbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingBottom: 12,
-  },
-  path: {
-    flexShrink: 1,
-    fontSize: 12,
-    color: colors.onSurfaceVariant,
-  },
-  save: {
-    marginLeft: 'auto',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 100,
-    backgroundColor: colors.primary,
-  },
-  saveDisabled: {
-    opacity: 0.4,
-  },
-  saveLabel: {
-    fontSize: 12,
-    color: colors.onPrimary,
   },
 });
