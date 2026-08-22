@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
 import {fileSystem} from '../fileSystem';
+import {sortFiles} from './sortFiles';
 
 export function FileTree({currentFile, onOpenFile, onSave}) {
   const styles = useThemedStyles(createStyles);
@@ -12,21 +13,7 @@ export function FileTree({currentFile, onOpenFile, onSave}) {
   useEffect(() => {
     async function fetchFiles() {
       const unsortedFiles = await fileSystem.listFiles('');
-      sortFiles(unsortedFiles.contents ?? []);
-    }
-
-    function sortFiles(unsortedFiles) {
-      // First we sort them by folder vs file, then by name. This is a simple sort that will put all folders first, then files, and within each group, they will be sorted alphabetically.
-      const sortedFiles = unsortedFiles.sort((a, b) => {
-        if (a.isDirectory && !b.isDirectory) {
-          return -1;
-        }
-        if (!a.isDirectory && b.isDirectory) {
-          return 1;
-        }
-        return a.name.localeCompare(b.name);
-      });
-
+      const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
       setFiles(sortedFiles);
     }
 
