@@ -10,6 +10,8 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
   const [children, setChildren] = useState([]);
 
   function handleFileSelect(file) {
+
+    console.log('file', file);
     if (file.isDirectory) {
       return openDirectory(file);
     }
@@ -26,26 +28,14 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
     const pathToOpen = file.fullPath;
 
     const response = await fileSystem.listFiles(pathToOpen);
-    const folderItems = response.contents ?? [];
-
-    file.items = folderItems;
-
-    let updatedFiles = [...children];
-    updatedFiles = updatedFiles.map(f => {
-      if (f.name === file.name) {
-        return file;
-      }
-
-      return f;
-    });
-    setChildren(updatedFiles);
+    setChildren(response.contents ?? []);
   }
 
   return (
     <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
       <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.isDirectory ? "Folder:" : "File:"} {folder.name}</Text>
 
-      {folder.isDirectory && children?.map(subFile => (
+      {children?.map(subFile => (
         <FolderNode
           key={subFile.fullPath}
           folder={subFile}
