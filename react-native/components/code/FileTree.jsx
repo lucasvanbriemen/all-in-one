@@ -15,17 +15,16 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }, []);
 
   function handleFileSelect(file) {
-    if (!file.isDirectory) {
-      const pathToRead = file.fullPath;
-
-      fileSystem.readFile(pathToRead)
-        .then(response => setSource(response.contents ?? ''))
-        .then(() => setCurrentFile(pathToRead))
-        .then(() => console.log('contents', source))
-        .catch(console.error);
-    } else {
-      openDirectory(file);
+    if (file.isDirectory) {
+      return openDirectory(file);
     }
+    const pathToRead = file.fullPath;
+
+    fileSystem.readFile(pathToRead)
+      .then(response => setSource(response.contents ?? ''))
+      .then(() => setCurrentFile(pathToRead))
+      .then(() => console.log('contents', source))
+      .catch(console.error);
   }
 
   async function openDirectory(file) {
