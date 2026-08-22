@@ -59,9 +59,7 @@ export function FileTree({root, currentFile, onOpenFile, onOpenFolder}) {
           {root ? folderName(root) : 'Connecting…'}
         </Text>
 
-        {folderPicker.isAvailable && (
-          <Text style={styles.openFolder} onPress={onOpenFolder}>Open…</Text>
-        )}
+        <Text style={styles.openFolder} onPress={onOpenFolder}>Open…</Text>
       </View>
 
       {files.map(file => (
