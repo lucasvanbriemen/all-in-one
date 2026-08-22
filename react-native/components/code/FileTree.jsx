@@ -15,8 +15,6 @@ export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   }, []);
 
   function handleFileSelect(file) {
-    console.log('file selected', file);
-    console.log('all files', files);
     if (!file.isDirectory) {
       const pathToRead = file.fullPath;
 
