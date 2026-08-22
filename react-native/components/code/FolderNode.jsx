@@ -10,6 +10,10 @@ export function FolderNode({folder, source, setSource, currentFile, setCurrentFi
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
+      if (children.length > 0) {
+        return setChildren([]);
+      }
+
       return openDirectory();
     }
     const pathToRead = file.fullPath;
