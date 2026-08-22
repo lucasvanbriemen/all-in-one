@@ -1,9 +1,9 @@
 import {EDITOR_OPTIONS, MONACO_CDN, monacoTheme} from './monacoTheme';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
-import {glass, useTheme} from './theme';
 
 import {WebView} from 'react-native-webview';
+import {useTheme} from './theme';
 
 /**
  * Monaco, hosted in a WebView.

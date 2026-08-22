@@ -2,14 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {CodeEditor} from '../CodeEditor';
 import {fileSystem} from '../fileSystem';
 
-export function FileTree({selection, onSelect}) {
+export function FileTree({source, setSource, currentFile, setCurrentFile}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
-  const [source, setSource] = useState('// some comment\n');
-  const [currentFile, setCurrentFile] = useState(null);
   const [currentDirectory, setCurrentDirectory] = useState('');
 
   useEffect(() => {

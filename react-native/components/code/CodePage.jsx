@@ -13,44 +13,10 @@ export function CodePage({selection, onSelect}) {
   const [currentFile, setCurrentFile] = useState(null);
   const [currentDirectory, setCurrentDirectory] = useState('');
 
-  useEffect(() => {
-    fileSystem.listFiles('')
-      .then(response => setFiles(response.contents ?? []))
-      .catch(console.error);
-  }, []);
-
-  function handleFileSelect(file) {
-    if (!file.isDirectory) {
-
-      const pathToRead = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
-
-      fileSystem.readFile(pathToRead)
-        .then(response => setSource(response.contents ?? ''))
-        .then(() => setCurrentFile(pathToRead))
-        .then(() => console.log('contents', source))
-        .catch(console.error);
-    } else {
-      const pathToOpen = currentDirectory ? `${currentDirectory}/${file.name}` : file.name;
-      openDirectory(pathToOpen);
-      setCurrentDirectory(pathToOpen);
-    }
-  }
-
-  function openDirectory(path) {
-    fileSystem.listFiles(path)
-      .then(response => setFiles(response.contents ?? []))
-      .catch(console.error);
-  }
-
-  function backToRoot() {
-    openDirectory('');
-    setCurrentDirectory('');
-  }
-
   return (
     <View style={styles.editor}>
       <View style={styles.fileTree}>
-        <FileTree selection={selection} onSelect={onSelect} />
+        <FileTree source={source} setSource={setSource} currentFile={currentFile} setCurrentFile={setCurrentFile} />
       </View>
       
       <View style={styles.codeEditorContainer}>
