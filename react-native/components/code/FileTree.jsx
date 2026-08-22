@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
+import {useEffect, useState} from 'react';
 
-import {FileNode} from './FileNode';
 import {FolderNode} from './FolderNode';
 import {fileSystem} from '../fileSystem';
 

@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
+import {useState} from 'react';
 
 export function CodePage({selection, onSelect}) {
   const styles = useThemedStyles(createStyles);
