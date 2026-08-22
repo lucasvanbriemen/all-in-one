@@ -34,6 +34,11 @@ const createStyles = colors => StyleSheet.create({
   },
   codeEditorContainer: {
     flex: 4,
+    ...glass(colors, {tint: 0.25}),
+    marginBottom: 16,
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 16,
   },
   fileTree: {
     flex: 1,
