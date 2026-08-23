@@ -2,6 +2,7 @@ import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-na
 import {glass, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {FileIcon} from '../icons/FileIcon';
 import {fileSystem} from '../fileSystem';
 
 // Claimed so macOS stops handling these itself; the events reach JS either way.
@@ -45,6 +46,11 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
     [onClose],
   );
 
+  function fileDisplayName(filePath) {
+    const parts = filePath.split('/');
+    return parts[parts.length - 1];
+  }
+
   return (
     <View focusable enableFocusRing={false} style={styles.overlay} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
       <Pressable style={styles.overlay} onPress={onClose} />
@@ -54,7 +60,11 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
 
         <ScrollView style={{maxHeight: 300, minHeight: 300, marginTop: 16}} >
           {searchResults.map(searchResult => (
-            <Text key={searchResult} onPress={() => onOpenFile(searchResult)}>{searchResult}</Text>
+            <Pressable key={searchResult} onPress={() => onOpenFile(searchResult)} style={{flexDirection: 'row', gap: 8, alignItems: 'center', padding: 8, borderRadius: 8, backgroundColor: 'rgba(0,0,0,0.05)', marginBottom: 4}}>
+              <FileIcon name={searchResult} isDirectory={false} />
+              <Text>{fileDisplayName(searchResult)}</Text>
+              <Text>{searchResult}</Text>
+            </Pressable>
           ))}
         </ScrollView>
       </View>
@@ -70,12 +80,12 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'center',
   },
   panel: {
-    minWidth: 500,
-    maxWidth: 500,
+    minWidth: 750,
+    maxWidth: 750,
     padding: 16,
     borderRadius: 16,
     backgroundColor: colors.primaryContainer,
-    ...glass(colors, {tint: 0.75, tone: "surfaceAt4"}),
+    ...glass(colors, {tint: 0.5, tone: "surfaceAt4"}),
     shadowColor: colors.shadow,
     shadowOffset: {width: 0, height: 50},
     shadowOpacity: 0.5,
@@ -90,4 +100,5 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     backgroundColor: colors.surface,
   },
+  
 });
