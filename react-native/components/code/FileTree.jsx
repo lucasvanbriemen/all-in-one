@@ -3,7 +3,6 @@ import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
-import {Icon} from '../icons';
 import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
@@ -65,14 +64,12 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
     <ScrollView style={styles.editor}>
       <Pressable onPress={() => openFolder()}>
         <Text>Open folder</Text>
-
-        <Icon name="chevron-left" size={16} color="black" />
       </Pressable>
 
       {files.map(file => (
         <View key={file.name}>
           {!file.isDirectory && (
-            <Text key={file.name} onPress={() => handleFileSelect(file)}>File: {file.name}</Text>
+            <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
           )}
 
           {file.isDirectory && (

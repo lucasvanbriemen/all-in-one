@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Icon} from '../icons';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 import {useState} from 'react';
@@ -33,7 +34,15 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
 
   return (
     <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
-      <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.isDirectory ? "Folder:" : "File:"} {folder.name}</Text>
+      <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+        {isOpen ? (
+          <Icon name="chevron-down" size={16} color="black" />
+        ) : (
+          <Icon name="chevron-right" size={16} color="black" />
+        )}
+
+        <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.name}</Text>
+      </View>
 
       {children?.map(subFile => (
         <FileNode
