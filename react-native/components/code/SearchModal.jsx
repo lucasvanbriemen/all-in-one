@@ -69,6 +69,7 @@ const createStyles = colors => StyleSheet.create({
   },
   panel: {
     minWidth: 500,
+    maxWidth: 500,
     padding: 16,
     borderRadius: 16,
     backgroundColor: colors.primaryContainer,
