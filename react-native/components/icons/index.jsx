@@ -1,3 +1,4 @@
+import {CheveronLeft} from './chevronLeft';
 import {CodeIcon} from './code';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
@@ -17,10 +18,11 @@ const ICONS = {
   github: GithubIcon,
   pathe: PatheIcon,
   code: CodeIcon,
+  'chevron-left': CheveronLeft,
 };
 
 export function Icon({name, size, color}) {
-  const icon = ICONS[name];
+  const IconToRender = ICONS[name];
 
-  return icon ? <Icon size={size} color={color} /> : null;
+  return IconToRender ? <IconToRender size={size} color={color} /> : null;
 }
