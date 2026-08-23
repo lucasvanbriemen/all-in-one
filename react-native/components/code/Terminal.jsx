@@ -1,9 +1,4 @@
-import {
-  TERMINAL_OPTIONS,
-  XTERM_CDN,
-  XTERM_FIT_CDN,
-  terminalTheme,
-} from './terminalTheme';
+import { TERMINAL_OPTIONS, XTERM_CDN, XTERM_FIT_CDN, terminalTheme } from './terminalTheme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {StyleSheet} from 'react-native';
