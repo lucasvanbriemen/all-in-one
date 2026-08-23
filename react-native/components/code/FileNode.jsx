@@ -59,5 +59,6 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
 
 const createStyles = colors => StyleSheet.create({
   editor: {
+    marginBottom: 4,
   },
 });
