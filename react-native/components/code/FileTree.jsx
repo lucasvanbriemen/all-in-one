@@ -2,6 +2,7 @@ import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
+import {FileIcon} from '../icons';
 import {FileNode} from './FileNode';
 import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
@@ -68,8 +69,16 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
 
       {files.map(file => (
         <View key={file.name}>
+          {/* Top-level files never reach FileNode, so they get the same row
+              treatment here: chevron-width gutter, icon, name. */}
           {!file.isDirectory && (
-            <Text key={file.name} onPress={() => handleFileSelect(file)}>{file.name}</Text>
+            <Pressable style={styles.row} onPress={() => handleFileSelect(file)}>
+              <View style={styles.chevronSpacer} />
+
+              <FileIcon name={file.name} />
+
+              <Text>{file.name}</Text>
+            </Pressable>
           )}
 
           {file.isDirectory && (
@@ -88,6 +97,15 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
 }
 
 const createStyles = colors => StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  chevronSpacer: {
+    width: 16,
+  },
   editor: {
     ...glass(colors, {tint: 0.25}),
     marginBottom: 16,

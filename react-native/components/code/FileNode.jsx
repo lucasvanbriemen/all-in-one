@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {FileIcon, Icon} from '../icons';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 
-import {Icon} from '../icons';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 import {useState} from 'react';
@@ -34,15 +34,17 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
 
   return (
     <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
-      <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-        {isOpen ? (
-          <Icon name="chevron-down" size={16} color="black" />
+      <Pressable style={styles.row} onPress={() => handleFileSelect(folder)}>
+        {folder.isDirectory ? (
+          <Icon name={isOpen ? 'chevron-down' : 'chevron-right'} size={16} color="black" />
         ) : (
-          <Icon name="chevron-right" size={16} color="black" />
+          <View style={styles.chevronSpacer} />
         )}
 
-        <Text key={folder.name} onPress={() => handleFileSelect(folder)}>{folder.name}</Text>
-      </View>
+        <FileIcon name={folder.name} isDirectory={folder.isDirectory} isOpen={isOpen} />
+
+        <Text>{folder.name}</Text>
+      </Pressable>
 
       {children?.map(subFile => (
         <FileNode
@@ -60,5 +62,10 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
 const createStyles = colors => StyleSheet.create({
   editor: {
     marginBottom: 4,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
   },
 });
