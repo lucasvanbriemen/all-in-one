@@ -1,6 +1,7 @@
-import {FileIcon, Icon} from '../icons';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
+import {FileIcon} from '../icons/FileIcon';
+import {Icon} from '../icons';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
 import {useState} from 'react';

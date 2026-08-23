@@ -2,7 +2,7 @@ import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
-import {FileIcon} from '../icons';
+import {FileIcon} from '../icons/FileIcon';
 import {FileNode} from './FileNode';
 import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
