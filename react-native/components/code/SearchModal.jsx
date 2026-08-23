@@ -60,7 +60,7 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
 
         <ScrollView style={{maxHeight: 300, minHeight: 300, marginTop: 16}} >
           {searchResults.map(searchResult => (
-            <Pressable key={searchResult} onPress={() => onOpenFile(searchResult)} style={{flexDirection: 'row', gap: 8, alignItems: 'center', padding: 8, borderRadius: 8, backgroundColor: 'rgba(0,0,0,0.05)', marginBottom: 4}}>
+            <Pressable key={searchResult} onPress={() => onOpenFile(searchResult)} style={styles.searchResultRow}>
               <FileIcon name={searchResult} isDirectory={false} />
               <Text>{fileDisplayName(searchResult)}</Text>
               <Text>{searchResult}</Text>
@@ -83,15 +83,14 @@ const createStyles = colors => StyleSheet.create({
     minWidth: 750,
     maxWidth: 750,
     padding: 16,
+    marginTop: 64,
     borderRadius: 16,
     backgroundColor: colors.primaryContainer,
-    ...glass(colors, {tint: 0.5, tone: "surfaceAt4"}),
+    ...glass(colors, {tint: 0.75}),
     shadowColor: colors.shadow,
     shadowOffset: {width: 0, height: 50},
     shadowOpacity: 0.5,
     shadowRadius: 100,
-    position: 'absolute',
-    top: 64,
   },
   input: {
     borderWidth: 1,
@@ -100,5 +99,13 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     backgroundColor: colors.surface,
   },
-  
+  searchResultRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+    ...glass(colors, {tint: 0.5}),
+    marginBottom: 4,
+  },
 });
