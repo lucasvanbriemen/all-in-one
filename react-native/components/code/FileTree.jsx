@@ -47,11 +47,9 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
       return f;
     });
     setFiles(updatedFiles);
-    console.log('opened directory', file.name, folderItems);
   }
 
   async function openFolder() {
-    console.log('opening folder');
     const path = await NativeModules.FolderPicker.pick();
 
     if (!path) {

@@ -29,7 +29,6 @@ export const fileSystem = {
       }
       const isJson = response.headers.get("content-type")?.includes("application/json");
       const data = isJson ? await response.json() : await response.text();
-      console.log('fetch search', data);
       return data;
     });
   },
@@ -67,7 +66,6 @@ export const fileSystem = {
     // request is prefixed with the API host.
     return fetch(BASE_URL + fullUrl, options)
       .then(async (response) => {
-        console.log('fetch', fullUrl, response.status);
         if (!response.ok) {
           throw new Error(`GET ${fullUrl} failed with ${response.status}`);
         }

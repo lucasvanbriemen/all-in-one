@@ -32,7 +32,6 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
         return;
       }
 
-      console.log('search', searchTerm, projectRoot);
       const response = await fileSystem.searchFiles(projectRoot, searchTerm);
       setSearchResults(response.results ?? []);
     }
@@ -43,7 +42,6 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
   // On enter we want to open the first search result, if any.
   const openFirstResult = useCallback(() => {
     if (searchResults.length > 0) {
-      console.log('opening first search result', searchResults[0]);
       onOpenFile(searchResults[0]);
     }
   }, [onOpenFile, searchResults]);
