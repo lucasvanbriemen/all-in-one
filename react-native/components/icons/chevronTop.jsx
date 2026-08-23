@@ -2,10 +2,10 @@ import {Glyph, strokeProps} from './glyph';
 
 import {Path} from 'react-native-svg';
 
-export function ChevronLeft({size, color}) {
+export function ChevronTop({size, color}) {
   return (
     <Glyph size={size}>
-      <Path d="M15.5 4 7.5 12l8 8" stroke={color} {...strokeProps} />
+      <Path d="M3.2 11 12 3.6 20.8 11" stroke={color} {...strokeProps} />
     </Glyph>
   );
 }
