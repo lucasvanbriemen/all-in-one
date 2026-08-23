@@ -179,8 +179,8 @@ const createStyles = colors => StyleSheet.create({
   },
   codeEditorContainer: {
     flex: 5,
-    marginTop: 16,
-    padding: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
     borderRadius: 16,
     gap: 16,
   },
