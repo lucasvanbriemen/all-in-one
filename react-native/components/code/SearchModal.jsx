@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -52,9 +52,11 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
       <View style={styles.panel}>
         <TextInput ref={input} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
-        {searchResults.map(searchResult => (
-          <Text key={searchResult} onPress={() => onOpenFile(searchResult)}>{searchResult}</Text>
-        ))}
+        <ScrollView style={{maxHeight: 300, minHeight: 300, marginTop: 16}} >
+          {searchResults.map(searchResult => (
+            <Text key={searchResult} onPress={() => onOpenFile(searchResult)}>{searchResult}</Text>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -74,6 +76,11 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     backgroundColor: colors.primaryContainer,
     ...glass(colors, {tint: 0.75, tone: "surfaceAt4"}),
+    shadowColor: colors.shadow,
+    shadowOffset: {width: 0, height: 50},
+    shadowOpacity: 0.5,
+    shadowRadius: 100,
+    position: 'absolute',
     top: 64,
   },
   input: {
