@@ -1,4 +1,7 @@
-import {CheveronLeft} from './chevronLeft';
+import {ChevronDown} from './chevronDown';
+import {ChevronLeft} from './chevronLeft';
+import {ChevronRight} from './chevronRight';
+import {ChevronTop} from './chevronTop';
 import {CodeIcon} from './code';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
@@ -18,7 +21,10 @@ const ICONS = {
   github: GithubIcon,
   pathe: PatheIcon,
   code: CodeIcon,
-  'chevron-left': CheveronLeft,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
+  'chevron-top': ChevronTop,
+  'chevron-down': ChevronDown,
 };
 
 export function Icon({name, size, color}) {
