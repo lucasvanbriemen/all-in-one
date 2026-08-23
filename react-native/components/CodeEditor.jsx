@@ -260,7 +260,6 @@ function editorHtml(value, spec) {
           bridge.shikiToMonaco(highlighter, monaco);
           applyTheme();
         } catch (error) {
-          console.log('shiki unavailable, keeping Monarch: ' + error);
         }
       }
 
