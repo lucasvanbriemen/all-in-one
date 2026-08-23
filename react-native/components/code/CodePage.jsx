@@ -194,6 +194,6 @@ const createStyles = colors => StyleSheet.create({
     // The emulator inside draws to the edges, so the panel's own rounding has
     // to clip it — otherwise the scrollback runs out over the corners.
     overflow: 'hidden',
-    ...glass(colors, {tint: 0.25})
+    ...glass(colors, {tint: 0.75})
   },
 });
