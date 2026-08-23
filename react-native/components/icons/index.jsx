@@ -1,9 +1,9 @@
+import {CodeIcon} from './code';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
 import React from 'react';
 import {WorkIcon} from './work';
-import {CodeIcon} from './code';
 
 export {LogoIcon} from './logo';
 
@@ -19,8 +19,8 @@ const ICONS = {
   code: CodeIcon,
 };
 
-export function SidebarIcon({name, size, color}) {
-  const Icon = ICONS[name];
+export function Icon({name, size, color}) {
+  const icon = ICONS[name];
 
-  return Icon ? <Icon size={size} color={color} /> : null;
+  return icon ? <Icon size={size} color={color} /> : null;
 }

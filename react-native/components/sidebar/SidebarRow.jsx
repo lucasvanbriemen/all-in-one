@@ -1,7 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {SidebarIcon} from '../icons';
+import {Icon} from '../icons';
 
 export function SidebarRow({icon, title, isSelected, onPress, useLabels = true}) {
   const styles = useThemedStyles(createStyles);
@@ -9,7 +9,7 @@ export function SidebarRow({icon, title, isSelected, onPress, useLabels = true})
 
   return (
     <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow, !useLabels && styles.rowMinimized]}>
-      <SidebarIcon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
+      <Icon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
       {useLabels && (
         <Text style={[styles.label, isSelected && styles.labelSelected]}>
           {title}
