@@ -6,7 +6,10 @@ import {FileIcon} from '../icons/FileIcon';
 import {fileSystem} from '../fileSystem';
 
 // Claimed so macOS stops handling these itself; the events reach JS either way.
-const KEY_DOWN_EVENTS = [{key: 'Escape'}, {key: 'p', metaKey: true}];
+// Enter is only listed for the overlay: inside a single-line TextInput the field
+// editor swallows Return as `insertNewline:` before any of this is consulted, so
+// the input hands it to us through `onSubmitEditing` instead.
+const KEY_DOWN_EVENTS = [{key: 'Escape'}, {key: 'p', metaKey: true}, {key: 'Enter'}];
 
 export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
@@ -37,13 +40,25 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
     search();
   }, [searchTerm, projectRoot, folder]);
 
+  // On enter we want to open the first search result, if any.
+  const openFirstResult = useCallback(() => {
+    if (searchResults.length > 0) {
+      console.log('opening first search result', searchResults[0]);
+      onOpenFile(searchResults[0]);
+    }
+  }, [onOpenFile, searchResults]);
+
   const onKeyDown = useCallback(
     event => {
       if ((event.nativeEvent ?? event).key === 'Escape') {
         onClose?.();
       }
+
+      if ((event.nativeEvent ?? event).key === 'Enter') {
+        openFirstResult();
+      }
     },
-    [onClose],
+    [onClose, openFirstResult],
   );
 
   function fileDisplayName(filePath) {
@@ -56,14 +71,14 @@ export function SearchModal({projectRoot, folder, onOpenFile, onClose, itemsDeep
       <Pressable style={styles.overlay} onPress={onClose} />
 
       <View style={styles.panel}>
-        <TextInput ref={input} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
+        <TextInput ref={input} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS} onSubmitEditing={openFirstResult} onChangeText={setSearchTerm} />
 
         <ScrollView style={{maxHeight: 300, minHeight: 300, marginTop: 16}} >
           {searchResults.map(searchResult => (
             <Pressable key={searchResult} onPress={() => onOpenFile(searchResult)} style={styles.searchResultRow}>
               <FileIcon name={searchResult} isDirectory={false} />
               <Text>{fileDisplayName(searchResult)}</Text>
-              <Text>{searchResult}</Text>
+              <Text style={styles.fullPath}>{searchResult}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -107,5 +122,9 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
     ...glass(colors, {tint: 0.5}),
     marginBottom: 4,
+  },
+  fullPath: {
+    color: colors.onSurfaceVariant,
+    fontSize: 12,
   },
 });
