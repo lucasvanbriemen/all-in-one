@@ -1,11 +1,11 @@
 import {StyleSheet, Text, View} from 'react-native';
+import {glass, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
 import {SearchModal} from './SearchModal';
 import {fileSystem} from '../fileSystem';
-import {useThemedStyles} from '../theme';
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -149,6 +149,10 @@ export function CodePage({selection, onSelect}) {
           onSave={save}
           onSearch={() => setSearching(true)}
         />
+
+        <View style={styles.terminal}>
+          <Text>Terminal</Text>
+        </View>
       </View>
 
       {/* Last child, absolutely filled: it covers the tree and the editor
@@ -175,13 +179,17 @@ const createStyles = colors => StyleSheet.create({
   },
   codeEditorContainer: {
     flex: 5,
-    backgroundColor: colors.surface,
-    marginBottom: 16,
     marginTop: 16,
     padding: 16,
     borderRadius: 16,
+    gap: 16,
   },
   fileTree: {
     flex: 1,
+  },
+  terminal: {
+    borderRadius: 16,
+    height: 300,
+    ...glass(colors, {tint: 0.25})
   },
 });

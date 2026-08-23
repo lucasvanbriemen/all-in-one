@@ -14,6 +14,7 @@ import {StyleSheet, useColorScheme} from 'react-native';
 
 import {WebView} from 'react-native-webview';
 import {useTheme} from './theme';
+import {useThemedStyles} from './theme';
 
 /**
  * Monaco, hosted in a WebView.
@@ -39,6 +40,7 @@ export function CodeEditor({
   const [loaded, setLoaded] = useState(false);
   const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
+  const styles = useThemedStyles(createStyles);
 
   // Monaco owns the buffer once it is up, so the document is built exactly
   // once. A `source` that changed identity on re-render would reload the frame
@@ -390,9 +392,10 @@ function editorHtml(value, spec) {
 </html>`;
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   editor: {
     flex: 2,
-    backgroundColor: 'transparent',
+    backgroundColor: colors.surface,
+    borderRadius: 16,
   },
 });
