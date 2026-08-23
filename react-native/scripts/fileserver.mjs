@@ -2,6 +2,8 @@ import fs from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 
+import {attachTerminal} from './terminal.mjs';
+
 const server = http.createServer(async (request, response) => {
   const { method, url } = request;
   const { pathname, searchParams } = new URL(url, 'http://localhost');
@@ -101,6 +103,9 @@ const server = http.createServer(async (request, response) => {
     return getDirectoryContents(absolute, response, wantedPath);
   }
 });
+
+// The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
+attachTerminal(server);
 
 server.listen(4001, '127.0.0.1', () => {
   console.log('listening on http://127.0.0.1:4001');
