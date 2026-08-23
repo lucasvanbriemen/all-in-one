@@ -33,6 +33,25 @@ export const fileSystem = {
     });
   },
 
+  /**
+   * The terminal panel's socket. Built here so the host lives in one place,
+   * even though nothing about it is a request: the shell is spawned at the size
+   * the emulator measured, in the project the editor has open.
+   */
+  terminalUrl(projectRoot, size = null) {
+    const parameters = [];
+
+    if (projectRoot) {
+      parameters.push(`cwd=${encodeURIComponent(projectRoot)}`);
+    }
+
+    if (size) {
+      parameters.push(`cols=${size.cols}`, `rows=${size.rows}`);
+    }
+
+    return `${BASE_URL.replace(/^http/, "ws")}/terminal?${parameters.join("&")}`;
+  },
+
   writeFile(projectRoot, path, contents) {
     const fullUrl = `/file?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {

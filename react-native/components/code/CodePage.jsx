@@ -5,6 +5,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
 import {SearchModal} from './SearchModal';
+import {Terminal} from './Terminal';
 import {fileSystem} from '../fileSystem';
 
 const AUTO_SAVE_DELAY = 800;
@@ -151,7 +152,7 @@ export function CodePage({selection, onSelect}) {
         />
 
         <View style={styles.terminal}>
-          <Text>Terminal</Text>
+          <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
         </View>
       </View>
 
@@ -190,6 +191,9 @@ const createStyles = colors => StyleSheet.create({
   terminal: {
     borderRadius: 16,
     height: 300,
+    // The emulator inside draws to the edges, so the panel's own rounding has
+    // to clip it — otherwise the scrollback runs out over the corners.
+    overflow: 'hidden',
     ...glass(colors, {tint: 0.25})
   },
 });
