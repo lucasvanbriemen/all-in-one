@@ -76,19 +76,30 @@ const ANSI = {
 /** xterm parses `#rgb`, `#rrggbb(aa)` and comma-form `rgb()` — nothing else. */
 const TRANSPARENT = '#00000000';
 
+/**
+ * `useTheme()` is empty until the palette lands, and a terminal has to be
+ * legible on its first frame. Written in the palette's own notation rather
+ * than as hex, because `withAlpha` takes these apart by their numbers.
+ */
+const FALLBACK = {
+  dark: {onSurface: 'rgb(226 226 233)', primary: 'rgb(170 199 255)', onPrimary: 'rgb(11 48 95)', outline: 'rgb(142 144 153)'},
+  light: {onSurface: 'rgb(25 28 32)', primary: 'rgb(65 94 145)', onPrimary: 'rgb(255 255 255)', outline: 'rgb(116 119 127)'},
+};
+
 export function terminalTheme(colors, scheme) {
   const dark = scheme === 'dark';
+  const fallback = FALLBACK[dark ? 'dark' : 'light'];
 
-  const text = colors.onSurface;
-  const accent = colors.primary;
-  const muted = colors.outline;
+  const text = colors.onSurface ?? fallback.onSurface;
+  const accent = colors.primary ?? fallback.primary;
+  const muted = colors.outline ?? fallback.outline;
 
   return {
     ...ANSI[dark ? 'dark' : 'light'],
     background: TRANSPARENT,
     foreground: toHex(text),
     cursor: toHex(accent),
-    cursorAccent: toHex(colors.onPrimary),
+    cursorAccent: toHex(colors.onPrimary ?? fallback.onPrimary),
     // Translucent, so selected text keeps the colour the shell asked for
     // instead of being covered over by the highlight.
     selectionBackground: withAlpha(accent, 0.3),
