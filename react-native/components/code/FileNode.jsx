@@ -8,13 +8,16 @@ import {useThemedStyles} from '../theme';
 export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
-      if (children.length > 0) {
+      if (isOpen) {
+        setIsOpen(false);
         return setChildren([]);
       }
 
+      setIsOpen(true);
       return openDirectory();
     }
 
@@ -24,8 +27,8 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
   async function openDirectory() {
     const unsortedItems = await fileSystem.listFiles(projectRoot, folder.fullPath);
     const sortedFiles = sortFiles(unsortedItems.contents ?? []);
-
     setChildren(sortedFiles);
+    setIsOpen(true);
   }
 
   return (
