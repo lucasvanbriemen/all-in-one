@@ -61,14 +61,4 @@ const createStyles = colors => StyleSheet.create({
     paddingBottom: 16,
     justifyContent: 'center',
   },
-  selectedRow: {
-    backgroundColor: colors.primary,
-  },
-  label: {
-    fontSize: 14,
-    color: colors.onSurface,
-  },
-  labelSelected: {
-    color: colors.onPrimary,
-  },
 });

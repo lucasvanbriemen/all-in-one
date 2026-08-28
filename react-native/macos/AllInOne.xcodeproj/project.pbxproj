@@ -11,11 +11,12 @@
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
-		A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */; };
-		A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */; };
+		5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */; };
 		79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */; };
 		990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */; };
 		9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */; };
+		A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */; };
+		A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 		0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VisualEffectBackgroundManager.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.debug.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.debug.xcconfig"; sourceTree = "<group>"; };
+		261EC1AB6F033A60773A3AC4 /* SidecarServer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SidecarServer.h; path = SidecarServer.h; sourceTree = "<group>"; };
 		5048F9C2B2E49DE76DCA47F0 /* Pods-AllInOne-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.release.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		514201492437B4B30078DB4F /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5142014B2437B4B30078DB4F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -35,10 +37,12 @@
 		514201592437B4B40078DB4F /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
 		51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllInOne-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
-		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FolderPicker.swift; sourceTree = "<group>"; };
 		A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FolderPicker.m; sourceTree = "<group>"; };
+		B1A6CF43F2BB8B941DB393C7 /* Sidecar.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; name = Sidecar.entitlements; path = Sidecar.entitlements; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SidecarServer.m; path = SidecarServer.m; sourceTree = "<group>"; };
+		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectBackground.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,6 +89,9 @@
 				A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */,
 				A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */,
 				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
+				261EC1AB6F033A60773A3AC4 /* SidecarServer.h */,
+				F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */,
+				B1A6CF43F2BB8B941DB393C7 /* Sidecar.entitlements */,
 			);
 			path = "AllInOne-macOS";
 			sourceTree = "<group>";
@@ -160,6 +167,7 @@
 				514201462437B4B30078DB4F /* Frameworks */,
 				514201472437B4B30078DB4F /* Resources */,
 				381D8A6E24576A4E00465D17 /* Bundle React Native code and images */,
+				906E0679629F42EB6A28A692 /* Stage sidecar server */,
 				08AA6FD8A45B44A667C6BB44 /* [CP] Embed Pods Frameworks */,
 				C5392EBCC11A8F89EECD46E1 /* [CP] Copy Pods Resources */,
 			);
@@ -302,6 +310,26 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native-macos/scripts/react-native-xcode.sh\n";
 		};
+		906E0679629F42EB6A28A692 /* Stage sidecar server */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Stage sidecar server";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\"$SRCROOT/../scripts/stage-sidecar.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C5392EBCC11A8F89EECD46E1 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,6 +378,7 @@
 				990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */,
 				A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */,
 				A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */,
+				5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,19 +443,25 @@
 			baseConfigurationReference = 17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "AllInOne-macOS/AllInOne.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = DGTBJZL464;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "AllInOne-macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nl.ltvb.aio;
 				PRODUCT_NAME = AllInOne;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne-macOS/AllInOne-Bridging-Header.h";
@@ -440,18 +475,24 @@
 			baseConfigurationReference = 5048F9C2B2E49DE76DCA47F0 /* Pods-AllInOne-macOS.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "AllInOne-macOS/AllInOne.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DGTBJZL464;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "AllInOne-macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nl.ltvb.aio;
 				PRODUCT_NAME = AllInOne;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne-macOS/AllInOne-Bridging-Header.h";

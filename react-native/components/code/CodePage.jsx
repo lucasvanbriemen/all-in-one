@@ -134,9 +134,9 @@ export function CodePage({selection, onSelect}) {
 
       <View style={styles.codeEditorContainer}>
         {openedFiles.length > 0 && (
-          <View style={{flexDirection: 'row', gap: 8, marginBottom: 8}}>
+          <View style={styles.openedFiles}>
             {openedFiles.map(file => (
-              <View key={file} style={{padding: 4, backgroundColor: file === currentFile ? 'lightgray' : 'transparent', borderRadius: 4}}>
+              <View key={file} style={[styles.openedFile, file === currentFile && styles.openedFileActive]}>
                 <Text onPress={() => openFile(file)}>{file.split('/').pop()}</Text>
               </View>
             ))}
@@ -184,6 +184,20 @@ const createStyles = colors => StyleSheet.create({
     paddingBottom: 16,
     borderRadius: 16,
     gap: 16,
+  },
+  openedFiles: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  openedFile: {
+    padding: 8,
+    ...glass(colors, {tint: 0.25}),
+    borderRadius: 90,
+    opacity: 0.75,
+  },
+  openedFileActive: {
+    ...glass(colors, {tint: 1, tone: "primary"}),
+    opacity: 1,
   },
   fileTree: {
     flex: 1,

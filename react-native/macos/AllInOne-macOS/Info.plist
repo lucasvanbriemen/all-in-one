@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSAppTransportSecurity</key>
@@ -35,6 +35,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>All in one needs access to open and edit the projects you browse in the Code page.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>All in one needs access to open and edit the projects you browse in the Code page.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>All in one needs access to open and edit the projects you browse in the Code page.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>

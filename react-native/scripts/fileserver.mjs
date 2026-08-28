@@ -107,6 +107,21 @@ const server = http.createServer(async (request, response) => {
 // The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
 attachTerminal(server);
 
+/**
+ * When the macOS app spawns this server it hands it a pipe on stdin and holds
+ * the other end open for its own lifetime (see `SidecarServer.m`). A crash or a
+ * `kill -9` skips every shutdown path the app could run, but it cannot keep a
+ * pipe open, so EOF here means the app is gone and this process is orphaned —
+ * and an orphan still holding port 4001 would lock out the next launch.
+ *
+ * Only the app sets this; started from the Procfile the server keeps whatever
+ * stdin the shell gave it and outlives nothing.
+ */
+if (process.env.AIO_EXIT_ON_STDIN_EOF === '1') {
+  process.stdin.on('end', () => process.exit(0));
+  process.stdin.resume();
+}
+
 server.listen(4001, '127.0.0.1', () => {
   console.log('listening on http://127.0.0.1:4001');
 });

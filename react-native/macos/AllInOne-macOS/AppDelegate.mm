@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import "SidecarServer.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
@@ -12,6 +13,9 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
   self.dependencyProvider = [RCTAppDependencyProvider new];
+
+  // Before the bridge, so the Code page's first request has somewhere to land.
+  [SidecarServer start];
 
   [super applicationDidFinishLaunching:notification];
 
@@ -30,6 +34,11 @@
   // blur. Clearing it lets `.behindWindow` reach the desktop.
   window.contentView.wantsLayer = YES;
   window.contentView.layer.backgroundColor = [NSColor clearColor].CGColor;
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+  [SidecarServer stop];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

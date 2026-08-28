@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Applied to the bundled `node` binary, not to the app. Node is signed as its
+	  own executable and runs as its own process, so it carries its own
+	  entitlements rather than inheriting the app's.
+
+	  V8 compiles JavaScript to machine code at runtime, which the Hardened
+	  Runtime blocks by default.
+	-->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+	<!--
+	  node-pty is loaded with dlopen at runtime. Library validation would demand
+	  it be signed by the same team as node itself, and the notarised bundle
+	  re-signs both with the same Developer ID, so this is belt-and-braces
+	  against a locally built pty.node.
+	-->
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
+</dict>
+</plist>
