@@ -15,9 +15,18 @@ import {useThemedStyles} from './components/theme';
 const TITLEBAR_INSET = 48;
 
 const APPLICATIONS = {
-  email: EmailPage,
-  home: HomePage,
-  code: CodePage,
+  email: {
+    component: EmailPage,
+    title: "Email",
+  },
+  home: {
+    component: HomePage,
+    title: "Home",
+  },
+  code: {
+    component: CodePage,
+    title: "Code",
+  },
 };
 
 
@@ -26,7 +35,7 @@ export default function App() {
 
   const [selection, setSelection] = useState(null);
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[appToRender];
+  const ActiveApplication = APPLICATIONS[appToRender].component;
 
   return (
     <TransparentWindow>
