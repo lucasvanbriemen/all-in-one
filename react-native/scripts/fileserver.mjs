@@ -117,6 +117,21 @@ attachTerminal(server);
  * Only the app sets this; started from the Procfile the server keeps whatever
  * stdin the shell gave it and outlives nothing.
  */
+/**
+ * Two things want to own this port: the copy started from the Procfile during
+ * development, and the copy the packaged .app spawns out of its own bundle.
+ * Only one can bind, and whichever loses is redundant rather than broken — the
+ * editor talks to a port, not to a particular process, so the survivor serves
+ * both. Standing down is therefore the correct outcome, not a failure.
+ */
+server.on('error', error => {
+  if (error.code === 'EADDRINUSE') {
+    console.log('port 4001 already served; deferring to the running server');
+    process.exit(0);
+  }
+  throw error;
+});
+
 if (process.env.AIO_EXIT_ON_STDIN_EOF === '1') {
   process.stdin.on('end', () => process.exit(0));
   process.stdin.resume();
