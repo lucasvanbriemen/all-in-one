@@ -76,3 +76,7 @@ yarn-error.log
 
 # Vite web build output
 dist/
+
+# Signed builds produced by scripts/release-macos.sh
+dist-macos/
+macos/build/

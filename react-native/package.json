@@ -9,7 +9,8 @@
     "web:build": "vite build",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "macos:release": "scripts/release-macos.sh"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
