@@ -1,4 +1,4 @@
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
@@ -7,10 +7,14 @@ import {FileNode} from './FileNode';
 import {NativeModules} from 'react-native';
 import {fileSystem} from '../fileSystem';
 import {sortFiles} from './sortFiles';
+import {useRef} from 'react';
 
 export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot, openedFiles, setOpenedFiles}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
+
+  const inputRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     async function fetchFiles() {
@@ -61,35 +65,7 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
   return (
     <ScrollView style={styles.editor}>
-      <Pressable onPress={() => openFolder()}>
-        <Text>Open folder</Text>
-      </Pressable>
-
-      {files.map(file => (
-        <View key={file.name}>
-          {/* Top-level files never reach FileNode, so they get the same row
-              treatment here: chevron-width gutter, icon, name. */}
-          {!file.isDirectory && (
-            <Pressable style={styles.row} onPress={() => handleFileSelect(file)}>
-              <View style={styles.chevronSpacer} />
-
-              <FileIcon name={file.name} />
-
-              <Text>{file.name}</Text>
-            </Pressable>
-          )}
-
-          {file.isDirectory && (
-            <FileNode
-              projectRoot={projectRoot}
-              key={file.fullPath}
-              folder={file}
-              onOpenFile={onOpenFile}
-              itemsDeep={0}
-            />
-          )}
-        </View>
-      ))}
+      <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm}onChangeText={setSearchTerm} />
     </ScrollView>
   );
 }
