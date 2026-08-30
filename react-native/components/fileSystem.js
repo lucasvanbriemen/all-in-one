@@ -18,8 +18,18 @@ export const fileSystem = {
     return this.makeRequest(projectRoot, "/file", path);
   },
 
+  /**
+   * Places whose *contents* match. Each result is a position rather than a
+   * path — `{results: [{path, line, column, text}, ...]}`, lines and columns
+   * counted from one — so a result can be opened at the match instead of at the
+   * top of the file. `text` is the matched line, truncated for display.
+   */
+  searchCode(projectRoot, searchTerm) {
+    return this.search(projectRoot, searchTerm, "code");
+  },
+
   searchFiles(projectRoot, searchTerm) {
-    const fullUrl = `/search?projectRoot=${encodeURIComponent(projectRoot)}&term=${encodeURIComponent(searchTerm)}`;
+    const fullUrl = `/search?projectRoot=${encodeURIComponent(projectRoot)}&term=${encodeURIComponent(searchTerm)}&type=files}`;
     return fetch(BASE_URL + fullUrl, {
       method: "GET",
       headers: { ...this.defaultHeaders },
