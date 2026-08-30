@@ -5,6 +5,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
 import {SearchModal} from './SearchModal';
+import {SearchSidebar} from './SearchSidebar';
 import {Terminal} from './Terminal';
 import {fileSystem} from '../fileSystem';
 
@@ -127,7 +128,6 @@ export function CodePage({activeSidebarItem}) {
 
   return (
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
-
       {activeSidebarItem == "files" && (
         <View style={styles.fileTree}>
           <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
@@ -136,7 +136,7 @@ export function CodePage({activeSidebarItem}) {
 
       {activeSidebarItem == "search" && (
         <View style={styles.fileTree}>
-          <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
+          <SearchSidebar currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
         </View>
       )}
 
