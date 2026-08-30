@@ -3,10 +3,12 @@ import {ChevronLeft} from './chevronLeft';
 import {ChevronRight} from './chevronRight';
 import {ChevronTop} from './chevronTop';
 import {CodeIcon} from './code';
+import {FilesIcon} from './files';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
 import React from 'react';
+import {SearchIcon} from './search';
 import {WorkIcon} from './work';
 
 export {LogoIcon} from './logo';
@@ -25,6 +27,8 @@ const ICONS = {
   'chevron-right': ChevronRight,
   'chevron-top': ChevronTop,
   'chevron-down': ChevronDown,
+  files: FilesIcon,
+  search: SearchIcon,
 };
 
 export function Icon({name, size, color}) {
