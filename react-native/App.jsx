@@ -15,18 +15,9 @@ import {useThemedStyles} from './components/theme';
 const TITLEBAR_INSET = 48;
 
 const APPLICATIONS = {
-  email: {
-    component: EmailPage,
-    title: "Email",
-  },
-  home: {
-    component: HomePage,
-    title: "Home",
-  },
-  code: {
-    component: CodePage,
-    title: "Code",
-  },
+  email: EmailPage,
+  home: HomePage,
+  code: CodePage,
 };
 
 
@@ -35,7 +26,7 @@ export default function App() {
 
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[appToRender].component;
+  const ActiveApplication = APPLICATIONS[appToRender];
 
   return (
     <TransparentWindow>
