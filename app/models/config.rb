@@ -1,7 +1,7 @@
 module Config
   CONFIG = {
     home: MailboxConfig::GROUPS,
-    code: MailboxConfig::GROUPS,
+    code: CodeConfig::GROUPS,
     email: MailboxConfig::GROUPS
   }.freeze
 end
