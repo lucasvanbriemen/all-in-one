@@ -128,9 +128,17 @@ export function CodePage({activeSidebarItem}) {
   return (
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
 
-      <View style={styles.fileTree}>
-        <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
-      </View>
+      {activeSidebarItem == "files" && (
+        <View style={styles.fileTree}>
+          <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
+        </View>
+      )}
+
+      {activeSidebarItem == "search" && (
+        <View style={styles.fileTree}>
+          <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
+        </View>
+      )}
 
       <View style={styles.codeEditorContainer}>
         {openedFiles.length > 0 && (
