@@ -220,8 +220,8 @@ npm start
 npm run macos
 ```
 
-Deployment target is 14.0. The macOS target needs no signing configuration — it builds
-and runs locally without a development team.
+Deployment target is 14.0, architecture is arm64 (Apple Silicon), bundle ID `nl.ltvb.aio`,
+team `DGTBJZL464`.
 
 `macos/` pins fmt 12.1.0 through `react-native-macos`, so the iOS fmt patch above is
 irrelevant here.
@@ -235,6 +235,69 @@ the window blend with the desktop.
 It is guarded at runtime — it checks `UIManager.getViewManagerConfig('VisualEffectBackground')`
 and degrades to a plain palette-tinted fill when the native view isn't registered. That
 is why the same component runs unmodified on iPhone, where AppKit doesn't exist.
+
+### Shipping it to another Mac
+
+```sh
+npm run macos:release      # → dist-macos/AllInOne.dmg
+```
+
+Open the disk image, drag the app to Applications. That's the whole install.
+
+Two one-off setup steps before the first release build:
+
+1. **A Developer ID Application certificate.** Xcode → Settings → Accounts → select the
+   team → Manage Certificates → **+** → *Developer ID Application*. Needs the Account
+   Holder or Admin role on the developer account. The *Apple Development* certificate
+   already in the keychain is not a substitute — it only authorises Macs registered to
+   the account, and Gatekeeper refuses it anywhere else.
+
+2. **Notarisation credentials**, stored once in the keychain:
+
+   ```sh
+   xcrun notarytool store-credentials AIO_NOTARY \
+     --apple-id <your Apple ID> --team-id DGTBJZL464 \
+     --password <app-specific password from appleid.apple.com>
+   ```
+
+   Without notarisation macOS refuses the app outright on any other machine — *"cannot
+   be opened because Apple cannot check it for malicious software"*. The script staples
+   the ticket to both the disk image and the app inside it, so the check also passes
+   offline.
+
+`SKIP_NOTARIZE=1` builds a signed but un-notarised app, which opens on this Mac only.
+`SIGN_IDENTITY="..."` overrides the certificate lookup, for rehearsing the pipeline.
+
+### The bundled server
+
+The Code page reads and writes files over `http://127.0.0.1:4001` and runs its shell
+over `ws://127.0.0.1:4001/terminal`. In development the Procfile starts that server; a
+copy of the app on someone else's Mac has no Procfile, so the release build carries the
+server *and* a Node runtime to execute it inside the bundle.
+
+- `scripts/stage-sidecar.sh` copies `node`, the two server scripts, and the two runtime
+  dependencies (`ws`, `node-pty`) into `Contents/Resources/server`. It runs as an Xcode
+  build phase, so a plain `npm run macos` gets one too.
+- `macos/AllInOne-macOS/SidecarServer.m` starts it at launch and stops it on quit. It
+  also holds a pipe on the server's stdin for the app's lifetime; the server exits on
+  EOF, so a crash or `kill -9` can't leave an orphan squatting on port 4001.
+- If port 4001 is already served — the usual case during development, where the
+  Procfile got there first — the bundled copy stands down and the app uses the running
+  server. Both are the same code, so it makes no difference which one answers.
+
+This is why the app is **not sandboxed** (see `AllInOne-macOS/AllInOne.entitlements`).
+A sandboxed app cannot fork a pty or write to files it wasn't handed through an open
+panel, so the Code page cannot work inside one. Notarisation requires the Hardened
+Runtime instead, which is on; the bundled `node` carries its own entitlements
+(`Sidecar.entitlements`) because V8 needs to generate code at runtime.
+
+The Node binary is ~110 MB, so the installed app is ~120 MB and the compressed disk
+image ~40 MB.
+
+**Intel Macs.** The build is arm64-only. Making it universal means setting `ARCHS` back
+to `$(ARCHS_STANDARD)`, plus a universal `node` (`lipo` the official arm64 and x64
+builds together) and `SIDECAR_ARCHS="arm64 x64"` for the node-pty prebuilds — roughly
+another 110 MB in the bundle.
 
 ---
 
