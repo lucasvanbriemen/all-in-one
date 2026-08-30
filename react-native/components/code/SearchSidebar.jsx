@@ -18,15 +18,6 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 }
 
 const createStyles = colors => StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    gap: 4,
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  chevronSpacer: {
-    width: 16,
-  },
   editor: {
     ...glass(colors, {tint: 0.25}),
     marginBottom: 16,
@@ -34,5 +25,10 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     flex: 1,
+  },
+  input: {
+    padding: 8,
+    borderRadius: 8,
+    ...glass(colors, {tint: 0.25}),
   },
 });
