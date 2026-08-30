@@ -6,7 +6,7 @@ import {LogoIcon} from '../icons';
 import {SidebarApplication} from './SidebarApplication';
 import {api} from '../api';
 
-export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
+export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
@@ -29,7 +29,7 @@ export function Sidebar({selection, onSelect, currentlyActive, setActiveApp}) {
       </Pressable>
 
       {Object.entries(items).map(([key, item]) => (
-        <SidebarApplication key={key + item.app} selection={selection} onSelect={onSelect} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
+        <SidebarApplication key={key + item.app} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
       ))}
     </View>
   );

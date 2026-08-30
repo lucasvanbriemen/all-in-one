@@ -5,18 +5,18 @@ import {EmailListItem} from './EmailListItem';
 import {api} from './api';
 import {useThemedStyles} from './theme';
 
-export function EmailListing({selection, onSelect, selectedEmail, onSelectEmail}) {
+export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
   useEffect(() => {
     api
-      .get('/email/' + selection)
+      .get('/email/' + activeSidebarItem)
       .then(data => {
         setItems(data?.emails ?? []);
         onSelectEmail(null);
       })
-  }, [selection, onSelectEmail]);
+  }, [activeSidebarItem, onSelectEmail]);
 
   return (
     <View style={styles.content}>

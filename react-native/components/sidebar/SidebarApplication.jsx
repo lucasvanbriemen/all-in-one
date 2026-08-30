@@ -3,7 +3,7 @@ import {glass, useThemedStyles} from '../theme';
 
 import {SidebarRow} from './SidebarRow';
 
-export function SidebarApplication({selection, onSelect, currentlyActive, setActiveApp, item, isMinimized, app}) {
+export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp, item, isMinimized, app}) {
   const styles = useThemedStyles(createStyles);
 
   return (
@@ -12,7 +12,7 @@ export function SidebarApplication({selection, onSelect, currentlyActive, setAct
         {!isMinimized && <Text style={styles.title}>{app}</Text>}
       </Pressable>
       {currentlyActive === app && item.map(row => (
-        <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={currentlyActive === app && selection === row.path} onPress={() => {onSelect(row.path); setActiveApp(app)}} useLabels={!isMinimized} />
+        <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={currentlyActive === app && activeSidebarItem === row.path} onPress={() => {setActiveSidebarItem(row.path); setActiveApp(app)}} useLabels={!isMinimized} />
       ))}
     </View>
   );

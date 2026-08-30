@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 import {useThemedStyles} from '../theme';
 
-export function HomePage({selection, onSelect}) {
+export function HomePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
 
   return (

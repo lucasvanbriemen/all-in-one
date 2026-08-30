@@ -5,7 +5,7 @@ import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
 import {useThemedStyles} from './theme';
 
-export function EmailPage({selection, onSelect}) {
+export function EmailPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
   // `selection` is the sidebar's mailbox path; which email is open within that
   // mailbox is local to this page.
@@ -14,12 +14,7 @@ export function EmailPage({selection, onSelect}) {
   return (
     <View style={styles.content}>
       <View style={styles.listing}>
-        <EmailListing
-          selection={selection}
-          onSelect={onSelect}
-          selectedEmail={selectedEmail}
-          onSelectEmail={setSelectedEmail}
-        />
+        <EmailListing activeSidebarItem={activeSidebarItem} selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
       </View>
       <View style={styles.body}>
         <EmailContent email={selectedEmail} />

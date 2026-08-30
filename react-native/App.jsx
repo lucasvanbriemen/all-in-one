@@ -33,17 +33,17 @@ const APPLICATIONS = {
 export default function App() {
   const [appToRender, setAppToRender] = useState(() => "code");
 
-  const [selection, setSelection] = useState(null);
+  const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender].component;
 
   return (
     <TransparentWindow>
       <View style={styles.appWrapper}>
-       <Sidebar selection={selection} onSelect={setSelection}  currentlyActive={appToRender} setActiveApp={setAppToRender} />
+       <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
 
         <View style={styles.content}>
-          <ActiveApplication selection={selection} onSelect={setSelection} />
+          <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
       </View>
     </TransparentWindow>

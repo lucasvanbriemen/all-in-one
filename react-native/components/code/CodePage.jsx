@@ -19,7 +19,7 @@ const KEY_DOWN_EVENTS = [
   {key: 'Escape'},
 ];
 
-export function CodePage({selection, onSelect}) {
+export function CodePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
