@@ -136,7 +136,7 @@ export function CodePage({activeSidebarItem}) {
 
       {activeSidebarItem == "search" && (
         <View style={styles.fileTree}>
-          <SearchSidebar currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
+          <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
         </View>
       )}
 
