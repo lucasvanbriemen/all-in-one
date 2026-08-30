@@ -9,7 +9,7 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
   return (
     <View style={styles.appWrapper}>
       <Pressable onPress={() => setActiveApp(app)}>
-        {!isMinimized && <Text style={styles.title}>{app}</Text>}
+        {!isMinimized && <Text style={styles.title}>{getAppTitle(app)}</Text>}
       </Pressable>
       {currentlyActive === app && item.map(row => (
         <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={currentlyActive === app && activeSidebarItem === row.path} onPress={() => {setActiveSidebarItem(row.path); setActiveApp(app)}} useLabels={!isMinimized} />
@@ -18,6 +18,9 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
   );
 }
 
+function getAppTitle(app) {
+  return app.charAt(0).toUpperCase() + app.slice(1);
+}
 
 const createStyles = colors => StyleSheet.create({
   title: {
