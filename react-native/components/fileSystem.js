@@ -18,8 +18,8 @@ export const fileSystem = {
     return this.makeRequest(projectRoot, "/file", path);
   },
 
-  searchFiles(projectRoot, searchTerm) {
-    const fullUrl = `/search?projectRoot=${encodeURIComponent(projectRoot)}&term=${encodeURIComponent(searchTerm)}&type=files}`;
+  searchFiles(projectRoot, searchTerm, type = 'files') {
+    const fullUrl = `/search?projectRoot=${encodeURIComponent(projectRoot)}&term=${encodeURIComponent(searchTerm)}&type=${encodeURIComponent(type)}`;
     return fetch(BASE_URL + fullUrl, {
       method: "GET",
       headers: { ...this.defaultHeaders },
