@@ -145,7 +145,7 @@ export function CodePage({activeSidebarItem}) {
           <View style={styles.openedFiles}>
             {openedFiles.map(file => (
               <View key={file} style={[styles.openedFile, file === currentFile && styles.openedFileActive]}>
-                <Text onPress={() => openFile(file)}>{file.split('/').pop()}</Text>
+                <Text onPress={() => openFile(file)} style={[styles.openedFileText, file === currentFile && styles.openedFileActiveText]}>{file.split('/').pop()}</Text>
               </View>
             ))}
           </View>
@@ -217,5 +217,11 @@ const createStyles = colors => StyleSheet.create({
     // to clip it — otherwise the scrollback runs out over the corners.
     overflow: 'hidden',
     ...glass(colors, {tint: 0.75})
+  },
+  openedFileText: {
+    color: colors.onSurface,
+  },
+  openedFileActiveText: {
+    color: colors.onPrimary,
   },
 });
