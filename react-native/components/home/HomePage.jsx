@@ -39,6 +39,8 @@ export function HomePage({activeSidebarItem}) {
     const minutes = Math.floor(seconds / 60);
     seconds %= 60;
 
+    seconds = Math.floor(seconds);
+
     let string = '';
     if (days > 0) string += `${days}d `;
     if (hours > 0) string += `${hours}h `;
