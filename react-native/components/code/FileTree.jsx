@@ -65,8 +65,8 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
 
   return (
     <ScrollView style={styles.editor}>
-      <Pressable onPress={() => openFolder()}>
-        <Text>Open folder</Text>
+      <Pressable onPress={() => openFolder()} style={[styles.openFoler, !projectRoot && styles.noProjectRootRow]}>
+        <Text style={[styles.openFolderText, !projectRoot && styles.noProjectRootRowText]}>Open folder</Text>
       </Pressable>
 
       {files.map(file => (
@@ -99,6 +99,20 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
 }
 
 const createStyles = colors => StyleSheet.create({
+  noProjectRootRow: {
+    borderRadius: 16,
+    padding: 16,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noProjectRootRowText: {
+    color: colors.onPrimary,
+    textAlign: 'center',
+  },
+  openFoler: {
+    marginBottom: 16,
+  },
   row: {
     flexDirection: 'row',
     gap: 4,
