@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Stat} from './Stat';
 import {api} from '../api';
 import {useThemedStyles} from '../theme';
 
@@ -50,14 +51,12 @@ export function HomePage({activeSidebarItem}) {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.text}>Home</Text>
-
       {serverData && (
         <>
-          <Text style={styles.text}>{serverData.cpu_count}</Text>
-          <Text style={styles.text}>{calculateDiskUsage().toFixed(2)}%</Text>
-          <Text style={styles.text}>{calculateMemoryUsage().toFixed(2)}%</Text>
-          <Text style={styles.text}>{uptimeSecondsToProperTime(serverData.uptime_seconds)}</Text>
+          <Stat value={serverData.cpu_count} label="CPU Count" />
+          <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" />
+          <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" />
+          <Stat value={uptimeSecondsToProperTime(serverData.uptime_seconds)} label="Uptime" />
         </>
       )}
     </View>
