@@ -151,17 +151,21 @@ export function CodePage({activeSidebarItem}) {
           </View>
         )}
 
-        <CodeEditor
-          value={source}
-          path={currentFile}
-          onChange={setSource}
-          onSave={save}
-          onSearch={() => setSearching(true)}
-        />
+        {projectRoot && (
+          <>
+            <CodeEditor
+              value={source}
+              path={currentFile}
+              onChange={setSource}
+              onSave={save}
+              onSearch={() => setSearching(true)}
+            />
 
-        <View style={styles.terminal}>
-          <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
-        </View>
+            <View style={styles.terminal}>
+              <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
+            </View>
+          </>
+        )}
       </View>
 
       {/* Last child, absolutely filled: it covers the tree and the editor
