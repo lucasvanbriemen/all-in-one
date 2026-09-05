@@ -1,5 +1,5 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useTheme, useThemedStyles} from '../theme';
+import {Pressable, StyleSheet, Text} from 'react-native';
+import {useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 
