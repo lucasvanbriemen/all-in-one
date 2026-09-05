@@ -44,7 +44,6 @@ const ICONS = {
   rename: RenameIcon,
   trash: TrashIcon,
   refresh: RefreshIcon,
-  'collapse-all': CollapseAllIcon,
   copy: CopyIcon,
   cut: CutIcon,
   paste: PasteIcon,
