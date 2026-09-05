@@ -7,6 +7,10 @@ import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
+  const DISK_USAGE_MEDIUM = 75;
+  const DISK_USAGE_HIGH = 90;
+  const MEMORY_USAGE_MEDIUM = 50;
+  const MEMORY_USAGE_HIGH = 90;
   const [serverData, setServerData] = useState(null);
 
   useEffect(() => {
@@ -53,9 +57,9 @@ export function HomePage({activeSidebarItem}) {
     <View style={styles.content}>
       {serverData && (
         <>
-          <Stat value={serverData.cpu_count} label="CPU Count" />
-          <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" />
-          <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" />
+          <Stat value={serverData.cpu_count} label="CPU cores" />
+          <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" attentionLevel={calculateDiskUsage() >= DISK_USAGE_HIGH ? "high" : calculateDiskUsage() >= DISK_USAGE_MEDIUM ? "medium" : "low"} />
+          <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" attentionLevel={calculateMemoryUsage() >= MEMORY_USAGE_HIGH ? "high" : calculateMemoryUsage() >= MEMORY_USAGE_MEDIUM ? "medium" : "low"} />
           <Stat value={uptimeSecondsToProperTime(serverData.uptime_seconds)} label="Uptime" />
         </>
       )}
