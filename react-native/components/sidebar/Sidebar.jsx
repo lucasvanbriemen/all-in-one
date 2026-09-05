@@ -36,17 +36,17 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
 
   return (
     <Animated.View style={{width: animatedWidth, overflow: 'hidden'}}>
-    <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
-      {/* The mark doubles as the collapse control, so the sidebar keeps its
-          identity in both widths without spending a row on a toggle. */}
-      <Pressable onPress={() => setIsMinimized(!isMinimized)} style={[styles.row, isMinimized && styles.rowMinimized]}>
-        <LogoIcon size={24} color={primary} />
-      </Pressable>
+      <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]}>
+        {/* The mark doubles as the collapse control, so the sidebar keeps its
+            identity in both widths without spending a row on a toggle. */}
+        <Pressable onPress={() => setIsMinimized(!isMinimized)} style={[styles.row, isMinimized && styles.rowMinimized]}>
+          <LogoIcon size={24} color={primary} />
+        </Pressable>
 
-      {Object.entries(items).map(([key, item]) => (
-        <SidebarApplication key={key + item.app} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
-      ))}
-    </View>
+        {Object.entries(items).map(([key, item]) => (
+          <SidebarApplication key={key + item.app} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
+        ))}
+      </View>
     </Animated.View>
   );
 }
@@ -73,6 +73,5 @@ const createStyles = colors => StyleSheet.create({
     padding: 8,
     paddingTop: 16,
     paddingBottom: 16,
-    justifyContent: 'center',
   },
 });
