@@ -1,14 +1,14 @@
-import {NativeModules, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {FileTreeProvider, useFileTree} from './fileTreeContext';
-import {glass, useThemedStyles, withAlpha} from '../theme';
+import {NativeModules, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {RowMenu, rowMenuSize} from './RowMenu';
+import {glass, useThemedStyles, withAlpha} from '../theme';
 import {useEffect, useRef, useState} from 'react';
 
 import {ConfirmDelete} from './ConfirmDelete';
-import {isSecondaryClick} from './TreeRow';
-import {parentOf} from './fileTreeContext';
 import {DirectoryContents} from './FileNode';
 import {Icon} from '../icons';
+import {isSecondaryClick} from './TreeRow';
+import {parentOf} from './fileTreeContext';
 
 export function FileTree({currentFile, onOpenFile, projectRoot, setProjectRoot, onEntryRenamed, onEntryRemoved}) {
   return (
@@ -186,15 +186,6 @@ function FileTreeBody({projectRoot, setProjectRoot}) {
         <Pressable onPress={openFolder} style={[styles.openFolder, !projectRoot && styles.noProjectRootRow]}>
           <Text style={[styles.openFolderText, !projectRoot && styles.noProjectRootRowText]}>Open folder</Text>
         </Pressable>
-
-        {projectRoot && (
-          <View style={styles.headerActions}>
-            <HeaderAction name="new-file" onPress={() => startCreate('', 'file')} />
-            <HeaderAction name="new-folder" onPress={() => startCreate('', 'directory')} />
-            <HeaderAction name="refresh" onPress={refreshAll} />
-            <HeaderAction name="collapse-all" onPress={collapseAll} />
-          </View>
-        )}
       </View>
 
       {problem && (
@@ -221,21 +212,6 @@ function FileTreeBody({projectRoot, setProjectRoot}) {
 
       {pendingDelete && <ConfirmDelete />}
     </View>
-  );
-}
-
-function HeaderAction({name, onPress}) {
-  const styles = useThemedStyles(createStyles);
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <Pressable
-      style={[styles.headerAction, hovered && styles.headerActionHovered]}
-      onHoverIn={() => setHovered(true)}
-      onHoverOut={() => setHovered(false)}
-      onPress={onPress}>
-      <Icon name={name} size={16} color={styles.glyph.color} />
-    </Pressable>
   );
 }
 
