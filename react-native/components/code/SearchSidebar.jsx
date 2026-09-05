@@ -10,6 +10,7 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
   const inputRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchingTerm, setSearchingTerm] = useState('files');
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
@@ -19,12 +20,12 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
         return;
       }
 
-      const response = await fileSystem.searchFiles(projectRoot, searchTerm, 'code');
+      const response = await fileSystem.searchFiles(projectRoot, searchTerm, searchingTerm);
       setSearchResults(response.results ?? []);
     }
 
     search();
-  }, [searchTerm, projectRoot]);
+  }, [searchTerm, projectRoot, searchingTerm]);
 
 
   return (
@@ -32,8 +33,8 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
       {searchResults.map((result, index) => (
-        <Pressable key={index} onPress={() => onOpenFile(result.path)}>
-          <Text style={styles.result}>{result.path}</Text>
+        <Pressable key={index} onPress={() => onOpenFile(result)}>
+          <Text style={styles.result}>{result}</Text>
         </Pressable>
       ))}
     </ScrollView>
