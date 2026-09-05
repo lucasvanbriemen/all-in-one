@@ -37,8 +37,6 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
   return (
     <Animated.View style={{width: animatedWidth, overflow: 'hidden'}}>
       <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]}>
-        {/* The mark doubles as the collapse control, so the sidebar keeps its
-            identity in both widths without spending a row on a toggle. */}
         <Pressable onPress={() => setIsMinimized(!isMinimized)} style={[styles.row, isMinimized && styles.rowMinimized]}>
           <LogoIcon size={24} color={primary} />
         </Pressable>
@@ -56,6 +54,7 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     ...glass(colors, {tint: 0.25}),
     borderRadius: 16,
+    paddingBottom: 0
   },
   sidebarMinimized: {
     padding: 8,
