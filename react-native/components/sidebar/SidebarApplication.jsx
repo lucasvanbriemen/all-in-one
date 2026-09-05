@@ -37,14 +37,7 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
           onLayout={e => setContentHeight(e.nativeEvent.layout.height)}
           style={styles.measure}>
           {item.map(row => (
-            <SidebarRow
-              key={row.path}
-              icon={row.path}
-              title={row.name}
-              isSelected={isExpanded && activeSidebarItem === row.path}
-              onPress={() => { setActiveSidebarItem(row.path); setActiveApp(app); }}
-              useLabels={!isMinimized}
-            />
+            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && activeSidebarItem === row.path} onPress={() => { setActiveSidebarItem(row.path); setActiveApp(app); }} useLabels={!isMinimized} />
           ))}
         </View>
       </Animated.View>
