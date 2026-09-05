@@ -53,24 +53,41 @@ export function HomePage({activeSidebarItem}) {
     return string;
   }
 
+  function greeting() {
+    const hours = new Date().getHours();
+    if (hours < 12) return "Good morning!";
+    if (hours < 18) return "Good afternoon!";
+    return "Good evening!";
+  }
+
   return (
     <View style={styles.content}>
-      {serverData && (
-        <>
-          <Stat value={serverData.cpu_count} label="CPU cores" />
-          <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" attentionLevel={calculateDiskUsage() >= DISK_USAGE_HIGH ? "high" : calculateDiskUsage() >= DISK_USAGE_MEDIUM ? "medium" : "low"} />
-          <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" attentionLevel={calculateMemoryUsage() >= MEMORY_USAGE_HIGH ? "high" : calculateMemoryUsage() >= MEMORY_USAGE_MEDIUM ? "medium" : "low"} />
-          <Stat value={uptimeSecondsToProperTime(serverData.uptime_seconds)} label="Uptime" />
-        </>
-      )}
+      <View style={styles.statsContainer}>
+        {serverData && (
+          <>
+            <Stat value={serverData.cpu_count} label="CPU cores" />
+            <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" attentionLevel={calculateDiskUsage() >= DISK_USAGE_HIGH ? "high" : calculateDiskUsage() >= DISK_USAGE_MEDIUM ? "medium" : "low"} />
+            <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" attentionLevel={calculateMemoryUsage() >= MEMORY_USAGE_HIGH ? "high" : calculateMemoryUsage() >= MEMORY_USAGE_MEDIUM ? "medium" : "low"} />
+            <Stat value={uptimeSecondsToProperTime(serverData.uptime_seconds)} label="Uptime" />
+          </>
+        )}
+      </View>
+
+      <Text style={styles.greeting}>{greeting()}</Text>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  content: {
+  statsContainer: {
     flexDirection: 'row',
     gap: 16,
     paddingTop: 16,
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 16,
+    color: colors.outline
   },
 });
