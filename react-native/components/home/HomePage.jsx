@@ -69,17 +69,8 @@ export function HomePage({activeSidebarItem}) {
 
 const createStyles = colors => StyleSheet.create({
   content: {
-    flex: 1,
     flexDirection: 'row',
     gap: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    opacity: 0.5,
-    color: colors.onSurfaceVariant,
+    paddingTop: 16,
   },
 });
