@@ -7,6 +7,10 @@ module CodeConfig
     {
       path: "search",
       name: "Search"
+    },
+    {
+      path: "git",
+      name: "Git"
     }
   ].freeze
 end
