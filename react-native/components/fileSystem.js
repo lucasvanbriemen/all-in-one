@@ -24,11 +24,6 @@ export const fileSystem = {
       method: "GET",
       headers: { ...this.defaultHeaders },
     }).then(async (response) => {
-      console.log(`Fetching: ${BASE_URL + fullUrl}`);
-      console.log(response);
-      if (!response.ok) {
-        throw new Error(`GET ${fullUrl} failed with ${response.status}`);
-      }
       const isJson = response.headers.get("content-type")?.includes("application/json");
       const data = isJson ? await response.json() : await response.text();
       return data;
