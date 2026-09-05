@@ -42,44 +42,44 @@ export function CodeEditor({
   const scheme = useColorScheme() ?? 'light';
   const styles = useThemedStyles(createStyles);
 
-  // Monaco owns the buffer once it is up, so the document is built exactly
+  // Monaco owns the buffers once it is up, so the document is built exactly
   // once. A `source` that changed identity on re-render would reload the frame
-  // and throw away the user's edits along with the undo stack.
+  // and throw away the user's edits along with the undo stacks.
   const source = useRef(null);
   source.current ??= {
-    html: editorHtml(value, {language, path}),
+    html: editorHtml({path, value, language}),
     baseUrl: `${MONACO_CDN}/`,
   };
 
-  // Monaco owns the buffer, so a new `value` is pushed in as an edit rather
-  // than by rebuilding the document. `applied` is the last value the two sides
+  // Monaco owns the buffers, so a new `value` is pushed in as an edit rather
+  // than by rebuilding the document. `applied` is the last file the two sides
   // agreed on — it keeps the editor's own change, which comes back through
-  // `onChange` as a new prop, from being injected straight back at it.
-  const applied = useRef(value);
+  // `onChange` as a new prop, from being injected straight back at it. The
+  // path travels with it because a switch changes both at once: the value
+  // alone can't tell "the user typed" from "we are on a different file now".
+  const applied = useRef({path, value, language});
 
+  // Path and value go over together, in one message, for the same reason.
+  // Pushing the value first would write the incoming file's text into the
+  // outgoing file's buffer before the editor ever swapped models. `language`
+  // rides along; without it the web side resolves the mode from the path
+  // against Monaco's own extension registry — `.md` is only `markdown`
+  // because Monaco says so.
   useEffect(() => {
-    if (!loaded || value === applied.current) {
+    if (
+      !loaded ||
+      (applied.current.path === path &&
+        applied.current.value === value &&
+        applied.current.language === language)
+    ) {
       return;
     }
 
-    applied.current = value;
+    applied.current = {path, value, language};
     webView.current?.injectJavaScript(
-      `window.setValue(${JSON.stringify(value)}); true;`,
+      `window.setFile(${JSON.stringify({path, value, language})}); true;`,
     );
-  }, [loaded, value]);
-
-  // The document is built once, so the mode is pushed in the same way the
-  // buffer is. `path` is resolved on the web side against Monaco's own
-  // extension registry — `.md` is only `markdown` because Monaco says so.
-  useEffect(() => {
-    if (!loaded) {
-      return;
-    }
-
-    webView.current?.injectJavaScript(
-      `window.setLanguage(${JSON.stringify({language, path})}); true;`,
-    );
-  }, [loaded, language, path]);
+  }, [loaded, path, value, language]);
 
   // The palette arrives from a fetch, so the theme is pushed in rather than
   // baked into the document.
@@ -98,7 +98,7 @@ export function CodeEditor({
       const message = JSON.parse(event.nativeEvent.data);
 
       if (message.type === 'change') {
-        applied.current = message.value;
+        applied.current = {path: message.path, value: message.value, language};
         onChange?.(message.value);
       }
 
@@ -106,7 +106,7 @@ export function CodeEditor({
       // over, so it counts as agreed on — otherwise a save mid-keystroke would
       // come back as a `value` prop and get injected straight back at it.
       if (message.type === 'save') {
-        applied.current = message.value;
+        applied.current = {path: message.path, value: message.value, language};
         onSave?.(message.value);
       }
 
@@ -116,7 +116,7 @@ export function CodeEditor({
         onSearch?.();
       }
     },
-    [onChange, onSave, onSearch],
+    [language, onChange, onSave, onSearch],
   );
 
   return (
@@ -141,7 +141,7 @@ export function CodeEditor({
   );
 }
 
-function editorHtml(value, spec) {
+function editorHtml(file) {
   return `<!doctype html>
 <html>
   <head>
@@ -169,8 +169,31 @@ function editorHtml(value, spec) {
     <script>
       var editor = null;
       var theme = null;
-      var pendingValue = null;
-      var pendingLanguage = null;
+      var pendingFile = null;
+
+      // One model per file, keyed by path. Sharing a model across files shares
+      // its undo stack with them: every switch pushed the new text onto the one
+      // stack, so a Cmd+Z after a switch undid the switch itself and restored
+      // the previous file's text into this file's buffer — which the autosave
+      // then wrote to disk. A model per path keeps the histories apart, and
+      // gives each buffer the URI the language workers resolve imports against.
+      var models = {};
+
+      // Cursor, selection, scroll offset and folds, stashed on the way out of a
+      // file. They belong to the view rather than the model, so the swap alone
+      // does not carry them.
+      var viewStates = {};
+      var currentPath = null;
+
+      // Nothing is open until a file is; the buffer that stands in for it has
+      // no path, so it gets no URI either. A model key has to be a string, so
+      // the standin gets a name no relative path could collide with, and the
+      // native side is told null, which is what it holds.
+      var UNTITLED = 'untitled://none';
+
+      function filePath() {
+        return currentPath === UNTITLED ? null : currentPath;
+      }
 
       // The two VS Code theme files, whole. Shiki reads its grammars off a CDN,
       // but a theme is the user's own file — it travels with the document.
@@ -296,29 +319,69 @@ function editorHtml(value, spec) {
         return id;
       }
 
-      // Takes {language, path} — an explicit language wins, otherwise the
-      // path decides. Neither is fatal: an unknown extension stays plaintext.
-      window.setLanguage = function (next) {
+      // Monaco keys its own model registry by URI, so a file that is reopened
+      // finds the buffer it left behind rather than a fresh one — undo history
+      // included. An explicit language wins over the path; neither is fatal,
+      // an unknown extension stays plaintext.
+      function modelFor(path, value, language) {
+        var model = models[path];
+
+        if (!model) {
+          var uri = path === UNTITLED ? undefined : monaco.Uri.file(path);
+
+          model =
+            (uri && monaco.editor.getModel(uri)) ||
+            monaco.editor.createModel(
+              value,
+              language || languageForPath(path) || 'plaintext',
+              uri,
+            );
+
+          models[path] = model;
+        }
+
+        return model;
+      }
+
+      // Takes {path, value, language}. Switching files swaps the model, which
+      // is what leaves the outgoing file's undo stack, cursor and scroll with
+      // the outgoing file instead of dragging them into the next one.
+      window.setFile = function (next) {
         if (!editor) {
-          pendingLanguage = next;
+          pendingFile = next;
           return;
         }
 
-        var id = next.language || languageForPath(next.path);
+        var path = next.path || UNTITLED;
+        var switching = path !== currentPath;
 
-        if (id) {
-          monaco.editor.setModelLanguage(editor.getModel(), id);
-        }
-      };
-
-      window.setValue = function (next) {
-        if (!editor) {
-          pendingValue = next;
-          return;
+        if (switching && currentPath !== null) {
+          viewStates[currentPath] = editor.saveViewState();
         }
 
-        if (editor.getValue() !== next) {
-          editor.setValue(next);
+        // Written before the model is attached on a switch, so the edit lands
+        // on this file's own stack and never on the one being left behind.
+        var model = modelFor(path, next.value, next.language);
+
+        // A file that has moved on disk since it was last open. Anything else
+        // is the editor's own text coming back around as a prop.
+        if (model.getValue() !== next.value) {
+          model.setValue(next.value);
+        }
+
+        var id = next.language || languageForPath(path);
+
+        if (id && model.getLanguageId() !== id) {
+          monaco.editor.setModelLanguage(model, id);
+        }
+
+        if (switching) {
+          currentPath = path;
+          editor.setModel(model);
+
+          if (viewStates[path]) {
+            editor.restoreViewState(viewStates[path]);
+          }
         }
       };
 
@@ -330,43 +393,40 @@ function editorHtml(value, spec) {
 
       require.config({paths: {vs: '${MONACO_CDN}/vs'}});
       require(['vs/editor/editor.main'], function () {
-        var spec = ${JSON.stringify(spec)};
-
         // Registered before Shiki, which pairs its grammars against whichever
         // modes exist at the moment it runs.
         ${JSON.stringify(EXTRA_LANGUAGES)}.forEach(function (language) {
           monaco.languages.register(language);
         });
 
+        // No model of its own: every buffer this editor shows is one setFile
+        // created against a URI, and an implicit one would only be orphaned by
+        // the first switch.
         editor = monaco.editor.create(document.getElementById('container'), Object.assign(
           ${JSON.stringify(EDITOR_OPTIONS)},
-          {
-            value: ${JSON.stringify(value)},
-            language: spec.language || languageForPath(spec.path) || 'plaintext',
-          }
+          {model: null}
         ));
-
-        if (pendingLanguage) {
-          window.setLanguage(pendingLanguage);
-          pendingLanguage = null;
-        }
 
         applyTheme();
 
-        if (pendingValue !== null) {
-          window.setValue(pendingValue);
-          pendingValue = null;
-        }
+        // Whatever the native side asked for while the loader was still
+        // running, or the file the document was built around if it asked for
+        // nothing.
+        window.setFile(pendingFile || ${JSON.stringify(file)});
+        pendingFile = null;
 
+        // Bound after the first file, so opening one is not itself a change.
+        // The listener is the editor's rather than the model's, so it follows
+        // whichever model is attached.
         editor.onDidChangeModelContent(function () {
-          post({type: 'change', value: editor.getValue()});
+          post({type: 'change', path: filePath(), value: editor.getValue()});
         });
 
         // CtrlCmd is Cmd on macOS. Registering the binding with Monaco rather
         // than on the document is also what keeps WebKit from opening its own
         // save sheet — a handled keybinding never reaches the browser default.
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
-          post({type: 'save', value: editor.getValue()});
+          post({type: 'save', path: filePath(), value: editor.getValue()});
         });
 
         // Same reasoning as save: bound here so the keystroke never reaches
@@ -379,7 +439,7 @@ function editorHtml(value, spec) {
         // The native side drops the write if nothing has changed, so this is
         // free when the editor is only being tabbed through.
         editor.onDidBlurEditorText(function () {
-          post({type: 'save', value: editor.getValue()});
+          post({type: 'save', path: filePath(), value: editor.getValue()});
         });
 
         post({type: 'ready'});
