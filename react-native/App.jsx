@@ -18,6 +18,7 @@ const APPLICATIONS = {
   email: EmailPage,
   home: HomePage,
   code: CodePage,
+  music: HomePage,
 };
 
 
