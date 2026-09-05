@@ -5,10 +5,7 @@ import {useEffect, useRef, useState} from 'react';
 
 import {SidebarRow} from './SidebarRow';
 
-export function SidebarApplication({
-  activeSidebarItem, setActiveSidebarItem, currentlyActive,
-  setActiveApp, item, isMinimized, app,
-}) {
+export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp, item, isMinimized, app}) {
   const styles = useThemedStyles(createStyles);
   const isExpanded = currentlyActive === app;
 
