@@ -21,6 +21,7 @@ const ICONS = {
   home: HomeIcon,
   work: WorkIcon,
   github: GithubIcon,
+  git: GithubIcon,
   pathe: PatheIcon,
   code: CodeIcon,
   'chevron-left': ChevronLeft,
