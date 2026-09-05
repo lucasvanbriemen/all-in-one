@@ -14,6 +14,10 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
 
   useEffect(() => {
     async function fetchFiles() {
+      if (!projectRoot) {
+        return;
+      }
+
       const unsortedFiles = await fileSystem.listFiles(projectRoot, '');
       const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
       setFiles(sortedFiles);
