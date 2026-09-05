@@ -1,6 +1,6 @@
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Animated, Easing, Pressable, StyleSheet, View} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import {LogoIcon} from '../icons';
 import {SidebarApplication} from './SidebarApplication';
@@ -12,15 +12,30 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
   const styles = useThemedStyles(createStyles);
   const {primary} = useTheme();
 
+  const width = useRef(new Animated.Value(isMinimized ? 0 : 1)).current;
+
+  const animatedWidth = width.interpolate({
+    inputRange: [0, 1],
+    outputRange: [60, 240],
+  });
+
   useEffect(() => {
-    api
-      .get('/meta_data')
-      .then(data => {
-        setItems(data.config);
-      })
+    Animated.timing(width, {
+      toValue: isMinimized ? 0 : 1,
+      duration: 300,
+      easing: Easing.ease,
+      useNativeDriver: false,
+    }).start();
+  }, [isMinimized, width]);
+
+  useEffect(() => {
+    api.get('/meta_data').then(data => {
+      setItems(data.config);
+    })
   }, []);
 
   return (
+    <Animated.View style={{width: animatedWidth, overflow: 'hidden'}}>
     <View style={[styles.sidebar, isMinimized && styles.sidebarMinimized]} contentContainerStyle={styles.sidebarContent}>
       {/* The mark doubles as the collapse control, so the sidebar keeps its
           identity in both widths without spending a row on a toggle. */}
@@ -32,21 +47,20 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
         <SidebarApplication key={key + item.app} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} isMinimized={isMinimized} app={key} />
       ))}
     </View>
+    </Animated.View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
   sidebar: {
-    width: 240,
     padding: 16,
     ...glass(colors, {tint: 0.25}),
     borderRadius: 16,
   },
   sidebarMinimized: {
-    width: 60,
     padding: 8,
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 16
   },
   row: {
     padding: 16,
