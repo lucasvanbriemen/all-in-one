@@ -9,7 +9,6 @@ export function HomePage({activeSidebarItem}) {
   const [serverData, setServerData] = useState(null);
 
   useEffect(() => {
-    // Example API call
     api.get('/server_data').then(response => {
       setServerData(response);
       console.log(response);
