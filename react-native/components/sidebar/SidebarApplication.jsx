@@ -31,7 +31,6 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
       <Pressable onPress={() => setActiveApp(app)}>
         {!isMinimized && <Text style={styles.title}>{getAppTitle(app)}</Text>}
       </Pressable>
-
       <Animated.View style={{height: animatedHeight, overflow: 'hidden'}}>
         <View
           onLayout={e => setContentHeight(e.nativeEvent.layout.height)}
