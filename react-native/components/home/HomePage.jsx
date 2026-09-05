@@ -1,10 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
+import {api} from '../api';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
+  const [serverData, setServerData] = useState(null);
+
+  useEffect(() => {
+    // Example API call
+    api.get('/server_data').then(response => {
+      setServerData(response);
+      console.log(response);
+    });
+  }, []);
 
   return (
     <View style={styles.content}>

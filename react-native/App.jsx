@@ -22,7 +22,7 @@ const APPLICATIONS = {
 
 
 export default function App() {
-  const [appToRender, setAppToRender] = useState(() => "code");
+  const [appToRender, setAppToRender] = useState(() => "home");
 
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
