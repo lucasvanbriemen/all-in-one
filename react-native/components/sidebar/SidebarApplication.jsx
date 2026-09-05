@@ -29,23 +29,6 @@ export function SidebarApplication({
     outputRange: [0, contentHeight],
   });
 
-  function getAppTitle(app) {
-    switch (app) {
-      case 'home':
-        return 'Home';
-      case 'work':
-        return 'Work';
-      case 'github':
-        return 'GitHub';
-      case 'pathe':
-        return 'Pathe';
-      case 'code':
-        return 'Code';
-      default:
-        return app;
-    }
-  }
-
   return (
     <View style={styles.appWrapper}>
       <Pressable onPress={() => setActiveApp(app)}>
@@ -70,6 +53,10 @@ export function SidebarApplication({
       </Animated.View>
     </View>
   );
+}
+
+function getAppTitle(app) {
+  return app.charAt(0).toUpperCase() + app.slice(1);
 }
 
 const createStyles = colors => StyleSheet.create({
