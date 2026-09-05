@@ -16,9 +16,31 @@ export function HomePage({activeSidebarItem}) {
     });
   }, []);
 
+  function calculateDiskUsage() {
+    if (!serverData) return null;
+    const total = serverData.disk.total;
+    const used = serverData.disk.used
+    return (used / total) * 100;
+  }
+
+  function calculateMemoryUsage() {
+    if (!serverData) return null;
+    const total = serverData.memory.total;
+    const used = serverData.memory.used;
+    return (used / total) * 100;
+  }
+
   return (
     <View style={styles.content}>
       <Text style={styles.text}>Home</Text>
+
+      {serverData && (
+        <>
+          <Text style={styles.text}>{serverData.cpu_count}</Text>
+          <Text style={styles.text}>{calculateDiskUsage().toFixed(2)}%</Text>
+          <Text style={styles.text}>{calculateMemoryUsage().toFixed(2)}%</Text>
+        </>
+      )}
     </View>
   );
 }
