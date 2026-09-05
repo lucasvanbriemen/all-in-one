@@ -1,72 +1,59 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {DraftRow, TreeRow} from './TreeRow';
 
-import {FileIcon} from '../icons/FileIcon';
-import {Icon} from '../icons';
-import {fileSystem} from '../fileSystem';
-import {sortFiles} from './sortFiles';
-import {useState} from 'react';
-import {useThemedStyles} from '../theme';
+import {View} from 'react-native';
+import {useFileTree} from './fileTreeContext';
 
-export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
-  const styles = useThemedStyles(createStyles);
-  const [children, setChildren] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+/**
+ * One entry, plus whatever is under it. A folder's contents come from the
+ * shared tree rather than from state of its own, so a row redrawn after an
+ * edit is the same code path as a row drawn for the first time.
+ */
+export function FileNode({entry, depth}) {
+  const {expanded, draft, toggleDirectory, onOpenFile} = useFileTree();
 
-  function handleFileSelect(file) {
-    if (file.isDirectory) {
-      if (isOpen) {
-        setIsOpen(false);
-        return setChildren([]);
-      }
-
-      setIsOpen(true);
-      return openDirectory();
-    }
-
-    return onOpenFile(file.fullPath);
+  if (draft?.mode === 'rename' && draft.targetPath === entry.fullPath) {
+    return <DraftRow depth={depth} />;
   }
 
-  async function openDirectory() {
-    const unsortedItems = await fileSystem.listFiles(projectRoot, folder.fullPath);
-    const sortedFiles = sortFiles(unsortedItems.contents ?? []);
-    setChildren(sortedFiles);
-    setIsOpen(true);
+  const isOpen = Boolean(expanded[entry.fullPath]);
+
+  function open() {
+    if (entry.isDirectory) {
+      return toggleDirectory(entry.fullPath);
+    }
+
+    return onOpenFile?.(entry.fullPath);
   }
 
   return (
-    <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
-      <Pressable style={styles.row} onPress={() => handleFileSelect(folder)}>
-        {folder.isDirectory ? (
-          <Icon name={isOpen ? 'chevron-down' : 'chevron-right'} size={16} color="black" />
-        ) : (
-          <View style={styles.chevronSpacer} />
-        )}
+    <View>
+      <TreeRow entry={entry} depth={depth} isOpen={isOpen} onPress={open} />
 
-        <FileIcon name={folder.name} isDirectory={folder.isDirectory} isOpen={isOpen} />
-
-        <Text>{folder.name}</Text>
-      </Pressable>
-
-      {children?.map(subFile => (
-        <FileNode
-          projectRoot={projectRoot}
-          key={subFile.fullPath}
-          folder={subFile}
-          onOpenFile={onOpenFile}
-          itemsDeep={(itemsDeep ?? 0) + 1}
-        />
-      ))}
+      {entry.isDirectory && isOpen && <DirectoryContents directoryPath={entry.fullPath} depth={depth + 1} />}
     </View>
   );
 }
 
-const createStyles = colors => StyleSheet.create({
-  editor: {
-    marginBottom: 4,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 4,
-    alignItems: 'center',
-  },
-});
+/**
+ * The contents of one directory, root included — `''` is the project itself,
+ * which is why the top level needs no special case here or in `FileTree`.
+ *
+ * A new entry is named in place, at the top of the folder it is being made in,
+ * so the field is somewhere predictable instead of wherever the finished name
+ * would eventually sort to.
+ */
+export function DirectoryContents({directoryPath, depth}) {
+  const {entries, draft} = useFileTree();
+
+  const isNamingHere = draft?.mode === 'create' && draft.parentPath === directoryPath;
+
+  return (
+    <>
+      {isNamingHere && <DraftRow depth={depth} />}
+
+      {(entries[directoryPath] ?? []).map(entry => (
+        <FileNode key={entry.fullPath} entry={entry} depth={depth} />
+      ))}
+    </>
+  );
+}
