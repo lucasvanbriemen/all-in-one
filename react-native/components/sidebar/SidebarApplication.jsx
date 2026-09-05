@@ -5,14 +5,15 @@ import {SidebarRow} from './SidebarRow';
 
 export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp, item, isMinimized, app}) {
   const styles = useThemedStyles(createStyles);
+  const isExpanded = currentlyActive === app;
 
   return (
     <View style={styles.appWrapper}>
       <Pressable onPress={() => setActiveApp(app)}>
         {!isMinimized && <Text style={styles.title}>{getAppTitle(app)}</Text>}
       </Pressable>
-      {currentlyActive === app && item.map(row => (
-        <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={currentlyActive === app && activeSidebarItem === row.path} onPress={() => {setActiveSidebarItem(row.path); setActiveApp(app)}} useLabels={!isMinimized} />
+      {isExpanded && item.map(row => (
+        <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && activeSidebarItem === row.path} onPress={() => {setActiveSidebarItem(row.path); setActiveApp(app)}} useLabels={!isMinimized} />
       ))}
     </View>
   );
