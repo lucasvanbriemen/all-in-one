@@ -70,7 +70,7 @@ export function HomePage({activeSidebarItem}) {
 const createStyles = colors => StyleSheet.create({
   content: {
     flexDirection: 'row',
-    gap: 32,
+    gap: 16,
     paddingTop: 16,
   },
 });
