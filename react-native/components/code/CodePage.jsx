@@ -166,6 +166,12 @@ export function CodePage({activeSidebarItem}) {
             </View>
           </>
         )}
+
+        {!projectRoot && (
+          <View style={styles.noProjectRoot}>
+            <Text style={styles.noProjectRootText}>No project opend</Text>
+          </View>
+        )}
       </View>
 
       {/* Last child, absolutely filled: it covers the tree and the editor
@@ -227,5 +233,17 @@ const createStyles = colors => StyleSheet.create({
   },
   openedFileActiveText: {
     color: colors.onPrimary,
+  },
+  noProjectRoot: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noProjectRootText: {
+    fontSize: 32,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    opacity: 0.75,
   },
 });
