@@ -6,6 +6,7 @@ import {useEffect, useRef, useState} from 'react';
 
 import {ConfirmDelete} from './ConfirmDelete';
 import {isSecondaryClick} from './TreeRow';
+import {parentOf} from './fileTreeContext';
 import {DirectoryContents} from './FileNode';
 import {Icon} from '../icons';
 
@@ -29,12 +30,39 @@ function clamp(value, lowest, highest) {
 // Claimed so macOS stops handling these itself — Return and Delete both beep
 // otherwise. The events reach JS either way; this only silences the system's
 // own answer to them.
-const KEY_DOWN_EVENTS = [{key: 'Enter'}, {key: 'Backspace'}, {key: 'Delete'}, {key: 'F2'}, {key: 'Escape'}];
+const KEY_DOWN_EVENTS = [
+  {key: 'Enter'},
+  {key: 'Backspace'},
+  {key: 'Delete'},
+  {key: 'F2'},
+  {key: 'Escape'},
+  {key: 'c', metaKey: true},
+  {key: 'x', metaKey: true},
+  {key: 'v', metaKey: true},
+];
 
 function FileTreeBody({projectRoot, setProjectRoot}) {
   const styles = useThemedStyles(createStyles);
-  const {menu, draft, pendingDelete, selected, treeRef, openMenu, closeMenu, startCreate, startRename, requestDelete, refreshAll, collapseAll} =
-    useFileTree();
+  const {
+    menu,
+    draft,
+    pendingDelete,
+    selected,
+    clipboard,
+    problem,
+    treeRef,
+    openMenu,
+    closeMenu,
+    startCreate,
+    startRename,
+    requestDelete,
+    refreshAll,
+    collapseAll,
+    copy,
+    cut,
+    paste,
+    dismissProblem,
+  } = useFileTree();
 
   // A click reports where it landed relative to the root view, and `measure`
   // reports view positions in that same frame — the one convention the whole
@@ -58,10 +86,38 @@ function FileTreeBody({projectRoot, setProjectRoot}) {
    * — send their own keystrokes bubbling back through here on the way out, so
    * while either is open this stands down rather than acting on them twice.
    */
+  // A file is pasted beside itself; a folder is pasted inside itself. With
+  // nothing selected the project root is what is being talked about.
+  function pasteTarget() {
+    if (!selected) {
+      return '';
+    }
+
+    return selected.isDirectory ? selected.fullPath : parentOf(selected.fullPath);
+  }
+
   function onKeyDown(event) {
-    const {key} = event.nativeEvent ?? event;
+    const {key, metaKey, ctrlKey} = event.nativeEvent ?? event;
 
     if (draft || pendingDelete) {
+      return;
+    }
+
+    // Paste is the one that works with nothing selected, so the clipboard keys
+    // are answered before the tree asks whether there is a row to act on.
+    if (metaKey || ctrlKey) {
+      if (key === 'v') {
+        return paste(pasteTarget());
+      }
+
+      if (key === 'c' && selected) {
+        return copy(selected);
+      }
+
+      if (key === 'x' && selected) {
+        return cut(selected);
+      }
+
       return;
     }
 
@@ -110,7 +166,7 @@ function FileTreeBody({projectRoot, setProjectRoot}) {
 
   // Drawn down and to the right of the pointer, then held inside the panel so
   // a click near an edge does not put the menu somewhere it cannot be reached.
-  const menuSize = menu && rowMenuSize(menu.entry);
+  const menuSize = menu && rowMenuSize(menu.entry, clipboard);
 
   const menuPosition = menu && {
     left: clamp(menu.pageX - frame.pageX, 4, frame.width - menuSize.width - 4),
@@ -140,6 +196,12 @@ function FileTreeBody({projectRoot, setProjectRoot}) {
           </View>
         )}
       </View>
+
+      {problem && (
+        <Pressable onPress={dismissProblem} style={styles.problem}>
+          <Text style={styles.problemText}>{problem}</Text>
+        </Pressable>
+      )}
 
       {/* The empty space under the rows is still the project, so a click there
           means the project — which is what makes "new file at the top level"
@@ -230,6 +292,18 @@ const createStyles = colors => StyleSheet.create({
   },
   headerActionHovered: {
     backgroundColor: withAlpha(colors.onSurface, 0.08),
+  },
+  // What a copy, paste or delete says when it fails, since none of them has an
+  // inline field to complain in. Tapping it is how it goes away.
+  problem: {
+    marginBottom: 8,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: withAlpha(colors.error, 0.15),
+  },
+  problemText: {
+    color: colors.error,
+    fontSize: 12,
   },
   tree: {
     flex: 1,

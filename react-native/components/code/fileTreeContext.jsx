@@ -80,6 +80,16 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
   // without the tree having to make every row separately focusable.
   const [selected, setSelected] = useState(null);
 
+  // What Cmd+C or Cmd+X put aside, and which of the two it was. A cut is only
+  // carried out on paste, so until then nothing has moved and the entry is
+  // still where it was — only shown faded, to say it is on its way out.
+  const [clipboard, setClipboard] = useState(null);
+
+  // Where a failed rename or delete would have shown its complaint, there is a
+  // field to put it in. Copy, paste and delete have no field, so they need
+  // somewhere of their own rather than failing in silence.
+  const [problem, setProblem] = useState(null);
+
   // The panel itself. On macOS keys are only delivered to the first responder,
   // and a click deliberately does not move focus, so the rows have to hand it
   // back here explicitly or the shortcuts would only work by accident.
@@ -107,6 +117,8 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
     setMenu(null);
     setPendingDelete(null);
     setSelected(null);
+    setClipboard(null);
+    setProblem(null);
     load('');
   }, [projectRoot, load]);
 
@@ -204,10 +216,10 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
       }
 
       const parentPath = draft.mode === 'rename' ? parentOf(draft.targetPath) : draft.parentPath;
-      const problem = validateName(name, entries[parentPath] ?? [], draft.targetPath);
+      const nameProblem = validateName(name, entries[parentPath] ?? [], draft.targetPath);
 
-      if (problem) {
-        setDraft(current => (current ? {...current, error: problem} : current));
+      if (nameProblem) {
+        setDraft(current => (current ? {...current, error: nameProblem} : current));
         return false;
       }
 
@@ -254,8 +266,83 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
     [draft, entries, projectRoot, reveal, forgetSubtree, onEntryRenamed, onOpenFile],
   );
 
+  const copy = useCallback(entry => {
+    setMenu(null);
+    setProblem(null);
+    setClipboard({entry, mode: 'copy'});
+  }, []);
+
+  const cut = useCallback(entry => {
+    setMenu(null);
+    setProblem(null);
+    setClipboard({entry, mode: 'cut'});
+  }, []);
+
+  /**
+   * A cut and a copy are different operations on the disk but the same one
+   * here: put the entry under `directoryPath`. Moving is the rename endpoint
+   * seen from another angle, and copying is a create whose contents come from
+   * somewhere else — which is also why only the copy renames itself out of a
+   * collision. A move onto an existing name is a question for the user, not
+   * something to answer with a second file.
+   */
+  const paste = useCallback(
+    async directoryPath => {
+      setMenu(null);
+      setProblem(null);
+
+      if (!clipboard) {
+        return;
+      }
+
+      const {entry, mode} = clipboard;
+      const destination = joinPath(directoryPath, entry.name);
+
+      // Pasting a folder into itself, or into anything inside it, would put the
+      // copy inside the thing being copied. The server refuses it too; catching
+      // it here is what turns it into a sentence instead of a failed request.
+      if (entry.isDirectory && (directoryPath === entry.fullPath || directoryPath.startsWith(`${entry.fullPath}/`))) {
+        setProblem(`${entry.name} cannot be pasted into itself`);
+        return;
+      }
+
+      try {
+        if (mode === 'cut') {
+          // Already where it is being sent. Nothing to do, and the rename
+          // endpoint would rightly call it a collision.
+          if (parentOf(entry.fullPath) === directoryPath) {
+            setClipboard(null);
+            return;
+          }
+
+          await fileSystem.renameEntry(projectRoot, entry.fullPath, destination);
+          setClipboard(null);
+
+          if (entry.isDirectory) {
+            forgetSubtree(entry.fullPath);
+          }
+
+          await load(parentOf(entry.fullPath));
+          await reveal(destination, false);
+          onEntryRenamed?.(entry.fullPath, destination);
+          return;
+        }
+
+        // The name it was given may already have been taken, so where the copy
+        // landed is the server's answer rather than ours.
+        const response = await fileSystem.copyEntry(projectRoot, destination, entry.fullPath);
+
+        await reveal(response.path ?? destination, false);
+      } catch (error) {
+        setProblem(error.message);
+      }
+    },
+    [clipboard, projectRoot, load, reveal, forgetSubtree, onEntryRenamed],
+  );
+
   const requestDelete = useCallback(entry => {
     setMenu(null);
+    setProblem(null);
     setPendingDelete(entry);
   }, []);
 
@@ -267,8 +354,16 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
     }
 
     setPendingDelete(null);
+
+    try {
+      await fileSystem.deleteEntry(projectRoot, entry.fullPath);
+    } catch (error) {
+      setProblem(error.message);
+      return;
+    }
+
     setSelected(current => (current?.fullPath === entry.fullPath ? null : current));
-    await fileSystem.deleteEntry(projectRoot, entry.fullPath);
+    setClipboard(current => (current?.entry.fullPath === entry.fullPath ? null : current));
 
     if (entry.isDirectory) {
       forgetSubtree(entry.fullPath);
@@ -287,6 +382,8 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
     menu,
     pendingDelete,
     selected,
+    clipboard,
+    problem,
     treeRef: tree,
     onOpenFile,
     select: setSelected,
@@ -301,6 +398,10 @@ export function FileTreeProvider({projectRoot, currentFile, onOpenFile, onEntryR
     commitDraft,
     openMenu: setMenu,
     closeMenu: () => setMenu(null),
+    copy,
+    cut,
+    paste,
+    dismissProblem: () => setProblem(null),
     requestDelete,
     confirmDelete,
     cancelDelete: () => setPendingDelete(null),

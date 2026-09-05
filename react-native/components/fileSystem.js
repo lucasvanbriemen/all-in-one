@@ -78,6 +78,15 @@ export const fileSystem = {
     return this.mutate("POST", "/entry", projectRoot, path, {type});
   },
 
+  /**
+   * Copying is a create whose contents come from somewhere else, so it answers
+   * with the path it actually used — a name already taken beside the original
+   * is normal, and the server makes it unique rather than refusing.
+   */
+  copyEntry(projectRoot, path, copyFrom) {
+    return this.mutate("POST", "/entry", projectRoot, path, {copyFrom});
+  },
+
   renameEntry(projectRoot, path, newPath) {
     return this.mutate("PATCH", "/entry", projectRoot, path, {newPath});
   },

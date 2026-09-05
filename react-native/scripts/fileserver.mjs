@@ -152,6 +152,9 @@ async function writeFileContents(request, response, projectRoot, relative) {
  * Creating is allowed to create the folders above it too: VS Code's explorer
  * takes `app/models/user.rb` in its new-file field and makes the whole path,
  * and the tree here offers the same thing rather than one level at a time.
+ *
+ * A body carrying `copyFrom` asks for the same thing with contents: make an
+ * entry here, filled with what is already at that path.
  */
 async function createEntry(request, response, projectRoot, relative) {
   const absolute = resolveWithin(projectRoot, relative);
@@ -165,6 +168,10 @@ async function createEntry(request, response, projectRoot, relative) {
     body = await readJsonBody(request);
   } catch (error) {
     return sendJson(response, 400, { error: 'invalid request body' });
+  }
+
+  if (body.copyFrom) {
+    return copyEntry(response, projectRoot, absolute, body.copyFrom);
   }
 
   const isDirectory = body.type === 'directory';
@@ -187,6 +194,76 @@ async function createEntry(request, response, projectRoot, relative) {
   } catch (error) {
     console.error(`Failed to create entry: ${absolute}; error: ${error}`);
     sendJson(response, 500, { error: 'failed to create entry' });
+  }
+}
+
+/**
+ * Pasting beside the original is the ordinary case, not a mistake, so a name
+ * that is already taken is answered the way the Finder answers it rather than
+ * refused the way a rename is: with a copy that says it is one.
+ */
+async function freeName(absolute, isDirectory) {
+  if (!(await exists(absolute))) {
+    return absolute;
+  }
+
+  const directory = path.dirname(absolute);
+  // Only a file has an extension worth preserving. Splitting `.github` or
+  // `my.folder` at the dot would move half the name to the end of the copy.
+  const extension = isDirectory ? '' : path.extname(absolute);
+  const base = path.basename(absolute, extension);
+
+  for (let attempt = 1; attempt <= 100; attempt++) {
+    const suffix = attempt === 1 ? ' copy' : ` copy ${attempt}`;
+    const candidate = path.join(directory, `${base}${suffix}${extension}`);
+
+    if (!(await exists(candidate))) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+async function copyEntry(response, projectRoot, absolute, from) {
+  const source = resolveWithin(projectRoot, from);
+  const root = path.resolve(projectRoot);
+
+  if (!source || source === root) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  let stats;
+  try {
+    stats = await fs.stat(source);
+  } catch (error) {
+    return sendJson(response, 404, { error: `${path.basename(source)} no longer exists` });
+  }
+
+  const destination = await freeName(absolute, stats.isDirectory());
+
+  if (!destination) {
+    return sendJson(response, 409, { error: `too many copies of ${path.basename(absolute)}` });
+  }
+
+  // Asked of the name the copy will actually take, not the one requested:
+  // pasting a folder beside itself asks for the path it already occupies, and
+  // that is the most ordinary paste there is once the name is made unique.
+  //
+  // What is left after that is a folder pasted into something it contains,
+  // where the copy would land inside the thing being copied and the walk would
+  // have no reason to ever stop.
+  if (destination === source || destination.startsWith(source + path.sep)) {
+    return sendJson(response, 400, { error: 'a folder cannot be copied into itself' });
+  }
+
+  try {
+    await fs.mkdir(path.dirname(destination), { recursive: true });
+    await fs.cp(source, destination, { recursive: true, errorOnExist: true, force: false });
+    sendJson(response, 200, { path: path.relative(projectRoot, destination), isDirectory: stats.isDirectory() });
+  } catch (error) {
+    console.error(`Failed to copy: ${source} -> ${destination}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to copy entry' });
   }
 }
 

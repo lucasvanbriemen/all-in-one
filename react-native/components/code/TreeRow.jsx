@@ -43,11 +43,15 @@ export function isSecondaryClick(event) {
 export function TreeRow({entry, depth, isOpen, onPress}) {
   const styles = useThemedStyles(createStyles);
   const colors = useTheme();
-  const {currentFile, selected, select, openMenu, focusTree} = useFileTree();
+  const {currentFile, selected, clipboard, select, openMenu, focusTree} = useFileTree();
   const [hovered, setHovered] = useState(false);
 
   const isCurrent = !entry.isDirectory && currentFile === entry.fullPath;
   const isSelected = selected?.fullPath === entry.fullPath;
+
+  // Nothing has moved yet — a cut only happens on paste — so the row is still
+  // here, faded to say where it is headed.
+  const isCut = clipboard?.mode === 'cut' && clipboard.entry.fullPath === entry.fullPath;
 
   // Selecting first, always: a right-click on a row is a statement about that
   // row, not about whichever one happened to be selected before it.
@@ -81,6 +85,7 @@ export function TreeRow({entry, depth, isOpen, onPress}) {
           hovered && styles.rowHovered,
           isCurrent && styles.rowCurrent,
           isSelected && styles.rowSelected,
+          isCut && styles.rowCut,
         ]}
         onPressIn={selectRow}
         onPress={onPress}
@@ -220,6 +225,9 @@ const createStyles = colors => StyleSheet.create({
   },
   rowSelected: {
     backgroundColor: withAlpha(colors.primary, 0.28),
+  },
+  rowCut: {
+    opacity: 0.45,
   },
   gutter: {
     width: GUTTER,

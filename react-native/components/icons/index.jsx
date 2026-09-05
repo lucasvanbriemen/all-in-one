@@ -4,11 +4,14 @@ import {ChevronRight} from './chevronRight';
 import {ChevronTop} from './chevronTop';
 import {CodeIcon} from './code';
 import {CollapseAllIcon} from './collapseAll';
+import {CopyIcon} from './copy';
+import {CutIcon} from './cut';
 import {FilesIcon} from './files';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {NewFileIcon} from './newFile';
 import {NewFolderIcon} from './newFolder';
+import {PasteIcon} from './paste';
 import {PatheIcon} from './pathe';
 import React from 'react';
 import {RefreshIcon} from './refresh';
@@ -42,6 +45,9 @@ const ICONS = {
   trash: TrashIcon,
   refresh: RefreshIcon,
   'collapse-all': CollapseAllIcon,
+  copy: CopyIcon,
+  cut: CutIcon,
+  paste: PasteIcon,
 };
 
 export function Icon({name, size, color}) {

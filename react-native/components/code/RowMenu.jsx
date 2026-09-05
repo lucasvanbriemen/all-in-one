@@ -23,11 +23,15 @@ function parentForNewEntries(entry) {
 
 /**
  * How tall the menu will be, so the tree can keep it inside the panel before
- * it is drawn. The project root has nothing to rename or delete, so its menu
- * is two items rather than four.
+ * it is drawn. The project root has nothing to rename, copy or delete, so its
+ * menu is short; Paste only appears when there is something to paste.
  */
-export function rowMenuSize(entry) {
-  return {width: MENU_WIDTH, height: ITEM_HEIGHT * (entry ? 4 : 2) + 8};
+export function rowMenuSize(entry, clipboard) {
+  // New file and New folder always; then Cut, Copy, Rename and Delete for a
+  // row; then Paste whenever the clipboard holds something.
+  const items = 2 + (entry ? 4 : 0) + (clipboard ? 1 : 0);
+
+  return {width: MENU_WIDTH, height: ITEM_HEIGHT * items + 8};
 }
 
 /**
@@ -39,7 +43,7 @@ export function rowMenuSize(entry) {
  */
 export function RowMenu({left, top}) {
   const styles = useThemedStyles(createStyles);
-  const {menu, closeMenu, startCreate, startRename, requestDelete} = useFileTree();
+  const {menu, clipboard, closeMenu, startCreate, startRename, requestDelete, copy, cut, paste} = useFileTree();
 
   const entry = menu.entry;
   const parent = parentForNewEntries(entry);
@@ -48,6 +52,19 @@ export function RowMenu({left, top}) {
     {label: 'New file', icon: 'new-file', onPress: () => startCreate(parent, 'file')},
     {label: 'New folder', icon: 'new-folder', onPress: () => startCreate(parent, 'directory')},
   ];
+
+  if (entry) {
+    items.push(
+      {label: 'Cut', icon: 'cut', onPress: () => cut(entry)},
+      {label: 'Copy', icon: 'copy', onPress: () => copy(entry)},
+    );
+  }
+
+  // Offered only when it would do something. A greyed-out row that never
+  // becomes available says less than no row at all.
+  if (clipboard) {
+    items.push({label: `Paste ${clipboard.entry.name}`, icon: 'paste', onPress: () => paste(parent)});
+  }
 
   if (entry) {
     items.push(
@@ -62,7 +79,7 @@ export function RowMenu({left, top}) {
 
       <View style={[styles.menu, {left, top}]}>
         {items.map(item => (
-          <MenuItem key={item.label} {...item} />
+          <MenuItem key={item.icon} {...item} />
         ))}
       </View>
     </>
@@ -83,7 +100,9 @@ function MenuItem({label, icon, onPress, destructive}) {
       onPress={onPress}>
       <Icon name={icon} size={16} color={color} />
 
-      <Text style={[styles.label, destructive && styles.destructive]}>{label}</Text>
+      <Text numberOfLines={1} style={[styles.label, destructive && styles.destructive]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -114,6 +133,7 @@ const createStyles = colors => StyleSheet.create({
   },
   label: {
     color: colors.onSurface,
+    flexShrink: 1,
   },
   destructive: {
     color: colors.error,

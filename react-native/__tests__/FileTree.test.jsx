@@ -22,6 +22,7 @@ jest.mock('../components/fileSystem', () => ({
   fileSystem: {
     listFiles: jest.fn(),
     createEntry: jest.fn(),
+    copyEntry: jest.fn(),
     renameEntry: jest.fn(),
     deleteEntry: jest.fn(),
   },
@@ -43,6 +44,7 @@ beforeEach(() => {
   global.fetch = jest.fn(() => Promise.resolve({json: () => Promise.resolve({})}));
   fileSystem.listFiles.mockImplementation((root, path) => Promise.resolve({contents: [...(TREE[path] ?? [])]}));
   fileSystem.createEntry.mockResolvedValue({});
+  fileSystem.copyEntry.mockImplementation((root, to) => Promise.resolve({path: to}));
   fileSystem.renameEntry.mockResolvedValue({});
   fileSystem.deleteEntry.mockResolvedValue({});
 });
@@ -98,10 +100,14 @@ function escape(tree) {
 
 // The panel is the only thing here that takes key events; on macOS they are
 // delivered to whatever holds focus, which is it.
-function pressKey(tree, key) {
+function pressKey(tree, key, modifiers = {}) {
   const panel = tree.root.findAll(node => typeof node.props.onKeyDown === 'function' && node.props.keyDownEvents)[0];
 
-  return panel.props.onKeyDown({nativeEvent: {key}});
+  return panel.props.onKeyDown({nativeEvent: {key, ...modifiers}});
+}
+
+function select(tree, name) {
+  return rowFor(tree, name).props.onPressIn({nativeEvent: {button: 0}});
 }
 
 // `Delete {name}?` reaches the node as three children, so a row's label is
@@ -275,6 +281,85 @@ test('Escape abandons a rename, and abandons a new file without creating it', as
 
   expect(tree.root.findAllByType(TextInput)).toHaveLength(0);
   expect(fileSystem.createEntry).not.toHaveBeenCalled();
+});
+
+test('copies a file into the folder that is selected when it is pasted', async () => {
+  const tree = await render();
+
+  await settle(() => select(tree, 'README.md'));
+  await settle(() => pressKey(tree, 'c', {metaKey: true}));
+
+  await settle(() => select(tree, 'app'));
+  await settle(() => pressKey(tree, 'v', {metaKey: true}));
+
+  expect(fileSystem.copyEntry).toHaveBeenCalledWith('/p', 'app/README.md', 'README.md');
+});
+
+test('pasting a copy beside itself leaves the new name to the server', async () => {
+  const tree = await render();
+
+  await settle(() => select(tree, 'README.md'));
+  await settle(() => pressKey(tree, 'c', {metaKey: true}));
+  await settle(() => pressKey(tree, 'v', {metaKey: true}));
+
+  // A file's own folder is where it is pasted, under the name it already has —
+  // the server is what turns that into `README copy.md`.
+  expect(fileSystem.copyEntry).toHaveBeenCalledWith('/p', 'README.md', 'README.md');
+});
+
+test('a cut moves on paste, and takes the open tab with it', async () => {
+  const onEntryRenamed = jest.fn();
+  const tree = await render({onEntryRenamed});
+
+  await settle(() => select(tree, 'README.md'));
+  await settle(() => pressKey(tree, 'x', {metaKey: true}));
+
+  // Nothing has moved yet.
+  expect(fileSystem.renameEntry).not.toHaveBeenCalled();
+
+  await settle(() => select(tree, 'app'));
+  await settle(() => pressKey(tree, 'v', {metaKey: true}));
+
+  expect(fileSystem.renameEntry).toHaveBeenCalledWith('/p', 'README.md', 'app/README.md');
+  expect(onEntryRenamed).toHaveBeenCalledWith('README.md', 'app/README.md');
+});
+
+test('a cut pasted back where it started does nothing', async () => {
+  const tree = await render();
+
+  await settle(() => select(tree, 'README.md'));
+  await settle(() => pressKey(tree, 'x', {metaKey: true}));
+  await settle(() => pressKey(tree, 'v', {metaKey: true}));
+
+  expect(fileSystem.renameEntry).not.toHaveBeenCalled();
+  expect(fileSystem.copyEntry).not.toHaveBeenCalled();
+});
+
+test('a folder cannot be pasted into itself, and says so', async () => {
+  const tree = await render();
+
+  await settle(() => select(tree, 'app'));
+  await settle(() => pressKey(tree, 'c', {metaKey: true}));
+  await settle(() => pressKey(tree, 'v', {metaKey: true}));
+
+  expect(fileSystem.copyEntry).not.toHaveBeenCalled();
+  expect(texts(tree.root)).toEqual(expect.arrayContaining(['app cannot be pasted into itself']));
+});
+
+test('the menu offers Paste only once there is something to paste', async () => {
+  const tree = await render();
+
+  await settle(() => secondaryClick(tree, 'README.md'));
+  expect(texts(tree.root)).not.toEqual(expect.arrayContaining(['Paste README.md']));
+
+  await settle(() => pressables(tree.root).find(node => texts(node).includes('Copy')).props.onPress());
+  await settle(() => secondaryClick(tree, 'app'));
+
+  expect(texts(tree.root)).toEqual(expect.arrayContaining(['Paste README.md']));
+
+  await settle(() => pressables(tree.root).find(node => texts(node).includes('Paste README.md')).props.onPress());
+
+  expect(fileSystem.copyEntry).toHaveBeenCalledWith('/p', 'app/README.md', 'README.md');
 });
 
 test('renames through the row menu and reports the move', async () => {
