@@ -30,6 +30,23 @@ export function HomePage({activeSidebarItem}) {
     return (used / total) * 100;
   }
 
+  function uptimeSecondsToProperTime(seconds) {
+    if (!seconds) return null;
+    const days = Math.floor(seconds / (24 * 3600));
+    seconds %= 24 * 3600;
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+
+    let string = '';
+    if (days > 0) string += `${days}d `;
+    if (hours > 0) string += `${hours}h `;
+    if (minutes > 0) string += `${minutes}m `;
+    if (seconds > 0) string += `${seconds}s`;
+    return string;
+  }
+
   return (
     <View style={styles.content}>
       <Text style={styles.text}>Home</Text>
@@ -39,6 +56,7 @@ export function HomePage({activeSidebarItem}) {
           <Text style={styles.text}>{serverData.cpu_count}</Text>
           <Text style={styles.text}>{calculateDiskUsage().toFixed(2)}%</Text>
           <Text style={styles.text}>{calculateMemoryUsage().toFixed(2)}%</Text>
+          <Text style={styles.text}>{uptimeSecondsToProperTime(serverData.uptime_seconds)}</Text>
         </>
       )}
     </View>
