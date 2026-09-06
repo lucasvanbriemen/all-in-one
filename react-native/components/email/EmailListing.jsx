@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {EmailListItem} from './EmailListItem';
-import {api} from './api';
-import {useThemedStyles} from './theme';
+import {api} from '../api';
+import {useThemedStyles} from '../theme';
 
 export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
   const [items, setItems] = useState([]);

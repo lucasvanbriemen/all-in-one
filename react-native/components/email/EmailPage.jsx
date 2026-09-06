@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 
 import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
-import {useThemedStyles} from './theme';
+import {useThemedStyles} from '../theme';
 
 export function EmailPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);

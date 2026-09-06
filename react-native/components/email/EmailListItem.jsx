@@ -1,6 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {glass, useThemedStyles} from './theme';
+import {glass, useThemedStyles} from '../theme';
 
 export function EmailListItem({item, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
-import {EmailPage} from './components/EmailPage';
+import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';

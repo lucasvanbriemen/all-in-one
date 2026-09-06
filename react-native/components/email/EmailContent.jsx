@@ -1,9 +1,9 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from './theme';
+import {glass, useThemedStyles} from '../theme';
 
 import {EmailBody} from './EmailBody';
-import {api} from './api';
+import {api} from '../api';
 
 export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
