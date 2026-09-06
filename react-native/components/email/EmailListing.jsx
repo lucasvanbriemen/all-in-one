@@ -44,8 +44,9 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 26,
-    fontWeight: '400',
-    color: colors.onSurface,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 32,
+    color: colors.onSurfaceVariant,
   },
 });
