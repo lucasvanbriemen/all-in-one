@@ -21,13 +21,18 @@ export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) 
   return (
     <View style={styles.content}>
       <ScrollView>
-        {items.map(item => (
-          <EmailListItem
-            key={item.id}
-            item={item}
-            isSelected={selectedEmail?.id === item.id}
-            onPress={() => onSelectEmail(item)}
-          />
+        {items.map((item, index) => (
+          <React.Fragment key={item.id}>
+            {items[index - 1]?.date !== item.date && (
+              <Text style={styles.title}>{item.date}</Text>
+            )}
+
+            <EmailListItem
+              item={item}
+              isSelected={selectedEmail?.id === item.id}
+              onPress={() => onSelectEmail(item)}
+            />
+          </React.Fragment>
         ))}
       </ScrollView>
     </View>

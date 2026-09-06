@@ -76,4 +76,16 @@ class Email < ApplicationRecord
   def internal?
     sender&.email.in?(MailboxConfig::INTERNAL_EMAILS)
   end
+
+  def date
+    day = created_at.to_date
+
+    if day == Date.current
+      "Today"
+    elsif day == Date.current - 1
+      "Yesterday"
+    else
+      day.strftime("%B %-d, %Y")
+    end
+  end
 end
