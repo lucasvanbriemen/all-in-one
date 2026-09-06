@@ -11,9 +11,7 @@ export function EmailContent({email}) {
   const emailId = email?.id;
 
   useEffect(() => {
-    if (!emailId) {
-      return;
-    }
+    if (!emailId) return;
 
     api.get('/emails/' + emailId).then(data => {
       setDetail(data);
