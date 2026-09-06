@@ -11,22 +11,13 @@ export function EmailContent({email}) {
   const emailId = email?.id;
 
   useEffect(() => {
-    setDetail(null);
-
     if (!emailId) {
       return;
     }
 
-    // The listing only carries enough to draw a row; the body comes from the
-    // detail endpoint. `cancelled` keeps a slow response for a previously
-    // selected email from overwriting a newer one.
-    let cancelled = false;
-
-    api
-      .get('/emails/' + emailId)
-      .then(data => {
-        if (!cancelled) { setDetail(data); }
-      })
+    api.get('/emails/' + emailId).then(data => {
+      setDetail(data);
+    })
   }, [emailId]);
 
   if (!email) {
