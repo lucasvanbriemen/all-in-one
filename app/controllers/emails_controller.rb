@@ -31,8 +31,7 @@ class EmailsController < ApplicationController
       html_body: @email.html_body,
       sender_name: @email.sender&.name,
       sender_email: @email.sender&.email,
-      sender_image_url: @email.sender_image_url,
-      resize_script: helpers.iframe_resize_script
+      sender_image_url: @email.sender_image_url
     }
   end
 end
