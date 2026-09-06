@@ -19,15 +19,25 @@ module Imap
       @senders = {}
     end
 
+    # Opens a connection, imports, and records the outcome on the credential.
+    # Never raises: the recurring schedule is the retry mechanism.
     def run
       @client.connect do |imap|
-        import_inbox(imap, imap.inbox_uids)
+        run_on(imap)
       end
-      @credential.record_fetch_success!
     rescue StandardError => e
-      # The recurring schedule is the retry mechanism — record and move on.
       @credential.record_fetch_failure!(e)
       Rails.logger.error("[IMAP] credential=#{@credential.id} fetch failed: #{e.class}: #{e.message}")
+    end
+
+    # One import pass over a connection the caller already opened and
+    # selected, for callers that hold a connection across many passes (see
+    # Imap::Watcher). Connection-level errors propagate so the caller can
+    # decide whether to reconnect; per-message and per-batch failures are
+    # still contained below.
+    def run_on(imap)
+      import_inbox(imap, imap.inbox_uids)
+      @credential.record_fetch_success!
     end
 
     private

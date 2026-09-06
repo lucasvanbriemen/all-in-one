@@ -22,6 +22,13 @@ module Imap
     # mailbox renamed on the server heals without a deploy.
     ARCHIVE_MAILBOX_TTL = 1.day
 
+    IDLE_CAPABILITY = "IDLE".freeze
+
+    # Untagged responses that mean the mailbox changed underneath us and an
+    # import pass is due. EXPUNGE is included because it also proves the
+    # connection is still delivering notifications.
+    IDLE_WAKE_RESPONSES = %w[EXISTS RECENT EXPUNGE].freeze
+
     def initialize(credential)
       @credential = credential
       @imap = nil
@@ -47,6 +54,40 @@ module Imap
     # because imported messages are archived out of INBOX.
     def inbox_uids
       @imap.uid_search([ "ALL" ])
+    end
+
+    # RFC 2177. Both Gmail and Dovecot advertise it, but a server that does
+    # not leaves its mailbox to the poller rather than failing.
+    def idle_supported?
+      @imap.capabilities.include?(IDLE_CAPABILITY)
+    end
+
+    # Block until the server announces a mailbox change or `timeout` seconds
+    # pass, whichever comes first. Returns true if woken by a change, false on
+    # timeout. Re-arming costs two round trips (DONE + IDLE) on the connection
+    # we already hold, so a caller can afford to call this in a tight loop.
+    def idle(timeout)
+      woken = false
+
+      @imap.idle(timeout) do |response|
+        # Handlers run on Net::IMAP's receiver thread, so this must stay
+        # trivial: flag the wake-up and let the caller do the real work.
+        next if woken
+        next unless response.is_a?(Net::IMAP::UntaggedResponse)
+        next unless IDLE_WAKE_RESPONSES.include?(response.name)
+
+        woken = true
+
+        begin
+          @imap.idle_done
+        rescue Net::IMAP::Error
+          # The IDLE ended on its own (timeout) between the response arriving
+          # and this handler running. Nothing left to signal.
+          nil
+        end
+      end
+
+      woken
     end
 
     # uid => RFC822 Message-ID for the given UIDs, in as few round trips as

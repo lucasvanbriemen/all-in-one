@@ -3,10 +3,13 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
-    # IMAP fetching is almost entirely socket wait, so the GVL is not the
-    # limit here — threads are. One thread per mailbox lets all inboxes be
-    # fetched in a single wave instead of queueing behind each other, each
-    # wave otherwise re-paying the TCP + TLS + LOGIN handshake.
+    # IMAP work is almost entirely socket wait, so the GVL is not the limit
+    # here — threads are. Budget at least two per mailbox: an Imap::Watcher
+    # session parks on a thread for its whole IDLE session (see
+    # Imap::Watcher::SESSION_DURATION), and the poller underneath it needs a
+    # thread of its own so all inboxes are still fetched in a single wave
+    # rather than queueing behind each other and re-paying the TCP + TLS +
+    # LOGIN handshake. Leave headroom for the recurring supervisors too.
     # Keep config/database.yml's pool at least this large.
     - queues: "*"
       threads: <%= ENV.fetch("IMAP_FETCH_CONCURRENCY", 20) %>

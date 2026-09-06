@@ -13,10 +13,20 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
-  # Polling interval sets the floor on how stale the inbox can look: a message
-  # is invisible for up to one tick after it arrives. Every tick costs one
-  # TCP + TLS + LOGIN per mailbox, so this trades login churn against latency —
-  # raise IMAP_FETCH_INTERVAL_SECONDS if a provider starts rate-limiting.
+  # Keeps a live IDLE connection per mailbox, which is what actually makes new
+  # mail show up quickly (see Imap::Watcher). Enqueues are no-ops while a
+  # session is already running, so this ticks often only to bound how long a
+  # mailbox goes unwatched after a session ends, crashes or is deployed over.
+  watch_all_imap_mailboxes:
+    class: WatchAllImapMailboxesJob
+    queue: default
+    schedule: every minute
+  # The safety net under IDLE, not the primary path: it covers servers that
+  # cannot IDLE, connections that die without saying so, and the gap between
+  # watch sessions. Polling interval therefore sets the *worst* case rather
+  # than the typical one — a message is invisible for at most one tick even if
+  # IDLE tells us nothing. Every tick costs one TCP + TLS + LOGIN per mailbox,
+  # so raise IMAP_FETCH_INTERVAL_SECONDS if a provider starts rate-limiting.
   fetch_all_imap_emails:
     class: FetchAllImapEmailsJob
     queue: default
