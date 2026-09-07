@@ -270,8 +270,9 @@ Two one-off setup steps before the first release build:
 
 ### The bundled server
 
-The Code page reads and writes files over `http://127.0.0.1:4001` and runs its shell
-over `ws://127.0.0.1:4001/terminal`. In development the Procfile starts that server; a
+The Code page reads and writes files over `http://127.0.0.1:4001` — and creates,
+copies, renames and deletes them there too, which is what the explorer's own
+editing runs on — and runs its shell over `ws://127.0.0.1:4001/terminal`. In development the Procfile starts that server; a
 copy of the app on someone else's Mac has no Procfile, so the release build carries the
 server *and* a Node runtime to execute it inside the bundle.
 

@@ -68,6 +68,51 @@ export const fileSystem = {
       });
   },
 
+  /**
+   * Creating, renaming and deleting all go through `/entry`, and all three are
+   * shown to the user the moment they fail — an existing name is a normal thing
+   * to type, not an exception to swallow. So unlike the readers above, these
+   * reject with what the server said rather than with a status code.
+   */
+  createEntry(projectRoot, path, type) {
+    return this.mutate("POST", "/entry", projectRoot, path, {type});
+  },
+
+  /**
+   * Copying is a create whose contents come from somewhere else, so it answers
+   * with the path it actually used — a name already taken beside the original
+   * is normal, and the server makes it unique rather than refusing.
+   */
+  copyEntry(projectRoot, path, copyFrom) {
+    return this.mutate("POST", "/entry", projectRoot, path, {copyFrom});
+  },
+
+  renameEntry(projectRoot, path, newPath) {
+    return this.mutate("PATCH", "/entry", projectRoot, path, {newPath});
+  },
+
+  deleteEntry(projectRoot, path) {
+    return this.mutate("DELETE", "/entry", projectRoot, path);
+  },
+
+  async mutate(method, url, projectRoot, path, body = null) {
+    const fullUrl = `${url}?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
+    const response = await fetch(BASE_URL + fullUrl, {
+      method,
+      headers: {...this.defaultHeaders},
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    const isJson = response.headers.get("content-type")?.includes("application/json");
+    const data = isJson ? await response.json() : await response.text();
+
+    if (!response.ok) {
+      throw new Error(data?.error ?? `${method} ${fullUrl} failed with ${response.status}`);
+    }
+
+    return data;
+  },
+
   makeRequest(projectRoot, url, path = null, headers = {}) {
     const fullUrl = path ? `${url}?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}` : `${url}?projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {

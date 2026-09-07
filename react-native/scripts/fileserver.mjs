@@ -3,6 +3,62 @@ import fs from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 
+/**
+ * Every path in a request is relative to the project the editor has open, and
+ * this is the only thing standing between that and the rest of the disk.
+ * `startsWith` alone does not do it — `/repo-backup` starts with `/repo` — so
+ * containment is decided on whole path segments, which is what `path.relative`
+ * reports: anything outside the root comes back leading with `..`.
+ *
+ * Returns null when the path escapes, so every caller can answer 400 the same
+ * way rather than repeating the reasoning.
+ */
+function resolveWithin(projectRoot, relative) {
+  if (!projectRoot) {
+    return null;
+  }
+
+  const absolute = path.resolve(projectRoot, relative || '');
+  const inside = path.relative(projectRoot, absolute);
+
+  if (inside.startsWith('..') || path.isAbsolute(inside)) {
+    return null;
+  }
+
+  return absolute;
+}
+
+function sendJson(response, status, payload) {
+  response.writeHead(status, { 'Content-Type': 'application/json' });
+  response.end(JSON.stringify(payload));
+}
+
+function readJsonBody(request) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    request.on('data', chunk => {
+      body += chunk.toString();
+    });
+    request.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (error) {
+        reject(error);
+      }
+    });
+    request.on('error', reject);
+  });
+}
+
+async function exists(absolutePath) {
+  try {
+    await fs.access(absolutePath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 const server = http.createServer(async (request, response) => {
   const { method, url } = request;
   const { pathname, searchParams } = new URL(url, 'http://localhost');
@@ -13,9 +69,7 @@ const server = http.createServer(async (request, response) => {
     const searchTerm = searchParams.get('term');
     const searchingFor = searchParams.get('type');
     if (!searchTerm) {
-      response.writeHead(400, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ error: 'missing term parameter' }));
-      return;
+      return sendJson(response, 400, { error: 'missing term parameter' });
     }
 
     if (searchingFor == 'files') {
@@ -25,89 +79,254 @@ const server = http.createServer(async (request, response) => {
     }
   }
 
+  // Create, rename and delete all address a single entry and all answer the
+  // same two shapes, so they share a route and differ only by verb. Unlike
+  // `/file` they make no distinction between a file and a folder: the tree
+  // manipulates both, and which one it is comes from the body or the disk.
+  if (pathname === '/entry') {
+    if (method === 'POST') {
+      return createEntry(request, response, projectRoot, relative);
+    }
+
+    if (method === 'PATCH') {
+      return renameEntry(request, response, projectRoot, relative);
+    }
+
+    if (method === 'DELETE') {
+      return deleteEntry(response, projectRoot, relative);
+    }
+  }
+
   if (method == "PUT" && pathname === "/file") {
-    return new Promise((resolve) => {
-      let body = '';
-      request.on('data', chunk => {
-        body += chunk.toString();
-      });
-      request.on('end', async () => {
-        const wantedPath = relative || '';
-        const absolute = path.resolve(projectRoot, wantedPath);
-
-        // convert the body from json string to an object
-        try {
-          const parsedBody = JSON.parse(body);
-          body = parsedBody.contents;
-        } catch (error) {
-          console.error(`Failed to parse request body: ${body}; error: ${error}`);
-          response.writeHead(400, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ error: 'invalid request body' }));
-          return resolve();
-        }
-
-        if (!absolute.startsWith(projectRoot)) {
-          response.writeHead(400, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ error: 'invalid path parameter' }));
-          return resolve();
-        }
-
-        try {
-          await fs.writeFile(absolute, body, 'utf8');
-          response.writeHead(200, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ path: wantedPath }));
-        } catch (error) {
-          console.error(`Failed to write file: ${absolute}; error: ${error}`);
-          response.writeHead(500, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ error: 'failed to write file' }));
-        }
-        resolve();
-      });
-    });
+    return writeFileContents(request, response, projectRoot, relative);
   }
 
   if (method !== 'GET' || (pathname !== '/file' && pathname !== '/files')) {
-    response.writeHead(404, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'not found' }));
-    return;
+    return sendJson(response, 404, { error: 'not found' });
   }
 
   if (!relative && pathname === '/file') {
-    response.writeHead(400, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'missing path parameter' }));
-    return;
+    return sendJson(response, 400, { error: 'missing path parameter' });
   }
 
   const wantedPath = relative || '';
+  const absolute = resolveWithin(projectRoot, wantedPath);
 
-  if (wantedPath.includes('..')) {
-    response.writeHead(400, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'invalid path parameter' }));
-    return;
-  }
-
-  if (wantedPath.startsWith('/') && pathname === '/file') {
-    response.writeHead(400, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'invalid path parameter' }));
-    return;
-  }
-
-  const absolute = path.resolve(projectRoot, wantedPath);
-
-
-  if (!absolute.startsWith(projectRoot)) {
-    response.writeHead(400, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ error: 'invalid path parameter' }));
-    return;
+  if (!absolute) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
   }
 
   if (pathname === '/file') {
     return getFileContents(absolute, response, wantedPath);
-  } else if (pathname === '/files') {
-    let path = wantedPath || '';
-    return getDirectoryContents(absolute, response, wantedPath);
   }
+
+  return getDirectoryContents(absolute, response, wantedPath);
 });
+
+async function writeFileContents(request, response, projectRoot, relative) {
+  const wantedPath = relative || '';
+  const absolute = resolveWithin(projectRoot, wantedPath);
+
+  if (!absolute) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  let body;
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    console.error(`Failed to parse request body for: ${absolute}; error: ${error}`);
+    return sendJson(response, 400, { error: 'invalid request body' });
+  }
+
+  try {
+    await fs.writeFile(absolute, body.contents, 'utf8');
+    sendJson(response, 200, { path: wantedPath });
+  } catch (error) {
+    console.error(`Failed to write file: ${absolute}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to write file' });
+  }
+}
+
+/**
+ * Creating is allowed to create the folders above it too: VS Code's explorer
+ * takes `app/models/user.rb` in its new-file field and makes the whole path,
+ * and the tree here offers the same thing rather than one level at a time.
+ *
+ * A body carrying `copyFrom` asks for the same thing with contents: make an
+ * entry here, filled with what is already at that path.
+ */
+async function createEntry(request, response, projectRoot, relative) {
+  const absolute = resolveWithin(projectRoot, relative);
+
+  if (!absolute || !relative || absolute === path.resolve(projectRoot)) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  let body;
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    return sendJson(response, 400, { error: 'invalid request body' });
+  }
+
+  if (body.copyFrom) {
+    return copyEntry(response, projectRoot, absolute, body.copyFrom);
+  }
+
+  const isDirectory = body.type === 'directory';
+
+  if (await exists(absolute)) {
+    return sendJson(response, 409, { error: `${path.basename(absolute)} already exists` });
+  }
+
+  try {
+    await fs.mkdir(isDirectory ? absolute : path.dirname(absolute), { recursive: true });
+
+    if (!isDirectory) {
+      // `wx` rather than a plain write, because the existence check above is
+      // not the same instant as this: two racing creates must not let the
+      // loser blank the file the winner just made.
+      await fs.writeFile(absolute, '', { encoding: 'utf8', flag: 'wx' });
+    }
+
+    sendJson(response, 200, { path: relative, isDirectory });
+  } catch (error) {
+    console.error(`Failed to create entry: ${absolute}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to create entry' });
+  }
+}
+
+/**
+ * Pasting beside the original is the ordinary case, not a mistake, so a name
+ * that is already taken is answered the way the Finder answers it rather than
+ * refused the way a rename is: with a copy that says it is one.
+ */
+async function freeName(absolute, isDirectory) {
+  if (!(await exists(absolute))) {
+    return absolute;
+  }
+
+  const directory = path.dirname(absolute);
+  // Only a file has an extension worth preserving. Splitting `.github` or
+  // `my.folder` at the dot would move half the name to the end of the copy.
+  const extension = isDirectory ? '' : path.extname(absolute);
+  const base = path.basename(absolute, extension);
+
+  for (let attempt = 1; attempt <= 100; attempt++) {
+    const suffix = attempt === 1 ? ' copy' : ` copy ${attempt}`;
+    const candidate = path.join(directory, `${base}${suffix}${extension}`);
+
+    if (!(await exists(candidate))) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+async function copyEntry(response, projectRoot, absolute, from) {
+  const source = resolveWithin(projectRoot, from);
+  const root = path.resolve(projectRoot);
+
+  if (!source || source === root) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  let stats;
+  try {
+    stats = await fs.stat(source);
+  } catch (error) {
+    return sendJson(response, 404, { error: `${path.basename(source)} no longer exists` });
+  }
+
+  const destination = await freeName(absolute, stats.isDirectory());
+
+  if (!destination) {
+    return sendJson(response, 409, { error: `too many copies of ${path.basename(absolute)}` });
+  }
+
+  // Asked of the name the copy will actually take, not the one requested:
+  // pasting a folder beside itself asks for the path it already occupies, and
+  // that is the most ordinary paste there is once the name is made unique.
+  //
+  // What is left after that is a folder pasted into something it contains,
+  // where the copy would land inside the thing being copied and the walk would
+  // have no reason to ever stop.
+  if (destination === source || destination.startsWith(source + path.sep)) {
+    return sendJson(response, 400, { error: 'a folder cannot be copied into itself' });
+  }
+
+  try {
+    await fs.mkdir(path.dirname(destination), { recursive: true });
+    await fs.cp(source, destination, { recursive: true, errorOnExist: true, force: false });
+    sendJson(response, 200, { path: path.relative(projectRoot, destination), isDirectory: stats.isDirectory() });
+  } catch (error) {
+    console.error(`Failed to copy: ${source} -> ${destination}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to copy entry' });
+  }
+}
+
+/**
+ * Rename and move are the same operation seen from different angles — the tree
+ * only edits the last segment, but nothing here needs to care, so a `newPath`
+ * that lands somewhere else entirely works and drags the folders into place.
+ */
+async function renameEntry(request, response, projectRoot, relative) {
+  let body;
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    return sendJson(response, 400, { error: 'invalid request body' });
+  }
+
+  const from = resolveWithin(projectRoot, relative);
+  const to = resolveWithin(projectRoot, body.newPath);
+  const root = path.resolve(projectRoot);
+
+  if (!from || !to || !relative || !body.newPath || from === root || to === root) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  // On a case-insensitive volume — which is every default-formatted Mac —
+  // `README.md` already "exists" when the target is `readme.md`. But that is
+  // the very rename being asked for, and refusing it would make capitalisation
+  // the one edit the tree cannot make.
+  const isCaseOnlyRename = from.toLowerCase() === to.toLowerCase();
+
+  if (!isCaseOnlyRename && await exists(to)) {
+    return sendJson(response, 409, { error: `${path.basename(to)} already exists` });
+  }
+
+  try {
+    await fs.mkdir(path.dirname(to), { recursive: true });
+    await fs.rename(from, to);
+    sendJson(response, 200, { path: body.newPath });
+  } catch (error) {
+    console.error(`Failed to rename: ${from} -> ${to}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to rename entry' });
+  }
+}
+
+/**
+ * There is no trash to move to from Node, so this is permanent — which is why
+ * the tree asks before calling it, rather than offering an undo it cannot honour.
+ */
+async function deleteEntry(response, projectRoot, relative) {
+  const absolute = resolveWithin(projectRoot, relative);
+
+  if (!absolute || !relative || absolute === path.resolve(projectRoot)) {
+    return sendJson(response, 400, { error: 'invalid path parameter' });
+  }
+
+  try {
+    await fs.rm(absolute, { recursive: true, force: true });
+    sendJson(response, 200, { path: relative });
+  } catch (error) {
+    console.error(`Failed to delete: ${absolute}; error: ${error}`);
+    sendJson(response, 500, { error: 'failed to delete entry' });
+  }
+}
 
 // The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
 attachTerminal(server);

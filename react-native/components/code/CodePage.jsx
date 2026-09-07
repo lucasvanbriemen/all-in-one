@@ -76,6 +76,44 @@ export function CodePage({activeSidebarItem}) {
     return () => clearTimeout(timer);
   }, [currentFile, source, save]);
 
+  // Renaming and deleting in the tree move the ground the open tabs are
+  // standing on. A folder takes its contents with it, so both handlers match
+  // the path itself *and* everything under it rather than just the entry.
+  const onEntryRenamed = useCallback(
+    (fromPath, toPath) => {
+      const moved = filePath => {
+        if (filePath === fromPath) {
+          return toPath;
+        }
+
+        return filePath.startsWith(`${fromPath}/`) ? toPath + filePath.slice(fromPath.length) : filePath;
+      };
+
+      setOpenedFiles(current => current.map(moved));
+
+      if (currentFile) {
+        setCurrentFile(moved(currentFile));
+      }
+    },
+    [currentFile],
+  );
+
+  const onEntryRemoved = useCallback(
+    removedPath => {
+      const isGone = filePath => filePath === removedPath || filePath.startsWith(`${removedPath}/`);
+
+      setOpenedFiles(current => current.filter(filePath => !isGone(filePath)));
+
+      // Clearing the buffer as well as the tab is what stops the auto-save
+      // below from writing the file straight back out again.
+      if (currentFile && isGone(currentFile)) {
+        setCurrentFile(null);
+        setSource('');
+      }
+    },
+    [currentFile],
+  );
+
   // Cmd+P reaches us three ways depending on where focus sits: through the
   // `keyDownEvents` chain when it is on a native view, through Monaco's own
   // binding when it is in the editor's WebView, and through the document on
@@ -130,7 +168,7 @@ export function CodePage({activeSidebarItem}) {
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
       {activeSidebarItem == "files" && (
         <View style={styles.fileTree}>
-          <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
+          <FileTree currentFile={currentFile} onOpenFile={openFile} projectRoot={projectRoot} setProjectRoot={setProjectRoot} onEntryRenamed={onEntryRenamed} onEntryRemoved={onEntryRemoved} />
         </View>
       )}
 
