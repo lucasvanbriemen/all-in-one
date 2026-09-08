@@ -1,7 +1,7 @@
 import {attachTerminal} from './terminal.mjs';
 import {createRouter} from './fileserver/router.mjs';
-import {routes} from './fileserver/routes.mjs';
 import http from 'node:http';
+import {routes} from './fileserver/routes.mjs';
 
 /**
  * The Code page's filesystem and shell, for the editor in the macOS app.
@@ -21,19 +21,7 @@ const server = http.createServer(createRouter(routes));
 // The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
 attachTerminal(server);
 
-/**
- * Two things want to own this port: the copy started from the Procfile during
- * development, and the copy the packaged .app spawns out of its own bundle.
- * Only one can bind, and whichever loses is redundant rather than broken — the
- * editor talks to a port, not to a particular process, so the survivor serves
- * both. Standing down is therefore the correct outcome, not a failure.
- */
 server.on('error', error => {
-  if (error.code === 'EADDRINUSE') {
-    console.log(`port ${PORT} already served; deferring to the running server`);
-    process.exit(0);
-  }
-
   throw error;
 });
 

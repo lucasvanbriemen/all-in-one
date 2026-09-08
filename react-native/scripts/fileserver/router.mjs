@@ -21,19 +21,6 @@ export function createRouter(routes) {
       return;
     }
 
-    try {
-      await route.handler({request, response, searchParams});
-    } catch (error) {
-      // A route that throws has already failed, and there is nothing to be
-      // done about that here. What must not *also* happen is the connection
-      // being left open for a reply that is never coming.
-      console.error(`Unhandled error in ${route.method} ${route.path}; error: ${error}`);
-
-      if (!response.headersSent) {
-        sendError(response, 500, 'internal error');
-      } else if (!response.writableEnded) {
-        response.end();
-      }
-    }
+    await route.handler({request, response, searchParams});
   };
 }
