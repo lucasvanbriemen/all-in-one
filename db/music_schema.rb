@@ -1,10 +1,3 @@
-# Schema of the *music* project's database, which this app reads through
-# Music::ApplicationRecord. It is a copy of that project's db/schema.rb, kept
-# here so `db:test:prepare` can build the music test database; the music app
-# still owns the schema itself, so this app never dumps or migrates it (see
-# database_tasks: false in config/database.yml). Refresh this file by copying
-# the music project's db/schema.rb over it whenever that one changes.
-
 ActiveRecord::Schema[8.0].define(version: 2026_08_12_000001) do
   create_table "cache", primary_key: "key", id: :string, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.text "value", size: :medium, null: false
