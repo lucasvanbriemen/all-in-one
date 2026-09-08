@@ -40,7 +40,6 @@ development:
   music:
     <<: *music_default
     database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
-    database_tasks: false
 
 # Warning: Rails erases and regenerates the "test" databases, so neither may
 # point at live data. The music one also has to stay clear of `music_test`,
@@ -60,7 +59,6 @@ production:
   music:
     <<: *music_default
     database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
-    database_tasks: false
   cache:
     <<: *sqlite_default
     database: storage/production_cache.sqlite3
