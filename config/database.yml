@@ -17,30 +17,6 @@ default: &default
   username: <%= ENV.fetch("DB_USERNAME", "root") %>
   password: <%= ENV.fetch("DB_PASSWORD", "") %>
 
-# Secondary database: the music project's, reached through
-# Music::ApplicationRecord while that app is being rewritten into this one.
-#
-# It sits on the same MySQL instance as the email database — ltvb.nl,
-# server.ltvb.nl and lucasvanbriemen.nl all resolve to the same server — so in
-# practice only the database name differs. The MUSIC_DB_* overrides are here
-# for the day that stops being true.
-#
-# Two deliberate choices:
-#
-#   * A pool of its own, sized on web threads instead of on
-#     IMAP_FETCH_CONCURRENCY. Nothing in the job worker touches music, so
-#     inheriting the primary's pool would double this process's connection
-#     count against the shared server to no purpose.
-#   * database_tasks: false outside of test (below). The music app still owns
-#     this schema; here it is only consumed. Without that flag, `db:migrate`
-#     or `db:prepare` in this app would try to migrate another app's
-#     database. db/music_schema.rb is consequently a copy of the music
-#     project's db/schema.rb — refresh it when that one changes — and not
-#     something this app dumps.
-#
-# migrations_paths exists for the same reason: a secondary database without it
-# falls back to db/migrate, which would point this app's email migrations at
-# the music database wherever tasks do run (i.e. test).
 music_default: &music_default
   <<: *default
   pool: <%= ENV.fetch("MUSIC_DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3).to_i + 2 } %>
