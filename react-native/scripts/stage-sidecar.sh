@@ -49,7 +49,11 @@ rm -rf "$DEST"
 mkdir -p "$DEST/bin" "$DEST/node_modules"
 
 cp "$NODE_BIN" "$DEST/bin/node"
+# The entry point and the terminal beside it, plus the `fileserver` package the
+# entry point imports its router and handlers from. The tree has to keep its
+# shape in the bundle, because those are relative imports.
 cp scripts/fileserver.mjs scripts/terminal.mjs "$DEST/"
+cp -R scripts/fileserver "$DEST/fileserver"
 
 # Only the two runtime dependencies, not the whole tree: `ws` for the terminal
 # socket and `node-pty` for the shell behind it. `node-pty`'s own dependency,
