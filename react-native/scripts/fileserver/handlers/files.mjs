@@ -12,7 +12,7 @@ import {resolveInProject} from '../projectPaths.mjs';
  * a response to the tab that asked for it.
  */
 export async function readFile({response, searchParams}) {
-  const target = resolveTarget(searchParams, response, {pathRequired: true});
+  const target = resolveTarget(searchParams);
 
   const contents = await fs.readFile(target.absolute, 'utf8');
   sendJson(response, 200, {path: target.wantedPath, contents});
@@ -25,7 +25,7 @@ export async function readFile({response, searchParams}) {
  * for the project root itself, which is the first thing the editor asks for.
  */
 export async function listDirectory({response, searchParams}) {
-  const target = resolveTarget(searchParams, response, {pathRequired: false});
+  const target = resolveTarget(searchParams);
 
   const entries = await fs.readdir(target.absolute, {withFileTypes: true});
   const contents = entries.map(entry => ({
@@ -39,36 +39,13 @@ export async function listDirectory({response, searchParams}) {
   sendJson(response, 200, {path: target.wantedPath, contents});
 }
 
-/**
- * PUT /file?projectRoot=…&path=…  with `{contents}` as the body
- *
- * The contents travel in the body rather than the query string because a
- * source file is larger than a URL is allowed to be.
- */
 export async function writeFile({request, response, searchParams}) {
-  const target = resolveTarget(searchParams, response, {pathRequired: true});
+  const target = resolveTarget(searchParams);
 
-  if (!target) {
-    return;
-  }
-
-  let contents;
-
-  try {
-    contents = JSON.parse(await readBody(request)).contents;
-  } catch (error) {
-    console.error(`Failed to parse request body; error: ${error}`);
-    sendError(response, 400, 'invalid request body');
-    return;
-  }
-
-  try {
-    await fs.writeFile(target.absolute, contents, 'utf8');
-    sendJson(response, 200, {path: target.wantedPath});
-  } catch (error) {
-    console.error(`Failed to write file: ${target.absolute}; error: ${error}`);
-    sendError(response, 500, 'failed to write file');
-  }
+  let contents = JSON.parse(await readBody(request)).contents;
+  
+  await fs.writeFile(target.absolute, contents, 'utf8');
+  sendJson(response, 200, {path: target.wantedPath});
 }
 
 /**
@@ -79,7 +56,7 @@ export async function writeFile({request, response, searchParams}) {
  * Answers the request itself when it is one of those, and returns null — so a
  * handler's `if (!target) return;` is the whole of its error handling.
  */
-function resolveTarget(searchParams, response, {pathRequired}) {
+function resolveTarget(searchParams) {
   const projectRoot = searchParams.get('projectRoot');
   const requestedPath = searchParams.get('path');
 
