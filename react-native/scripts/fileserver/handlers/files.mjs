@@ -1,7 +1,8 @@
 import {readBody, sendError, sendJson} from '../http.mjs';
-import {resolveInProject} from '../projectPaths.mjs';
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {resolveInProject} from '../projectPaths.mjs';
 
 /**
  * GET /file?projectRoot=…&path=…
@@ -13,17 +14,8 @@ import path from 'node:path';
 export async function readFile({response, searchParams}) {
   const target = resolveTarget(searchParams, response, {pathRequired: true});
 
-  if (!target) {
-    return;
-  }
-
-  try {
-    const contents = await fs.readFile(target.absolute, 'utf8');
-    sendJson(response, 200, {path: target.wantedPath, contents});
-  } catch (error) {
-    console.error(`Failed to read file: ${target.absolute}; error: ${error}`);
-    sendError(response, 404, 'not found');
-  }
+  const contents = await fs.readFile(target.absolute, 'utf8');
+  sendJson(response, 200, {path: target.wantedPath, contents});
 }
 
 /**
