@@ -27,25 +27,16 @@ export async function readFile({response, searchParams}) {
 export async function listDirectory({response, searchParams}) {
   const target = resolveTarget(searchParams, response, {pathRequired: false});
 
-  if (!target) {
-    return;
-  }
+  const entries = await fs.readdir(target.absolute, {withFileTypes: true});
+  const contents = entries.map(entry => ({
+    name: entry.name,
+    isDirectory: entry.isDirectory(),
+    // Project-relative, so it can be handed straight back as the `path` of
+    // the next request without the client knowing where the project lives.
+    fullPath: path.join(target.wantedPath, entry.name),
+  }));
 
-  try {
-    const entries = await fs.readdir(target.absolute, {withFileTypes: true});
-    const contents = entries.map(entry => ({
-      name: entry.name,
-      isDirectory: entry.isDirectory(),
-      // Project-relative, so it can be handed straight back as the `path` of
-      // the next request without the client knowing where the project lives.
-      fullPath: path.join(target.wantedPath, entry.name),
-    }));
-
-    sendJson(response, 200, {path: target.wantedPath, contents});
-  } catch (error) {
-    console.error(`Failed to read directory: ${target.absolute}; error: ${error}`);
-    sendError(response, 404, 'not found');
-  }
+  sendJson(response, 200, {path: target.wantedPath, contents});
 }
 
 /**
@@ -92,23 +83,8 @@ function resolveTarget(searchParams, response, {pathRequired}) {
   const projectRoot = searchParams.get('projectRoot');
   const requestedPath = searchParams.get('path');
 
-  if (!projectRoot) {
-    sendError(response, 400, 'missing projectRoot parameter');
-    return null;
-  }
-
-  if (pathRequired && !requestedPath) {
-    sendError(response, 400, 'missing path parameter');
-    return null;
-  }
-
   const wantedPath = requestedPath || '';
   const absolute = resolveInProject(projectRoot, wantedPath);
-
-  if (!absolute) {
-    sendError(response, 400, 'invalid path parameter');
-    return null;
-  }
 
   return {absolute, wantedPath};
 }
