@@ -8,9 +8,7 @@ export function Notification({notification}) {
   const styles = useThemedStyles(createStyles);
 
   async function markAsRead() {
-    console.log(`Marking notification ${notification.id} as read`);
     await api.post(`/notifications/${notification.id}/mark_as_read`)
-    console.log(`Notification ${notification.id} marked as read`);
   }
 
   return (
