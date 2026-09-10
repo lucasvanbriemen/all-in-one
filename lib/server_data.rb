@@ -1,6 +1,11 @@
 module ServerData
   extend self
 
+  MEMORY_THRESHOLD_MEDIUM = 50.freeze
+  MEMORY_THRESHOLD_HIGH = 90.freeze
+  DISK_THRESHOLD_MEDIUM = 75.freeze
+  DISK_THRESHOLD_HIGH = 90.freeze
+
   def all
     [
       {
@@ -10,14 +15,14 @@ module ServerData
       {
         label: "Memory",
         value: memory,
-        medium_after: 50,
-        high_after: 90
+        medium_after: MEMORY_THRESHOLD_MEDIUM,
+        high_after: MEMORY_THRESHOLD_HIGH
       },
       {
         label: "Disk",
         value: disk,
-        medium_after: 75,
-        high_after: 90
+        medium_after: DISK_THRESHOLD_MEDIUM,
+        high_after: DISK_THRESHOLD_HIGH
       },
       {
         label: "Uptime (seconds)",
