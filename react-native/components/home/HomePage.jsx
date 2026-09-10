@@ -14,8 +14,10 @@ export function HomePage({activeSidebarItem}) {
   useEffect(() => {
     api.get('/server_data').then(response => {
       setServerData(response.server_data);
+    });
+
+    api.get('/notifications').then(response => {
       setNotifications(response.notifications);
-      console.log(response.server_data);
     });
   }, []);
 
