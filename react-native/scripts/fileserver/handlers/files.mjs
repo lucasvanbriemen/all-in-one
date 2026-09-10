@@ -8,7 +8,7 @@ export async function readFile({response, searchParams}) {
   const target = resolveTarget(searchParams);
 
   const contents = await fs.readFile(target.absolute, 'utf8');
-  sendJson(response, 200, {path: target.wantedPath, contents});
+  sendJson(response, {path: target.wantedPath, contents});
 }
 
 export async function listDirectory({response, searchParams}) {
@@ -21,7 +21,7 @@ export async function listDirectory({response, searchParams}) {
     fullPath: path.join(target.wantedPath, entry.name),
   }));
 
-  sendJson(response, 200, {path: target.wantedPath, contents});
+  sendJson(response, {path: target.wantedPath, contents});
 }
 
 export async function writeFile({request, response, searchParams}) {
@@ -30,7 +30,7 @@ export async function writeFile({request, response, searchParams}) {
   let contents = JSON.parse(await readBody(request)).contents;
   
   await fs.writeFile(target.absolute, contents, 'utf8');
-  sendJson(response, 200, {path: target.wantedPath});
+  sendJson(response, {path: target.wantedPath});
 }
 
 function resolveTarget(searchParams) {

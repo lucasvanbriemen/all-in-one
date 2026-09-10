@@ -13,5 +13,5 @@ export async function search({response, searchParams}) {
 
   const searching = SEARCH_OPTIONS.get(searchParams.get('type'));
 
-  sendJson(response, 200, {results: await searching.run(projectRoot, term)});
+  sendJson(response, {results: await searching.run(projectRoot, term)});
 }
