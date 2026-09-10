@@ -18,6 +18,8 @@
 		A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */; };
 		A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
+		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
+		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +41,8 @@
 		71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FolderPicker.swift; sourceTree = "<group>"; };
 		A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FolderPicker.m; sourceTree = "<group>"; };
+		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
+		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
 		B1A6CF43F2BB8B941DB393C7 /* Sidecar.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; name = Sidecar.entitlements; path = Sidecar.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SidecarServer.m; path = SidecarServer.m; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 				0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */,
 				A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */,
 				A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */,
+				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
+				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
 				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
 				261EC1AB6F033A60773A3AC4 /* SidecarServer.h */,
 				F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */,
@@ -378,6 +384,8 @@
 				990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */,
 				A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */,
 				A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */,
+				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
+				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
 				5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
