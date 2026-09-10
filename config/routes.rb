@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get "/email/:path", to: "emails#index", as: :mailbox
   get "/emails/:id", to: "emails#show", as: :email
   get "/server_data", to: "server#index", as: :server_data
+  get "/music", to: "music#index", as: :music
 
   get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

@@ -19,6 +19,7 @@ default: &default
 
 music_default: &music_default
   <<: *default
+  database_tasks: false
   pool: <%= ENV.fetch("MUSIC_DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3).to_i + 2 } %>
   host: <%= ENV.fetch("MUSIC_DB_HOST") { ENV.fetch("DB_HOST", "127.0.0.1") } %>
   port: <%= ENV.fetch("MUSIC_DB_PORT") { ENV.fetch("DB_PORT", 3306) } %>
