@@ -11,10 +11,6 @@ const server = http.createServer(createRouter(routes));
 // The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
 attachTerminal(server);
 
-server.on('error', error => {
-  throw error;
-});
-
 // End the process when the app is stopped
 if (process.env.AIO_EXIT_ON_STDIN_EOF === '1') {
   process.stdin.on('end', () => process.exit(0));
