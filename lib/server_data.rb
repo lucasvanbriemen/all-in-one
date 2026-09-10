@@ -2,13 +2,28 @@ module ServerData
   extend self
 
   def all
-    {
-      cpu_count: cpu_count,
-      load_average: load_average,
-      memory: memory,
-      disk: disk,
-      uptime_seconds: uptime_seconds
-    }
+    [
+      {
+        label: "CPU count",
+        value: cpu_count
+      },
+      {
+        label: "Memory",
+        value: memory,
+        medium_after: 50,
+        high_after: 90
+      },
+      {
+        label: "Disk",
+        value: disk,
+        medium_after: 75,
+        high_after: 90
+      },
+      {
+        label: "Uptime (seconds)",
+        value: uptime_seconds
+      }
+    ]
   end
 
   def platform
@@ -28,14 +43,6 @@ module ServerData
       sh("nproc")&.to_i
     elsif macos?
       sh("sysctl -n hw.ncpu")&.to_i
-    end
-  end
-
-  def load_average
-    if linux?
-      File.read("/proc/loadavg").split.first(3).map(&:to_f)
-    elsif macos?
-      sh("sysctl -n vm.loadavg").to_s.scan(/[\d.]+/).first(3).map(&:to_f).presence
     end
   end
 
