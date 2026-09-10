@@ -33,6 +33,22 @@ export async function writeFile({request, response, searchParams}) {
   sendJson(response, {path: target.wantedPath});
 }
 
+export async function deleteFile({response, searchParams}) {
+  const target = resolveTarget(searchParams);
+
+  await fs.unlink(target.absolute);
+  sendJson(response, {path: target.wantedPath});
+}
+
+export async function createFile({request, response, searchParams}) {
+  const target = resolveTarget(searchParams);
+
+  let contents = JSON.parse(await readBody(request)).contents;
+
+  await fs.writeFile(target.absolute, contents, 'utf8');
+  sendJson(response, {path: target.wantedPath});
+}
+
 function resolveTarget(searchParams) {
   const projectRoot = searchParams.get('projectRoot');
   const requestedPath = searchParams.get('path');
