@@ -3,7 +3,9 @@ class MusicController < ApplicationController
   end
 
   def index
-    Music::Song.liked_songs
+    @songs = Music::Song.liked_songs
+
+    render json: @songs
   end
 
   def create
