@@ -83,18 +83,14 @@ module ServerData
       time = Time.now.to_i - boot.to_i if boot
     end
 
-    # Convert to a display value
     minutes = (time / 60).to_i
     hours = (minutes / 60).to_i
     days = (hours / 24).to_i
     weeks = (days / 7).to_i
-    fortnights = (weeks / 2).to_i
-    moon_cycles = (fortnights / 2).to_i
+    months = (weeks / 4.5).to_i
 
-    if moon_cycles > 0 && (moon_cycles % 1).zero?
-      "#{moon_cycles} moon cycles"
-    elsif fortnights > 0
-      "#{fortnights} fortnights"
+    if months > 0
+      "#{months}mo #{weeks % 4}w"
     elsif weeks > 0
       "#{weeks}w #{days % 7}d"
     elsif days > 0
