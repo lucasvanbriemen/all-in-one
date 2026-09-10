@@ -8,7 +8,7 @@ export function Song({song, isEven}) {
     <View style={[styles.container, isEven && styles.evenBackground]}>
       <Image source={{uri: song.image_url}} style={styles.image} />
 
-      <View style={styles.textContainer}> 
+      <View> 
         <Text style={styles.title}>{song.title}</Text>
         <Text style={styles.artist}>{song.artist}</Text>
       </View>
@@ -33,9 +33,6 @@ const createStyles = colors => StyleSheet.create({
   artist: {
     fontSize: 14,
     color: colors.onSurfaceVariant,
-  },
-  textContainer: {
-    flexDirection: 'column',
   },
   image: {
     width: 32,
