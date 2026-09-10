@@ -1,12 +1,11 @@
 import {attachTerminal} from './terminal.mjs';
 import {createRouter} from './fileserver/router.mjs';
 import http from 'node:http';
-import {routes} from './fileserver/routes.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = 4001;
 
-const server = http.createServer(createRouter(routes));
+const server = http.createServer(createRouter());
 
 // The editor's shell, on the same port: `ws://127.0.0.1:4001/terminal`.
 attachTerminal(server);
