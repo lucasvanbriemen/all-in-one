@@ -32,8 +32,6 @@ async function searchDirectory(directory, searchTermLower, projectRoot, results)
   try {
     entries = await fs.readdir(directory, {withFileTypes: true});
   } catch (error) {
-    // A directory we are not allowed to open is a directory with no matches in
-    // it; one unreadable folder should not fail the whole search.
     console.error(`Skipping unreadable directory: ${directory}; error: ${error}`);
     return;
   }
@@ -52,8 +50,7 @@ async function searchDirectory(directory, searchTermLower, projectRoot, results)
       continue;
     }
 
-    // Symlinks are deliberately not followed: they are the one entry that can
-    // point back up the tree and turn this walk into a loop.
+    // Exclude symlinks
     if (!entry.isFile()) {
       continue;
     }
@@ -69,21 +66,14 @@ async function searchDirectory(directory, searchTermLower, projectRoot, results)
 async function searchFile(absolutePath, searchTermLower, projectRoot, results) {
   let contents;
 
-  try {
-    const stats = await fs.stat(absolutePath);
+  const stats = await fs.stat(absolutePath);
 
-    if (stats.size > MAX_FILE_BYTES) {
-      return;
-    }
-
-    contents = await fs.readFile(absolutePath, 'utf8');
-  } catch (error) {
-    // Same bargain as above: an unreadable file is a file without matches.
+  if (stats.size > MAX_FILE_BYTES) {
     return;
   }
 
-  // What the extension list missed. Text files do not contain NUL; binaries
-  // read as utf8 almost always do, within the first few hundred bytes.
+  contents = await fs.readFile(absolutePath, 'utf8');
+
   if (contents.includes('\u0000')) {
     return;
   }
@@ -97,8 +87,6 @@ async function searchFile(absolutePath, searchTermLower, projectRoot, results) {
       return;
     }
 
-    // Only the first hit on a line is reported. A second one on the same line
-    // is the same line to open, and the modal would show the row twice.
     const line = lines[index].replace(/\r$/, '');
     const column = line.toLowerCase().indexOf(searchTermLower);
 
@@ -108,11 +96,8 @@ async function searchFile(absolutePath, searchTermLower, projectRoot, results) {
 
     results.push({
       path: relative,
-      // Editors count from one; `indexOf` and the loop count from zero.
       line: index + 1,
       column: column + 1,
-      // A preview for the results list, not the line itself — a long line is
-      // cut here, while `line` and `column` still address the real file.
       text: line.length > MAX_PREVIEW_LENGTH ? line.slice(0, MAX_PREVIEW_LENGTH) : line,
     });
     matchesInFile++;
