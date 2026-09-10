@@ -19,7 +19,8 @@ const createStyles = colors => StyleSheet.create({
   notification: {
     ...glass(colors),
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 16,
+    marginBottom: 8,
   },
   title: {
     fontSize: 16,

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Notification} from './Notification';
 import {Stat} from './Stat';
@@ -36,14 +36,19 @@ export function HomePage({activeSidebarItem}) {
 
       <Text style={styles.greeting}>{greeting()}</Text>
 
-      {notifications && notifications.map((notification, index) => (
-        <Notification key={index} notification={notification} />
-      ))}
+      <ScrollView style={styles.notificationsContainer}>
+        {notifications && notifications.map((notification, index) => (
+          <Notification key={index} notification={notification} />
+        ))}
+      </ScrollView>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  content: {
+    flex: 1,
+  },
   statsContainer: {
     flexDirection: 'row',
     gap: 16,
@@ -54,5 +59,8 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 16,
     color: colors.outline
+  },
+  notificationsContainer: {
+    marginTop: 16,
   },
 });
