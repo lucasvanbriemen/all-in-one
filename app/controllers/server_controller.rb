@@ -3,9 +3,10 @@ class ServerController < ApplicationController
   end
 
   def index
-    @serverData = ServerData.all
+    @server_data = ServerData.all
+    @notififications = Notification.unread
 
-    render json: @serverData
+    render json: { server_data: @server_data, notifications: @notififications }
   end
 
   def create
