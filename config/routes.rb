@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
+  post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
 
   get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
