@@ -20,10 +20,11 @@ const createStyles = colors => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-    gap: 12,
-    padding: 8,
-    borderRadius: 8,
+    gap: 16,
+    padding: 16,
+    borderRadius: 16,
+    width: '50%',
+    marginLeft: '25%',
   },
   title: {
     fontSize: 16,
