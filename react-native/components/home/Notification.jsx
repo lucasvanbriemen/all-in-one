@@ -7,9 +7,14 @@ import {api} from '../api';
 export function Notification({notification}) {
   const styles = useThemedStyles(createStyles);
 
+  const [isRead, setIsRead] = useState(notification.read);
+
   async function markAsRead() {
     await api.post(`/notifications/${notification.id}/mark_as_read`)
+    setIsRead(true);
   }
+
+  if (isRead) return null;
 
   return (
     <View style={styles.notification}>
