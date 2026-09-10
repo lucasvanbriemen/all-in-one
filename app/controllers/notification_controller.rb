@@ -5,7 +5,7 @@ class NotificationController < ApplicationController
   def index
     @notififications = Notification.unread.order(created_at: :desc)
 
-    render json: { server_data: @server_data, notifications: @notififications }
+    render json: @notififications
   end
 
   def create
@@ -14,7 +14,7 @@ class NotificationController < ApplicationController
   def update
     @notification = Notification.find(params[:id])
     @notification.update(read: true)
-    render json: { notification: @notification }
+    render json: @notification
   end
 
   def show
