@@ -17,39 +17,6 @@ export function HomePage({activeSidebarItem}) {
     });
   }, []);
 
-  function calculateDiskUsage(data) {
-    if (!data) return null;
-    const total = data.disk.total;
-    const used = data.disk.used
-    return (used / total) * 100;
-  }
-
-  function calculateMemoryUsage() {
-    if (!serverData) return null;
-    const total = serverData.memory.total;
-    const used = serverData.memory.used;
-    return (used / total) * 100;
-  }
-
-  function uptimeSecondsToProperTime(seconds) {
-    if (!seconds) return null;
-    const days = Math.floor(seconds / (24 * 3600));
-    seconds %= 24 * 3600;
-    const hours = Math.floor(seconds / 3600);
-    seconds %= 3600;
-    const minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-
-    seconds = Math.floor(seconds);
-
-    let string = '';
-    if (days > 0) string += `${days}d `;
-    if (hours > 0) string += `${hours}h `;
-    if (minutes > 0) string += `${minutes}m `;
-    if (seconds > 0) string += `${seconds}s`;
-    return string;
-  }
-
   function greeting() {
     const hours = new Date().getHours();
     if (hours < 12) return "Good morning!";
