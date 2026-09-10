@@ -13,6 +13,7 @@ export function HomePage({activeSidebarItem}) {
   useEffect(() => {
     api.get('/server_data').then(response => {
       setServerData(response.server_data);
+      setNotifications(response.notifications);
       console.log(response.server_data);
     });
   }, []);
@@ -33,6 +34,10 @@ export function HomePage({activeSidebarItem}) {
       </View>
 
       <Text style={styles.greeting}>{greeting()}</Text>
+
+      {notifications && notifications.map((notification, index) => (
+        <Text key={index}>{notification.title}</Text>
+      ))}
     </View>
   );
 }
