@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
+import {useAppContext} from '../context/ContextProvider';
 import {useThemedStyles} from '../theme';
 
 export function EmailPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
-  // `selection` is the sidebar's mailbox path; which email is open within that
-  // mailbox is local to this page.
-  const [selectedEmail, setSelectedEmail] = useState(null);
+  // The open email is kept in the shared context registry so it is remembered
+  // when navigating away from the email app and back.
+  const [selectedEmail, setSelectedEmail] = useAppContext('email.selected');
 
   return (
     <View style={styles.content}>

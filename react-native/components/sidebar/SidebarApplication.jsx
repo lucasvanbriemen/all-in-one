@@ -5,7 +5,7 @@ import {useEffect, useRef, useState} from 'react';
 
 import {SidebarRow} from './SidebarRow';
 
-export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp, item, progress, app}) {
+export function SidebarApplication({activeSidebarItem, selectSidebarItem, currentlyActive, setActiveApp, item, progress, app}) {
   const styles = useThemedStyles(createStyles);
   const isExpanded = currentlyActive === app;
 
@@ -53,7 +53,7 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
           onLayout={e => setContentHeight(e.nativeEvent.layout.height)}
           style={styles.measure}>
           {item.map(row => (
-            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && activeSidebarItem === row.path} onPress={() => { setActiveSidebarItem(row.path); setActiveApp(app); }} progress={progress} />
+            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && activeSidebarItem === row.path} onPress={() => selectSidebarItem(app, row.path)} progress={progress} />
           ))}
         </View>
       </Animated.View>

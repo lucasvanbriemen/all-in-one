@@ -10,7 +10,11 @@ export async function searchFileNames(projectRoot, searchTerm) {
 
   await searchForFiles(root, searchTerm.toLowerCase(), matches);
 
-  return matches.map(match => path.relative(root, match));
+  matches.forEach(match => {
+    match.path = path.relative(root, match.path);
+  });
+
+  return matches;
 }
 
 async function searchForFiles(directory, searchTermLower, matches) {

@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
+import {ContextProvider, useAppContext} from './components/context/ContextProvider';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {Sidebar} from './components/sidebar/Sidebar';
@@ -23,16 +24,31 @@ const APPLICATIONS = {
 
 
 export default function App() {
-  const [appToRender, setAppToRender] = useState(() => "home");
+  return (
+    <ContextProvider>
+      <AppShell />
+    </ContextProvider>
+  );
+}
 
-  const [activeSidebarItem, setActiveSidebarItem] = useState(null);
+function AppShell() {
+  const [appToRender, setAppToRender] = useAppContext('app.active', 'home');
+  // Each app remembers its own sidebar item, so switching to another app and
+  // back restores the mailbox / folder that was open there.
+  const [sidebarSelections, setSidebarSelections] = useAppContext('sidebar.selections', {});
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender];
+  const activeSidebarItem = sidebarSelections[appToRender] ?? null;
+
+  const selectSidebarItem = (app, path) => {
+    setSidebarSelections(prev => ({...(prev ?? {}), [app]: path}));
+    setAppToRender(app);
+  };
 
   return (
     <TransparentWindow>
       <View style={styles.appWrapper}>
-       <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
+        <Sidebar sidebarSelections={sidebarSelections} selectSidebarItem={selectSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
 
         <View style={styles.content}>
           <ActiveApplication activeSidebarItem={activeSidebarItem} />

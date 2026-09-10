@@ -10,12 +10,16 @@ export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) 
   const styles = useThemedStyles(createStyles);
 
   useEffect(() => {
+    if (!activeSidebarItem) return;
     api
       .get('/email/' + activeSidebarItem)
       .then(data => {
-        setItems(data?.emails ?? []);
-        onSelectEmail(null);
-      })
+        const emails = data?.emails ?? [];
+        setItems(emails);
+        // Keep the remembered selection if it still exists in this mailbox;
+        // otherwise clear it so a stale email from another mailbox isn't shown.
+        onSelectEmail(current => (emails.some(e => e.id === current?.id) ? current : null));
+      });
   }, [activeSidebarItem, onSelectEmail]);
 
   return (

@@ -10,7 +10,7 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
   const inputRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchingTerm, setSearchingTerm] = useState('files');
+  const [searchingTerm, setSearchingTerm] = useState('code');
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
       {searchResults.map((result, index) => (
         <Pressable key={index} onPress={() => onOpenFile(result)}>
-          <Text style={styles.result}>{result}</Text>
+          <Text style={styles.result}>{result.path}</Text>
         </Pressable>
       ))}
     </ScrollView>

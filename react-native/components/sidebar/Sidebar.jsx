@@ -8,7 +8,7 @@ import {api} from '../api';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp}) {
+export function Sidebar({sidebarSelections, selectSidebarItem, currentlyActive, setActiveApp}) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
@@ -47,7 +47,7 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
         </AnimatedPressable>
 
         {Object.entries(items).map(([key, item]) => (
-          <SidebarApplication key={key + item.app} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} progress={progress} app={key} />
+          <SidebarApplication key={key + item.app} activeSidebarItem={sidebarSelections[key] ?? null} selectSidebarItem={selectSidebarItem} currentlyActive={currentlyActive} setActiveApp={setActiveApp} item={item} progress={progress} app={key} />
         ))}
       </Animated.View>
     </Animated.View>
