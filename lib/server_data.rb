@@ -92,10 +92,13 @@ module ServerData
 
     def get_percentage(value, total)
       return nil if value.nil? || total.nil? || total.zero?
-      (value.to_f / total.to_f) * 100
+      raw_float = value.to_f / total.to_f * 100
+      "#{raw_float.round(2)}%"
     end
 
     def get_importance_level(value, medium_threshold, high_threshold)
+      value = value.to_f
+
       return "low" if value.nil?
       return "high" if value >= high_threshold
       return "medium" if value >= medium_threshold
