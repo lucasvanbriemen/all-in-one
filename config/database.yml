@@ -17,6 +17,15 @@ default: &default
   username: <%= ENV.fetch("DB_USERNAME", "root") %>
   password: <%= ENV.fetch("DB_PASSWORD", "") %>
 
+music_default: &music_default
+  <<: *default
+  pool: <%= ENV.fetch("MUSIC_DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3).to_i + 2 } %>
+  host: <%= ENV.fetch("MUSIC_DB_HOST") { ENV.fetch("DB_HOST", "127.0.0.1") } %>
+  port: <%= ENV.fetch("MUSIC_DB_PORT") { ENV.fetch("DB_PORT", 3306) } %>
+  username: <%= ENV.fetch("MUSIC_DB_USERNAME") { ENV.fetch("DB_USERNAME", "root") } %>
+  password: <%= ENV.fetch("MUSIC_DB_PASSWORD") { ENV.fetch("DB_PASSWORD", "") } %>
+  migrations_paths: db/music_migrate
+
 # Solid Cache/Queue/Cable keep their own local SQLite stores so they do not
 # add framework tables to the shared email database.
 sqlite_default: &sqlite_default
@@ -25,19 +34,31 @@ sqlite_default: &sqlite_default
   timeout: 5000
 
 development:
-  <<: *default
-  database: <%= ENV.fetch("DB_DATABASE", "email") %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DB_DATABASE", "email") %>
+  music:
+    <<: *music_default
+    database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
 
-# Warning: Rails erases and regenerates the "test" database. It must never
-# point at the live email data, so it uses a separate, suffixed database.
+# Warning: Rails erases and regenerates the "test" databases, so neither may
+# point at live data. The music one also has to stay clear of `music_test`,
+# which is the database the music project's own suite erases.
 test:
-  <<: *default
-  database: <%= ENV.fetch("DB_DATABASE_TEST", "email_test") %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DB_DATABASE_TEST", "email_test") %>
+  music:
+    <<: *music_default
+    database: <%= ENV.fetch("MUSIC_DB_DATABASE_TEST", "all_in_one_music_test") %>
 
 production:
   primary:
     <<: *default
     database: <%= ENV.fetch("DB_DATABASE", "email") %>
+  music:
+    <<: *music_default
+    database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
   cache:
     <<: *sqlite_default
     database: storage/production_cache.sqlite3
