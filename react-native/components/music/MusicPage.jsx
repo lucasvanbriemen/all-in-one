@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Song} from './Song';
 import {api} from '../api';
 import {useThemedStyles} from '../theme';
 
@@ -19,8 +20,8 @@ export function MusicPage({activeSidebarItem}) {
     <View style={styles.content}>
       <Text style={styles.greeting}>Hey</Text>
 
-      {likedSongs.map(song => (
-        <Text key={song.isrc}>{song.title}</Text>
+      {likedSongs.map((song, index) => (
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
       ))}
     </View>
   );
