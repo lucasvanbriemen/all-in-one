@@ -4,7 +4,6 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
-import {SearchModal} from './SearchModal';
 import {SearchSidebar} from './SearchSidebar';
 import {Terminal} from './Terminal';
 import {fileSystem} from '../fileSystem';
@@ -173,18 +172,6 @@ export function CodePage({activeSidebarItem}) {
           </View>
         )}
       </View>
-
-      {/* Last child, absolutely filled: it covers the tree and the editor
-          both, and paints over them rather than taking a row of its own. */}
-      {searching && (
-        <SearchModal
-          projectRoot={projectRoot}
-          folder={null}
-          onOpenFile={openSearchFile}
-          onClose={() => setSearching(false)}
-          itemsDeep={0}
-        />
-      )}
     </View>
   );
 }
