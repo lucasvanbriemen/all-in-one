@@ -17,7 +17,6 @@ export function MusicPage({activeSidebarItem}) {
 
   return (
     <View style={styles.content}>
-     
       <Text style={styles.greeting}>Hey</Text>
 
       {likedSongs.map(song => (

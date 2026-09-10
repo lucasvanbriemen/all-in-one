@@ -140,8 +140,8 @@ module Imap
       return unless group && group[:send_notifications]
 
       Notification.create!(
-        title: "New email from #{email.sender_name}",
-        body: "You have received a new email in the #{group[:name]} group.",
+        title: email.subject,
+        body: "You have received a new email from #{email.sender_name}",
         source: "email.#{group[:path]}.#{email.id}"
       )
     rescue StandardError => e
