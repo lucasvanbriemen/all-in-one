@@ -4,7 +4,7 @@ class ServerController < ApplicationController
 
   def index
     @server_data = ServerData.all
-    @notififications = Notification.unread
+    @notififications = Notification.unread.order(created_at: :desc)
 
     render json: { server_data: @server_data, notifications: @notififications }
   end
