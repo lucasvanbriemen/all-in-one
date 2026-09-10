@@ -2,13 +2,7 @@ import {FoldersToIgnore} from './ignore.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-/**
- * Reading a binary as utf8 costs exactly what reading source costs and can only
- * produce hits nobody wants to open, so the common ones are turned away on
- * their extension before the file is ever opened. A file with no extension —
- * `Makefile`, `.gitignore`, a shell script — is source until proven otherwise,
- * and the NUL check below is what proves it.
- */
+// Non readable files
 const ExtensionsToIgnore = new Set([
   '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.ico', '.icns', '.svgz',
   '.pdf', '.zip', '.gz', '.tgz', '.bz2', '.xz', '.7z', '.jar', '.tar',
@@ -18,24 +12,11 @@ const ExtensionsToIgnore = new Set([
   '.db', '.sqlite', '.sqlite3', '.lock', '.map',
 ]);
 
-/**
- * Three separate budgets, because they stop three different things going wrong.
- * The total is what the modal can show before the list stops being a list; the
- * per-file cap keeps one generated file from spending that whole total on
- * itself; and the size cap steps around minified bundles, which are a single
- * multi-megabyte line and therefore all cost and no answer.
- */
 const MAX_CODE_RESULTS = 200;
 const MAX_MATCHES_PER_FILE = 20;
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MAX_PREVIEW_LENGTH = 400;
 
-/**
- * Unlike `searchFileNames`, which answers with paths, this answers with
- * positions: every hit carries the line and column it was found at, so the
- * editor can open the file *and* put the caret on the match rather than at the
- * top.
- */
 export async function searchCode(projectRoot, searchTerm) {
   const root = path.resolve(projectRoot);
   const results = [];
