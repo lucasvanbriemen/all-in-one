@@ -11,8 +11,8 @@ export function MusicPage({activeSidebarItem}) {
   const [likedSongs, setLikedSongs] = useState([]);
 
   useEffect(() => {
-    api.get('/music/is_liked_songs').then(response => {
-      setLikedSongs(response.data);
+    api.get('/music').then(response => {
+      setLikedSongs(response);
     });
   }, []);
 
@@ -20,6 +20,10 @@ export function MusicPage({activeSidebarItem}) {
     <View style={styles.content}>
      
       <Text style={styles.greeting}>Hey</Text>
+
+      {likedSongs.map(song => (
+        <Text key={song.isrc}>{song.title}</Text>
+      ))}
     </View>
   );
 }
