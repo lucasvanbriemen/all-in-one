@@ -7,23 +7,20 @@ import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
-  const DISK_USAGE_MEDIUM = 75;
-  const DISK_USAGE_HIGH = 90;
-  const MEMORY_USAGE_MEDIUM = 50;
-  const MEMORY_USAGE_HIGH = 90;
   const [serverData, setServerData] = useState(null);
+  const [notifications, setNotifications] = useState(null);
 
   useEffect(() => {
     api.get('/server_data').then(response => {
-      setServerData(response);
-      console.log(response);
+      setServerData(response.server_data);
+      console.log(response.server_data);
     });
   }, []);
 
-  function calculateDiskUsage() {
-    if (!serverData) return null;
-    const total = serverData.disk.total;
-    const used = serverData.disk.used
+  function calculateDiskUsage(data) {
+    if (!data) return null;
+    const total = data.disk.total;
+    const used = data.disk.used
     return (used / total) * 100;
   }
 
@@ -63,14 +60,9 @@ export function HomePage({activeSidebarItem}) {
   return (
     <View style={styles.content}>
       <View style={styles.statsContainer}>
-        {serverData && (
-          <>
-            <Stat value={serverData.cpu_count} label="CPU cores" />
-            <Stat value={calculateDiskUsage().toFixed(2) + '%'} label="Disk Usage" attentionLevel={calculateDiskUsage() >= DISK_USAGE_HIGH ? "high" : calculateDiskUsage() >= DISK_USAGE_MEDIUM ? "medium" : "low"} />
-            <Stat value={calculateMemoryUsage().toFixed(2) + '%'} label="Memory Usage" attentionLevel={calculateMemoryUsage() >= MEMORY_USAGE_HIGH ? "high" : calculateMemoryUsage() >= MEMORY_USAGE_MEDIUM ? "medium" : "low"} />
-            <Stat value={uptimeSecondsToProperTime(serverData.uptime_seconds)} label="Uptime" />
-          </>
-        )}
+        {serverData && serverData.map((data, index) => (
+          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level} />
+        ))} 
       </View>
 
       <Text style={styles.greeting}>{greeting()}</Text>

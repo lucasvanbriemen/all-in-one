@@ -15,14 +15,12 @@ module ServerData
       {
         label: "Memory",
         value: memory,
-        medium_after: MEMORY_THRESHOLD_MEDIUM,
-        high_after: MEMORY_THRESHOLD_HIGH
+        importance_level: get_importance_level(memory, MEMORY_THRESHOLD_MEDIUM, MEMORY_THRESHOLD_HIGH)
       },
       {
         label: "Disk",
         value: disk,
-        medium_after: DISK_THRESHOLD_MEDIUM,
-        high_after: DISK_THRESHOLD_HIGH
+        importance_level: get_importance_level(disk, DISK_THRESHOLD_MEDIUM, DISK_THRESHOLD_HIGH)
       },
       {
         label: "Uptime (seconds)",
@@ -56,7 +54,7 @@ module ServerData
       info = File.read("/proc/meminfo").scan(/^(\w+):\s+(\d+) kB$/).to_h
       total = info["MemTotal"].to_i * 1024
       available = info["MemAvailable"].to_i * 1024
-      { total: total, available: available, used: total - available }
+      get_percentage(total - available, total)
     elsif macos?
       total = sh("sysctl -n hw.memsize")&.to_i
       return nil if total.nil?
@@ -64,7 +62,7 @@ module ServerData
       page_size = sh("sysctl -n hw.pagesize").to_i
       pages = sh("vm_stat").to_s.scan(/^Pages (free|inactive|speculative):\s+(\d+)\./).to_h
       available = pages.values.sum(&:to_i) * page_size
-      { total: total, available: available, used: total - available }
+      get_percentage(total - available, total)
     end
   end
 
@@ -73,7 +71,8 @@ module ServerData
     return nil if output.blank?
 
     total, used, available = output.lines.last.split[1..3].map { |kb| kb.to_i * 1024 }
-    { total: total, used: used, available: available }
+    # { total: total, used: used, available: available }
+    get_percentage(used, total)
   end
 
   def uptime_seconds
@@ -89,5 +88,17 @@ module ServerData
     def sh(command)
       output = `#{command} 2>/dev/null`
       $?.success? ? output.strip : nil
+    end
+
+    def get_percentage(value, total)
+      return nil if value.nil? || total.nil? || total.zero?
+      (value.to_f / total.to_f) * 100
+    end
+
+    def get_importance_level(value, medium_threshold, high_threshold)
+      return "low" if value.nil?
+      return "high" if value >= high_threshold
+      return "medium" if value >= medium_threshold
+      "low"
     end
 end
