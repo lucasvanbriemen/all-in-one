@@ -116,14 +116,37 @@ module Imap
     def persist(mapper)
       attrs = mapper.email_attributes
 
-      Email.find_or_create_by(profile_id: attrs[:profile_id], message_id: attrs[:message_id]) do |email|
+      @email = Email.find_or_create_by(profile_id: attrs[:profile_id], message_id: attrs[:message_id]) do |email|
         email.assign_attributes(attrs)
         email.uuid = SecureRandom.uuid
         email.sender = find_or_update_sender(mapper)
       end
+
+      notify(@email) if @email.previously_new_record?
+
+      @email
     rescue ActiveRecord::RecordNotUnique
       # Concurrent run won the race on the unique index — the email exists.
       Email.find_by(profile_id: attrs[:profile_id], message_id: attrs[:message_id])
+    end
+
+    # Create a notification for a newly imported email when its mailbox group
+    # has notifications enabled. Specific groups are checked before catch-all
+    # groups (those using exclude_from), since the latter match anything the
+    # others don't.
+    def notify(email)
+      groups = MailboxConfig::GROUPS.sort_by { |g| g[:rules][:exclude_from] ? 1 : 0 }
+      group = groups.find { |g| Email.in_group(g[:path]).exists?(id: email.id) }
+      return unless group && group[:send_notifications]
+
+      Notification.create!(
+        title: "New email from #{email.sender_name}",
+        body: "You have received a new email in the #{group[:name]} group.",
+        source: "email.#{group[:path]}.#{email.id}"
+      )
+    rescue StandardError => e
+      # A failed notification must not fail the import.
+      Rails.logger.warn("[IMAP] notification for email=#{email.id} failed: #{e.class}: #{e.message}")
     end
 
     # Senders repeat heavily within a mailbox, so resolve each address at most
