@@ -4,6 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
+import {MusicPage} from './components/music/MusicPage';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -18,7 +19,7 @@ const APPLICATIONS = {
   email: EmailPage,
   home: HomePage,
   code: CodePage,
-  music: HomePage,
+  music: MusicPage,
 };
 
 

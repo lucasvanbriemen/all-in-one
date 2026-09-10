@@ -1,0 +1,39 @@
+import React, {use, useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+
+import {Stat} from './Stat';
+import {api} from '../api';
+import {useThemedStyles} from '../theme';
+
+export function MusicPage({activeSidebarItem}) {
+  const styles = useThemedStyles(createStyles);
+
+  const [likedSongs, setLikedSongs] = useState([]);
+
+  useEffect(() => {
+    api.get('/music/is_liked_songs').then(response => {
+      setLikedSongs(response.data);
+    });
+  }, []);
+
+  return (
+    <View style={styles.content}>
+     
+      <Text style={styles.greeting}>Hey</Text>
+    </View>
+  );
+}
+
+const createStyles = colors => StyleSheet.create({
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingTop: 16,
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 16,
+    color: colors.outline
+  },
+});

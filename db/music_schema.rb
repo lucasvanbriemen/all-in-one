@@ -156,7 +156,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_10_104457) do
     t.float "bpm"
     t.integer "deezer_rank"
     t.datetime "enriched_at"
-    t.boolean "should_be_played", default: false
+    t.boolean "is_liked", default: false, null: false
     t.index ["genre"], name: "index_songs_on_genre"
     t.index ["release_year"], name: "index_songs_on_release_year"
   end
