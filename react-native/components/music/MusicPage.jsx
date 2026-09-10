@@ -1,7 +1,6 @@
-import React, {use, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import {Stat} from './Stat';
 import {api} from '../api';
 import {useThemedStyles} from '../theme';
 
