@@ -1,5 +1,3 @@
-import {sendError} from './http.mjs';
-
 /**
  * The dispatch half of the server: a route table goes in, a handler `http` can
  * be handed comes out.
@@ -15,11 +13,6 @@ export function createRouter(routes) {
     const route = routes.find(
       candidate => candidate.method === request.method && candidate.path === pathname,
     );
-
-    if (!route) {
-      sendError(response, 404, 'not found');
-      return;
-    }
 
     await route.handler({request, response, searchParams});
   };

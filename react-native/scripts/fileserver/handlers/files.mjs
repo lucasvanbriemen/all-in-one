@@ -1,4 +1,4 @@
-import {readBody, sendError, sendJson} from '../http.mjs';
+import {readBody, sendJson} from '../http.mjs';
 
 import fs from 'node:fs/promises';
 import path from 'node:path';

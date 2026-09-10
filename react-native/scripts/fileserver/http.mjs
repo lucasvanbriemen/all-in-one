@@ -7,10 +7,6 @@ export function sendJson(response, status, payload) {
   response.end(JSON.stringify(payload));
 }
 
-export function sendError(response, status, message) {
-  sendJson(response, status, {error: message});
-}
-
 /**
  * `http` delivers a body as a stream of chunks, and every route that takes one
  * wants the whole of it before it can do anything, so each of them would
