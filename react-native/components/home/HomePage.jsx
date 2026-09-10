@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Notification} from './Notification';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {useThemedStyles} from '../theme';
@@ -36,7 +37,7 @@ export function HomePage({activeSidebarItem}) {
       <Text style={styles.greeting}>{greeting()}</Text>
 
       {notifications && notifications.map((notification, index) => (
-        <Text key={index}>{notification.title}</Text>
+        <Notification key={index} notification={notification} />
       ))}
     </View>
   );
