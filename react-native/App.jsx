@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
+import { AppProvider } from './context/AppContext';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
@@ -24,7 +25,9 @@ const APPLICATIONS = {
 
 export default function App() {
   return (
-    <AppShell />
+    <AppProvider>
+      <AppShell />
+    </AppProvider>
   );
 }
 
