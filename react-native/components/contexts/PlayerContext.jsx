@@ -1,7 +1,7 @@
 import React, {createContext, useCallback, useContext, useMemo} from 'react';
 
+import {NativeModules} from 'react-native';
 import {api} from '../api';
-import {player} from '../music/player';
 
 // Lives at the App level so playback state survives switching pages. The
 // audio itself is held natively (or in a module-level <audio> on web), so
@@ -10,7 +10,7 @@ const PlayerContext = createContext(null);
 
 export function PlayerProvider({children}) {
   const play = useCallback(async (url) => {
-    await player.play(url, {
+    await NativeModules.AudioPlayer.play(url, {
       title: 'sunny',
       artist: "bonny",
       album: "sunny's album",
