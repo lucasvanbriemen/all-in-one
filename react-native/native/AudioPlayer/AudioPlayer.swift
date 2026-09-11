@@ -24,13 +24,9 @@ final class AudioPlayer: RCTEventEmitter {
     private var endObserver: NSObjectProtocol?
     private var metadata: [String: Any] = [:]
     private var artwork: MPMediaItemArtwork?
-    private var hasListeners = false
     private var commandsRegistered = false
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
-
-    override func startObserving() { hasListeners = true }
-    override func stopObserving() { hasListeners = false }
 
     // MARK: - JS API
 
@@ -68,11 +64,6 @@ final class AudioPlayer: RCTEventEmitter {
                 }
             }
 
-            self.endObserver = NotificationCenter.default.addObserver(
-                forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
-            ) { [weak self] _ in
-            }
-
             self.timeObserver = player.addPeriodicTimeObserver(
                 forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: .main
             ) { [weak self] _ in
@@ -98,14 +89,6 @@ final class AudioPlayer: RCTEventEmitter {
             self.activateSession()
             self.player?.play()
             self.updateNowPlaying()
-        }
-    }
-
-    @objc func stop() {
-        DispatchQueue.main.async {
-            self.teardownPlayer()
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
-            MPNowPlayingInfoCenter.default().playbackState = .stopped
         }
     }
 
