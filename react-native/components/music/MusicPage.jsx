@@ -10,7 +10,7 @@ const MP3_URL = 'https://music.ltvb.nl/api/get-mp3/DED162500001';
 
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
-  const {track, isPlaying, error, play, toggle} = usePlayer();
+  const {track, error, play, toggle} = usePlayer();
 
   const [likedSongs, setLikedSongs] = useState([]);
 
@@ -33,7 +33,7 @@ export function MusicPage({activeSidebarItem}) {
       <Text style={styles.greeting}>Hey</Text>
 
       <Pressable onPress={onPressPlay}>
-        <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
+        <Text>Play</Text>
       </Pressable>
 
       {likedSongs.map((song, index) => (
