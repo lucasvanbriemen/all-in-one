@@ -9,7 +9,6 @@ import {player} from '../music/player';
 const PlayerContext = createContext(null);
 
 export function PlayerProvider({children}) {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -24,13 +23,9 @@ export function PlayerProvider({children}) {
 
   const seek = useCallback(seconds => player.seek(seconds), []);
 
-  // Expose remote commands (next/previous from Control Center, media keys…)
-  // so a page can hook a queue onto them.
-  const onRemoteCommand = useCallback(handler => player.onRemoteCommand(handler), []);
-
   const value = useMemo(
-    () => ({isPlaying, position, duration, play, seek, onRemoteCommand}),
-    [isPlaying, position, duration, play, seek, onRemoteCommand],
+    () => ({position, duration, play, seek}),
+    [position, duration, play, seek],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
