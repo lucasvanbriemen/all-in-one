@@ -22,10 +22,14 @@ const APPLICATIONS = {
   music: MusicPage,
 };
 
-
 export default function App() {
-  const [appToRender, setAppToRender] = useState(() => "home");
+  return (
+    <AppShell />
+  );
+}
 
+function AppShell({children}) {
+  const [appToRender, setAppToRender] = useState(() => "home");
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender];
