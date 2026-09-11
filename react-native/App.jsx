@@ -5,7 +5,6 @@ import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MusicPage} from './components/music/MusicPage';
-import {PlayerProvider} from './components/contexts/PlayerContext';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -32,7 +31,6 @@ export default function App() {
   const ActiveApplication = APPLICATIONS[appToRender];
 
   return (
-    <PlayerProvider>
     <TransparentWindow>
       <View style={styles.appWrapper}>
        <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
@@ -42,7 +40,6 @@ export default function App() {
         </View>
       </View>
     </TransparentWindow>
-    </PlayerProvider>
   );
 }
 
