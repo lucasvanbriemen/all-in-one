@@ -39,28 +39,15 @@ export function PlayerProvider({children}) {
     }
   }, []);
 
-  const pause = useCallback(() => player.pause(), []);
-  const resume = useCallback(() => player.resume(), []);
-  const stop = useCallback(() => {
-    player.stop();
-    trackRef.current = null;
-    setTrack(null);
-  }, []);
   const seek = useCallback(seconds => player.seek(seconds), []);
-
-  const toggle = useCallback(() => {
-    if (!trackRef.current) return;
-    if (isPlaying) player.pause();
-    else player.resume();
-  }, [isPlaying]);
 
   // Expose remote commands (next/previous from Control Center, media keys…)
   // so a page can hook a queue onto them.
   const onRemoteCommand = useCallback(handler => player.onRemoteCommand(handler), []);
 
   const value = useMemo(
-    () => ({track, isPlaying, position, duration, play, pause, resume, stop, seek, toggle, onRemoteCommand}),
-    [track, isPlaying, position, duration, play, pause, resume, stop, seek, toggle, onRemoteCommand],
+    () => ({track, isPlaying, position, duration, play, seek, onRemoteCommand}),
+    [track, isPlaying, position, duration, play, seek, onRemoteCommand],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;

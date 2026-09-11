@@ -30,7 +30,6 @@ function subscribe(name, handler) {
 
 export const player = {
   play: (url, metadata = {}, headers = {}) => native().play(url, metadata, headers),
-  pause: () => native().pause(),
   resume: () => native().resume(),
   stop: () => native().stop(),
   seek: seconds => native().seek(seconds),
