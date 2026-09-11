@@ -29,10 +29,6 @@ final class AudioPlayer: RCTEventEmitter {
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
 
-    override func supportedEvents() -> [String]! {
-        ["playbackStateChanged", "remoteCommand"]
-    }
-
     override func startObserving() { hasListeners = true }
     override func stopObserving() { hasListeners = false }
 
@@ -67,7 +63,6 @@ final class AudioPlayer: RCTEventEmitter {
             self.statusObserver = item.observe(\.status, options: [.new]) { [weak self] item, _ in
                 guard let self else { return }
                 if item.status == .failed {
-                    self.emitState()
                 } else if item.status == .readyToPlay {
                     self.updateNowPlaying()
                 }
@@ -76,21 +71,17 @@ final class AudioPlayer: RCTEventEmitter {
             self.endObserver = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
             ) { [weak self] _ in
-                self?.emitState(ended: true)
-                self?.sendRemoteCommand("ended")
             }
 
             self.timeObserver = player.addPeriodicTimeObserver(
                 forInterval: CMTime(seconds: 1, preferredTimescale: 1), queue: .main
             ) { [weak self] _ in
                 self?.updateNowPlaying()
-                self?.emitState()
             }
 
             player.play()
             self.loadArtwork()
             self.updateNowPlaying()
-            self.emitState()
             resolve(nil)
         }
     }
@@ -99,7 +90,6 @@ final class AudioPlayer: RCTEventEmitter {
         DispatchQueue.main.async {
             self.player?.pause()
             self.updateNowPlaying()
-            self.emitState()
         }
     }
 
@@ -108,7 +98,6 @@ final class AudioPlayer: RCTEventEmitter {
             self.activateSession()
             self.player?.play()
             self.updateNowPlaying()
-            self.emitState()
         }
     }
 
@@ -117,7 +106,6 @@ final class AudioPlayer: RCTEventEmitter {
             self.teardownPlayer()
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
             MPNowPlayingInfoCenter.default().playbackState = .stopped
-            self.emitState()
         }
     }
 
@@ -125,7 +113,6 @@ final class AudioPlayer: RCTEventEmitter {
         DispatchQueue.main.async {
             self.player?.seek(to: CMTime(seconds: seconds, preferredTimescale: 600)) { [weak self] _ in
                 self?.updateNowPlaying()
-                self?.emitState()
             }
         }
     }
@@ -158,22 +145,15 @@ final class AudioPlayer: RCTEventEmitter {
         let center = MPRemoteCommandCenter.shared()
 
         center.playCommand.addTarget { [weak self] _ in
-            self?.resume(); self?.sendRemoteCommand("play"); return .success
+            self?.resume(); return .success
         }
         center.pauseCommand.addTarget { [weak self] _ in
-            self?.pause(); self?.sendRemoteCommand("pause"); return .success
+            self?.pause(); return .success
         }
         center.togglePlayPauseCommand.addTarget { [weak self] _ in
             guard let self else { return .commandFailed }
             if self.isPlaying { self.pause() } else { self.resume() }
-            self.sendRemoteCommand("toggle")
             return .success
-        }
-        center.nextTrackCommand.addTarget { [weak self] _ in
-            self?.sendRemoteCommand("next"); return .success
-        }
-        center.previousTrackCommand.addTarget { [weak self] _ in
-            self?.sendRemoteCommand("previous"); return .success
         }
         center.changePlaybackPositionCommand.addTarget { [weak self] event in
             guard let event = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
@@ -226,29 +206,6 @@ final class AudioPlayer: RCTEventEmitter {
                 self.updateNowPlaying()
             }
         }.resume()
-    }
-
-    // MARK: - Events
-
-    private func emitState(ended: Bool = false) {
-        guard hasListeners else { return }
-        let item = player?.currentItem
-        let duration = item?.duration.seconds ?? 0
-        var body: [String: Any] = [
-            "isPlaying": ended ? false : isPlaying,
-            "position": player?.currentTime().seconds ?? 0,
-            "duration": duration.isFinite ? duration : 0,
-            "ended": ended,
-        ]
-        if item?.status == .failed {
-            body["error"] = item?.error?.localizedDescription ?? "Playback failed"
-        }
-        sendEvent(withName: "playbackStateChanged", body: body)
-    }
-
-    private func sendRemoteCommand(_ command: String) {
-        guard hasListeners else { return }
-        sendEvent(withName: "remoteCommand", body: ["command": command])
     }
 
     private func teardownPlayer() {
