@@ -32,8 +32,6 @@ export function MusicPage({activeSidebarItem}) {
       artist: song?.artist ?? 'Unknown artist',
       artwork: song?.image_url ?? '',
     });
-
-    console.log(error);
   };
 
   return (
@@ -43,7 +41,6 @@ export function MusicPage({activeSidebarItem}) {
       <Pressable onPress={onPressPlay}>
         <Text style={styles.playButton}>{isPlaying ? 'Pause' : 'Play'}</Text>
       </Pressable>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
 
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
@@ -63,14 +60,5 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 16,
     color: colors.outline
-  },
-  playButton: {
-    fontSize: 16,
-    color: colors.onSurface,
-    paddingVertical: 8,
-  },
-  error: {
-    color: colors.error ?? 'red',
-    fontSize: 12,
   },
 });
