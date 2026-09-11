@@ -6,12 +6,9 @@ import {NativeEventEmitter, NativeModules} from 'react-native';
 // Everything is resolved lazily: if the running binary predates the module
 // (Metro reloads JS but not native code), importing this file must not crash
 // the whole app — only the play button should fail, with a readable message.
-const MISSING =
-  'AudioPlayer native module not found. Rebuild the app (npm run macos / npm run ios) so native/AudioPlayer is compiled in.';
 
 function native() {
   const mod = NativeModules.AudioPlayer;
-  if (!mod) throw new Error(MISSING);
   return mod;
 }
 
