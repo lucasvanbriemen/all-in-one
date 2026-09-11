@@ -1,16 +1,15 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
+import {NativeModules} from 'react-native';
 import {Song} from './Song';
 import {api} from '../api';
-import {usePlayer} from '../contexts/PlayerContext';
 import {useThemedStyles} from '../theme';
 
 const MP3_URL = 'https://music.ltvb.nl/api/get-mp3/';
 
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
-  const {play} = usePlayer();
 
   const [likedSongs, setLikedSongs] = useState([]);
 
@@ -20,8 +19,14 @@ export function MusicPage({activeSidebarItem}) {
     });
   }, []);
 
-  function playSong(isrc) {
-    play(`${MP3_URL}${isrc}`);
+  async function playSong(isrc) {
+    const url = `${MP3_URL}${isrc}`;
+    await NativeModules.AudioPlayer.play(url, {
+      title: 'sunny',
+      artist: "bonny",
+      album: "sunny's album",
+      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
+    }, {Authorization: api.defaultHeaders.Authorization});
   }
 
   return (
