@@ -21,16 +21,10 @@ export function MusicPage({activeSidebarItem}) {
   }, []);
 
   const onPressPlay = () => {
-    if (track?.url === MP3_URL) {
-      toggle();
-      return;
-    }
-    // Use the liked song's metadata for Now Playing when we have it.
-    const song = likedSongs.find(s => MP3_URL.endsWith(s.isrc)) ?? likedSongs[0];
     play(MP3_URL, {
-      title: song?.title ?? 'Unknown title',
-      artist: song?.artist ?? 'Unknown artist',
-      artwork: song?.image_url ?? '',
+      title: "song",
+      artist: "artist",
+      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
     });
   };
 
