@@ -13,7 +13,6 @@ export function PlayerProvider({children}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [error, setError] = useState(null);
   const trackRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +20,6 @@ export function PlayerProvider({children}) {
       setIsPlaying(state.isPlaying);
       setPosition(state.position);
       setDuration(state.duration);
-      setError(state.error ?? null);
     });
     return offState;
   }, []);
@@ -30,7 +28,6 @@ export function PlayerProvider({children}) {
     const next = {url, ...metadata};
     trackRef.current = next;
     setTrack(next);
-    setError(null);
     try {
       await player.play(url, {
         title: metadata.title ?? '',
@@ -39,7 +36,6 @@ export function PlayerProvider({children}) {
         artwork: metadata.artwork ?? '',
       }, {Authorization: api.defaultHeaders.Authorization});
     } catch (e) {
-      setError(e?.message ?? String(e));
     }
   }, []);
 
@@ -63,8 +59,8 @@ export function PlayerProvider({children}) {
   const onRemoteCommand = useCallback(handler => player.onRemoteCommand(handler), []);
 
   const value = useMemo(
-    () => ({track, isPlaying, position, duration, error, play, pause, resume, stop, seek, toggle, onRemoteCommand}),
-    [track, isPlaying, position, duration, error, play, pause, resume, stop, seek, toggle, onRemoteCommand],
+    () => ({track, isPlaying, position, duration, play, pause, resume, stop, seek, toggle, onRemoteCommand}),
+    [track, isPlaying, position, duration, play, pause, resume, stop, seek, toggle, onRemoteCommand],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
@@ -72,6 +68,5 @@ export function PlayerProvider({children}) {
 
 export function usePlayer() {
   const ctx = useContext(PlayerContext);
-  if (!ctx) throw new Error('usePlayer must be used inside <PlayerProvider>');
   return ctx;
 }
