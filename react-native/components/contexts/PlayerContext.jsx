@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {createContext, useCallback, useContext, useMemo} from 'react';
 
 import {api} from '../api';
 import {player} from '../music/player';
@@ -9,9 +9,6 @@ import {player} from '../music/player';
 const PlayerContext = createContext(null);
 
 export function PlayerProvider({children}) {
-  const [position, setPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
-
   const play = useCallback(async (url) => {
     await player.play(url, {
       title: 'sunny',
@@ -21,11 +18,9 @@ export function PlayerProvider({children}) {
     }, {Authorization: api.defaultHeaders.Authorization});
   }, []);
 
-  const seek = useCallback(seconds => player.seek(seconds), []);
-
   const value = useMemo(
-    () => ({position, duration, play, seek}),
-    [position, duration, play, seek],
+    () => ({play}),
+    [play],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
