@@ -39,7 +39,7 @@ export function MusicPage({activeSidebarItem}) {
       <Text style={styles.greeting}>Hey</Text>
 
       <Pressable onPress={onPressPlay}>
-        <Text style={styles.playButton}>{isPlaying ? 'Pause' : 'Play'}</Text>
+        <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
       </Pressable>
 
       {likedSongs.map((song, index) => (
