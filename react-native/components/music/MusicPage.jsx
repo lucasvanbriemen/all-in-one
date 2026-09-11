@@ -1,17 +1,17 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
+import {NativeModules} from 'react-native';
 import {Song} from './Song';
 import {api} from '../api';
 import {useThemedStyles} from '../theme';
+
+const MP3_URL = 'https://music.ltvb.nl/api/get-mp3/';
 
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
 
   const [likedSongs, setLikedSongs] = useState([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const MP3_URL = "https://music.ltvb.nl/api/get-mp3/DED162500001"
 
   useEffect(() => {
     api.get('/music').then(response => {
@@ -19,16 +19,27 @@ export function MusicPage({activeSidebarItem}) {
     });
   }, []);
 
+  async function playSong(isrc) {
+    const url = `${MP3_URL}${isrc}`;
+    await NativeModules.AudioPlayer.play(url, {
+      title: 'sunny',
+      artist: "bonny",
+      album: "sunny's album",
+      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
+    }, {Authorization: api.defaultHeaders.Authorization});
+  }
+
   return (
     <View style={styles.content}>
       <Text style={styles.greeting}>Hey</Text>
 
-      <Pressable onPress={() => setIsPlaying(!isPlaying)}>
-        <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
-      </Pressable>
-
       {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
+        <React.Fragment key={`fragment-${song.isrc}`}>
+          <Pressable key={`play-${song.isrc}`} onPress={() => playSong(song.isrc)}>
+            <Text>Play</Text>
+          </Pressable>
+          <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
+        </React.Fragment>
       ))}
     </View>
   );
