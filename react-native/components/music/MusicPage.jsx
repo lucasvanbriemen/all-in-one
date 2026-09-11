@@ -21,11 +21,7 @@ export function MusicPage({activeSidebarItem}) {
   }, []);
 
   const onPressPlay = () => {
-    play(MP3_URL, {
-      title: "song",
-      artist: "artist",
-      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
-    });
+    play(MP3_URL);
   };
 
   return (

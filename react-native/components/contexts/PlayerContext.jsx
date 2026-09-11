@@ -9,34 +9,17 @@ import {player} from '../music/player';
 const PlayerContext = createContext(null);
 
 export function PlayerProvider({children}) {
-  const [track, setTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-  const trackRef = useRef(null);
 
-  useEffect(() => {
-    const offState = player.onStateChange(state => {
-      setIsPlaying(state.isPlaying);
-      setPosition(state.position);
-      setDuration(state.duration);
-    });
-    return offState;
-  }, []);
-
-  const play = useCallback(async (url, metadata = {}) => {
-    const next = {url, ...metadata};
-    trackRef.current = next;
-    setTrack(next);
-    try {
-      await player.play(url, {
-        title: metadata.title ?? '',
-        artist: metadata.artist ?? '',
-        album: metadata.album ?? '',
-        artwork: metadata.artwork ?? '',
-      }, {Authorization: api.defaultHeaders.Authorization});
-    } catch (e) {
-    }
+  const play = useCallback(async (url) => {
+    await player.play(url, {
+      title: 'sunny',
+      artist: "bonny",
+      album: "sunny's album",
+      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
+    }, {Authorization: api.defaultHeaders.Authorization});
   }, []);
 
   const seek = useCallback(seconds => player.seek(seconds), []);
@@ -46,8 +29,8 @@ export function PlayerProvider({children}) {
   const onRemoteCommand = useCallback(handler => player.onRemoteCommand(handler), []);
 
   const value = useMemo(
-    () => ({track, isPlaying, position, duration, play, seek, onRemoteCommand}),
-    [track, isPlaying, position, duration, play, seek, onRemoteCommand],
+    () => ({isPlaying, position, duration, play, seek, onRemoteCommand}),
+    [isPlaying, position, duration, play, seek, onRemoteCommand],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
