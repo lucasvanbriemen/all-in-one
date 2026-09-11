@@ -2,28 +2,50 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 const AppContext = createContext();
 
-// A generic key/value store shared across the app.
-//   const { data, get, set } = useAppContext();
+const toPath = key => (Array.isArray(key) ? key : String(key).split('.'));
+
+function getIn(obj, path) {
+  return path.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj);
+}
+
+// Returns a new object with the value at `path` replaced (immutable update).
+function setIn(obj, path, value) {
+  if (path.length === 0) return value;
+  const [head, ...rest] = path;
+  const current = obj != null && typeof obj === 'object' ? obj : {};
+  return { ...current, [head]: setIn(current[head], rest, value) };
+}
+
+function removeIn(obj, path) {
+  if (obj == null || typeof obj !== 'object') return obj;
+  const [head, ...rest] = path;
+  if (rest.length === 0) {
+    const { [head]: _, ...remaining } = obj;
+    return remaining;
+  }
+  return { ...obj, [head]: removeIn(obj[head], rest) };
+}
+
+// A generic key/value store shared across the app. Keys may be dot paths.
+//   const { get, set } = useAppContext();
 //   set('user', { name: 'Lucas' });
-//   get('user');           // { name: 'Lucas' }
-//   set('count', c => (c ?? 0) + 1);   // updater functions work too
+//   set('user.profile.avatar', 'url');      // creates intermediate objects
+//   get('user.profile.avatar');            // 'url'
+//   set('count', c => (c ?? 0) + 1);       // updater functions work too
 export function AppProvider({ children, initialData = {} }) {
   const [data, setData] = useState(initialData);
 
-  const get = useCallback(key => data[key], [data]);
+  const get = useCallback(key => getIn(data, toPath(key)), [data]);
 
   const set = useCallback((key, value) => {
-    setData(prev => ({
-      ...prev,
-      [key]: typeof value === 'function' ? value(prev[key]) : value,
-    }));
+    const path = toPath(key);
+    setData(prev =>
+      setIn(prev, path, typeof value === 'function' ? value(getIn(prev, path)) : value),
+    );
   }, []);
 
   const remove = useCallback(key => {
-    setData(prev => {
-      const { [key]: _, ...rest } = prev;
-      return rest;
-    });
+    setData(prev => removeIn(prev, toPath(key)));
   }, []);
 
   const value = useMemo(() => ({ data, get, set, remove }), [data, get, set, remove]);
