@@ -26,12 +26,6 @@ function removeIn(obj, path) {
   return { ...obj, [head]: removeIn(obj[head], rest) };
 }
 
-// A generic key/value store shared across the app. Keys may be dot paths.
-//   const { get, set } = useAppContext();
-//   set('user', { name: 'Lucas' });
-//   set('user.profile.avatar', 'url');      // creates intermediate objects
-//   get('user.profile.avatar');            // 'url'
-//   set('count', c => (c ?? 0) + 1);       // updater functions work too
 export function AppProvider({ children, initialData = {} }) {
   const [data, setData] = useState(initialData);
 
