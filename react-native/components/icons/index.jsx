@@ -7,6 +7,8 @@ import {FilesIcon} from './files';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
 import {PatheIcon} from './pathe';
+import {PauseIcon} from './pause';
+import {PlayIcon} from './play';
 import React from 'react';
 import {SearchIcon} from './search';
 import {WorkIcon} from './work';
@@ -30,6 +32,8 @@ const ICONS = {
   'chevron-down': ChevronDown,
   files: FilesIcon,
   search: SearchIcon,
+  play: PlayIcon,
+  pause: PauseIcon,
 };
 
 export function Icon({name, size, color}) {
