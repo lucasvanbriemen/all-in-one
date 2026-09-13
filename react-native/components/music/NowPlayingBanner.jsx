@@ -1,15 +1,15 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { glass, useThemedStyles } from '../theme';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {glass, useThemedStyles} from '../theme';
 
 import React from 'react';
-import { player } from './player';
-import { useAppContext } from '../../context/AppContext';
-import { useCompactLayout } from '../useCompactLayout';
+import {player} from './player';
+import {useAppContext} from '../../context/AppContext';
+import {useCompactLayout} from '../useCompactLayout';
 
 export function NowPlayingBanner() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const { get } = useAppContext();
+  const { get, set } = useAppContext();
 
   return (
     <View style={styles.content}>
@@ -28,12 +28,8 @@ export function NowPlayingBanner() {
       )}
 
       <View>
-        <Text style={[styles.title, compact && styles.compactTitle]}>
-          {get('music.now-playing.title') ?? 'Playing nothing'}
-        </Text>
-        <Text style={[styles.artist, compact && styles.compactArtist]}>
-          {get('music.now-playing.artist') ?? 'Unknown artist'}
-        </Text>
+        <Text style={[styles.title, compact && styles.compactTitle]}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
+        <Text style={[styles.artist, compact && styles.compactArtist]}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
       </View>
     </View>
   );
