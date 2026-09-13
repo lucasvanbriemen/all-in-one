@@ -167,19 +167,12 @@ xcrun devicectl list devices          # physical devices, with UDIDs
 xcrun xctrace list devices            # physical + simulators
 ```
 
-For the simulator instead, drop `--device`: `npm run ios`.
-
 For a standalone Release build on the connected iPhone:
 
 ```sh
 cd react-native
 npm run ios:release
 ```
-
-This bundles the JavaScript into the app, installs it, and launches it on the
-connected device. Metro is not required; `--no-packager` also avoids trying to
-open a terminal for Metro. Features that call a backend still need network access
-to that backend.
 
 ### Connecting the phone to Metro
 
@@ -342,11 +335,10 @@ to resolve a `.web.jsx` override ahead of the native file — the fix is to add
 `components/TransparentWindow.web.jsx` exporting `TransparentWindow` and `GlassPanel`
 without touching `requireNativeComponent`. That file has never existed.
 
-The iPhone uses safe-area insets and bottom navigation in both orientations.
-Windows narrower than 900 points also use the compact layout: dashboard cards
-stack, mail opens one pane at a time, music uses a full-width scrolling list,
-and Code has collapsible browser and terminal panels. Wider desktop windows
-keep the sidebar and split panes.
+**Phone layout is macOS-shaped.** `App.jsx` hardcodes a 48pt top inset to clear the
+macOS traffic lights, and the sidebar sits in a `flexDirection: 'row'` split. It runs on
+iPhone but doesn't lay out sensibly, and `react-native-safe-area-context` is a
+dependency but unused.
 
 ---
 
