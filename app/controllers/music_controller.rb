@@ -8,7 +8,7 @@ class MusicController < ApplicationController
     render json: @songs
   end
 
-  def get_mp3
+  def show
     isrc = params[:isrc].to_s
     Music::SongDownloader.ensure_downloaded(isrc)
     send_audio_file(Music::SongDownloader.path(isrc))
