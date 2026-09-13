@@ -15,11 +15,11 @@ const AUTO_SAVE_DELAY = 800;
 // does is claim the key so macOS stops handling it itself, which is what keeps
 // Cmd+P off the print dialog and Escape from beeping.
 const KEY_DOWN_EVENTS = [
-  { key: 'p', metaKey: true },
+  {key: 'p', metaKey: true},
   {key: 'Escape'},
 ];
 
-export function CodePage({ activeSidebarItem }) {
+export function CodePage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
@@ -80,7 +80,7 @@ export function CodePage({ activeSidebarItem }) {
   // binding when it is in the editor's WebView, and through the document on
   // the web build. All three land here.
   const onKeyDown = useCallback(event => {
-    const { key, metaKey, ctrlKey } = event.nativeEvent ?? event;
+    const {key, metaKey, ctrlKey} = event.nativeEvent ?? event;
 
     if (key === 'p' && (metaKey || ctrlKey)) {
       event.preventDefault?.();
@@ -143,7 +143,7 @@ export function CodePage({ activeSidebarItem }) {
         {openedFiles.length > 0 && (
           <View style={styles.openedFiles}>
             {openedFiles.map(file => (
-              <View key={file} style={[ styles.openedFile, file === currentFile && styles.openedFileActive]}>
+              <View key={file} style={[styles.openedFile, file === currentFile && styles.openedFileActive]}>
                 <Text onPress={() => openFile(file)} style={[styles.openedFileText, file === currentFile && styles.openedFileActiveText]}>{file.split('/').pop()}</Text>
               </View>
             ))}
@@ -196,12 +196,12 @@ const createStyles = colors => StyleSheet.create({
   },
   openedFile: {
     padding: 8,
-    ...glass(colors, { variant: 'subtle' }),
+    ...glass(colors, {variant: 'subtle'}),
     borderRadius: 90,
     opacity: 0.75,
   },
   openedFileActive: {
-    ...glass(colors, { variant: 'accent' }),
+    ...glass(colors, {variant: 'accent'}),
     opacity: 1,
   },
   fileTree: {
