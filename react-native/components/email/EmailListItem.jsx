@@ -1,35 +1,23 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
-import { glass, useThemedStyles } from '../theme';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {glass, useThemedStyles} from '../theme';
 
-export function EmailListItem({ item, isSelected, onPress }) {
+export function EmailListItem({item, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Pressable
-      onPress={onPress}
-      onHoverIn={() => setHovered(true)}
-      onHoverOut={() => setHovered(false)}
+    <Pressable onPress={onPress} onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)}
     >
-      <View
-        style={[
-          styles.card,
-          hovered && styles.cardHovered,
-          isSelected && styles.cardSelected,
-        ]}
-      >
+      <View style={[styles.card, hovered && styles.cardHovered, isSelected && styles.cardSelected]}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image
-            source={{ uri: item.sender_image_url }}
-            style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
-          />
+          <Image source={{ uri: item.sender_image_url }} style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }} />
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text numberOfLines={2} style={styles.title}>
+            <Text style={styles.title}>
               {item.subject}
             </Text>
 
-            <Text numberOfLines={1} style={styles.subtitle}>
+            <Text style={styles.subtitle}>
               {item.sender_name}
             </Text>
           </View>
