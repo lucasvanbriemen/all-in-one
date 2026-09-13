@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { glass, useThemedStyles } from '../theme';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -7,8 +7,6 @@ import { FileTree } from './FileTree';
 import { SearchSidebar } from './SearchSidebar';
 import { Terminal } from './Terminal';
 import { fileSystem } from '../fileSystem';
-import { useCompactLayout } from '../useCompactLayout';
-import {useScrollLayout} from '../ScrollLayout';
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -19,8 +17,6 @@ const AUTO_SAVE_DELAY = 800;
 const KEY_DOWN_EVENTS = [{ key: 'p', metaKey: true }, { key: 'Escape' }];
 
 export function CodePage({ activeSidebarItem }) {
-  const scrollLayout = useScrollLayout();
-  const compact = useCompactLayout();
   const [showTerminal, setShowTerminal] = useState(false);
   const [showFiles, setShowFiles] = useState(true);
   const styles = useThemedStyles(createStyles);
@@ -138,7 +134,7 @@ export function CodePage({ activeSidebarItem }) {
       ref={page}
       focusable
       enableFocusRing={false}
-      style={[styles.editor, compact && styles.compactEditor, scrollLayout.contentContainerStyle]}
+      style={[styles.editor]}
       onKeyDown={onKeyDown}
       keyDownEvents={KEY_DOWN_EVENTS}
     >
@@ -146,8 +142,6 @@ export function CodePage({ activeSidebarItem }) {
         <View
           style={[
             styles.fileTree,
-            compact && styles.compactTree,
-            compact && !showFiles && styles.hidden,
           ]}
         >
           <FileTree
@@ -166,8 +160,6 @@ export function CodePage({ activeSidebarItem }) {
         <View
           style={[
             styles.fileTree,
-            compact && styles.compactTree,
-            compact && !showFiles && styles.hidden,
           ]}
         >
           <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
@@ -216,8 +208,6 @@ export function CodePage({ activeSidebarItem }) {
             <View
               style={[
                 styles.terminal,
-                compact && styles.compactTerminal,
-                compact && !showTerminal && styles.hidden,
               ]}
             >
               <Terminal
@@ -240,9 +230,6 @@ export function CodePage({ activeSidebarItem }) {
 
 const createStyles = colors =>
   StyleSheet.create({
-    compactEditor: { flexDirection: 'column', gap: 0 },
-    compactTree: { flex: 0, height: 200, maxHeight: '35%' },
-    compactTerminal: { height: 140 },
     hidden: { display: 'none' },
     mobileTools: { flexDirection: 'row', gap: 16 },
     mobileTool: { minHeight: 44, justifyContent: 'center' },
