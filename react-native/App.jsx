@@ -1,20 +1,20 @@
-import { AppProvider, useAppContext } from './context/AppContext';
+import {AppProvider, useAppContext} from './context/AppContext';
+import {Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import {ScrollLayoutContext} from './components/ScrollLayout';
-import { MobileNavigation } from './components/sidebar/MobileNavigation';
-import { useCompactLayout } from './components/useCompactLayout';
+import {SafeAreaProvider, SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import { CodePage } from './components/code/CodePage';
-import { EmailPage } from './components/email/EmailPage';
-import { HomePage } from './components/home/HomePage';
-import { MusicPage } from './components/music/MusicPage';
-import { Sidebar } from './components/sidebar/Sidebar';
-import { TransparentWindow } from './components/TransparentWindow';
-import { glass } from './components/theme';
-import { player } from './components/music/player';
-import { useThemedStyles } from './components/theme';
+import {CodePage} from './components/code/CodePage';
+import {EmailPage} from './components/email/EmailPage';
+import {HomePage} from './components/home/HomePage';
+import {MobileNavigation} from './components/sidebar/MobileNavigation';
+import {MusicPage} from './components/music/MusicPage';
+import {ScrollLayoutContext} from './components/ScrollLayout';
+import {Sidebar} from './components/sidebar/Sidebar';
+import {TransparentWindow} from './components/TransparentWindow';
+import {glass} from './components/theme';
+import {player} from './components/music/player';
+import {useCompactLayout} from './components/useCompactLayout';
+import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
 // window buttons for free. React Native has no such inset on macOS, so the

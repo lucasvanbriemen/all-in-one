@@ -5,7 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {EmailBody} from './EmailBody';
 import {api} from '../api';
 
-export function EmailContent({ email }) {
+export function EmailContent({email}) {
   const styles = useThemedStyles(createStyles);
   const [detail, setDetail] = useState(null);
   const emailId = email?.id;
@@ -29,7 +29,7 @@ export function EmailContent({ email }) {
   return (
     <View style={styles.content}>
       <View style={styles.header}>
-        <Image source={{ uri: email.sender_image_url }} style={styles.senderImage} />
+        <Image source={{uri: email.sender_image_url}} style={styles.senderImage} />
         <View style={styles.headerInfo}>
           <Text style={styles.subject}>{email.subject}</Text>
           {detail && (
@@ -74,7 +74,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
-    ...glass(colors, { variant: 'subtle' }),
+    ...glass(colors, {variant: 'subtle'}),
   },
   senderImage: {
     width: 40,
