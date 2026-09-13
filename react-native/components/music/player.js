@@ -17,7 +17,8 @@ export const player = {
   },
 
   async playPlaylist(songs, set) {
-    set('music.queue', songs);
+    const songsForQueue = [...songs];
+    set('music.queue', songsForQueue);
     console.log('Playing playlist:', songs);
     if (songs.length > 0) {
       await player.play(songs[0], set);
