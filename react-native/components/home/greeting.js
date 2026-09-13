@@ -1,7 +1,7 @@
-// Each option is [weight, template, requiredTags].
-// Templates reference other rules with {slot} and expand recursively.
 const RULES = {
   greeting: [
+    '{opener}{punct}',
+    '{name}, {opener}{punct}',
     '{opener} {name}{punct}',
     '{opener} {name}{punct} {followup}',
     '{interjection}, {opener} {name}{punct}',
@@ -21,6 +21,7 @@ const RULES = {
     'oh hey',
     'well well',
     'ah',
+    "there he is"
   ],
   followup: [
     {text: 'how are you?', time: 'any'},
@@ -33,18 +34,6 @@ const RULES = {
   ],
 };
 
-function dayPart(hour) { 
-  if (hour < 4 ) return 'night';
-  if (hour < 12) return 'morning';
-  if (hour < 18) return 'afternoon';
-  if (hour < 22) return 'evening';
-  return 'night';
-}
-
-function capitalise(text) {
-  return text.replace(/(^|[.!?] )([a-z])/g, (_, lead, letter) => lead + letter.toUpperCase());
-}
-
 export const greeting = {
   formatGreetingItem(greetingFormat, opener, interjection, followup, name, daypart, punct) {
     let text = greetingFormat
@@ -54,13 +43,21 @@ export const greeting = {
 
     text = text.replace('{name}', name).replace('{daypart}', daypart).replace('{punct}', punct);
 
-    text = capitalise(text);
+    text = text.replace(/(^|[.!?] )([a-z])/g, (_, lead, letter) => lead + letter.toUpperCase());
 
     return text;
   },
 
   validFollowupList(daypart) {
     return RULES.followup.filter(followup => followup.time === 'any' || followup.time === daypart);
+  },
+
+  partOfDay(hour) {
+    if (hour < 4) return 'night';
+    if (hour < 12) return 'morning';
+    if (hour < 18) return 'afternoon';
+    if (hour < 22) return 'evening';
+    return 'night';
   },
 
   generateGreeting() {
@@ -71,7 +68,7 @@ export const greeting = {
     const opener = RULES.opener[Math.floor(Math.random() * RULES.opener.length)];
     const interjection = RULES.interjection[Math.floor(Math.random() * RULES.interjection.length)];
     const followup = this.validFollowupList(daypart)[Math.floor(Math.random() * this.validFollowupList(daypart).length)].text;
-    const daypart = dayPart(new Date().getHours());
+    const daypart = this.partOfDay(new Date().getHours());
 
     return this.formatGreetingItem(greetingFormat, opener, interjection, followup, name, daypart, Math.random() < 0.6 ? '!' : '.');
   },
