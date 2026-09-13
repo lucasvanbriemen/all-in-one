@@ -13,7 +13,6 @@ module Music
     # YouTube carries single edits, radio edits and live takes under the same
     # title; prefer a result whose length matches what Deezer reports.
     DURATION_TOLERANCE = 0.07
-    ISRC_FORMAT = /\A[a-zA-Z0-9_-]+\z/
 
     class << self
       def path(isrc)
@@ -28,7 +27,6 @@ module Music
       # A per-ISRC file lock makes simultaneous callers wait on one download
       # instead of spawning duplicate yt-dlp processes.
       def ensure_cached(isrc)
-        raise ArgumentError, "invalid isrc" unless isrc.to_s.match?(ISRC_FORMAT)
         return true if cached?(isrc)
 
         with_lock(isrc) do

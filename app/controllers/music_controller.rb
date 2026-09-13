@@ -1,4 +1,7 @@
 class MusicController < ApplicationController
+  def new
+  end
+
   def index
     @songs = Music::Song.liked_songs
 
@@ -9,9 +12,6 @@ class MusicController < ApplicationController
   # request (see Music::SongCache), then streams the cached file.
   def get_mp3
     isrc = params[:isrc].to_s
-    # The format check is also what keeps the value safe to use in a file path.
-    return head :bad_request unless isrc.match?(Music::SongCache::ISRC_FORMAT)
-
     Music::SongCache.ensure_cached(isrc)
     send_audio_file(Music::SongCache.path(isrc))
   rescue Music::DeezerClient::Error
@@ -22,8 +22,6 @@ class MusicController < ApplicationController
   # pressing play on it later is instant.
   def prepare
     isrc = params[:isrc].to_s
-    return head :bad_request unless isrc.match?(Music::SongCache::ISRC_FORMAT)
-
     CacheSongJob.perform_later(isrc) unless Music::SongCache.cached?(isrc)
     head :accepted
   end
