@@ -1,19 +1,16 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {NativeModules} from 'react-native';
 import {Song} from './Song';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
-const MP3_URL = 'https://music.ltvb.nl/api/get-mp3/';
-
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
 
   const [likedSongs, setLikedSongs] = useState([]);
-  const { get, set } = useAppContext();
+  const { get } = useAppContext();
 
   useEffect(() => {
     api.get('/music').then(response => {
