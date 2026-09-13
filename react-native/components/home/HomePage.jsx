@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Notification} from './Notification';
 import {Stat} from './Stat';
 import {api} from '../api';
+import {greeting} from './greeting';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
@@ -21,13 +22,6 @@ export function HomePage({activeSidebarItem}) {
     });
   }, []);
 
-  function greeting() {
-    const hours = new Date().getHours();
-    if (hours < 12) return "Good morning!";
-    if (hours < 18) return "Good afternoon!";
-    return "Good evening!";
-  }
-
   return (
     <View style={styles.content}>
       <View style={styles.statsContainer}>
@@ -36,7 +30,7 @@ export function HomePage({activeSidebarItem}) {
         ))} 
       </View>
 
-      <Text style={styles.greeting}>{greeting()}</Text>
+      <Text style={styles.greeting}>{greeting.generateGreeting()}</Text>
 
       <ScrollView style={styles.notificationsContainer}>
         {notifications && notifications.map((notification, index) => (
