@@ -1,9 +1,3 @@
-# Downloads song MP3s, one file per ISRC, the way the music app's SongCache
-# does — minus its GPU-box offload: everything runs on this host.
-#
-# The audio directory defaults to storage/audio but can be pointed elsewhere
-# with MUSIC_AUDIO_DIR (for example at the music app's own storage/audio when
-# both apps share a server, so a song downloaded by either is cached for both).
 module Music
   class SongDownloader
     AUDIO_DIR = Pathname.new(ENV.fetch("MUSIC_AUDIO_DIR") { Rails.root.join("storage/audio").to_s })
