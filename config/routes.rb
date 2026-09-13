@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
+  get "/get-mp3/:isrc", to: "music#get_mp3", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
+  post "/get-mp3/:isrc/prepare", to: "music#prepare", as: :prepare_mp3, constraints: { isrc: /[^\/]+/ }
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
 
   get "meta_data", to: "account#show"
