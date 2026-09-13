@@ -21,7 +21,7 @@ export function NowPlayingCard() {
 
       <View style={styles.controlsContainer}>
         <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-          <Text style={styles.controlText}>Previous</Text>
+          <Icon name="last" size={24} color={styles.controlText.color} />
         </Pressable>
 
         {get('music.now-playing.is-playing') && (
@@ -41,7 +41,7 @@ export function NowPlayingCard() {
         )}
 
         <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-          <Text style={styles.controlText}>Next</Text>
+          <Icon name="next" size={24} color={styles.controlText.color} />
         </Pressable>
       </View>
     </View>

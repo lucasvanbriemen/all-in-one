@@ -6,6 +6,8 @@ import {CodeIcon} from './code';
 import {FilesIcon} from './files';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
+import {LastIcon} from './last';
+import {NextIcon} from './next';
 import {PatheIcon} from './pathe';
 import {PauseIcon} from './pause';
 import {PlayIcon} from './play';
@@ -34,6 +36,8 @@ const ICONS = {
   search: SearchIcon,
   play: PlayIcon,
   pause: PauseIcon,
+  next: NextIcon,
+  last: LastIcon,
 };
 
 export function Icon({name, size, color}) {
