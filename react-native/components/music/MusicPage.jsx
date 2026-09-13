@@ -1,6 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
+import {NowPlayingBanner} from './NowPlayingBanner';
 import {Song} from './Song';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
@@ -20,7 +21,7 @@ export function MusicPage({activeSidebarItem}) {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.greeting}>{get('music.now-playing.title')}</Text>
+      <NowPlayingBanner />
 
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
