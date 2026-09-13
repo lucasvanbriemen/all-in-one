@@ -44,3 +44,7 @@
 /swift/MyApp/Secerts.swift
 /react-native/components/secerts.json
 config/apns.p8
+/bin/yt-dlp
+/bin/ffmpeg
+/bin/ffprobe
+/storage/audio/
