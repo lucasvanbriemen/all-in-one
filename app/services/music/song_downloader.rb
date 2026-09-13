@@ -23,9 +23,6 @@ module Music
         path(isrc).file?
       end
 
-      # Makes sure the MP3 for the ISRC is on disk and its Song row exists.
-      # A per-ISRC file lock makes simultaneous callers wait on one download
-      # instead of spawning duplicate yt-dlp processes.
       def ensure_downloaded(isrc)
         return true if downloaded?(isrc)
 
@@ -34,8 +31,6 @@ module Music
 
           details = DeezerClient.track_details(isrc)
           download(isrc, details)
-          # Nothing on YouTube matched the expected length. Better a
-          # possibly-mismatched recording than no song at all.
           download(isrc, details, match_duration: false) unless downloaded?(isrc)
           next false unless downloaded?(isrc)
 
