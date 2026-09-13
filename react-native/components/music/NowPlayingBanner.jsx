@@ -6,10 +6,7 @@ import {useAppContext} from '../../context/AppContext';
 
 export function NowPlayingBanner() {
   const styles = useThemedStyles(createStyles);
-
   const { get } = useAppContext();
-
-  const [nowPlaying, setNowPlaying] = useState(get('music.now-playing'));
 
   return (
     <View style={styles.content}>
