@@ -16,9 +16,9 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
     })
   }, []);
 
-  const activeItem = config[currentlyActive];
+  const activeItem = config[currentlyActive]
   useEffect(() => {
-    if (activeItem.length && !activeItem.some(row => row.path === activeSidebarItem)) {
+    if (activeItem?.length && !activeItem?.some(row => row.path === activeSidebarItem)) {
       setActiveSidebarItem(activeItem[0].path);
     }
   }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
@@ -29,7 +29,7 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
         <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
       )}
         <ScrollView horizontal contentContainerStyle={styles.sections}>
-          {activeItem.map(row => (
+          {activeItem?.map(row => (
             <Pressable key={row.path}
               onPress={() => setActiveSidebarItem(row.path)}
               style={[
