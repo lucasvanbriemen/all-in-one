@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {EmailBody} from './EmailBody';
@@ -91,13 +91,11 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurface,
   },
   meta: {
-    flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 4,
   },
   metaText: {
-    flexShrink: 1,
     fontSize: 13,
     color: colors.onSurfaceVariant,
   },
