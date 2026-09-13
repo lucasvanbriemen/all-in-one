@@ -27,7 +27,7 @@ export function NowPlayingBanner() {
         </Pressable>
       )}
 
-      <View>
+      <View> 
         <Text style={[styles.title, compact && styles.compactTitle]}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
         <Text style={[styles.artist, compact && styles.compactArtist]}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
       </View>
