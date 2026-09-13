@@ -66,7 +66,7 @@ export function useTheme() {
     };
   }, []);
 
-  return useMemo(() => (resolve(colors, scheme)), [colors, scheme]);
+  return useMemo(() => resolve(colors, scheme), [colors, scheme]);
 }
 
 export function useThemedStyles(createStyles) {
