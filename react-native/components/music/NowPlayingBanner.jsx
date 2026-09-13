@@ -36,9 +36,18 @@ export function NowPlayingBanner() {
 }
 
 const createStyles = colors => StyleSheet.create({
-  compactTitle: { fontSize: 18, fontWeight: '600' },
-  compactArtist: { fontSize: 14 },
-  compactImage: { width: 48, height: 48, borderRadius: 12 },
+  compactTitle: {
+    fontSize: 18,
+    fontWeight: '600'
+  },
+  compactArtist: {
+    fontSize: 14
+  },
+  compactImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 12
+  },
   content: {
     padding: 16,
     ...glass(colors),
