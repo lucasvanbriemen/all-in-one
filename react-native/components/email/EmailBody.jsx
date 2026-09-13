@@ -1,7 +1,8 @@
+import {useTheme, useThemedStyles} from '../theme';
+
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
-import {useTheme, useThemedStyles} from '../theme';
 
 /**
  * Renders an email's HTML in a web view.
