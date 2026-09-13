@@ -1,12 +1,11 @@
-import {useScrollLayout} from '../ScrollLayout';
-import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
 
-import { useCompactLayout } from '../useCompactLayout';
-
-import { EmailContent } from './EmailContent';
-import { EmailListing } from './EmailListing';
-import { useThemedStyles } from '../theme';
+import {EmailContent} from './EmailContent';
+import {EmailListing} from './EmailListing';
+import {useCompactLayout} from '../useCompactLayout';
+import {useScrollLayout} from '../ScrollLayout';
+import {useThemedStyles} from '../theme';
 
 export function EmailPage({ activeSidebarItem }) {
   const scrollLayout = useScrollLayout();
@@ -19,20 +18,12 @@ export function EmailPage({ activeSidebarItem }) {
   return (
     <View style={styles.content}>
       <View style={[styles.listing, compact && selectedEmail && styles.hidden]}>
-        <EmailListing
-          activeSidebarItem={activeSidebarItem}
-          selectedEmail={selectedEmail}
-          onSelectEmail={setSelectedEmail}
-        />
+        <EmailListing activeSidebarItem={activeSidebarItem} selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
       </View>
       {(!compact || selectedEmail) && (
         <View style={[styles.body, compact && scrollLayout.contentContainerStyle]}>
           {compact && (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setSelectedEmail(null)}
-              style={styles.back}
-            >
+            <Pressable onPress={() => setSelectedEmail(null)} style={styles.back}>
               <Text style={styles.backText}>‹ Back to inbox</Text>
             </Pressable>
           )}
