@@ -1,35 +1,22 @@
-import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { api } from '../api';
+import React, { useEffect, useState } from 'react';
 import { glass, useThemedStyles } from '../theme';
+
 import {NavigationBlur} from './NavigationBlur';
+import { api } from '../api';
 
 const APPLICATIONS = ['home', 'email', 'music', 'code'];
 const EMPTY_ROWS = [];
 const title = name => name.charAt(0).toUpperCase() + name.slice(1);
 
-export function MobileNavigation({
-  currentlyActive,
-  setActiveApp,
-  activeSidebarItem,
-  setActiveSidebarItem,
-}) {
+export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarItem, setActiveSidebarItem}) {
   const styles = useThemedStyles(createStyles);
   const [config, setConfig] = useState({});
 
   useEffect(() => {
-    let active = true;
-    api
-      .get('/meta_data')
-      .then(data => {
-        if (active) {
-          setConfig(data.config ?? {});
-        }
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
+    api.get('/meta_data').then(data => {
+      setConfig(data.config ?? {});
+    })
   }, []);
 
   const rows = config[currentlyActive] ?? EMPTY_ROWS;
@@ -40,8 +27,8 @@ export function MobileNavigation({
   }, [rows, activeSidebarItem, setActiveSidebarItem]);
 
   return (
-    <View style={[styles.navigation, NavigationBlur && styles.blurredNavigation]}>
-      {NavigationBlur && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
+    <View style={[styles.navigation, styles.blurredNavigation]}>
+      {<NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
       {(currentlyActive === 'email' || currentlyActive === 'code') &&
         rows.length > 0 && (
           <ScrollView
