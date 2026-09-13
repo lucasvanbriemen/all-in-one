@@ -1,18 +1,11 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {player} from './player';
-import {useAppContext} from '../../context/AppContext';
-
-export function Song({song, isEven}) {
+export function Song({song, isEven, onClick}) {
   const styles = useThemedStyles(createStyles);
-  const { set } = useAppContext();
 
-  async function playSong() {
-    await player.play(song, set);
-  }
   return (
-    <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong()}>
+    <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => onClick()}>
       <Image source={{uri: song.image_url}} style={styles.image} />
 
       <View> 

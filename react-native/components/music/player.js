@@ -16,12 +16,18 @@ export const player = {
     set('music.now-playing', song);
   },
 
-  async playPlaylist(songs, set) {
+  async playPlaylist(songs, set, atIndex = 0) {
     const songsForQueue = [...songs];
+
+    const songToPlay = songsForQueue[atIndex]; 
+
+    // Pull the song to the front of the queue
+    songsForQueue.splice(atIndex, 1);
+    songsForQueue.unshift(songToPlay);
+
     set('music.queue', songsForQueue);
-    console.log('Playing playlist:', songs);
-    if (songs.length > 0) {
-      await player.play(songs[0], set);
+    if (songsForQueue.length > 0) {
+      await player.play(songToPlay, set);
     }
   },
 

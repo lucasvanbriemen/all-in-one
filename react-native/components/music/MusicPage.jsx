@@ -30,7 +30,7 @@ export function MusicPage({activeSidebarItem}) {
       </Pressable>
 
       {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
       ))}
     </View>
   );
