@@ -225,11 +225,6 @@ export function CodePage({ activeSidebarItem }) {
 }
 
 const createStyles = colors => StyleSheet.create({
-  hidden: { display: 'none' },
-  mobileTools: { flexDirection: 'row', gap: 16 },
-  mobileTool: { minHeight: 44, justifyContent: 'center' },
-  toolText: { color: colors.primary },
-  tabScroll: { flexGrow: 0, flexShrink: 0 },
   editor: {
     flexDirection: 'row',
     position: 'relative',
@@ -237,8 +232,6 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   codeEditorContainer: {
-    minHeight: 0,
-    minWidth: 0,
     flex: 5,
     paddingTop: 16,
     paddingBottom: 16,
