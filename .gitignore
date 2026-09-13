@@ -44,8 +44,6 @@
 /swift/MyApp/Secerts.swift
 /react-native/components/secerts.json
 config/apns.p8
-# yt-dlp + ffmpeg/ffprobe binaries live in bin/ on the server but are not
-# tracked (see Music::SongCache). Downloaded audio is cached under storage/audio.
 /bin/yt-dlp
 /bin/ffmpeg
 /bin/ffprobe
