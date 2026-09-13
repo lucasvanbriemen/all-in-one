@@ -79,16 +79,15 @@ export const greeting = {
    * @param {number}  [options.hour]        Override the clock, for testing.
    * @param {boolean} [options.includeName] Force the name on or off. Random if omitted.
    */
-  generateGreeting({ name, register, hour, includeName } = {}) {
+  generateGreeting() {
     const NAME_OPTIONS = ["Lucas"];
     const NAME = NAME_OPTIONS[Math.floor(Math.random() * NAME_OPTIONS.length)];
 
-    const resolvedRegister = register || (Math.random() < 0.5 ? 'casual' : 'formal');
-    const resolvedHour = hour ?? new Date().getHours();
-    const daypart = dayPart(resolvedHour);
+    const resolvedRegister = (Math.random() < 0.5 ? 'casual' : 'formal');
+    const daypart = dayPart(new Date().getHours());
     const tags = new Set([resolvedRegister, daypart]);
 
-    const useName = includeName ?? Math.random() < 0.5;
+    const useName = Math.random() < 0.5;
     const literals = {
       daypart,
       name: NAME && useName ? ` ${NAME}` : '',
