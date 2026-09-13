@@ -72,13 +72,6 @@ function capitalise(text) {
 }
 
 export const greeting = {
-  /**
-   * @param {object}  [options]
-   * @param {string}  [options.name]        Name to address, e.g. 'Lucas'.
-   * @param {string}  [options.register]    'casual' | 'formal'. Random if omitted.
-   * @param {number}  [options.hour]        Override the clock, for testing.
-   * @param {boolean} [options.includeName] Force the name on or off. Random if omitted.
-   */
   generateGreeting() {
     const NAME_OPTIONS = ["Lucas"];
     const NAME = NAME_OPTIONS[Math.floor(Math.random() * NAME_OPTIONS.length)];
