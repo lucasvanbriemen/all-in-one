@@ -5,8 +5,6 @@ import { glass, useThemedStyles } from '../theme';
 import {NavigationBlur} from './NavigationBlur';
 import { api } from '../api';
 
-const APPLICATIONS = ['home', 'email', 'music', 'code'];
-const EMPTY_ROWS = [];
 const title = name => name.charAt(0).toUpperCase() + name.slice(1);
 
 export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarItem, setActiveSidebarItem}) {
@@ -19,69 +17,48 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
     })
   }, []);
 
-  const rows = config[currentlyActive] ?? EMPTY_ROWS;
+  const activeItem = config[currentlyActive];
   useEffect(() => {
-    if (rows.length && !rows.some(row => row.path === activeSidebarItem)) {
-      setActiveSidebarItem(rows[0].path);
+    if (activeItem.length && !activeItem.some(row => row.path === activeSidebarItem)) {
+      setActiveSidebarItem(activeItem[0].path);
     }
-  }, [rows, activeSidebarItem, setActiveSidebarItem]);
+  }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
 
   return (
-    <View style={[styles.navigation, styles.blurredNavigation]}>
-      {<NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
-      {(currentlyActive === 'email' || currentlyActive === 'code') &&
-        rows.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.sections}
-          >
-            {rows.map(row => (
-              <Pressable
-                key={row.path}
-                accessibilityRole="tab"
-                accessibilityState={{
-                  selected: row.path === activeSidebarItem,
-                }}
-                onPress={() => setActiveSidebarItem(row.path)}
+    <View style={[styles.navigation, NavigationBlur != null && styles.blurredNavigation]}>
+      {NavigationBlur != null && (
+        <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
+      )}
+        <ScrollView horizontal contentContainerStyle={styles.sections}>
+          {activeItem.map(row => (
+            <Pressable key={row.path}
+              onPress={() => setActiveSidebarItem(row.path)}
+              style={[
+                styles.section,
+                row.path === activeSidebarItem && styles.selected,
+              ]}
+            >
+              <Text
                 style={[
-                  styles.section,
-                  row.path === activeSidebarItem && styles.selected,
+                  styles.sectionText,
+                  row.path === activeSidebarItem && styles.selectedText,
                 ]}
               >
-                <Text
-                  style={[
-                    styles.sectionText,
-                    row.path === activeSidebarItem && styles.selectedText,
-                  ]}
-                >
-                  {row.name}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        )}
+                {row.name}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
       <View style={styles.tabs}>
-        {APPLICATIONS.map(app => (
-          <Pressable
-            key={app}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: app === currentlyActive }}
+        {config && Object.keys(config).map(app => (
+          <Pressable key={app}
             onPress={() => {
               setActiveSidebarItem(config[app]?.[0]?.path ?? null);
               setActiveApp(app);
             }}
             style={[styles.tab, app === currentlyActive && styles.selected]}
           >
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.tabText,
-                app === currentlyActive && styles.selectedText,
-              ]}
-            >
-              {title(app)}
-            </Text>
+            <Text style={[styles.tabText, app === currentlyActive && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
       </View>
