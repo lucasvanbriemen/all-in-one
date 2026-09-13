@@ -24,7 +24,7 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
   }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
 
   return (
-    <View style={[styles.navigation, NavigationBlur != null && styles.blurredNavigation]}>
+    <View style={[styles.navigation]}>
       {NavigationBlur != null && (
         <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
       )}
@@ -65,41 +65,35 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    navigation: {
-      ...glass(colors, { variant: 'subtle' }),
-      borderRadius: 16,
-      padding: 6,
-      gap: 6,
-    },
-    sections: { gap: 6 },
-    blurredNavigation: {
-      backgroundColor: 'transparent',
-      borderWidth: 0,
-      overflow: 'hidden',
-    },
-    section: {
-      minHeight: 44,
-      justifyContent: 'center',
-      paddingHorizontal: 16,
-      borderRadius: 12,
-    },
-    sectionText: { color: colors.onSurfaceVariant, fontSize: 14 },
-    tabs: { flexDirection: 'row', gap: 4 },
-    tab: {
-      flex: 1,
-      minHeight: 48,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 12,
-      paddingHorizontal: 4,
-    },
-    tabText: {
-      color: colors.onSurfaceVariant,
-      fontSize: 14,
-      fontWeight: '600',
-    },
-    selected: { ...glass(colors, { variant: 'accent' }) },
-    selectedText: { color: colors.onPrimary },
-  });
+const createStyles = colors => StyleSheet.create({
+  navigation: {
+    ...glass(colors, { variant: 'subtle' }),
+    borderRadius: 16,
+    padding: 6,
+    gap: 6,
+  },
+  sections: { gap: 6 },
+  section: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+  sectionText: { color: colors.onSurfaceVariant, fontSize: 14 },
+  tabs: { flexDirection: 'row', gap: 4 },
+  tab: {
+    flex: 1,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    paddingHorizontal: 4,
+  },
+  tabText: {
+    color: colors.onSurfaceVariant,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  selected: { ...glass(colors, { variant: 'accent' }) },
+  selectedText: { color: colors.onPrimary },
+});
