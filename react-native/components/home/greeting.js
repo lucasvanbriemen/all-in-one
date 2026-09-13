@@ -11,6 +11,7 @@ const RULES = {
     [2, 'a very good {daypart} to you', ['formal']],
     [1, 'top of the {daypart}', ['casual']],
     [4, 'hey', ['casual']],
+    [3, 'whats cooking?', ['casual']],
     [3, 'hi', ['casual']],
     [3, 'hello'],
     [1, 'howdy', ['casual']],
@@ -25,6 +26,7 @@ const RULES = {
     [3, 'how are you?'],
     [2, 'hope you slept well.', ['morning']],
     [2, "how's your day going?", ['afternoon']],
+    [2, "late at work?", ['night']],
     [2, 'long day?', ['evening']],
     [1, 'good to see you.'],
     [1, "what's new?", ['casual']],
@@ -34,10 +36,12 @@ const RULES = {
 const MEMORY = 5;
 const recent = [];
 
-function dayPart(hour) {
+function dayPart(hour) { 
+  if (hour < 4 ) return 'night';
   if (hour < 12) return 'morning';
   if (hour < 18) return 'afternoon';
-  return 'evening';
+  if (hour < 22) return 'evening';
+  return 'night';
 }
 
 function pickWeighted(options) {
@@ -76,6 +80,9 @@ export const greeting = {
    * @param {boolean} [options.includeName] Force the name on or off. Random if omitted.
    */
   generateGreeting({ name, register, hour, includeName } = {}) {
+    const NAME_OPTIONS = ["Lucas"];
+    const NAME = NAME_OPTIONS[Math.floor(Math.random() * NAME_OPTIONS.length)];
+
     const resolvedRegister = register || (Math.random() < 0.5 ? 'casual' : 'formal');
     const resolvedHour = hour ?? new Date().getHours();
     const daypart = dayPart(resolvedHour);
@@ -84,7 +91,7 @@ export const greeting = {
     const useName = includeName ?? Math.random() < 0.5;
     const literals = {
       daypart,
-      name: name && useName ? ` ${name}` : '',
+      name: NAME && useName ? ` ${NAME}` : '',
       punct: Math.random() < 0.6 ? '!' : '.',
     };
 
