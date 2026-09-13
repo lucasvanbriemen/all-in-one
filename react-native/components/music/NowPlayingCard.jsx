@@ -14,6 +14,11 @@ export function NowPlayingCard() {
     <View style={styles.content}>
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
+        <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
+      </View>
+
       {get('music.now-playing.is-playing') && (
         <Pressable
           onPress={() => player.pause()}
@@ -29,11 +34,6 @@ export function NowPlayingCard() {
           <Icon name="play" size={24} color={styles.controlText.color} />
         </Pressable>
       )}
-
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
-        <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
-      </View>
     </View>
   );
 }
