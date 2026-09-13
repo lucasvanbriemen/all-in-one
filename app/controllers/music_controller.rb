@@ -10,14 +10,8 @@ class MusicController < ApplicationController
 
   def get_mp3
     isrc = params[:isrc].to_s
-    Music::SongCache.ensure_cached(isrc)
-    send_audio_file(Music::SongCache.path(isrc))
-  end
-
-  def preload_song
-    isrc = params[:isrc].to_s
-    CacheSongJob.perform_later(isrc) unless Music::SongCache.cached?(isrc)
-    head :accepted
+    Music::SongDownloader.ensure_downloaded(isrc)
+    send_audio_file(Music::SongDownloader.path(isrc))
   end
 
   private

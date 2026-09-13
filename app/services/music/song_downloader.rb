@@ -1,11 +1,11 @@
-# Downloads and caches song MP3s, one file per ISRC, the way the music app's
-# SongCache does — minus its GPU-box offload: everything runs on this host.
+# Downloads song MP3s, one file per ISRC, the way the music app's SongCache
+# does — minus its GPU-box offload: everything runs on this host.
 #
-# The cache directory defaults to storage/audio but can be pointed elsewhere
+# The audio directory defaults to storage/audio but can be pointed elsewhere
 # with MUSIC_AUDIO_DIR (for example at the music app's own storage/audio when
 # both apps share a server, so a song downloaded by either is cached for both).
 module Music
-  class SongCache
+  class SongDownloader
     AUDIO_DIR = Pathname.new(ENV.fetch("MUSIC_AUDIO_DIR") { Rails.root.join("storage/audio").to_s })
     WORK_ROOT = Rails.root.join("tmp/music-download")
     DOWNLOAD_TIMEOUT_SECONDS = 180
@@ -19,25 +19,25 @@ module Music
         AUDIO_DIR.join("#{isrc}.mp3")
       end
 
-      def cached?(isrc)
+      def downloaded?(isrc)
         path(isrc).file?
       end
 
       # Makes sure the MP3 for the ISRC is on disk and its Song row exists.
       # A per-ISRC file lock makes simultaneous callers wait on one download
       # instead of spawning duplicate yt-dlp processes.
-      def ensure_cached(isrc)
-        return true if cached?(isrc)
+      def ensure_downloaded(isrc)
+        return true if downloaded?(isrc)
 
         with_lock(isrc) do
-          next true if cached?(isrc)
+          next true if downloaded?(isrc)
 
           details = DeezerClient.track_details(isrc)
           download(isrc, details)
           # Nothing on YouTube matched the expected length. Better a
           # possibly-mismatched recording than no song at all.
-          download(isrc, details, match_duration: false) unless cached?(isrc)
-          next false unless cached?(isrc)
+          download(isrc, details, match_duration: false) unless downloaded?(isrc)
+          next false unless downloaded?(isrc)
 
           create_song(isrc, details)
           true

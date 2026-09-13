@@ -1,7 +1,7 @@
 require "net/http"
 
 module Music
-  # Minimal Deezer public API client: only what SongCache needs to look up a
+  # Minimal Deezer public API client: only what SongDownloader needs to look up a
   # track by ISRC (title, artist, duration, cover).
   class DeezerClient
     BASE_URL = "https://api.deezer.com"
