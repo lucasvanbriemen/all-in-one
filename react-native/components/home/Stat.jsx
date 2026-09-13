@@ -4,7 +4,7 @@ import { glass, useThemedStyles } from '../theme';
 import React from 'react';
 import { useCompactLayout } from '../useCompactLayout';
 
-export function Stat({ value, label, attentionLevel = 'low' }) {
+export function Stat({value, label, attentionLevel = "low"}) {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
 
