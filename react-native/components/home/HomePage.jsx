@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Notification} from './Notification';
+import {NowPlayingCard} from '../music/NowPlayingCard';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
@@ -32,16 +33,30 @@ export function HomePage({activeSidebarItem}) {
 
       <Text style={styles.greeting}>{greeting.generateGreeting()}</Text>
 
-      <ScrollView style={styles.notificationsContainer}>
-        {notifications && notifications.map((notification, index) => (
-          <Notification key={index} notification={notification} />
-        ))}
-      </ScrollView>
+      <View style={styles.mainContent}>
+        <View style={styles.notificationsContainer}>
+          <ScrollView>
+            {notifications && notifications.map((notification, index) => (
+              <Notification key={index} notification={notification} />
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.nowPlaying}>
+          <NowPlayingCard />
+        </View>
+      </View> 
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  notificationsContainer: {
+    flex: 2,
+  },
+  nowPlaying: {
+    flex: 1,
+  },
   content: {
     flex: 1,
   },
@@ -56,7 +71,10 @@ const createStyles = colors => StyleSheet.create({
     marginTop: 16,
     color: colors.outline
   },
-  notificationsContainer: {
+  mainContent: {
+    flex: 1,
     marginTop: 16,
+    flexDirection: 'row',
+    gap: 32,
   },
 });
