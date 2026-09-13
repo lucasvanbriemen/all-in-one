@@ -33,9 +33,6 @@ const RULES = {
   ],
 };
 
-const MEMORY = 5;
-const recent = [];
-
 function dayPart(hour) { 
   if (hour < 4 ) return 'night';
   if (hour < 12) return 'morning';
@@ -90,11 +87,8 @@ export const greeting = {
     let text = '';
     for (let attempt = 0; attempt < 10; attempt += 1) {
       text = capitalise(expand(pick('greeting', tags), tags, literals));
-      if (!recent.includes(text)) break;
     }
 
-    recent.push(text);
-    if (recent.length > MEMORY) recent.shift();
     return text;
   },
 };
