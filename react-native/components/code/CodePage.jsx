@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { glass, useThemedStyles } from '../theme';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {glass, useThemedStyles} from '../theme';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
-import { CodeEditor } from '../CodeEditor';
-import { FileTree } from './FileTree';
-import { SearchSidebar } from './SearchSidebar';
-import { Terminal } from './Terminal';
-import { fileSystem } from '../fileSystem';
+import {CodeEditor} from '../CodeEditor';
+import {FileTree} from './FileTree';
+import {SearchSidebar} from './SearchSidebar';
+import {Terminal} from './Terminal';
+import {fileSystem} from '../fileSystem';
 
 const AUTO_SAVE_DELAY = 800;
 
