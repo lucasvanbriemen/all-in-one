@@ -108,33 +108,32 @@ function AppShell({insets}) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    appWrapper: {
-      flex: 1,
-      padding: 16,
-      gap: 16,
-      flexDirection: 'row',
-      paddingTop: TITLEBAR_INSET,
-    },
-    titlebar: { paddingTop: TITLEBAR_INSET },
-    edgeWrapper: {padding: 0, paddingTop: 0, gap: 0},
-    edgeContent: {padding: 0, paddingHorizontal: 0, borderRadius: 0},
-    noTitlebar: { paddingTop: 12 },
-    compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
-    compactContent: {
-      paddingHorizontal: 12,
-      minHeight: 0,
-      backgroundColor: 'transparent',
-      borderWidth: 0,
-    },
-    content: {
-      minWidth: 0,
-      flex: 1,
-      padding: 16,
-      paddingBottom: 0,
-      paddingTop: 0,
-      borderRadius: 16,
-      ...glass(colors, { variant: 'subtle' }),
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  appWrapper: {
+    flex: 1,
+    padding: 16,
+    gap: 16,
+    flexDirection: 'row',
+    paddingTop: TITLEBAR_INSET,
+  },
+  titlebar: { paddingTop: TITLEBAR_INSET },
+  edgeWrapper: {padding: 0, paddingTop: 0, gap: 0},
+  edgeContent: {padding: 0, paddingHorizontal: 0, borderRadius: 0},
+  noTitlebar: { paddingTop: 12 },
+  compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
+  compactContent: {
+    paddingHorizontal: 12,
+    minHeight: 0,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+  },
+  content: {
+    minWidth: 0,
+    flex: 1,
+    padding: 16,
+    paddingBottom: 0,
+    paddingTop: 0,
+    borderRadius: 16,
+    ...glass(colors, { variant: 'subtle' }),
+  },
+});
