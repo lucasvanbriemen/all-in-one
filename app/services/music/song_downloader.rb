@@ -133,24 +133,6 @@ module Music
         window = seconds * DURATION_TOLERANCE
         "age_limit<18 & duration>#{(seconds - window).round} & duration<#{(seconds + window).round}"
       end
-
-      def genre_for(album_id)
-        return nil if album_id.blank?
-
-        name = DeezerClient.album_details(album_id).dig("genres", "data", 0, "name")
-        name.presence unless name == "All"
-      rescue DeezerClient::Error
-        nil
-      end
-
-      def positive_or_nil(value)
-        value.to_f.positive? ? value : nil
-      end
-
-      def year_from(release_date)
-        year = release_date.to_s[0, 4].to_i
-        year.positive? ? year : nil
-      end
     end
   end
 end
