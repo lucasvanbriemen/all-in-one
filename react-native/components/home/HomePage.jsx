@@ -67,35 +67,34 @@ export function HomePage({ activeSidebarItem }) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    scrollContent: { paddingBottom: 16 },
-    compactStats: { flexWrap: 'wrap', gap: 8 },
-    compactMain: { flex: 0, flexDirection: 'column', gap: 16 },
-    notificationsContainer: {
-      flex: 2,
-    },
-    nowPlaying: {
-      flex: 1,
-    },
-    content: {
-      flex: 1,
-    },
-    statsContainer: {
-      flexDirection: 'row',
-      gap: 16,
-      paddingTop: 16,
-    },
-    greeting: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      marginTop: 16,
-      color: colors.outline,
-    },
-    mainContent: {
-      flex: 1,
-      marginTop: 16,
-      flexDirection: 'row',
-      gap: 32,
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  scrollContent: { paddingBottom: 16 },
+  compactStats: { flexWrap: 'wrap', gap: 8 },
+  compactMain: { flex: 0, flexDirection: 'column', gap: 16 },
+  notificationsContainer: {
+    flex: 2,
+  },
+  nowPlaying: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingTop: 16,
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 16,
+    color: colors.outline,
+  },
+  mainContent: {
+    flex: 1,
+    marginTop: 16,
+    flexDirection: 'row',
+    gap: 32,
+  },
+});

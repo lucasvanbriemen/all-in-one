@@ -34,20 +34,19 @@ export function EmailPage({ activeSidebarItem }) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    hidden: { display: 'none' },
-    back: { minHeight: 44, justifyContent: 'center' },
-    backText: { color: colors.primary, fontSize: 16 },
-    content: {
-      flex: 1,
-      flexDirection: 'row',
-      gap: 32,
-    },
-    listing: {
-      flex: 1,
-    },
-    body: {
-      flex: 2,
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  hidden: { display: 'none' },
+  back: { minHeight: 44, justifyContent: 'center' },
+  backText: { color: colors.primary, fontSize: 16 },
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 32,
+  },
+  listing: {
+    flex: 1,
+  },
+  body: {
+    flex: 2,
+  },
+});
