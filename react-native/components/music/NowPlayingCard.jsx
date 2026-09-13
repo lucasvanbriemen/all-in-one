@@ -25,8 +25,10 @@ export function NowPlayingCard() {
         </Pressable>
       )}
 
-      <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
-      <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
+        <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
+      </View>
     </View>
   );
 }
@@ -48,8 +50,12 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurfaceVariant,
   },
   image: {
-    width: 75,
-    height: 75,
-    borderRadius: 75,
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+  },
+  textContainer: {
+    alignItems: 'center',
+    gap: 8,
   }
 });
