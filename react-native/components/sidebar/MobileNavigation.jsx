@@ -24,10 +24,8 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
   }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
 
   return (
-    <View style={[styles.navigation, NavigationBlur != null && styles.blurredNavigation]}>
-      {NavigationBlur != null && (
-        <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
-      )}
+    <View style={[styles.navigation, styles.blurredNavigation]}>
+      {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
       <ScrollView horizontal contentContainerStyle={styles.sections}>
         {activeItem?.map(row => (
           <Pressable key={row.path}onPress={() => setActiveSidebarItem(row.path)} style={[styles.section, row.path === activeSidebarItem && styles.selected]}>
