@@ -20,7 +20,7 @@ export function MusicPage({activeSidebarItem}) {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.greeting}>{get('now-playing')}</Text>
+      <Text style={styles.greeting}>{get('music.now-playing.title')}</Text>
 
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} />

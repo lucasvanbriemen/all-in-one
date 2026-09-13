@@ -19,7 +19,7 @@ export function Song({song, isEven}) {
       artwork: song.image_url,
     }, {Authorization: api.defaultHeaders.Authorization});
 
-    set('now-playing', song.isrc);
+    set('music.now-playing', song);
   }
   return (
     <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong()}>
