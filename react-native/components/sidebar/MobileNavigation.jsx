@@ -28,35 +28,18 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
       {NavigationBlur != null && (
         <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
       )}
-        <ScrollView horizontal contentContainerStyle={styles.sections}>
-          {activeItem?.map(row => (
-            <Pressable key={row.path}
-              onPress={() => setActiveSidebarItem(row.path)}
-              style={[
-                styles.section,
-                row.path === activeSidebarItem && styles.selected,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.sectionText,
-                  row.path === activeSidebarItem && styles.selectedText,
-                ]}
-              >
-                {row.name}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+      <ScrollView horizontal contentContainerStyle={styles.sections}>
+        {activeItem?.map(row => (
+          <Pressable key={row.path}onPress={() => setActiveSidebarItem(row.path)} style={[styles.section, row.path === activeSidebarItem && styles.selected]}>
+            <Text style={[ styles.sectionText, row.path === activeSidebarItem && styles.selectedText, ]}>
+              {row.name}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
       <View style={styles.tabs}>
         {config && Object.keys(config).map(app => (
-          <Pressable key={app}
-            onPress={() => {
-              setActiveSidebarItem(config[app]?.[0]?.path ?? null);
-              setActiveApp(app);
-            }}
-            style={[styles.tab, app === currentlyActive && styles.selected]}
-          >
+          <Pressable key={app} onPress={() => {setActiveSidebarItem(config[app]?.[0]?.path ?? null); setActiveApp(app);}} style={[styles.tab, app === currentlyActive && styles.selected]}>
             <Text style={[styles.tabText, app === currentlyActive && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
