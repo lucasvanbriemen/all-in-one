@@ -21,29 +21,12 @@ export function MusicPage({activeSidebarItem}) {
     });
   }, []);
 
-  async function playSong(isrc) {
-    const url = `${MP3_URL}${isrc}`;
-    await NativeModules.AudioPlayer.play(url, {
-      title: 'sunny',
-      artist: "bonny",
-      album: "sunny's album",
-      artwork: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkwB_2pHUFCpbcaaUgqtfBj3xAmsGWFtzUN1YNFpn4_PoMdrPRXRSrq0Q&s=10",
-    }, {Authorization: api.defaultHeaders.Authorization});
-
-    set('now-playing', isrc);
-  }
-
   return (
     <View style={styles.content}>
       <Text style={styles.greeting}>{get('now-playing')}</Text>
 
       {likedSongs.map((song, index) => (
-        <React.Fragment key={`fragment-${song.isrc}`}>
-          <Pressable key={`play-${song.isrc}`} onPress={() => playSong(song.isrc)}>
-            <Text>Play</Text>
-          </Pressable>
-          <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
-        </React.Fragment>
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
       ))}
     </View>
   );
