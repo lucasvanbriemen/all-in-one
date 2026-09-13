@@ -1,6 +1,6 @@
 import {NativeEventEmitter, NativeModules} from 'react-native';
 
-import secrets from './secerts.json';
+import secrets from '../secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
 
