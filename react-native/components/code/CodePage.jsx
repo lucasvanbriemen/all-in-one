@@ -1,15 +1,14 @@
-import {useScrollLayout} from '../ScrollLayout';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { glass, useThemedStyles } from '../theme';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { useCompactLayout } from '../useCompactLayout';
 
 import { CodeEditor } from '../CodeEditor';
 import { FileTree } from './FileTree';
 import { SearchSidebar } from './SearchSidebar';
 import { Terminal } from './Terminal';
 import { fileSystem } from '../fileSystem';
+import { useCompactLayout } from '../useCompactLayout';
+import {useScrollLayout} from '../ScrollLayout';
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -143,30 +142,6 @@ export function CodePage({ activeSidebarItem }) {
       onKeyDown={onKeyDown}
       keyDownEvents={KEY_DOWN_EVENTS}
     >
-      {compact && (
-        <View style={styles.mobileTools}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setShowFiles(value => !value)}
-            style={styles.mobileTool}
-          >
-            <Text style={styles.toolText}>
-              {showFiles ? 'Hide browser' : 'Show browser'}
-            </Text>
-          </Pressable>
-          {projectRoot && (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setShowTerminal(value => !value)}
-              style={styles.mobileTool}
-            >
-              <Text style={styles.toolText}>
-                {showTerminal ? 'Hide terminal' : 'Show terminal'}
-              </Text>
-            </Pressable>
-          )}
-        </View>
-      )}
       {activeSidebarItem == 'files' && (
         <View
           style={[
