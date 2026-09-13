@@ -10,7 +10,7 @@ export function Song({song, isEven}) {
   const styles = useThemedStyles(createStyles);
   const { set } = useAppContext();
 
-  async function playSong(song) {
+  async function playSong() {
     const url = `${MP3_URL}${song.isrc}`;
     await NativeModules.AudioPlayer.play(url, {
       title: song.title,
@@ -22,7 +22,7 @@ export function Song({song, isEven}) {
     set('now-playing', song.isrc);
   }
   return (
-    <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong(song)}>
+    <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong()}>
       <Image source={{uri: song.image_url}} style={styles.image} />
 
       <View> 
