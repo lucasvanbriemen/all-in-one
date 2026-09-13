@@ -1,7 +1,8 @@
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useCompactLayout } from '../useCompactLayout';
 import { glass, useThemedStyles } from '../theme';
+
+import React from 'react';
+import { useCompactLayout } from '../useCompactLayout';
 
 export function Stat({ value, label, attentionLevel = 'low' }) {
   const compact = useCompactLayout();
@@ -29,31 +30,30 @@ export function Stat({ value, label, attentionLevel = 'low' }) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    compact: { flexBasis: '45%', flexGrow: 1, padding: 12 },
-    compactLabel: { fontSize: 16 },
-    mediumContainer: {
-      ...glass(colors, { variant: 'tinted', tone: 'warningContainer' }),
-      borderWidth: 2,
-    },
-    highContainer: {
-      ...glass(colors, { variant: 'tinted', tone: 'errorContainer' }),
-      borderWidth: 2,
-    },
-    content: {
-      ...glass(colors),
-      padding: 16,
-      borderRadius: 16,
-      flex: 1,
-    },
-    value: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      color: colors.onSurfaceVariant,
-    },
-    label: {
-      fontSize: 24,
-      color: colors.outline,
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  compact: { flexBasis: '45%', flexGrow: 1, padding: 12 },
+  compactLabel: { fontSize: 16 },
+  mediumContainer: {
+    ...glass(colors, { variant: 'tinted', tone: 'warningContainer' }),
+    borderWidth: 2,
+  },
+  highContainer: {
+    ...glass(colors, { variant: 'tinted', tone: 'errorContainer' }),
+    borderWidth: 2,
+  },
+  content: {
+    ...glass(colors),
+    padding: 16,
+    borderRadius: 16,
+    flex: 1,
+  },
+  value: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: colors.onSurfaceVariant,
+  },
+  label: {
+    fontSize: 24,
+    color: colors.outline,
+  },
+});

@@ -1,4 +1,3 @@
-import {useScrollLayout} from '../ScrollLayout';
 import { FlatList, Pressable, StyleSheet, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
@@ -7,6 +6,7 @@ import { Song } from './Song';
 import { api } from '../api';
 import { player } from './player';
 import { useAppContext } from '../../context/AppContext';
+import {useScrollLayout} from '../ScrollLayout';
 import { useThemedStyles } from '../theme';
 
 export function MusicPage({ activeSidebarItem }) {
@@ -53,21 +53,20 @@ export function MusicPage({ activeSidebarItem }) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    content: { flex: 1 },
-    listContent: { paddingBottom: 16 },
-    playAll: { minHeight: 44, justifyContent: 'center' },
-    playAllText: { color: colors.primary, fontSize: 16, fontWeight: '600' },
-    statsContainer: {
-      flexDirection: 'row',
-      gap: 16,
-      paddingTop: 16,
-    },
-    greeting: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      marginTop: 16,
-      color: colors.outline,
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  content: { flex: 1 },
+  listContent: { paddingBottom: 16 },
+  playAll: { minHeight: 44, justifyContent: 'center' },
+  playAllText: { color: colors.primary, fontSize: 16, fontWeight: '600' },
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingTop: 16,
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 16,
+    color: colors.outline,
+  },
+});
