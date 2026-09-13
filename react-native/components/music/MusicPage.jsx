@@ -1,4 +1,4 @@
-import { FlatList, Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
 import { NowPlayingBanner } from './NowPlayingBanner';
@@ -24,30 +24,22 @@ export function MusicPage({ activeSidebarItem }) {
   }, []);
 
   return (
-    <FlatList
-      style={styles.content}
-      {...scrollLayout}
-      data={likedSongs}
-      keyExtractor={(song, index) => `${song.isrc}-${index}`}
-      ListHeaderComponent={
-        <>
-          <NowPlayingBanner />
-          <Pressable onPress={() => player.playPlaylist(likedSongs, set)}>
-            <Text>Play All</Text>
-          </Pressable>
-        </>
-      }
-      renderItem={({ item: song, index }) => (
-        <Song song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
-      )}
-      contentContainerStyle={[styles.listContent, scrollLayout.contentContainerStyle]}
-    />
+    <View style={styles.content}>
+      <NowPlayingBanner />
+
+      <Pressable onPress={() => player.playPlaylist(likedSongs, set)}>
+        <Text>Play All</Text>
+      </Pressable>
+
+      {likedSongs.map((song, index) => (
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
+      ))}
+    </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
   content: { flex: 1 },
-  listContent: { paddingBottom: 16 },
   statsContainer: {
     flexDirection: 'row',
     gap: 16,
