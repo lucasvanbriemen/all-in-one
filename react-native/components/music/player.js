@@ -16,10 +16,14 @@ export const player = {
     set('music.now-playing', song);
   },
 
-  async playPlaylist(songs, set, atIndex = 0) {
+  async playPlaylist(songs, set, get, atIndex = 0) {
     const songsForQueue = [...songs];
 
     const songToPlay = songsForQueue[atIndex]; 
+
+    // Push the songs before the index into previous songs
+    const previousSongs = songsForQueue.slice(0, atIndex);
+    set('music.last-songs', previousSongs);
 
     songsForQueue.splice(atIndex, 1);
 
@@ -35,6 +39,20 @@ export const player = {
       const nextSong = queue.shift();
       set('music.queue', queue);
       await player.play(nextSong, set);
+    }
+  },
+
+  async previous(set, get) {
+    const queue = get('music.queue');
+    const lastSongs = get('music.last-songs') || [];
+    if (lastSongs.length > 0) {
+      const previousSong = lastSongs.pop();
+      set('music.last-songs', lastSongs);
+      if (queue) {
+        queue.unshift(previousSong);
+        set('music.queue', queue);
+      }
+      await player.play(previousSong, set);
     }
   },
 

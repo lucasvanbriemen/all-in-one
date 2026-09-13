@@ -19,6 +19,10 @@ export function NowPlayingCard() {
         <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
       </View>
 
+      <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+        <Text style={styles.controlText}>Previous</Text>
+      </Pressable>
+
       {get('music.now-playing.is-playing') && (
         <Pressable
           onPress={() => player.pause()}
