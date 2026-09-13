@@ -14,7 +14,10 @@ const AUTO_SAVE_DELAY = 800;
 // first responder is emitted and bubbles as `onKeyDown` regardless. What this
 // does is claim the key so macOS stops handling it itself, which is what keeps
 // Cmd+P off the print dialog and Escape from beeping.
-const KEY_DOWN_EVENTS = [{ key: 'p', metaKey: true }, { key: 'Escape' }];
+const KEY_DOWN_EVENTS = [
+  { key: 'p', metaKey: true },
+  { key: 'Escape' }
+];
 
 export function CodePage({ activeSidebarItem }) {
   const [showTerminal, setShowTerminal] = useState(false);
