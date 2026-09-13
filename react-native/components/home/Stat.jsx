@@ -11,21 +11,13 @@ export function Stat({ value, label, attentionLevel = 'low' }) {
   const attentionStyle = {
     low: styles.lowContainer,
     medium: styles.mediumContainer,
-    high: styles.highContainer,
+    high: styles.highContainer
   };
 
   return (
-    <View
-      style={[
-        styles.content,
-        compact && styles.compact,
-        attentionStyle[attentionLevel],
-      ]}
-    >
+    <View style={[styles.content, compact && styles.compact, attentionStyle[attentionLevel]]}>
       <Text style={[styles.value]}>{value}</Text>
-      <Text style={[styles.label, compact && styles.compactLabel]}>
-        {label}
-      </Text>
+      <Text style={[styles.label, compact && styles.compactLabel]}>{label}</Text>
     </View>
   );
 }
