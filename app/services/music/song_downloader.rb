@@ -104,13 +104,6 @@ module Music
         YtDlp.download_attempts.each do |client_options|
           log = work_dir.join("yt-dlp.log").to_s
           client = client_options.last || "default"
-          TimedProcess.run(*options, *client_options, search,
-            env: env, chdir: work_dir.to_s, out: log, err: log,
-            timeout_seconds: DOWNLOAD_TIMEOUT_SECONDS)
-          if produced.file?
-            Rails.logger.info("[music] downloaded #{isrc} (#{client})")
-            break
-          end
 
           output = File.read(log)
           Rails.logger.warn("[music] #{isrc} attempt failed (#{client}): #{output.lines.last(3).join.strip}")
