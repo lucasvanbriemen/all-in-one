@@ -16,7 +16,7 @@ const AUTO_SAVE_DELAY = 800;
 // Cmd+P off the print dialog and Escape from beeping.
 const KEY_DOWN_EVENTS = [
   { key: 'p', metaKey: true },
-  {key: 'Escape'}
+  {key: 'Escape'},
 ];
 
 export function CodePage({ activeSidebarItem }) {
@@ -126,49 +126,22 @@ export function CodePage({ activeSidebarItem }) {
   );
 
   return (
-    <View
-      ref={page}
-      focusable
-      enableFocusRing={false}
-      style={[styles.editor]}
-      onKeyDown={onKeyDown}
-      keyDownEvents={KEY_DOWN_EVENTS}
-    >
+    <View ref={page} focusable enableFocusRing={false} style={[styles.editor]} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
       {activeSidebarItem == 'files' && (
-        <View
-          style={[
-            styles.fileTree,
-          ]}
-        >
-          <FileTree
-            currentFile={currentFile}
-            onOpenFile={openFile}
-            onSave={save}
-            projectRoot={projectRoot}
-            setProjectRoot={setProjectRoot}
-            openedFiles={openedFiles}
-            setOpenedFiles={setOpenedFiles}
-          />
+        <View style={styles.fileTree}>
+          <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
         </View>
       )}
 
       {activeSidebarItem == 'search' && (
-        <View
-          style={[
-            styles.fileTree,
-          ]}
-        >
+        <View style={styles.fileTree}>
           <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
         </View>
       )}
 
       <View style={styles.codeEditorContainer}>
         {openedFiles.length > 0 && (
-          <ScrollView
-            horizontal
-            style={styles.tabScroll}
-            contentContainerStyle={styles.openedFiles}
-          >
+          <ScrollView horizontal style={styles.tabScroll} contentContainerStyle={styles.openedFiles}>
             {openedFiles.map(file => (
               <View
                 key={file}
