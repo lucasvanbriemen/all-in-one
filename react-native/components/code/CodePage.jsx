@@ -126,14 +126,14 @@ export function CodePage({ activeSidebarItem }) {
   );
 
   return (
-    <View ref={page} focusable enableFocusRing={false} style={[styles.editor]} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
-      {activeSidebarItem == 'files' && (
+    <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
+      {activeSidebarItem == "files" && (
         <View style={styles.fileTree}>
           <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
         </View>
       )}
 
-      {activeSidebarItem == 'search' && (
+      {activeSidebarItem == "search" && (
         <View style={styles.fileTree}>
           <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
         </View>
@@ -144,9 +144,7 @@ export function CodePage({ activeSidebarItem }) {
           <View style={styles.openedFiles}>
             {openedFiles.map(file => (
               <View key={file} style={[ styles.openedFile, file === currentFile && styles.openedFileActive]}>
-                <Text onPress={() => openFile(file)} style={[styles.openedFileText, file === currentFile && styles.openedFileActiveText]}>
-                  {file.split('/').pop()}
-                </Text>
+                <Text onPress={() => openFile(file)} style={[styles.openedFileText, file === currentFile && styles.openedFileActiveText]}>{file.split('/').pop()}</Text>
               </View>
             ))}
           </View>
@@ -154,7 +152,13 @@ export function CodePage({ activeSidebarItem }) {
 
         {projectRoot && (
           <>
-            <CodeEditor value={source} path={currentFile} onChange={setSource} onSave={save} onSearch={() => setSearching(true)} />
+            <CodeEditor
+              value={source}
+              path={currentFile}
+              onChange={setSource}
+              onSave={save}
+              onSearch={() => setSearching(true)}
+            />
 
             <View style={styles.terminal}>
               <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
