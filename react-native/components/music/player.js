@@ -21,13 +21,20 @@ export const player = {
 
     const songToPlay = songsForQueue[atIndex]; 
 
-    // Pull the song to the front of the queue
     songsForQueue.splice(atIndex, 1);
-    songsForQueue.unshift(songToPlay);
 
     set('music.queue', songsForQueue);
     if (songsForQueue.length > 0) {
       await player.play(songToPlay, set);
+    }
+  },
+
+  async next(set, get) {
+    const queue = get('music.queue');
+    if (queue && queue.length > 0) {
+      const nextSong = queue.shift();
+      set('music.queue', queue);
+      await player.play(nextSong, set);
     }
   },
 
@@ -51,6 +58,12 @@ export const player = {
       }
 
       const queue = get('music.queue');
+
+      const justFinished = get('music.now-playing');
+      const lastSongs = get('music.last-songs') || [];
+      lastSongs.push(justFinished);
+      set('music.last-songs', lastSongs);
+
       if (queue && queue.length > 0) {
         console.log('Queue before playing next song:', queue);
         set('music.now-playing', queue[0]);

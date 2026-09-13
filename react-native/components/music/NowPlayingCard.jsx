@@ -8,7 +8,7 @@ import {useAppContext} from '../../context/AppContext';
 
 export function NowPlayingCard() {
   const styles = useThemedStyles(createStyles);
-  const {get} = useAppContext();
+  const {get, set} = useAppContext();
 
   return (
     <View style={styles.content}>
@@ -34,6 +34,10 @@ export function NowPlayingCard() {
           <Icon name="play" size={24} color={styles.controlText.color} />
         </Pressable>
       )}
+
+      <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+        <Text style={styles.controlText}>Next</Text>
+      </Pressable>
     </View>
   );
 }
