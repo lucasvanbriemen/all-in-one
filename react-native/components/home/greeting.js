@@ -2,34 +2,34 @@
 // Templates reference other rules with {slot} and expand recursively.
 const RULES = {
   greeting: [
-    [5, '{opener}{name}{punct}'],
-    [3, '{opener}{name}{punct} {followup}'],
-    [1, '{interjection}, {opener}{name}{punct}', ['casual']],
+    '{opener} {name}{punct}',
+    '{opener} {name}{punct} {followup}',
+    '{interjection}, {opener} {name}{punct}',
   ],
   opener: [
-    [4, 'good {daypart}'],
-    [2, 'a very good {daypart} to you', ['formal']],
-    [1, 'top of the {daypart}', ['casual']],
-    [4, 'hey', ['casual']],
-    [3, 'whats cooking?', ['casual']],
-    [3, 'hi', ['casual']],
-    [3, 'hello'],
-    [1, 'howdy', ['casual']],
-    [1, 'greetings', ['formal']],
+    'good {daypart}',
+    'a very good {daypart} to you',
+    'top of the {daypart}',
+    'hey',
+    'whats cooking?',
+    'hi',
+    'hello',
+    'howdy',
+    'greetings',
   ],
   interjection: [
-    [1, 'oh hey'],
-    [1, 'well well'],
-    [1, 'ah'],
+    'oh hey',
+    'well well',
+    'ah',
   ],
   followup: [
-    [3, 'how are you?'],
-    [2, 'hope you slept well.', ['morning']],
-    [2, "how's your day going?", ['afternoon']],
-    [2, "late at work?", ['night']],
-    [2, 'long day?', ['evening']],
-    [1, 'good to see you.'],
-    [1, "what's new?", ['casual']],
+    'how are you?',
+    'hope you slept well.', ['morning'],
+    "how's your day going?", ['afternoon'],
+    "late at work?", ['night'],
+    'long day?', ['evening'],
+    'good to see you.',
+    "what's new?",
   ],
 };
 
@@ -69,26 +69,45 @@ function capitalise(text) {
 }
 
 export const greeting = {
-  generateGreeting() {
-    const NAME_OPTIONS = ["Lucas"];
-    const NAME = NAME_OPTIONS[Math.floor(Math.random() * NAME_OPTIONS.length)];
+  formatGreetingItem(greetingFormat, opener, interjection, followup, name, daypart, punct) {
+    let text = greetingFormat
+      .replace('{opener}', opener)
+      .replace('{interjection}', interjection)
+      .replace('{followup}', followup);
 
-    const resolvedRegister = (Math.random() < 0.5 ? 'casual' : 'formal');
-    const daypart = dayPart(new Date().getHours());
-    const tags = new Set([resolvedRegister, daypart]);
+    text = text.replace('{name}', name).replace('{daypart}', daypart).replace('{punct}', punct);
 
-    const useName = Math.random() < 0.5;
-    const literals = {
-      daypart,
-      name: NAME && useName ? ` ${NAME}` : '',
-      punct: Math.random() < 0.6 ? '!' : '.',
-    };
-
-    let text = '';
-    for (let attempt = 0; attempt < 10; attempt += 1) {
-      text = capitalise(expand(pick('greeting', tags), tags, literals));
-    }
+    text = capitalise(text);
 
     return text;
+  },
+
+  generateGreeting() {
+    const NAME_OPTIONS = ["Lucas", "Lukaas"];
+    const name = NAME_OPTIONS[Math.floor(Math.random() * NAME_OPTIONS.length)];
+
+    const greetingFormat = RULES['greeting'][Math.floor(Math.random() * RULES['greeting'].length)];
+    const opener = RULES['opener'][Math.floor(Math.random() * RULES['opener'].length)];
+    const interjection = RULES['interjection'][Math.floor(Math.random() * RULES['interjection'].length)];
+    const followup = RULES['followup'][Math.floor(Math.random() * RULES['followup'].length)];
+    const daypart = dayPart(new Date().getHours());
+
+    // const resolvedRegister = (Math.random() < 0.5 ? 'casual' : 'formal');
+    // const daypart = dayPart(new Date().getHours());
+    // const tags = new Set([resolvedRegister, daypart]);
+
+    // const useName = Math.random() < 0.5;
+    // const literals = {
+    //   daypart,
+    //   name: NAME && useName ? ` ${NAME}` : '',
+    //   punct: Math.random() < 0.6 ? '!' : '.',
+    // };
+
+    // let text = '';
+    // for (let attempt = 0; attempt < 10; attempt += 1) {
+    //   text = capitalise(expand(pick('greeting', tags), tags, literals));
+    // }
+
+    return this.formatGreetingItem(greetingFormat, opener, interjection, followup, name, daypart, Math.random() < 0.6 ? '!' : '.');
   },
 };
