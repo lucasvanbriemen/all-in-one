@@ -141,55 +141,30 @@ export function CodePage({ activeSidebarItem }) {
 
       <View style={styles.codeEditorContainer}>
         {openedFiles.length > 0 && (
-          <ScrollView horizontal style={styles.tabScroll} contentContainerStyle={styles.openedFiles}>
+          <View style={styles.openedFiles}>
             {openedFiles.map(file => (
-              <View
-                key={file}
-                style={[
-                  styles.openedFile,
-                  file === currentFile && styles.openedFileActive,
-                ]}
-              >
-                <Text
-                  onPress={() => openFile(file)}
-                  style={[
-                    styles.openedFileText,
-                    file === currentFile && styles.openedFileActiveText,
-                  ]}
-                >
+              <View key={file} style={[ styles.openedFile, file === currentFile && styles.openedFileActive]}>
+                <Text onPress={() => openFile(file)} style={[styles.openedFileText, file === currentFile && styles.openedFileActiveText]}>
                   {file.split('/').pop()}
                 </Text>
               </View>
             ))}
-          </ScrollView>
+          </View>
         )}
 
         {projectRoot && (
           <>
-            <CodeEditor
-              value={source}
-              path={currentFile}
-              onChange={setSource}
-              onSave={save}
-              onSearch={() => setSearching(true)}
-            />
+            <CodeEditor value={source} path={currentFile} onChange={setSource} onSave={save} onSearch={() => setSearching(true)} />
 
-            <View
-              style={[
-                styles.terminal,
-              ]}
-            >
-              <Terminal
-                projectRoot={projectRoot}
-                onSearch={() => setSearching(true)}
-              />
+            <View style={styles.terminal}>
+              <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
             </View>
           </>
         )}
 
         {!projectRoot && (
           <View style={styles.noProjectRoot}>
-            <Text style={styles.noProjectRootText}>No project opened</Text>
+            <Text style={styles.noProjectRootText}>No project opend</Text>
           </View>
         )}
       </View>
@@ -234,7 +209,7 @@ const createStyles = colors => StyleSheet.create({
     // The emulator inside draws to the edges, so the panel's own rounding has
     // to clip it — otherwise the scrollback runs out over the corners.
     overflow: 'hidden',
-    ...glass(colors, {variant: 'subtle'}),
+    ...glass(colors, {variant: 'subtle'})
   },
   openedFileText: {
     color: colors.onSurface,
