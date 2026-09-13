@@ -126,8 +126,7 @@ const GLASS_VARIANTS = {
     tint: 0.82,
     border: 0.9,
     highlight: 0.5,
-    useToneForBorder: true,
-    raised: true,
+    useToneForBorder: true
   },
 };
 
@@ -161,16 +160,6 @@ export function glass(colors, options = {}) {
     borderColor: withAlpha(colors[borderTone], border),
     borderTopColor: withAlpha(highlightColor, highlight),
   };
-
-  if (recipe.raised) {
-    Object.assign(style, {
-      shadowColor: colors[tone],
-      shadowOffset: {width: 0, height: 3},
-      shadowOpacity: 0.28,
-      shadowRadius: 8,
-      elevation: 4,
-    });
-  }
 
   return style;
 }
