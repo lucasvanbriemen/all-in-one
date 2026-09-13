@@ -19,34 +19,40 @@ export function NowPlayingCard() {
         <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
       </View>
 
-      <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-        <Text style={styles.controlText}>Previous</Text>
-      </Pressable>
-
-      {get('music.now-playing.is-playing') && (
-        <Pressable
-          onPress={() => player.pause()}
-          style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-          <Icon name="pause" size={24} color={styles.controlText.color} />
+      <View style={styles.controlsContainer}>
+        <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+          <Text style={styles.controlText}>Previous</Text>
         </Pressable>
-      )}
 
-      {get('music.now-playing.is-playing') === false && (
-        <Pressable
-          onPress={() => player.resume()}
-          style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-          <Icon name="play" size={24} color={styles.controlText.color} />
+        {get('music.now-playing.is-playing') && (
+          <Pressable
+            onPress={() => player.pause()}
+            style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+            <Icon name="pause" size={24} color={styles.controlText.color} />
+          </Pressable>
+        )}
+
+        {get('music.now-playing.is-playing') === false && (
+          <Pressable
+            onPress={() => player.resume()}
+            style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+            <Icon name="play" size={24} color={styles.controlText.color} />
+          </Pressable>
+        )}
+
+        <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+          <Text style={styles.controlText}>Next</Text>
         </Pressable>
-      )}
-
-      <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-        <Text style={styles.controlText}>Next</Text>
-      </Pressable>
+      </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  controlsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+  },
   content: {
     padding: 16,
     ...glass(colors),
