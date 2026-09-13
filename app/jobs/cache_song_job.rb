@@ -5,7 +5,5 @@ class CacheSongJob < ApplicationJob
 
   def perform(isrc)
     Music::SongCache.ensure_cached(isrc)
-  rescue Music::DeezerClient::Error => error
-    Rails.logger.warn("[music] not caching #{isrc}: #{error.message}")
   end
 end
