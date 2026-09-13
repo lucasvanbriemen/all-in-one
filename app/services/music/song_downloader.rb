@@ -29,7 +29,7 @@ module Music
         with_lock(isrc) do
           next true if downloaded?(isrc)
 
-          details = DeezerClient.track_details(isrc)
+          details = DeezerClient.new.track_details(isrc)
           download(isrc, details)
           download(isrc, details, match_duration: false) unless downloaded?(isrc)
           next false unless downloaded?(isrc)
@@ -69,7 +69,7 @@ module Music
 
         options = [
           tool("yt-dlp"),
-          *YtDlp.media_options,
+          *YtDlp.new.media_options,
           "--no-playlist",
           "--format", "bestaudio/best",
           "--concurrent-fragments", "4",
@@ -91,12 +91,13 @@ module Music
         # Once per player client, stopping at the first that produces the file.
         # The exit status is ignored: yt-dlp exits non-zero when --max-downloads
         # stops it, having produced exactly the file that was asked for.
-        YtDlp.download_attempts.each do |client_options|
+        YtDlp.new.download_attempts.each do |client_options|
           log = work_dir.join("yt-dlp.log").to_s
           client = client_options.last || "default"
           TimedProcess.run(*options, *client_options, search,
             env: env, chdir: work_dir.to_s, out: log, err: log,
             timeout_seconds: DOWNLOAD_TIMEOUT_SECONDS)
+          break if produced.file?
 
           output = File.read(log)
           Rails.logger.warn("[music] #{isrc} attempt failed (#{client}): #{output.lines.last(3).join.strip}")
