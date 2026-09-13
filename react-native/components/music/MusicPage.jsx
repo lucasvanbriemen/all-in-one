@@ -1,17 +1,15 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {NowPlayingBanner} from './NowPlayingBanner';
 import {Song} from './Song';
 import {api} from '../api';
-import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
 
   const [likedSongs, setLikedSongs] = useState([]);
-  const { get } = useAppContext();
 
   useEffect(() => {
     api.get('/music').then(response => {
