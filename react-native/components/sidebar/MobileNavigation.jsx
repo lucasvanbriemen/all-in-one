@@ -24,7 +24,7 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
   }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
 
   return (
-    <View style={[styles.navigation]}>
+    <View style={[styles.navigation, NavigationBlur != null && styles.blurredNavigation]}>
       {NavigationBlur != null && (
         <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />
       )}
@@ -73,6 +73,11 @@ const createStyles = colors => StyleSheet.create({
     gap: 6,
   },
   sections: { gap: 6 },
+  blurredNavigation: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    overflow: 'hidden',
+  },
   section: {
     minHeight: 44,
     justifyContent: 'center',
