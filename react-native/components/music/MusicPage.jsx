@@ -32,21 +32,13 @@ export function MusicPage({ activeSidebarItem }) {
       ListHeaderComponent={
         <>
           <NowPlayingBanner />
-          <Pressable
-            accessibilityRole="button"
-            style={styles.playAll}
-            onPress={() => player.playPlaylist(likedSongs, set)}
-          >
-            <Text style={styles.playAllText}>Play All</Text>
+          <Pressable onPress={() => player.playPlaylist(likedSongs, set)}>
+            <Text>Play All</Text>
           </Pressable>
         </>
       }
       renderItem={({ item: song, index }) => (
-        <Song
-          song={song}
-          isEven={index % 2 === 0}
-          onClick={() => player.playPlaylist(likedSongs, set, index)}
-        />
+        <Song song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
       )}
       contentContainerStyle={[styles.listContent, scrollLayout.contentContainerStyle]}
     />
@@ -56,8 +48,6 @@ export function MusicPage({ activeSidebarItem }) {
 const createStyles = colors => StyleSheet.create({
   content: { flex: 1 },
   listContent: { paddingBottom: 16 },
-  playAll: { minHeight: 44, justifyContent: 'center' },
-  playAllText: { color: colors.primary, fontSize: 16, fontWeight: '600' },
   statsContainer: {
     flexDirection: 'row',
     gap: 16,
