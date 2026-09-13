@@ -58,12 +58,7 @@ module Music
           artist: details.dig("artist", "name"),
           image_url: details.dig("album", "cover_medium") || Song::PLACEHOLDER_IMAGE,
           album: details.dig("album", "title"),
-          duration: details["duration"],
-          genre: genre_for(details.dig("album", "id")),
-          enriched_at: Time.current,
-          bpm: positive_or_nil(details["bpm"])&.to_f,
-          release_year: year_from(details["release_date"]),
-          deezer_rank: positive_or_nil(details["rank"])&.to_i
+          duration: details["duration"]
         )
       end
 
