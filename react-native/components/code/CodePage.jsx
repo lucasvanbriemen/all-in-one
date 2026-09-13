@@ -16,12 +16,10 @@ const AUTO_SAVE_DELAY = 800;
 // Cmd+P off the print dialog and Escape from beeping.
 const KEY_DOWN_EVENTS = [
   { key: 'p', metaKey: true },
-  { key: 'Escape' }
+  {key: 'Escape'}
 ];
 
 export function CodePage({ activeSidebarItem }) {
-  const [showTerminal, setShowTerminal] = useState(false);
-  const [showFiles, setShowFiles] = useState(true);
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
@@ -29,10 +27,6 @@ export function CodePage({ activeSidebarItem }) {
   const [projectRoot, setProjectRoot] = useState(null);
   const [searching, setSearching] = useState(false);
   const page = useRef(null);
-
-  useEffect(() => {
-    setShowFiles(true);
-  }, [activeSidebarItem]);
 
   const save = useCallback(
     async (contents = source) => {
@@ -60,7 +54,6 @@ export function CodePage({ activeSidebarItem }) {
         setOpenedFiles(currentOpenedFiles);
       }
 
-      setShowFiles(false);
       setCurrentFile(path);
 
       setSource(contents);
@@ -231,69 +224,68 @@ export function CodePage({ activeSidebarItem }) {
   );
 }
 
-const createStyles = colors =>
-  StyleSheet.create({
-    hidden: { display: 'none' },
-    mobileTools: { flexDirection: 'row', gap: 16 },
-    mobileTool: { minHeight: 44, justifyContent: 'center' },
-    toolText: { color: colors.primary },
-    tabScroll: { flexGrow: 0, flexShrink: 0 },
-    editor: {
-      flexDirection: 'row',
-      position: 'relative',
-      gap: 16,
-      flex: 1,
-    },
-    codeEditorContainer: {
-      minHeight: 0,
-      minWidth: 0,
-      flex: 5,
-      paddingTop: 16,
-      paddingBottom: 16,
-      borderRadius: 16,
-      gap: 16,
-    },
-    openedFiles: {
-      flexDirection: 'row',
-      gap: 8,
-    },
-    openedFile: {
-      padding: 8,
-      ...glass(colors, { variant: 'subtle' }),
-      borderRadius: 90,
-      opacity: 0.75,
-    },
-    openedFileActive: {
-      ...glass(colors, { variant: 'accent' }),
-      opacity: 1,
-    },
-    fileTree: {
-      flex: 1,
-    },
-    terminal: {
-      borderRadius: 16,
-      height: 300,
-      // The emulator inside draws to the edges, so the panel's own rounding has
-      // to clip it — otherwise the scrollback runs out over the corners.
-      overflow: 'hidden',
-      ...glass(colors, { variant: 'subtle' }),
-    },
-    openedFileText: {
-      color: colors.onSurface,
-    },
-    openedFileActiveText: {
-      color: colors.onPrimary,
-    },
-    noProjectRoot: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    noProjectRootText: {
-      fontSize: 32,
-      color: colors.onSurfaceVariant,
-      textAlign: 'center',
-      fontWeight: 'bold',
-      opacity: 0.75,
-    },
-  });
+const createStyles = colors => StyleSheet.create({
+  hidden: { display: 'none' },
+  mobileTools: { flexDirection: 'row', gap: 16 },
+  mobileTool: { minHeight: 44, justifyContent: 'center' },
+  toolText: { color: colors.primary },
+  tabScroll: { flexGrow: 0, flexShrink: 0 },
+  editor: {
+    flexDirection: 'row',
+    position: 'relative',
+    gap: 16,
+    flex: 1,
+  },
+  codeEditorContainer: {
+    minHeight: 0,
+    minWidth: 0,
+    flex: 5,
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderRadius: 16,
+    gap: 16,
+  },
+  openedFiles: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  openedFile: {
+    padding: 8,
+    ...glass(colors, { variant: 'subtle' }),
+    borderRadius: 90,
+    opacity: 0.75,
+  },
+  openedFileActive: {
+    ...glass(colors, { variant: 'accent' }),
+    opacity: 1,
+  },
+  fileTree: {
+    flex: 1,
+  },
+  terminal: {
+    borderRadius: 16,
+    height: 300,
+    // The emulator inside draws to the edges, so the panel's own rounding has
+    // to clip it — otherwise the scrollback runs out over the corners.
+    overflow: 'hidden',
+    ...glass(colors, {variant: 'subtle'}),
+  },
+  openedFileText: {
+    color: colors.onSurface,
+  },
+  openedFileActiveText: {
+    color: colors.onPrimary,
+  },
+  noProjectRoot: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noProjectRootText: {
+    fontSize: 32,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    opacity: 0.75,
+  },
+});

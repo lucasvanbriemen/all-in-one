@@ -10,7 +10,6 @@ const title = name => name.charAt(0).toUpperCase() + name.slice(1);
 export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarItem, setActiveSidebarItem}) {
   const styles = useThemedStyles(createStyles);
   const [config, setConfig] = useState({});
-
   useEffect(() => {
     api.get('/meta_data').then(data => {
       setConfig(data.config ?? {});
