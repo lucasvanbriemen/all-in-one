@@ -1,15 +1,14 @@
-import {useScrollLayout} from '../ScrollLayout';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { useCompactLayout } from '../useCompactLayout';
-
-import { Notification } from './Notification';
-import { NowPlayingCard } from '../music/NowPlayingCard';
-import { Stat } from './Stat';
-import { api } from '../api';
-import { greeting } from './greeting';
-import { useThemedStyles } from '../theme';
+import {Notification} from './Notification';
+import {NowPlayingCard} from '../music/NowPlayingCard';
+import {Stat} from './Stat';
+import {api} from '../api';
+import {greeting} from './greeting';
+import {useCompactLayout} from '../useCompactLayout';
+import {useScrollLayout} from '../ScrollLayout';
+import {useThemedStyles} from '../theme';
 
 export function HomePage({ activeSidebarItem }) {
   const scrollLayout = useScrollLayout();
