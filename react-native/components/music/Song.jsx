@@ -12,14 +12,15 @@ export function Song({song, isEven}) {
 
   async function playSong() {
     const url = `${MP3_URL}${song.isrc}`;
+    // Set before play(): the native player emits playbackStateChanged as soon
+    // as it starts, and that write must not be overwritten by this one.
+    set('music.now-playing', song);
     await NativeModules.AudioPlayer.play(url, {
       title: song.title,
       artist: song.artist,
       album: song.album,
       artwork: song.image_url,
     }, {Authorization: api.defaultHeaders.Authorization});
-
-    set('music.now-playing', song);
   }
   return (
     <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong()}>

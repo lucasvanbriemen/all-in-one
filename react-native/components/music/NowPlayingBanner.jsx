@@ -1,5 +1,5 @@
-import {Image, NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Image, NativeEventEmitter, NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {useAppContext} from '../../context/AppContext';
@@ -8,14 +8,20 @@ export function NowPlayingBanner() {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
 
-  async function pause() {
-    await NativeModules.AudioPlayer.pause();
-    set('music.now-playing.is-playing', false);
+  useEffect(() => {
+    const emitter = new NativeEventEmitter(NativeModules.AudioPlayer);
+    const sub = emitter.addListener('playbackStateChanged', ({isPlaying}) => {
+      set('music.now-playing.is-playing', isPlaying);
+    });
+    return () => sub.remove();
+  }, [set]);
+
+  function pause() {
+    NativeModules.AudioPlayer.pause();
   }
 
-  async function resume() {
-    await NativeModules.AudioPlayer.resume();
-    set('music.now-playing.is-playing', true);
+  function resume() {
+    NativeModules.AudioPlayer.resume();
   }
 
   return (

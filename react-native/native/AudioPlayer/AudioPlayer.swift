@@ -24,9 +24,25 @@ final class AudioPlayer: RCTEventEmitter {
     private var endObserver: NSObjectProtocol?
     private var metadata: [String: Any] = [:]
     private var artwork: MPMediaItemArtwork?
+    private var rateObserver: NSKeyValueObservation?
     private var commandsRegistered = false
+    private var hasListeners = false
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
+
+    static let playbackStateEvent = "playbackStateChanged"
+
+    @objc override func supportedEvents() -> [String]! { [Self.playbackStateEvent] }
+    @objc override func startObserving() { hasListeners = true }
+    @objc override func stopObserving() { hasListeners = false }
+
+    private func emitPlaybackState(ended: Bool = false) {
+        guard hasListeners else { return }
+        sendEvent(withName: Self.playbackStateEvent, body: [
+            "isPlaying": isPlaying,
+            "ended": ended,
+        ])
+    }
 
     // MARK: - JS API
 
@@ -62,6 +78,19 @@ final class AudioPlayer: RCTEventEmitter {
                 } else if item.status == .readyToPlay {
                     self.updateNowPlaying()
                 }
+            }
+
+            // Fires for every play/pause regardless of origin: JS, Control
+            // Center, headphone buttons, interruptions (phone call), etc.
+            self.rateObserver = player.observe(\.timeControlStatus, options: [.new]) { [weak self] _, _ in
+                self?.emitPlaybackState()
+            }
+
+            self.endObserver = NotificationCenter.default.addObserver(
+                forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main
+            ) { [weak self] _ in
+                self?.updateNowPlaying()
+                self?.emitPlaybackState(ended: true)
             }
 
             self.timeObserver = player.addPeriodicTimeObserver(
@@ -195,6 +224,7 @@ final class AudioPlayer: RCTEventEmitter {
         if let timeObserver, let player { player.removeTimeObserver(timeObserver) }
         timeObserver = nil
         statusObserver = nil
+        rateObserver = nil
         if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
         endObserver = nil
         player?.pause()
