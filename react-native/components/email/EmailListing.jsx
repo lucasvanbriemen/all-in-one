@@ -1,3 +1,4 @@
+import {useScrollLayout} from '../ScrollLayout';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
@@ -6,6 +7,7 @@ import {api} from '../api';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
+  const scrollLayout = useScrollLayout();
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
@@ -20,7 +22,7 @@ export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) 
 
   return (
     <View style={styles.content}>
-      <ScrollView>
+      <ScrollView {...scrollLayout}>
         {items.map((item, index) => (
           <React.Fragment key={item.id}>
             {items[index - 1]?.date !== item.date && (

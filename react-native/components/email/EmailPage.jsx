@@ -1,11 +1,16 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {useScrollLayout} from '../ScrollLayout';
+import React, { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import {EmailContent} from './EmailContent';
-import {EmailListing} from './EmailListing';
-import {useThemedStyles} from '../theme';
+import { useCompactLayout } from '../useCompactLayout';
 
-export function EmailPage({activeSidebarItem}) {
+import { EmailContent } from './EmailContent';
+import { EmailListing } from './EmailListing';
+import { useThemedStyles } from '../theme';
+
+export function EmailPage({ activeSidebarItem }) {
+  const scrollLayout = useScrollLayout();
+  const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   // `selection` is the sidebar's mailbox path; which email is open within that
   // mailbox is local to this page.
@@ -13,26 +18,45 @@ export function EmailPage({activeSidebarItem}) {
 
   return (
     <View style={styles.content}>
-      <View style={styles.listing}>
-        <EmailListing activeSidebarItem={activeSidebarItem} selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
+      <View style={[styles.listing, compact && selectedEmail && styles.hidden]}>
+        <EmailListing
+          activeSidebarItem={activeSidebarItem}
+          selectedEmail={selectedEmail}
+          onSelectEmail={setSelectedEmail}
+        />
       </View>
-      <View style={styles.body}>
-        <EmailContent email={selectedEmail} />
-      </View>
+      {(!compact || selectedEmail) && (
+        <View style={[styles.body, compact && scrollLayout.contentContainerStyle]}>
+          {compact && (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setSelectedEmail(null)}
+              style={styles.back}
+            >
+              <Text style={styles.backText}>‹ Back to inbox</Text>
+            </Pressable>
+          )}
+          <EmailContent email={selectedEmail} />
+        </View>
+      )}
     </View>
   );
 }
 
-const createStyles = colors => StyleSheet.create({
-  content: {
-    flex: 1,
-    flexDirection: 'row',
-    gap: 32,
-  },
-  listing: {
-    flex: 1,
-  },
-  body: {
-    flex: 2,
-  },
-});
+const createStyles = colors =>
+  StyleSheet.create({
+    hidden: { display: 'none' },
+    back: { minHeight: 44, justifyContent: 'center' },
+    backText: { color: colors.primary, fontSize: 16 },
+    content: {
+      flex: 1,
+      flexDirection: 'row',
+      gap: 32,
+    },
+    listing: {
+      flex: 1,
+    },
+    body: {
+      flex: 2,
+    },
+  });

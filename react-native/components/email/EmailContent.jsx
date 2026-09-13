@@ -1,11 +1,11 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { glass, useThemedStyles } from '../theme';
 
-import {EmailBody} from './EmailBody';
-import {api} from '../api';
+import { EmailBody } from './EmailBody';
+import { api } from '../api';
 
-export function EmailContent({email}) {
+export function EmailContent({ email }) {
   const styles = useThemedStyles(createStyles);
   const [detail, setDetail] = useState(null);
   const emailId = email?.id;
@@ -15,7 +15,7 @@ export function EmailContent({email}) {
 
     api.get('/emails/' + emailId).then(data => {
       setDetail(data);
-    })
+    });
   }, [emailId]);
 
   if (!email) {
@@ -29,7 +29,10 @@ export function EmailContent({email}) {
   return (
     <View style={styles.content}>
       <View style={styles.header}>
-        <Image source={{uri: email.sender_image_url}} style={styles.senderImage} />
+        <Image
+          source={{ uri: email.sender_image_url }}
+          style={styles.senderImage}
+        />
         <View style={styles.headerInfo}>
           <Text style={styles.subject}>{email.subject}</Text>
           {detail && (
@@ -52,61 +55,64 @@ export function EmailContent({email}) {
   );
 }
 
-const createStyles = colors => StyleSheet.create({
-  content: {
-    flex: 1,
-    marginTop: 16,
-    marginBottom: 16,
-    gap: 16,
-  },
-  placeholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderText: {
-    fontSize: 32,
-    fontWeight: '500',
-    opacity: 0.5,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: 16,
-    borderRadius: 16,
-    ...glass(colors, {variant: 'subtle'}),
-  },
-  senderImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  headerInfo: {
-    flex: 1,
-  },
-  subject: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.onSurface,
-  },
-  meta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  metaText: {
-    fontSize: 13,
-    color: colors.onSurfaceVariant,
-  },
-  metaSeparator: {
-    fontSize: 13,
-    color: colors.onSurfaceVariant,
-    marginHorizontal: 6,
-  },
-  to: {
-    fontSize: 13,
-    color: colors.onSurfaceVariant,
-    marginTop: 2,
-  },
-});
+const createStyles = colors =>
+  StyleSheet.create({
+    content: {
+      flex: 1,
+      marginTop: 16,
+      marginBottom: 16,
+      gap: 16,
+    },
+    placeholder: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    placeholderText: {
+      fontSize: 32,
+      fontWeight: '500',
+      opacity: 0.5,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      padding: 16,
+      borderRadius: 16,
+      ...glass(colors, { variant: 'subtle' }),
+    },
+    senderImage: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: 12,
+    },
+    headerInfo: {
+      flex: 1,
+    },
+    subject: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: colors.onSurface,
+    },
+    meta: {
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 4,
+    },
+    metaText: {
+      flexShrink: 1,
+      fontSize: 13,
+      color: colors.onSurfaceVariant,
+    },
+    metaSeparator: {
+      fontSize: 13,
+      color: colors.onSurfaceVariant,
+      marginHorizontal: 6,
+    },
+    to: {
+      fontSize: 13,
+      color: colors.onSurfaceVariant,
+      marginTop: 2,
+    },
+  });

@@ -1,16 +1,20 @@
 import { AppProvider, useAppContext } from './context/AppContext';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {ScrollLayoutContext} from './components/ScrollLayout';
+import { MobileNavigation } from './components/sidebar/MobileNavigation';
+import { useCompactLayout } from './components/useCompactLayout';
 
-import {CodePage} from './components/code/CodePage';
-import {EmailPage} from './components/email/EmailPage';
-import {HomePage} from './components/home/HomePage';
-import {MusicPage} from './components/music/MusicPage';
-import {Sidebar} from './components/sidebar/Sidebar';
-import {TransparentWindow} from './components/TransparentWindow';
-import {glass} from './components/theme';
-import {player} from './components/music/player';
-import {useThemedStyles} from './components/theme';
+import { CodePage } from './components/code/CodePage';
+import { EmailPage } from './components/email/EmailPage';
+import { HomePage } from './components/home/HomePage';
+import { MusicPage } from './components/music/MusicPage';
+import { Sidebar } from './components/sidebar/Sidebar';
+import { TransparentWindow } from './components/TransparentWindow';
+import { glass } from './components/theme';
+import { player } from './components/music/player';
+import { useThemedStyles } from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
 // window buttons for free. React Native has no such inset on macOS, so the
@@ -25,55 +29,112 @@ const APPLICATIONS = {
 };
 
 export default function App() {
+  const Root = Platform.OS === 'ios' ? SafeAreaProvider : React.Fragment;
   return (
-    <AppProvider>
-      <PlayerBridge />
-      <AppShell />
-    </AppProvider>
+    <Root>
+      <AppProvider>
+        <PlayerBridge />
+        {Platform.OS === 'ios' ? <IOSAppShell /> : <AppShell />}
+      </AppProvider>
+    </Root>
   );
 }
 
 // Keeps the native audio player's state in the app store for as long as the
 // app is mounted, independent of which page is showing.
 function PlayerBridge() {
-  const {set, get} = useAppContext();
+  const { set, get } = useAppContext();
   useEffect(() => player.subscribe(set, get), [set, get]);
   return null;
 }
 
-function AppShell({children}) {
-  const [appToRender, setAppToRender] = useState(() => "home");
+function IOSAppShell() {
+  const insets = useSafeAreaInsets();
+  return <AppShell insets={insets} />;
+}
+
+function AppShell({insets}) {
+  const [navigationHeight, setNavigationHeight] = useState(60);
+  const [appToRender, setAppToRender] = useState(() => 'home');
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender];
+  const compact = useCompactLayout();
+  const edgeToEdge = Platform.OS === 'ios' && compact;
+  const Container = Platform.OS === 'ios' && !edgeToEdge ? SafeAreaView : View;
+  const scrollInsets = edgeToEdge ? {...insets, bottom: insets.bottom + navigationHeight + 8} : null;
 
   return (
     <TransparentWindow>
-      <View style={styles.appWrapper}>
-       <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
+      <Container
+        style={[
+          styles.appWrapper,
+          Platform.OS !== 'macos' && styles.noTitlebar,
+          compact && styles.compactWrapper,
+          Platform.OS === 'macos' && styles.titlebar,
+          edgeToEdge && styles.edgeWrapper,
+        ]}
+      >
+        {!compact && (
+          <Sidebar
+            activeSidebarItem={activeSidebarItem}
+            setActiveSidebarItem={setActiveSidebarItem}
+            currentlyActive={appToRender}
+            setActiveApp={setAppToRender}
+          />
+        )}
 
-        <View style={styles.content}>
+        <ScrollLayoutContext.Provider value={scrollInsets}>
+        <View style={[styles.content, compact && styles.compactContent, edgeToEdge && styles.edgeContent]}>
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
-      </View>
+        </ScrollLayoutContext.Provider>
+        {compact && (
+          <View
+            pointerEvents="box-none"
+            onLayout={event => setNavigationHeight(event.nativeEvent.layout.height)}
+            style={edgeToEdge && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}
+          >
+          <MobileNavigation
+            currentlyActive={appToRender}
+            setActiveApp={setAppToRender}
+            activeSidebarItem={activeSidebarItem}
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+          </View>
+        )}
+      </Container>
     </TransparentWindow>
   );
 }
 
-const createStyles = colors => StyleSheet.create({
-  appWrapper: {
-    flex: 1,
-    padding: 16,
-    gap: 16,
-    flexDirection: 'row',
-    paddingTop: TITLEBAR_INSET,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-    paddingBottom: 0,
-    paddingTop: 0,
-    borderRadius: 16,
-    ...glass(colors, {variant: 'subtle'}),
-  },
-});
+const createStyles = colors =>
+  StyleSheet.create({
+    appWrapper: {
+      flex: 1,
+      padding: 16,
+      gap: 16,
+      flexDirection: 'row',
+      paddingTop: TITLEBAR_INSET,
+    },
+    titlebar: { paddingTop: TITLEBAR_INSET },
+    edgeWrapper: {padding: 0, paddingTop: 0, gap: 0},
+    edgeContent: {padding: 0, paddingHorizontal: 0, borderRadius: 0},
+    noTitlebar: { paddingTop: 12 },
+    compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
+    compactContent: {
+      paddingHorizontal: 12,
+      minHeight: 0,
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+    },
+    content: {
+      minWidth: 0,
+      flex: 1,
+      padding: 16,
+      paddingBottom: 0,
+      paddingTop: 0,
+      borderRadius: 16,
+      ...glass(colors, { variant: 'subtle' }),
+    },
+  });

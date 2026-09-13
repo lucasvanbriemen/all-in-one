@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 import MediaPlayer
+import React
 
 #if canImport(UIKit)
 import UIKit

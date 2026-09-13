@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
+import {useTheme, useThemedStyles} from '../theme';
 
 /**
  * Renders an email's HTML in a web view.
@@ -11,10 +12,20 @@ import {WebView} from 'react-native-webview';
  * frame and a sandboxed one.
  */
 export function EmailBody({detail}) {
+  const colors = useTheme();
+  const styles = useThemedStyles(createStyles);
+  // Supply defaults before the message's own styles so authored email colors
+  // keep their intended contrast, while unstyled messages match the app.
+  const defaults = `<style>html, body { background-color: ${colors.surfaceAt1}; color: ${colors.onSurface}; }</style>`;
+  const html = detail.html_body ?? '';
+  const themedHtml = /<head[\s>]/i.test(html)
+    ? html.replace(/<head\b[^>]*>/i, match => match + defaults)
+    : defaults + html;
+
   return (
     <WebView
       style={styles.body}
-      source={detail.internal ? {uri: detail.html_body} : {html: detail.html_body}}
+      source={detail.internal ? {uri: detail.html_body} : {html: themedHtml}}
       originWhitelist={['*']}
       javaScriptEnabled={detail.internal}
       // An email body must never navigate the app away from itself.
@@ -23,11 +34,10 @@ export function EmailBody({detail}) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = colors => StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: "white",
-    height: "99%",
+    backgroundColor: colors.surfaceAt1,
     borderRadius: 16,
   },
 });

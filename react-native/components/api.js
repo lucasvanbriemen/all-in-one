@@ -1,7 +1,7 @@
 import secrets from './secerts.json';
 
-const BASE_URL = "http://localhost:3000";
-// const BASE_URL = "https://aio.ltvb.nl";
+// const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://aio.ltvb.nl";
 
 export const api = {
   // A getter so every request reads the *current* CSRF token — Turbo swaps

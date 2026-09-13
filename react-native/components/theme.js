@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 
-import {useColorScheme} from 'react-native';
+import {Platform, useColorScheme} from 'react-native';
 
 /**
  * Shared palette.
@@ -19,6 +19,21 @@ const THEME_URL = 'https://components.lucasvanbriemen.nl/api/colors';
 /** Same escape hatch as the web version: applied on top of the fetched set. */
 const customColors = {
   // starred: {dark: 'rgb(238 222 108)', light: 'rgb(248 255 38)'},
+};
+
+// Keep iOS surfaces opaque while the shared palette loads, including offline.
+const IOS_FALLBACK_COLORS = {
+  surface: {light: '#f5f5f9', dark: '#141418'},
+  surfaceAt1: {light: '#ebebf1', dark: '#202026'},
+  surfaceAt2: {light: '#ffffff', dark: '#2b2b33'},
+  surfaceAt3: {light: '#e0e0e9', dark: '#35353f'},
+  onSurface: {light: '#19191f', dark: '#f4f4f8'},
+  onSurfaceVariant: {light: '#484852', dark: '#c8c8d2'},
+  outline: {light: '#656570', dark: '#aaaab6'},
+  primary: {light: '#4459b8', dark: '#b8c4ff'},
+  onPrimary: {light: '#ffffff', dark: '#19285f'},
+  warningContainer: {light: '#ffdf9a', dark: '#594315'},
+  errorContainer: {light: '#ffdad6', dark: '#71332e'},
 };
 
 /** `on-surface` / `surface-at-1` are awkward to read off an object literal. */
@@ -67,7 +82,10 @@ export function useTheme() {
     };
   }, []);
 
-  return useMemo(() => resolve(colors, scheme), [colors, scheme]);
+  return useMemo(() => ({
+    ...(Platform.OS === 'ios' ? resolve(IOS_FALLBACK_COLORS, scheme) : {}),
+    ...resolve(colors, scheme),
+  }), [colors, scheme]);
 }
 
 export function useThemedStyles(createStyles) {
@@ -141,6 +159,21 @@ const GLASS_VARIANTS = {
 export function glass(colors, options = {}) {
   const {variant = 'surface'} = options;
   const recipe = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
+
+  // iOS has no AppKit backdrop. Separate regions with solid surface levels
+  // instead of translucent fills and a simulated reflection along the top.
+  if (Platform.OS === 'ios') {
+    const tone = options.tone
+      ?? (variant === 'surface' ? 'surfaceAt2' : recipe.tone);
+    const backgroundColor = colors[tone] ?? colors.surface;
+    return {
+      backgroundColor,
+      borderWidth: 0,
+      borderColor: backgroundColor,
+      borderTopColor: backgroundColor,
+    };
+  }
+
   const tone = options.tone ?? recipe.tone;
   const tint = options.tint ?? recipe.tint;
   const border = options.border ?? recipe.border;
