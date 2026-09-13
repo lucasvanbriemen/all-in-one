@@ -1,19 +1,17 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 
-import { NowPlayingBanner } from './NowPlayingBanner';
-import { Song } from './Song';
-import { api } from '../api';
-import { player } from './player';
-import { useAppContext } from '../../context/AppContext';
-import {useScrollLayout} from '../ScrollLayout';
-import { useThemedStyles } from '../theme';
+import {NowPlayingBanner} from './NowPlayingBanner';
+import {Song} from './Song';
+import {api} from '../api';
+import {player} from './player';
+import {useAppContext} from '../../context/AppContext';
+import {useThemedStyles} from '../theme';
 
-export function MusicPage({ activeSidebarItem }) {
-  const scrollLayout = useScrollLayout();
+export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
 
-  const { set } = useAppContext();
+  const {set} = useAppContext();
 
   const [likedSongs, setLikedSongs] = useState([]);
 
