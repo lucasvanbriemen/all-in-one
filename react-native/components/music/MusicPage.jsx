@@ -37,7 +37,6 @@ export function MusicPage({activeSidebarItem}) {
 }
 
 const createStyles = colors => StyleSheet.create({
-  content: { flex: 1 },
   statsContainer: {
     flexDirection: 'row',
     gap: 16,
@@ -47,6 +46,6 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginTop: 16,
-    color: colors.outline,
+    color: colors.outline
   },
 });
