@@ -1,25 +1,15 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {NativeModules} from 'react-native';
-import {api} from '../api';
+import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
 export function Song({song, isEven}) {
-  const MP3_URL = 'https://music.ltvb.nl/api/get-mp3/';
   const styles = useThemedStyles(createStyles);
   const { set } = useAppContext();
 
   async function playSong() {
-    const url = `${MP3_URL}${song.isrc}`;
-    await NativeModules.AudioPlayer.play(url, {
-      title: song.title,
-      artist: song.artist,
-      album: song.album,
-      artwork: song.image_url,
-    }, {Authorization: api.defaultHeaders.Authorization});
-
-    set('music.now-playing', song);
+    await player.play(song, set);
   }
   return (
     <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => playSong()}>

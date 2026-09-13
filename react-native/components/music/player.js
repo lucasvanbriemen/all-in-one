@@ -1,54 +1,25 @@
+import {NativeModules} from 'react-native';
 import secrets from './secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
 
-export const api = {
-  // A getter so every request reads the *current* CSRF token — Turbo swaps
-  // the meta tag on navigation, and a token cached at module load goes stale.
-  get defaultHeaders() {
-    return {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${secrets.API_KEY}`,
-    };
+export const player = {
+  async play(song, set) {
+    await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
+      title: song.title,
+      artist: song.artist,
+      album: song.album,
+      artwork: song.image_url,
+    }, { Authorization: `Bearer ${secrets.API_KEY}` });
+
+    set('music.now-playing', song);
   },
 
-  get(url, headers = {}) {
-    return this.makeRequest("GET", url, null, headers);
+  async pause() {
+    await NativeModules.AudioPlayer.pause();
   },
 
-  patch(url, data, headers = {}) {
-    return this.makeRequest("PATCH", url, data, headers);
-  },
-
-  post(url, data, headers = {}) {
-    return this.makeRequest("POST", url, data, headers);
-  },
-
-  put(url, data, headers = {}) {
-    return this.makeRequest("PUT", url, data, headers);
-  },
-
-  makeRequest(method, url, data = null, headers = {}) {
-    const options = {
-      method,
-      headers: {
-        ...this.defaultHeaders,
-        ...headers,
-      },
-    };
-
-    if (data) {
-      options.body = JSON.stringify(data);
-    }
-
-    return fetch(BASE_URL + url, options)
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`${method} ${url} failed with ${response.status}`);
-        }
-        if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
-        return response.text();
-      });
+  async resume() {
+    await NativeModules.AudioPlayer.resume();
   },
 };
