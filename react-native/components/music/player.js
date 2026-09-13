@@ -1,4 +1,5 @@
-import {NativeModules} from 'react-native';
+import {NativeEventEmitter, NativeModules} from 'react-native';
+
 import secrets from './secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
@@ -21,5 +22,13 @@ export const player = {
 
   async resume() {
     await NativeModules.AudioPlayer.resume();
+  },
+
+  subscribe(set) {
+    const emitter = new NativeEventEmitter(NativeModules.AudioPlayer);
+    const sub = emitter.addListener('playbackStateChanged', ({isPlaying}) => {
+      set('music.now-playing.is-playing', isPlaying);
+    });
+    return () => sub.remove();
   },
 };

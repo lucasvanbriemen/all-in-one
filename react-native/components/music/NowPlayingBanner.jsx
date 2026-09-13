@@ -1,41 +1,26 @@
-import {Image, NativeEventEmitter, NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
 export function NowPlayingBanner() {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
 
-  useEffect(() => {
-    const emitter = new NativeEventEmitter(NativeModules.AudioPlayer);
-    const sub = emitter.addListener('playbackStateChanged', ({isPlaying}) => {
-      set('music.now-playing.is-playing', isPlaying);
-    });
-    return () => sub.remove();
-  }, [set]);
-
-  function pause() {
-    NativeModules.AudioPlayer.pause();
-  }
-
-  function resume() {
-    NativeModules.AudioPlayer.resume();
-  }
-
   return (
     <View style={styles.content}>
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
       {get('music.now-playing.is-playing') && (
-        <Pressable onPress={pause}>
+        <Pressable onPress={() => player.pause()}>
           <Text>Pause</Text>
         </Pressable>
       )}
 
       {get('music.now-playing.is-playing') === false && (
-        <Pressable onPress={resume}>
+        <Pressable onPress={() => player.resume()}>
           <Text>Resume</Text>
         </Pressable>
       )}

@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import { AppProvider } from './context/AppContext';
+import { AppProvider, useAppContext } from './context/AppContext';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MusicPage} from './components/music/MusicPage';
+import {player} from './components/music/player';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -26,9 +27,18 @@ const APPLICATIONS = {
 export default function App() {
   return (
     <AppProvider>
+      <PlayerBridge />
       <AppShell />
     </AppProvider>
   );
+}
+
+// Keeps the native audio player's state in the app store for as long as the
+// app is mounted, independent of which page is showing.
+function PlayerBridge() {
+  const {set} = useAppContext();
+  useEffect(() => player.subscribe(set), [set]);
+  return null;
 }
 
 function AppShell({children}) {
