@@ -16,6 +16,14 @@ export const player = {
     set('music.now-playing', song);
   },
 
+  async playPlaylist(songs, set) {
+    set('music.queue', songs);
+    console.log('Playing playlist:', songs);
+    if (songs.length > 0) {
+      await player.play(songs[0], set);
+    }
+  },
+
   async pause() {
     await NativeModules.AudioPlayer.pause();
   },
@@ -24,10 +32,28 @@ export const player = {
     await NativeModules.AudioPlayer.resume();
   },
 
-  subscribe(set) {
+  subscribe(set, get) {
     const emitter = new NativeEventEmitter(NativeModules.AudioPlayer);
-    const sub = emitter.addListener('playbackStateChanged', ({isPlaying}) => {
+    const sub = emitter.addListener('playbackStateChanged', ({isPlaying, ended}) => {
       set('music.now-playing.is-playing', isPlaying);
+
+      console.log('Playback state changed:', {isPlaying, ended});
+
+      if (!isPlaying || !ended) {
+        return;
+      }
+
+      const queue = get('music.queue');
+      if (queue && queue.length > 0) {
+        console.log('Queue before playing next song:', queue);
+        set('music.now-playing', queue[0]);
+
+        queue.shift();
+
+        set('music.queue', queue);
+      }
+
+      player.play(queue[0], set);
     });
     return () => sub.remove();
   },

@@ -1,15 +1,15 @@
+import { AppProvider, useAppContext } from './context/AppContext';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import { AppProvider, useAppContext } from './context/AppContext';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MusicPage} from './components/music/MusicPage';
-import {player} from './components/music/player';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
+import {player} from './components/music/player';
 import {useThemedStyles} from './components/theme';
 
 // SwiftUI laid content out inside a 32pt top safe area, which cleared the
@@ -36,8 +36,8 @@ export default function App() {
 // Keeps the native audio player's state in the app store for as long as the
 // app is mounted, independent of which page is showing.
 function PlayerBridge() {
-  const {set} = useAppContext();
-  useEffect(() => player.subscribe(set), [set]);
+  const {set, get} = useAppContext();
+  useEffect(() => player.subscribe(set, get), [set, get]);
   return null;
 }
 

@@ -1,13 +1,17 @@
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
 
 import {NowPlayingBanner} from './NowPlayingBanner';
 import {Song} from './Song';
 import {api} from '../api';
+import {player} from './player';
+import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function MusicPage({activeSidebarItem}) {
   const styles = useThemedStyles(createStyles);
+
+  const {set} = useAppContext();
 
   const [likedSongs, setLikedSongs] = useState([]);
 
@@ -20,6 +24,10 @@ export function MusicPage({activeSidebarItem}) {
   return (
     <View style={styles.content}>
       <NowPlayingBanner />
+
+      <Pressable onPress={() => player.playPlaylist(likedSongs, set)}>
+        <Text>Play All</Text>
+      </Pressable>
 
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} />
