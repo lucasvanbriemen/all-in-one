@@ -31,7 +31,7 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginTop: 8,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
   },
   cardHovered: {
     ...glass(colors, {tone: "surfaceAt3"}),

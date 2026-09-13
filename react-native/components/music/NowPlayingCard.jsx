@@ -8,20 +8,24 @@ import {useAppContext} from '../../context/AppContext';
 
 export function NowPlayingCard() {
   const styles = useThemedStyles(createStyles);
-  const { get, set } = useAppContext();
+  const {get} = useAppContext();
 
   return (
     <View style={styles.content}>
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
       {get('music.now-playing.is-playing') && (
-        <Pressable onPress={() => player.pause()} style={styles.control}>
+        <Pressable
+          onPress={() => player.pause()}
+          style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
           <Icon name="pause" size={24} color={styles.controlText.color} />
         </Pressable>
       )}
 
       {get('music.now-playing.is-playing') === false && (
-        <Pressable onPress={() => player.resume()} style={styles.control}>
+        <Pressable
+          onPress={() => player.resume()}
+          style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
           <Icon name="play" size={24} color={styles.controlText.color} />
         </Pressable>
       )}
@@ -60,9 +64,16 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
   },
   control: {
-    padding: 8,
-    ...glass(colors, {tone: "primary"}),
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...glass(colors, {variant: 'accent'}),
     borderRadius: 100,
+  },
+  controlPressed: {
+    opacity: 0.82,
+    transform: [{scale: 0.96}],
   },
   controlText: {
     color: colors.onPrimary,

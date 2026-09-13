@@ -107,21 +107,70 @@ export function withAlpha(color, alpha) {
   return `rgba(${red}, ${green}, ${blue}, ${alpha * existing})`;
 }
 
+const GLASS_VARIANTS = {
+  subtle: {
+    tone: 'surfaceAt1', tint: 0.25, border: 0.18, highlight: 0.12,
+  },
+  surface: {
+    tone: 'surfaceAt1', tint: 0.5, border: 0.25, highlight: 0.18,
+  },
+  tinted: {
+    tone: 'surfaceAt1',
+    tint: 0.52,
+    border: 0.65,
+    highlight: 0.28,
+    useToneForBorder: true,
+  },
+  accent: {
+    tone: 'primary',
+    tint: 0.82,
+    border: 0.9,
+    highlight: 0.5,
+    useToneForBorder: true,
+    raised: true,
+  },
+};
+
 /**
- * The glass recipe, in one place so every panel reads as the same material.
+ * Shared glass materials. Callers choose a semantic variant instead of tuning
+ * unrelated alpha values until one backdrop happens to look right.
  *
- * Spread into a StyleSheet entry: `{...glass(colors), borderRadius: 16}`.
- *
- * `borderTopColor` is set after `borderColor` on purpose — a brighter top edge
- * is the specular highlight that stops a translucent panel looking like a
- * flat washed-out rectangle. It's the closest thing React Native has to an
- * inset highlight, since it has no inner shadow.
+ * `surface` is the normal panel, `subtle` separates nested regions, `tinted`
+ * carries status colour, and `accent` gives interactive controls enough colour
+ * and depth to read as enabled while remaining translucent.
  */
-export function glass(colors, {tone = 'surfaceAt1', tint = 0.5, border = 0.25, highlight = 0.14} = {}) {
-  return {
+export function glass(colors, options = {}) {
+  const {variant = 'surface'} = options;
+  const recipe = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
+  const tone = options.tone ?? recipe.tone;
+  const tint = options.tint ?? recipe.tint;
+  const border = options.border ?? recipe.border;
+  const highlight = options.highlight ?? recipe.highlight;
+  const borderTone = options.borderTone
+    ?? (recipe.useToneForBorder ? tone : 'outline');
+
+  // A specular reflection stays light in both colour schemes. Callers can
+  // opt into a palette token when the material needs a coloured edge.
+  const highlightColor = options.highlightTone
+    ? colors[options.highlightTone]
+    : 'rgb(255 255 255)';
+
+  const style = {
     backgroundColor: withAlpha(colors[tone], tint),
     borderWidth: 1,
-    borderColor: withAlpha(colors.outline, border),
-    borderTopColor: withAlpha(colors.onSurface, highlight),
+    borderColor: withAlpha(colors[borderTone], border),
+    borderTopColor: withAlpha(highlightColor, highlight),
   };
+
+  if (recipe.raised) {
+    Object.assign(style, {
+      shadowColor: colors[tone],
+      shadowOffset: {width: 0, height: 3},
+      shadowOpacity: 0.28,
+      shadowRadius: 8,
+      elevation: 4,
+    });
+  }
+
+  return style;
 }

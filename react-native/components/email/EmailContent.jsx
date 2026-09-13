@@ -74,7 +74,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
   },
   senderImage: {
     width: 40,

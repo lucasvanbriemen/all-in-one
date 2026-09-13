@@ -123,7 +123,7 @@ const createStyles = colors => StyleSheet.create({
     width: 16,
   },
   editor: {
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
     marginBottom: 16,
     marginTop: 16,
     padding: 16,

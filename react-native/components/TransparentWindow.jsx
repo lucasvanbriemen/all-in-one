@@ -50,7 +50,9 @@ export function TransparentWindow({children}) {
         <View
           style={[
             StyleSheet.absoluteFill,
-            {backgroundColor: glass(colors, {tone: "surface"})},
+            {
+              backgroundColor: glass(colors, {tone: 'surface'}).backgroundColor,
+            },
           ]}
           pointerEvents="none"
         />

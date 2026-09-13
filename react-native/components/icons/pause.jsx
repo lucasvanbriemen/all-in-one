@@ -1,4 +1,4 @@
-import {Glyph, strokeProps} from './glyph';
+import {Glyph} from './glyph';
 
 import {Path} from 'react-native-svg';
 import React from 'react';

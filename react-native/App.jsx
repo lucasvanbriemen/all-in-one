@@ -74,6 +74,6 @@ const createStyles = colors => StyleSheet.create({
     paddingBottom: 0,
     paddingTop: 0,
     borderRadius: 16,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
   },
 });

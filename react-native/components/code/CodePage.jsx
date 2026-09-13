@@ -196,12 +196,12 @@ const createStyles = colors => StyleSheet.create({
   },
   openedFile: {
     padding: 8,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
     borderRadius: 90,
     opacity: 0.75,
   },
   openedFileActive: {
-    ...glass(colors, {tint: 1, tone: "primary"}),
+    ...glass(colors, {variant: 'accent'}),
     opacity: 1,
   },
   fileTree: {
@@ -213,7 +213,7 @@ const createStyles = colors => StyleSheet.create({
     // The emulator inside draws to the edges, so the panel's own rounding has
     // to clip it — otherwise the scrollback runs out over the corners.
     overflow: 'hidden',
-    ...glass(colors, {tint: 0.25})
+    ...glass(colors, {variant: 'subtle'})
   },
   openedFileText: {
     color: colors.onSurface,

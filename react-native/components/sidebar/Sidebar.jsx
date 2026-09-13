@@ -57,7 +57,7 @@ export function Sidebar({activeSidebarItem, setActiveSidebarItem, currentlyActiv
 const createStyles = colors => StyleSheet.create({
   sidebar: {
     paddingTop: 16,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
     borderRadius: 16,
   },
   row: {

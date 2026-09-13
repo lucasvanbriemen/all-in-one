@@ -43,7 +43,7 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
 const createStyles = colors => StyleSheet.create({
   editor: {
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
     marginBottom: 16,
     marginTop: 16,
     padding: 16,
@@ -53,6 +53,6 @@ const createStyles = colors => StyleSheet.create({
   input: {
     padding: 8,
     borderRadius: 8,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
   },
 });

@@ -21,15 +21,11 @@ export function Stat({value, label, attentionLevel = "low"}) {
 
 const createStyles = colors => StyleSheet.create({
   mediumContainer: {
-    borderColor: colors.warningContainer,
-    borderTopColor: colors.warningContainer,
-    ...glass(colors, {tone: 'warningContainer'}),
+    ...glass(colors, {variant: 'tinted', tone: 'warningContainer'}),
     borderWidth: 2,
   },
   highContainer: {
-    borderColor: colors.errorContainer,
-    borderTopColor: colors.errorContainer,
-    ...glass(colors, {tone: 'errorContainer'}),
+    ...glass(colors, {variant: 'tinted', tone: 'errorContainer'}),
     borderWidth: 2,
   },
   content: {

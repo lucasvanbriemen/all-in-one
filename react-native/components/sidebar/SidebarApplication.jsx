@@ -75,7 +75,7 @@ const createStyles = colors => StyleSheet.create({
   },
   appWrapper: {
     marginBottom: 16,
-    ...glass(colors, {tint: 0.25}),
+    ...glass(colors, {variant: 'subtle'}),
     padding: 8,
     borderRadius: 16,
   },
