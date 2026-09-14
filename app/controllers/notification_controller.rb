@@ -3,9 +3,9 @@ class NotificationController < ApplicationController
   end
 
   def index
-    @notififications = Notification.unread.order(created_at: :desc)
+    @notifications = Notification.unread.order(created_at: :desc)
 
-    render json: @notififications
+    render json: @notifications
   end
 
   def create

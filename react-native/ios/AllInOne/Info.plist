@@ -35,6 +35,8 @@
 	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>All in one alerts you about new email and other events from the server.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

@@ -12,6 +12,7 @@ import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
 import {player} from './components/music/player';
+import {push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from './components/theme';
 
@@ -26,6 +27,7 @@ export default function App() {
   return (
     <AppProvider>
       <PlayerBridge />
+      <PushBridge />
       <AppShell />
     </AppProvider>
   );
@@ -36,6 +38,19 @@ export default function App() {
 function PlayerBridge() {
   const {set, get} = useAppContext();
   useEffect(() => player.subscribe(set, get), [set, get]);
+  return null;
+}
+
+// Registers for APNs on launch and posts the device token to the API. The
+// app opens on the home page, where the unread list lives, so a tap only has
+// to record which notification was opened.
+function PushBridge() {
+  const {set} = useAppContext();
+  useEffect(() => {
+    const unsubscribe = push.subscribe({onOpened: payload => set('notifications.opened', payload)});
+    push.requestPermission();
+    return unsubscribe;
+  }, [set]);
   return null;
 }
 

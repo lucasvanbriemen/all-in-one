@@ -15,6 +15,8 @@
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
 		F5A5F6515E4979B7D8E3498C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
+		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,9 @@
 		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
 		AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AllInOne-Bridging-Header.h"; path = "AllInOne/AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
+		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
+		AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +59,10 @@
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
+				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
+				AA10D1009A0D10A0D10AA09 /* PushNotifications.m */,
 				AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */,
+				AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
@@ -261,6 +269,8 @@
 				AD1600000000000000000002 /* NavigationBlurManager.m in Sources */,
 				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
+				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,
+				AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +301,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.lucasvanbriemen.AllInOne;
 				PRODUCT_NAME = AllInOne;
+				CODE_SIGN_ENTITLEMENTS = "AllInOne/AllInOne.entitlements";
 				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne/AllInOne-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -321,6 +332,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.lucasvanbriemen.AllInOne;
 				PRODUCT_NAME = AllInOne;
+				CODE_SIGN_ENTITLEMENTS = "AllInOne/AllInOne.entitlements";
 				SWIFT_OBJC_BRIDGING_HEADER = "AllInOne/AllInOne-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

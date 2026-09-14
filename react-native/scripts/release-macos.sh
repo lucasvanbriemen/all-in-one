@@ -106,7 +106,12 @@ if [ -d "$APP/Contents/Frameworks" ]; then
 fi
 
 echo "  AllInOne.app"
-sign macos/AllInOne-macOS/AllInOne.entitlements "$APP"
+# The checked-in entitlements carry the development APNs environment so local
+# Xcode runs can register; a Developer ID build must use production.
+APP_ENTITLEMENTS="$BUILD_DIR/AllInOne.release.entitlements"
+sed 's|<string>development</string>|<string>production</string>|' \
+  macos/AllInOne-macOS/AllInOne.entitlements > "$APP_ENTITLEMENTS"
+sign "$APP_ENTITLEMENTS" "$APP"
 
 say "Verifying signature"
 codesign --verify --deep --strict --verbose=2 "$APP"

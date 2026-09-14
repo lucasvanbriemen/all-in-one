@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import "SidecarServer.h"
+#import "AllInOne-Swift.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
@@ -16,6 +17,9 @@
 
   // Before the bridge, so the Code page's first request has somewhere to land.
   [SidecarServer start];
+
+  // Before the bridge so the first notification tap is not lost.
+  [PushNotifications configure];
 
   [super applicationDidFinishLaunching:notification];
 
@@ -39,6 +43,18 @@
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
   [SidecarServer stop];
+}
+
+#pragma mark - Remote notifications (forwarded to the PushNotifications module)
+
+- (void)application:(NSApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+  [PushNotifications didRegisterWithDeviceToken:deviceToken];
+}
+
+- (void)application:(NSApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+  [PushNotifications didFailToRegisterWithError:error];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
