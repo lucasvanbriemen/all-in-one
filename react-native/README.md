@@ -167,7 +167,12 @@ xcrun devicectl list devices          # physical devices, with UDIDs
 xcrun xctrace list devices            # physical + simulators
 ```
 
-For the simulator instead, drop `--device`: `npm run ios`.
+For a standalone Release build on the connected iPhone:
+
+```sh
+cd react-native
+npm run ios:release
+```
 
 ### Connecting the phone to Metro
 

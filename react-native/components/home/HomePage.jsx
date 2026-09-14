@@ -6,9 +6,12 @@ import {NowPlayingCard} from '../music/NowPlayingCard';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
+import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
+  const compact = useCompactLayout();
+  const NotificationContainer = compact ? View : ScrollView;
   const styles = useThemedStyles(createStyles);
   const [serverData, setServerData] = useState(null);
   const [notifications, setNotifications] = useState(null);
@@ -24,33 +27,36 @@ export function HomePage({activeSidebarItem}) {
   }, []);
 
   return (
-    <View style={styles.content}>
-      <View style={styles.statsContainer}>
+    <ScrollView style={styles.content}>
+      <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData.map((data, index) => (
-          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level} />
-        ))} 
+          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level}/>
+        ))}
       </View>
 
       <Text style={styles.greeting}>{greeting.generateGreeting()}</Text>
 
-      <View style={styles.mainContent}>
-        <View style={styles.notificationsContainer}>
-          <ScrollView>
-            {notifications && notifications.map((notification, index) => (
-              <Notification key={index} notification={notification} />
-            ))}
-          </ScrollView>
+      <View style={[styles.mainContent, compact && styles.compactMain]}>
+        <View style={compact ? undefined : styles.notificationsContainer}>
+          <NotificationContainer>
+            {notifications &&
+              notifications.map((notification, index) => (
+                <Notification key={index} notification={notification} />
+              ))}
+          </NotificationContainer>
         </View>
 
         <View style={styles.nowPlaying}>
           <NowPlayingCard />
         </View>
-      </View> 
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  compactStats: { flexWrap: 'wrap', gap: 8 },
+  compactMain: { flex: 0, flexDirection: 'column', gap: 16 },
   notificationsContainer: {
     flex: 2,
   },

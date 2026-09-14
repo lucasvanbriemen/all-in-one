@@ -1,6 +1,5 @@
+import {Platform, useColorScheme} from 'react-native';
 import {useEffect, useMemo, useState} from 'react';
-
-import {useColorScheme} from 'react-native';
 
 /**
  * Shared palette.
@@ -141,6 +140,21 @@ const GLASS_VARIANTS = {
 export function glass(colors, options = {}) {
   const {variant = 'surface'} = options;
   const recipe = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
+
+  // iOS has no AppKit backdrop. Separate regions with solid surface levels
+  // instead of translucent fills and a simulated reflection along the top.
+  if (Platform.OS === 'ios') {
+    const tone = options.tone
+      ?? (variant === 'surface' ? 'surfaceAt2' : recipe.tone);
+    const backgroundColor = colors[tone] ?? colors.surface;
+    return {
+      backgroundColor,
+      borderWidth: 0,
+      borderColor: backgroundColor,
+      borderTopColor: backgroundColor,
+    };
+  }
+
   const tone = options.tone ?? recipe.tone;
   const tint = options.tint ?? recipe.tint;
   const border = options.border ?? recipe.border;

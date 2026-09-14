@@ -1,11 +1,14 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
+import {useCompactLayout} from '../useCompactLayout';
+
 export function Song({song, isEven, onClick}) {
+  const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
 
   return (
-    <Pressable style={[styles.container, isEven && styles.evenBackground]} onPress={() => onClick()}>
+    <Pressable style={[styles.container, compact && styles.compact, isEven && styles.evenBackground]} onPress={() => onClick()}>
       <Image source={{uri: song.image_url}} style={styles.image} />
 
       <View> 
@@ -17,6 +20,10 @@ export function Song({song, isEven, onClick}) {
 }
 
 const createStyles = colors => StyleSheet.create({
+  compact: {
+    width: '100%', 
+    marginLeft: 0,
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
