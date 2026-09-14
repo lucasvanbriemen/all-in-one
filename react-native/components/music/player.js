@@ -5,6 +5,8 @@ import secrets from '../secerts.json';
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
 
 export const player = {
+  GO_BACK_TO_START_OF_SONG_AFTER_SECONDS: 5,
+
   async play(song, set) {
     await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
       title: song.title,
@@ -39,9 +41,20 @@ export const player = {
   },
 
   async previous(set, get) {
+    // Like most players: past the first few seconds, "previous" restarts the
+    // current song; before that, it jumps to the actual previous song.
+    const position = await NativeModules.AudioPlayer.currentTime();
+    if (get('music.now-playing') && position > player.GO_BACK_TO_START_OF_SONG_AFTER_SECONDS) {
+      NativeModules.AudioPlayer.seek(0);
+      return;
+    }
+
     const queue = get('music.queue') || [];
     const lastSongs = get('music.last-songs') || [];
-    if (lastSongs.length === 0) return;
+    if (lastSongs.length === 0) {
+      NativeModules.AudioPlayer.seek(0);
+      return;
+    }
 
     const currentlyPlaying = get('music.now-playing');
     const previousSong = lastSongs[lastSongs.length - 1];
@@ -60,13 +73,20 @@ export const player = {
 
   subscribe(set, get) {
     const emitter = new NativeEventEmitter(NativeModules.AudioPlayer);
-    const sub = emitter.addListener('playbackStateChanged', ({isPlaying, ended}) => {
+    const stateSub = emitter.addListener('playbackStateChanged', ({isPlaying, ended}) => {
       set('music.now-playing.is-playing', isPlaying);
 
       if (ended) {
         return player.next(set, get);
       }
     });
-    return () => sub.remove();
+    const commandSub = emitter.addListener('remoteCommand', ({command}) => {
+      if (command === 'next') return player.next(set, get);
+      if (command === 'previous') return player.previous(set, get);
+    });
+    return () => {
+      stateSub.remove();
+      commandSub.remove();
+    };
   },
 };

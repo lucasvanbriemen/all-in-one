@@ -32,8 +32,9 @@ final class AudioPlayer: RCTEventEmitter {
     @objc override static func requiresMainQueueSetup() -> Bool { true }
 
     static let playbackStateEvent = "playbackStateChanged"
+    static let remoteCommandEvent = "remoteCommand"
 
-    @objc override func supportedEvents() -> [String]! { [Self.playbackStateEvent] }
+    @objc override func supportedEvents() -> [String]! { [Self.playbackStateEvent, Self.remoteCommandEvent] }
     @objc override func startObserving() { hasListeners = true }
     @objc override func stopObserving() { hasListeners = false }
 
@@ -43,6 +44,13 @@ final class AudioPlayer: RCTEventEmitter {
             "isPlaying": isPlaying,
             "ended": ended,
         ])
+    }
+
+    // Forwards next/previous presses from Control Center, lock screen, media
+    // keys and headphone buttons to JS, which owns the queue.
+    private func emitRemoteCommand(_ command: String) {
+        guard hasListeners else { return }
+        sendEvent(withName: Self.remoteCommandEvent, body: ["command": command])
     }
 
     // MARK: - JS API
@@ -130,6 +138,14 @@ final class AudioPlayer: RCTEventEmitter {
         }
     }
 
+    @objc func currentTime(_ resolve: @escaping RCTPromiseResolveBlock,
+                           rejecter reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            let seconds = self.player?.currentTime().seconds ?? 0
+            resolve(seconds.isFinite ? seconds : 0)
+        }
+    }
+
     @objc func updateMetadata(_ metadata: NSDictionary) {
         DispatchQueue.main.async {
             self.metadata = metadata as? [String: Any] ?? [:]
@@ -167,6 +183,12 @@ final class AudioPlayer: RCTEventEmitter {
             guard let self else { return .commandFailed }
             if self.isPlaying { self.pause() } else { self.resume() }
             return .success
+        }
+        center.nextTrackCommand.addTarget { [weak self] _ in
+            self?.emitRemoteCommand("next"); return .success
+        }
+        center.previousTrackCommand.addTarget { [weak self] _ in
+            self?.emitRemoteCommand("previous"); return .success
         }
         center.changePlaybackPositionCommand.addTarget { [weak self] event in
             guard let event = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }

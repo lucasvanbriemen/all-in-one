@@ -12,6 +12,9 @@ RCT_EXTERN_METHOD(play
 RCT_EXTERN_METHOD(pause)
 RCT_EXTERN_METHOD(resume)
 RCT_EXTERN_METHOD(seek : (double)seconds)
+RCT_EXTERN_METHOD(currentTime
+                  : (RCTPromiseResolveBlock)resolve rejecter
+                  : (RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(updateMetadata : (NSDictionary *)metadata)
 
 @end
