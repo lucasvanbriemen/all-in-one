@@ -1,6 +1,7 @@
 # Thin wrapper around Apnotic configured from the environment:
 #
-#   APNS_KEY_PATH  path to the .p8 auth key from developer.apple.com
+#   APNS_KEY_PATH  the .p8 auth key from developer.apple.com; relative paths
+#                  resolve against Rails.root (default config/apns.p8)
 #   APNS_KEY_ID    the key's 10-character ID
 #   APNS_TEAM_ID   Apple developer team ID
 #   APNS_ENV       "development" (Xcode/debug builds) or "production"
@@ -14,8 +15,12 @@ module Push
   module Apns
     TOPIC = ENV.fetch("APNS_TOPIC", "nl.ltvb.aio")
 
+    def self.key_path
+      Rails.root.join(ENV.fetch("APNS_KEY_PATH", "config/apns.p8")).to_s
+    end
+
     def self.configured?
-      %w[APNS_KEY_PATH APNS_KEY_ID APNS_TEAM_ID].all? { |k| ENV[k].present? }
+      %w[APNS_KEY_ID APNS_TEAM_ID].all? { |k| ENV[k].present? } && File.exist?(key_path)
     end
 
     def self.production?
@@ -25,7 +30,7 @@ module Push
     def self.connection
       options = {
         auth_method: :token,
-        cert_path: ENV.fetch("APNS_KEY_PATH"),
+        cert_path: key_path,
         key_id: ENV.fetch("APNS_KEY_ID"),
         team_id: ENV.fetch("APNS_TEAM_ID")
       }
