@@ -34,7 +34,7 @@ export default function App() {
 // Keeps the native audio player's state in the app store for as long as the
 // app is mounted, independent of which page is showing.
 function PlayerBridge() {
-  const { set, get } = useAppContext();
+  const {set, get} = useAppContext();
   useEffect(() => player.subscribe(set, get), [set, get]);
   return null;
 }
