@@ -10,9 +10,6 @@ class PushNotificationJob < ApplicationJob
 
   discard_on ActiveRecord::RecordNotFound
 
-  # APNs reasons that mean the token will never work again.
-  DEAD_TOKEN_REASONS = %w[BadDeviceToken Unregistered DeviceTokenNotForTopic].freeze
-
   retry_on SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, wait: :polynomially_longer, attempts: 5
 
   def perform(notification_id)
@@ -36,17 +33,6 @@ class PushNotificationJob < ApplicationJob
   private
 
   def deliver(connection, device, notification)
-    response = connection.push(Push::Apns.notification_for(device, notification))
-
-    if response.nil?
-      Rails.logger.warn("[APNS] timeout for device=#{device.id} notification=#{notification.id}")
-    elsif response.ok?
-      Rails.logger.info("[APNS] delivered notification=#{notification.id} to device=#{device.id} (#{device.platform})")
-    elsif DEAD_TOKEN_REASONS.include?(response.body["reason"]) || response.status == "410"
-      Rails.logger.info("[APNS] removing dead token device=#{device.id}: #{response.body['reason']}")
-      device.destroy
-    else
-      Rails.logger.warn("[APNS] failed device=#{device.id} notification=#{notification.id}: #{response.status} #{response.body}")
-    end
+    connection.push(Push::Apns.notification_for(device, notification))
   end
 end
