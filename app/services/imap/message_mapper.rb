@@ -4,20 +4,17 @@ require "digest"
 module Imap
   # Maps a raw RFC822 message to Email attributes. Pure: no DB, no network.
   class MessageMapper
-    def initialize(raw_source, uid:, profile_id:)
+    def initialize(raw_source, profile_id:)
       @raw_source = raw_source
       @mail = Mail.read_from_string(raw_source)
-      @uid = uid
       @profile_id = profile_id
     end
 
     def email_attributes
       {
         message_id: message_identifier,
-        uid: @uid.to_s,
         subject: clean(@mail.subject),
         to: clean(to_addresses),
-        sent_at: @mail.date&.to_time,
         html_body: html_body,
         sender_name: clean(sender_name),
         profile_id: @profile_id

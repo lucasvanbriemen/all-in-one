@@ -95,7 +95,7 @@ module Imap
     def import_message(uid, raw)
       return nil if raw.blank?
 
-      mapper = Imap::MessageMapper.new(raw, uid: uid, profile_id: @credential.profile_id)
+      mapper = Imap::MessageMapper.new(raw, profile_id: @credential.profile_id)
       persist(mapper)&.persisted? ? uid : nil
     rescue StandardError => e
       # One bad message must not block the rest (and is never archived).
@@ -118,7 +118,6 @@ module Imap
 
       @email = Email.find_or_create_by(profile_id: attrs[:profile_id], message_id: attrs[:message_id]) do |email|
         email.assign_attributes(attrs)
-        email.uuid = SecureRandom.uuid
         email.sender = find_or_update_sender(mapper)
       end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_06_135824) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_10_120000) do
   create_table "attachments", id: { type: :bigint, unsigned: true }, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.timestamp "created_at"
     t.timestamp "updated_at"
@@ -39,6 +39,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_06_135824) do
     t.timestamp "updated_at"
     t.index ["token"], name: "device_tokens_token_unique", unique: true
     t.index ["user_id"], name: "device_tokens_user_id_index"
+  end
+
+  create_table "devices", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "token", null: false
+    t.string "platform", null: false
+    t.string "topic", null: false
+    t.datetime "last_seen_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_devices_on_token", unique: true
   end
 
   create_table "emails", id: { type: :bigint, unsigned: true }, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
