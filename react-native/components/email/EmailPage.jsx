@@ -7,7 +7,7 @@ import {useCompactLayout} from '../useCompactLayout';
 import {useScrollLayout} from '../ScrollLayout';
 import {useThemedStyles} from '../theme';
 
-export function EmailPage({ activeSidebarItem }) {
+export function EmailPage({activeSidebarItem}) {
   const scrollLayout = useScrollLayout();
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
@@ -20,24 +20,29 @@ export function EmailPage({ activeSidebarItem }) {
       <View style={[styles.listing, compact && selectedEmail && styles.hidden]}>
         <EmailListing activeSidebarItem={activeSidebarItem} selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
       </View>
-      {(!compact || selectedEmail) && (
-        <View style={[styles.body, compact && scrollLayout.contentContainerStyle]}>
-          {compact && (
-            <Pressable onPress={() => setSelectedEmail(null)} style={styles.back}>
-              <Text style={styles.backText}>‹ Back to inbox</Text>
-            </Pressable>
-          )}
-          <EmailContent email={selectedEmail} />
-        </View>
-      )}
+      <View style={[styles.body, compact && !selectedEmail && styles.hidden]}>
+        {compact && (
+          <Pressable onPress={() => setSelectedEmail(null)} style={styles.back}>
+            <Text style={styles.backText}>‹ Back to inbox</Text>
+          </Pressable>
+        )}
+        <EmailContent email={selectedEmail} />
+      </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  hidden: { display: 'none' },
-  back: { minHeight: 44, justifyContent: 'center' },
-  backText: { color: colors.primary, fontSize: 16 },
+  hidden: {
+    display: 'none'
+  },
+  back: {
+    justifyContent: 'center'
+  },
+  backText: {
+    color: colors.primary,
+    fontSize: 16
+  },
   content: {
     flex: 1,
     flexDirection: 'row',
