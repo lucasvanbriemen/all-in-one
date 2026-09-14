@@ -138,8 +138,7 @@ final class AudioPlayer: RCTEventEmitter {
         }
     }
 
-    @objc func currentTime(_ resolve: @escaping RCTPromiseResolveBlock,
-                           rejecter reject: @escaping RCTPromiseRejectBlock) {
+    @objc func currentTime(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             let seconds = self.player?.currentTime().seconds ?? 0
             resolve(seconds.isFinite ? seconds : 0)
