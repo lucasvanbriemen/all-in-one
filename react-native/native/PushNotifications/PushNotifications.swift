@@ -23,7 +23,6 @@ final class PushNotifications: RCTEventEmitter {
 
     private static weak var shared: PushNotifications?
     private static var lastToken: String?
-    private static var lastError: String?
     private static var pendingOpen: [AnyHashable: Any]?
     private static let foregroundDelegate = ForegroundDelegate()
 
@@ -59,12 +58,7 @@ final class PushNotifications: RCTEventEmitter {
     @objc static func didRegister(deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
         lastToken = token
-        lastError = nil
         shared?.emit(tokenEvent, ["token": token])
-    }
-
-    @objc static func didFailToRegister(error: Error) {
-        lastError = error.localizedDescription
     }
 
     fileprivate static func didOpen(userInfo: [AnyHashable: Any]) {

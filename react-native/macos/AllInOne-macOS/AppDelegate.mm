@@ -52,11 +52,6 @@
   [PushNotifications didRegisterWithDeviceToken:deviceToken];
 }
 
-- (void)application:(NSApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
-  [PushNotifications didFailToRegisterWithError:error];
-}
-
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   return [self bundleURL];
