@@ -73,8 +73,8 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
     flexDirection: 'row',
   },
-  edgeWrapper: {padding: 0, paddingTop: 0, gap: 0},
-  edgeContent: {padding: 0, paddingHorizontal: 0, borderRadius: 0},
+  edgeWrapper: {padding: 0, paddingTop: 48, gap: 0},
+  edgeContent: {paddingBottom: 0, paddingHorizontal: 16, borderRadius: 0},
   compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
   compactContent: {
     paddingHorizontal: 12,
