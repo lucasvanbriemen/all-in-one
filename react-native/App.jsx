@@ -12,6 +12,7 @@ import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
 import {player} from './components/music/player';
+import {push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from './components/theme';
 
@@ -26,6 +27,7 @@ export default function App() {
   return (
     <AppProvider>
       <PlayerBridge />
+      <PushBridge />
       <AppShell />
     </AppProvider>
   );
@@ -36,6 +38,13 @@ export default function App() {
 function PlayerBridge() {
   const {set, get} = useAppContext();
   useEffect(() => player.subscribe(set, get), [set, get]);
+  return null;
+}
+
+// Registers for notifications and requests permission on app launch.
+function PushBridge() {
+  push.subscribe();
+  push.requestPermission();
   return null;
 }
 

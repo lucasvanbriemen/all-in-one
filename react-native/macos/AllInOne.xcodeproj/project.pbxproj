@@ -21,6 +21,8 @@
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
+		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
+		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +50,8 @@
 		F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SidecarServer.m; sourceTree = "<group>"; };
 		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectBackground.swift; sourceTree = "<group>"; };
+		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
+		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +98,8 @@
 				A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */,
 				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
+				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
+				AA10D1009A0D10A0D10AA09 /* PushNotifications.m */,
 				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
 				261EC1AB6F033A60773A3AC4 /* SidecarServer.h */,
 				F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */,
@@ -385,6 +391,8 @@
 				A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */,
 				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
+				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,
+				AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */,
 				5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

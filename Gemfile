@@ -30,6 +30,9 @@ gem "mail", "~> 2.9"
 # Extract the registrable domain from sender addresses (handles co.uk etc.)
 gem "public_suffix"
 
+# Apple Push Notification service client (HTTP/2, token-based auth)
+gem "apnotic"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 

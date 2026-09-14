@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get "/music", to: "music#index", as: :music
   get "/get-mp3/:isrc", to: "music#show", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
+  post "/device_tokens", to: "device_tokens#create", as: :device_tokens
+  delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
   get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
