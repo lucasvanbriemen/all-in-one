@@ -1,14 +1,12 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 
 import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
 import {useCompactLayout} from '../useCompactLayout';
-import {useScrollLayout} from '../ScrollLayout';
 import {useThemedStyles} from '../theme';
 
 export function EmailPage({activeSidebarItem}) {
-  const scrollLayout = useScrollLayout();
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   // `selection` is the sidebar's mailbox path; which email is open within that
