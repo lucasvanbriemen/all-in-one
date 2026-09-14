@@ -75,7 +75,7 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginTop: 16,
-    color: colors.outline,
+    color: colors.outline
   },
   mainContent: {
     flex: 1,
