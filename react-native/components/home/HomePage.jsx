@@ -6,14 +6,12 @@ import {NowPlayingCard} from '../music/NowPlayingCard';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
-import {useCompactLayout} from '../useCompactLayout';
 import {useAppContext} from '../../context/AppContext';
+import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({ activeSidebarItem }) {
-  const scrollLayout = useAppContext().get('scrollLayout') ?? {};
   const compact = useCompactLayout();
-  const Container = compact ? ScrollView : View;
   const NotificationContainer = compact ? View : ScrollView;
   const styles = useThemedStyles(createStyles);
   const [serverData, setServerData] = useState(null);
@@ -30,11 +28,7 @@ export function HomePage({ activeSidebarItem }) {
   }, []);
 
   return (
-    <Container
-      style={styles.content}
-      {...(compact ? scrollLayout : {})}
-      contentContainerStyle={compact ? [styles.scrollContent, scrollLayout.contentContainerStyle] : undefined}
-    >
+    <ScrollView style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData &&
           serverData.map((data, index) => (
@@ -63,12 +57,11 @@ export function HomePage({ activeSidebarItem }) {
           <NowPlayingCard />
         </View>
       </View>
-    </Container>
+    </ScrollView>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  scrollContent: { paddingBottom: 16 },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   compactMain: { flex: 0, flexDirection: 'column', gap: 16 },
   notificationsContainer: {

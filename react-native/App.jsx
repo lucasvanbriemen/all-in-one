@@ -48,34 +48,17 @@ function IOSAppShell() {
 }
 
 function AppShell({insets}) {
-  const [navigationHeight, setNavigationHeight] = useState(60);
   const [appToRender, setAppToRender] = useState(() => 'home');
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender];
   const compact = useCompactLayout();
-  const {set} = useAppContext();
 
   // Edge-to-edge pages keep their insets inside the scroll content, leaving
   // the viewport free to run underneath the floating navigation. The props
   // are published through the app store so any page can spread them onto
   // its ScrollView.
-  useEffect(() => {
-    if (!compact) { set('scrollLayout', {}); return; }
-    const bottom = insets.bottom + navigationHeight + 8;
-    set('scrollLayout', {
-      contentContainerStyle: {
-        paddingTop: insets.top + 12,
-        paddingBottom: bottom + 16,
-        paddingLeft: insets.left + 20,
-        paddingRight: insets.right + 20,
-      },
-      scrollIndicatorInsets: {...insets, bottom},
-      contentInsetAdjustmentBehavior: 'never',
-      automaticallyAdjustsScrollIndicatorInsets: false,
-    });
-  }, [set, compact, navigationHeight, insets]);
-
+  
   return (
     <TransparentWindow>
       <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
@@ -87,8 +70,8 @@ function AppShell({insets}) {
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
         {compact && (
-          <View onLayout={event => setNavigationHeight(event.nativeEvent.layout.height)} style={compact && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}>
-          <MobileNavigation currentlyActive={appToRender} setActiveApp={setAppToRender} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem}/>
+          <View style={compact && {position: 'absolute', bottom: 8, left: 16, right: 16}}>
+            <MobileNavigation currentlyActive={appToRender} setActiveApp={setAppToRender} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem}/>
           </View>
         )}
       </SafeAreaView>

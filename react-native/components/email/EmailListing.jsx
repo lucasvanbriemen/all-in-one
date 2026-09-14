@@ -7,7 +7,6 @@ import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
-  const scrollLayout = useAppContext().get('scrollLayout') ?? {};
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
@@ -22,7 +21,7 @@ export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) 
 
   return (
     <View style={styles.content}>
-      <ScrollView {...scrollLayout}>
+      <ScrollView>
         {items.map((item, index) => (
           <React.Fragment key={item.id}>
             {items[index - 1]?.date !== item.date && (
