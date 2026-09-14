@@ -46,7 +46,7 @@ export function HomePage({activeSidebarItem}) {
           </NotificationContainer>
         </View>
 
-        <View style={compact ? undefined : styles.nowPlaying}>
+        <View style={styles.nowPlaying}>
           <NowPlayingCard />
         </View>
       </View>
