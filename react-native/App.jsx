@@ -41,16 +41,10 @@ function PlayerBridge() {
   return null;
 }
 
-// Registers for APNs on launch and posts the device token to the API. The
-// app opens on the home page, where the unread list lives, so a tap only has
-// to record which notification was opened.
+// Registers for notifications and requests permission on app launch.
 function PushBridge() {
-  const {set} = useAppContext();
-  useEffect(() => {
-    const unsubscribe = push.subscribe();
-    push.requestPermission();
-    return unsubscribe;
-  }, [set]);
+  push.subscribe();
+  push.requestPermission();
   return null;
 }
 
