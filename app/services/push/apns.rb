@@ -19,10 +19,6 @@ module Push
       Rails.root.join(ENV.fetch("APNS_KEY_PATH", "config/apns.p8")).to_s
     end
 
-    def self.configured?
-      %w[APNS_KEY_ID APNS_TEAM_ID].all? { |k| ENV[k].present? } && File.exist?(key_path)
-    end
-
     def self.production?
       ENV.fetch("APNS_ENV", "development") == "production"
     end

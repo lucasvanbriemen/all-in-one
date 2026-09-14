@@ -13,11 +13,6 @@ class PushNotificationJob < ApplicationJob
   retry_on SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, wait: :polynomially_longer, attempts: 5
 
   def perform(notification_id)
-    unless Push::Apns.configured?
-      Rails.logger.info("[APNS] not configured, skipping notification=#{notification_id}")
-      return
-    end
-
     notification = Notification.find(notification_id)
     tokens = DeviceToken.all.to_a
     return if tokens.empty?
