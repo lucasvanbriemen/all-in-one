@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Notification} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
-import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
-export function HomePage({ activeSidebarItem }) {
+export function HomePage({activeSidebarItem}) {
   const compact = useCompactLayout();
   const NotificationContainer = compact ? View : ScrollView;
   const styles = useThemedStyles(createStyles);
@@ -30,15 +29,9 @@ export function HomePage({ activeSidebarItem }) {
   return (
     <ScrollView style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
-        {serverData &&
-          serverData.map((data, index) => (
-            <Stat
-              key={index}
-              value={data.value}
-              label={data.label}
-              attentionLevel={data.importance_level}
-            />
-          ))}
+        {serverData && serverData.map((data, index) => (
+          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level}/>
+        ))}
       </View>
 
       <Text style={styles.greeting}>{greeting.generateGreeting()}</Text>
