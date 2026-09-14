@@ -7,11 +7,11 @@ import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
-import {useScrollLayout} from '../ScrollLayout';
+import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function HomePage({ activeSidebarItem }) {
-  const scrollLayout = useScrollLayout();
+  const scrollLayout = useAppContext().get('scrollLayout') ?? {};
   const compact = useCompactLayout();
   const Container = compact ? ScrollView : View;
   const NotificationContainer = compact ? View : ScrollView;

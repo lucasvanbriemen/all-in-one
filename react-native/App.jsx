@@ -8,7 +8,6 @@ import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MobileNavigation} from './components/sidebar/MobileNavigation';
 import {MusicPage} from './components/music/MusicPage';
-import {ScrollLayoutContext} from './components/ScrollLayout';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -62,7 +61,27 @@ function AppShell({insets}) {
   const compact = useCompactLayout();
   const edgeToEdge = Platform.OS === 'ios' && compact;
   const Container = Platform.OS === 'ios' && !edgeToEdge ? SafeAreaView : View;
-  const scrollInsets = edgeToEdge ? {...insets, bottom: insets.bottom + navigationHeight + 8} : null;
+  const {set} = useAppContext();
+
+  // Edge-to-edge pages keep their insets inside the scroll content, leaving
+  // the viewport free to run underneath the floating navigation. The props
+  // are published through the app store so any page can spread them onto
+  // its ScrollView.
+  useEffect(() => {
+    if (!edgeToEdge) { set('scrollLayout', {}); return; }
+    const bottom = insets.bottom + navigationHeight + 8;
+    set('scrollLayout', {
+      contentContainerStyle: {
+        paddingTop: insets.top + 12,
+        paddingBottom: bottom + 16,
+        paddingLeft: insets.left + 20,
+        paddingRight: insets.right + 20,
+      },
+      scrollIndicatorInsets: {...insets, bottom},
+      contentInsetAdjustmentBehavior: 'never',
+      automaticallyAdjustsScrollIndicatorInsets: false,
+    });
+  }, [set, edgeToEdge, navigationHeight, insets]);
 
   return (
     <TransparentWindow>
@@ -84,11 +103,9 @@ function AppShell({insets}) {
           />
         )}
 
-        <ScrollLayoutContext.Provider value={scrollInsets}>
         <View style={[styles.content, compact && styles.compactContent, edgeToEdge && styles.edgeContent]}>
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
-        </ScrollLayoutContext.Provider>
         {compact && (
           <View
             pointerEvents="box-none"

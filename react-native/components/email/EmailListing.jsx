@@ -1,13 +1,13 @@
-import {useScrollLayout} from '../ScrollLayout';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {EmailListItem} from './EmailListItem';
 import {api} from '../api';
+import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
-  const scrollLayout = useScrollLayout();
+  const scrollLayout = useAppContext().get('scrollLayout') ?? {};
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
 
