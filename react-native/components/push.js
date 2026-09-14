@@ -9,8 +9,14 @@ export const push = {
 
   subscribe() {
     const emitter = new NativeEventEmitter(NativeModules.PushNotifications);
+    const {bundleIdentifier, apsEnvironment} = NativeModules.PushNotifications.getConstants();
     const tokenSub = emitter.addListener('pushToken', ({token}) => {
-      api.post('/device_tokens', {token, platform: Platform.OS})
+      api.post('/device_tokens', {
+        token,
+        platform: Platform.OS,
+        topic: bundleIdentifier,
+        environment: apsEnvironment,
+      });
     });
 
     return () => {

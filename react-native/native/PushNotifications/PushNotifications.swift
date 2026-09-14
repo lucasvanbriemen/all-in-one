@@ -34,6 +34,37 @@ final class PushNotifications: RCTEventEmitter {
     }
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
+
+    // What the server needs alongside the token: the APNs topic (this build's
+    // bundle id) and which APNs environment minted the token. The environment
+    // is the aps-environment entitlement, readable from the provisioning
+    // profile Xcode embeds; release builds (App Store, Developer ID) carry no
+    // profile and are always production.
+    @objc override func constantsToExport() -> [AnyHashable: Any]! {
+        [
+            "bundleIdentifier": Bundle.main.bundleIdentifier ?? "",
+            "apsEnvironment": Self.apsEnvironment,
+        ]
+    }
+
+    static var apsEnvironment: String {
+        let candidates = ["embedded.mobileprovision", "embedded.provisionprofile"]
+        for name in candidates {
+            guard let url = Bundle.main.url(forResource: name, withExtension: nil),
+                  let data = try? Data(contentsOf: url),
+                  let text = String(data: data, encoding: .isoLatin1),
+                  let start = text.range(of: "<plist"),
+                  let end = text.range(of: "</plist>") else { continue }
+            let plist = String(text[start.lowerBound..<end.upperBound])
+            guard let object = try? PropertyListSerialization.propertyList(from: Data(plist.utf8), format: nil),
+                  let dict = object as? [String: Any],
+                  let entitlements = dict["Entitlements"] as? [String: Any] else { continue }
+            if let value = (entitlements["aps-environment"] ?? entitlements["com.apple.developer.aps-environment"]) as? String {
+                return value
+            }
+        }
+        return "production"
+    }
     @objc override func supportedEvents() -> [String]! { [Self.tokenEvent, Self.openedEvent] }
 
     @objc override func startObserving() {
