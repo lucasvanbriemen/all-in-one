@@ -83,14 +83,9 @@ final class PushNotifications: RCTEventEmitter {
     /// Asks for permission (a no-op if already decided) and, when granted,
     /// registers with APNs. Resolves with the authorization status as a
     /// string; the token itself arrives via the `pushToken` event.
-    @objc func requestPermission(_ resolve: @escaping RCTPromiseResolveBlock,
-                                 rejecter reject: @escaping RCTPromiseRejectBlock) {
+    @objc func requestPermission(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if let error {
-                reject("permission_failed", error.localizedDescription, error)
-                return
-            }
             center.getNotificationSettings { settings in
                 if granted {
                     DispatchQueue.main.async { Self.registerForRemote() }

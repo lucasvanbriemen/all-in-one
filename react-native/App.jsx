@@ -47,7 +47,7 @@ function PlayerBridge() {
 function PushBridge() {
   const {set} = useAppContext();
   useEffect(() => {
-    const unsubscribe = push.subscribe({onOpened: payload => set('notifications.opened', payload)});
+    const unsubscribe = push.subscribe();
     push.requestPermission();
     return unsubscribe;
   }, [set]);
