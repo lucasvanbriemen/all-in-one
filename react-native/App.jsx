@@ -1,13 +1,13 @@
 import {AppProvider, useAppContext} from './context/AppContext';
-import {Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MobileNavigation} from './components/sidebar/MobileNavigation';
 import {MusicPage} from './components/music/MusicPage';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -23,14 +23,11 @@ const APPLICATIONS = {
 };
 
 export default function App() {
-  const Root = Platform.OS === 'ios' ? SafeAreaProvider : React.Fragment;
   return (
-    <Root>
-      <AppProvider>
-        <PlayerBridge />
-        <AppShell />
-      </AppProvider>
-    </Root>
+    <AppProvider>
+      <PlayerBridge />
+      <AppShell />
+    </AppProvider>
   );
 }
 
