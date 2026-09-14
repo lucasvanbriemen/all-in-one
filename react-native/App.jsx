@@ -49,11 +49,6 @@ function AppShell() {
   const ActiveApplication = APPLICATIONS[appToRender];
   const compact = useCompactLayout();
 
-  // Edge-to-edge pages keep their insets inside the scroll content, leaving
-  // the viewport free to run underneath the floating navigation. The props
-  // are published through the app store so any page can spread them onto
-  // its ScrollView.
-  
   return (
     <TransparentWindow>
       <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
