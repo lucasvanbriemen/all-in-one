@@ -1,7 +1,7 @@
 import {AppProvider, useAppContext} from './context/AppContext';
 import {Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {SafeAreaProvider, SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
@@ -28,7 +28,7 @@ export default function App() {
     <Root>
       <AppProvider>
         <PlayerBridge />
-        {Platform.OS === 'ios' ? <IOSAppShell /> : <AppShell />}
+        <AppShell />
       </AppProvider>
     </Root>
   );
@@ -42,12 +42,7 @@ function PlayerBridge() {
   return null;
 }
 
-function IOSAppShell() {
-  const insets = useSafeAreaInsets();
-  return <AppShell insets={insets} />;
-}
-
-function AppShell({insets}) {
+function AppShell() {
   const [appToRender, setAppToRender] = useState(() => 'home');
   const [activeSidebarItem, setActiveSidebarItem] = useState(null);
   const styles = useThemedStyles(createStyles);
