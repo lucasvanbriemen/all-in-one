@@ -59,8 +59,6 @@ function AppShell({insets}) {
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[appToRender];
   const compact = useCompactLayout();
-  const edgeToEdge = Platform.OS === 'ios' && compact;
-  const Container = Platform.OS === 'ios' && !edgeToEdge ? SafeAreaView : View;
   const {set} = useAppContext();
 
   // Edge-to-edge pages keep their insets inside the scroll content, leaving
@@ -68,7 +66,7 @@ function AppShell({insets}) {
   // are published through the app store so any page can spread them onto
   // its ScrollView.
   useEffect(() => {
-    if (!edgeToEdge) { set('scrollLayout', {}); return; }
+    if (!compact) { set('scrollLayout', {}); return; }
     const bottom = insets.bottom + navigationHeight + 8;
     set('scrollLayout', {
       contentContainerStyle: {
@@ -81,17 +79,17 @@ function AppShell({insets}) {
       contentInsetAdjustmentBehavior: 'never',
       automaticallyAdjustsScrollIndicatorInsets: false,
     });
-  }, [set, edgeToEdge, navigationHeight, insets]);
+  }, [set, compact, navigationHeight, insets]);
 
   return (
     <TransparentWindow>
-      <Container
+      <SafeAreaView
         style={[
           styles.appWrapper,
           Platform.OS !== 'macos' && styles.noTitlebar,
           compact && styles.compactWrapper,
           Platform.OS === 'macos' && styles.titlebar,
-          edgeToEdge && styles.edgeWrapper,
+          compact && styles.edgeWrapper,
         ]}
       >
         {!compact && (
@@ -103,14 +101,14 @@ function AppShell({insets}) {
           />
         )}
 
-        <View style={[styles.content, compact && styles.compactContent, edgeToEdge && styles.edgeContent]}>
+        <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
         {compact && (
           <View
             pointerEvents="box-none"
             onLayout={event => setNavigationHeight(event.nativeEvent.layout.height)}
-            style={edgeToEdge && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}
+            style={compact && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}
           >
           <MobileNavigation
             currentlyActive={appToRender}
@@ -120,7 +118,7 @@ function AppShell({insets}) {
           />
           </View>
         )}
-      </Container>
+      </SafeAreaView>
     </TransparentWindow>
   );
 }
