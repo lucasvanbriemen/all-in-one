@@ -15,11 +15,6 @@ import {player} from './components/music/player';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from './components/theme';
 
-// SwiftUI laid content out inside a 32pt top safe area, which cleared the
-// window buttons for free. React Native has no such inset on macOS, so the
-// traffic lights have to be cleared manually.
-const TITLEBAR_INSET = 48;
-
 const APPLICATIONS = {
   email: EmailPage,
   home: HomePage,
@@ -83,39 +78,17 @@ function AppShell({insets}) {
 
   return (
     <TransparentWindow>
-      <SafeAreaView
-        style={[
-          styles.appWrapper,
-          Platform.OS !== 'macos' && styles.noTitlebar,
-          compact && styles.compactWrapper,
-          Platform.OS === 'macos' && styles.titlebar,
-          compact && styles.edgeWrapper,
-        ]}
-      >
+      <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
         {!compact && (
-          <Sidebar
-            activeSidebarItem={activeSidebarItem}
-            setActiveSidebarItem={setActiveSidebarItem}
-            currentlyActive={appToRender}
-            setActiveApp={setAppToRender}
-          />
+          <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
         )}
 
         <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
         {compact && (
-          <View
-            pointerEvents="box-none"
-            onLayout={event => setNavigationHeight(event.nativeEvent.layout.height)}
-            style={compact && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}
-          >
-          <MobileNavigation
-            currentlyActive={appToRender}
-            setActiveApp={setAppToRender}
-            activeSidebarItem={activeSidebarItem}
-            setActiveSidebarItem={setActiveSidebarItem}
-          />
+          <View onLayout={event => setNavigationHeight(event.nativeEvent.layout.height)} style={compact && {position: 'absolute', bottom: insets.bottom + 8, left: insets.left + 8, right: insets.right + 8}}>
+          <MobileNavigation currentlyActive={appToRender} setActiveApp={setAppToRender} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem}/>
           </View>
         )}
       </SafeAreaView>
@@ -129,12 +102,9 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     gap: 16,
     flexDirection: 'row',
-    paddingTop: TITLEBAR_INSET,
   },
-  titlebar: { paddingTop: TITLEBAR_INSET },
   edgeWrapper: {padding: 0, paddingTop: 0, gap: 0},
   edgeContent: {padding: 0, paddingHorizontal: 0, borderRadius: 0},
-  noTitlebar: { paddingTop: 12 },
   compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
   compactContent: {
     paddingHorizontal: 12,
