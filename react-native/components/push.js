@@ -24,12 +24,7 @@ export const push = {
 
     const emitter = new NativeEventEmitter(native);
     const tokenSub = emitter.addListener('pushToken', ({token}) => {
-      api
-        .post('/device_tokens', {token, platform: Platform.OS})
-        .catch(error => console.warn('[push] token registration failed', error));
-    });
-    const errorSub = emitter.addListener('pushRegistrationError', ({message}) => {
-      console.warn('[push] registration failed:', message);
+      api.post('/device_tokens', {token, platform: Platform.OS})
     });
     const openedSub = emitter.addListener('pushOpened', payload => {
       onOpened?.(payload);
@@ -37,7 +32,6 @@ export const push = {
 
     return () => {
       tokenSub.remove();
-      errorSub.remove();
       openedSub.remove();
     };
   },

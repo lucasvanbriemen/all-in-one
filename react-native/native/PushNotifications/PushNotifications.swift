@@ -19,7 +19,6 @@ import AppKit
 @objc(PushNotifications)
 final class PushNotifications: RCTEventEmitter {
     static let tokenEvent = "pushToken"
-    static let errorEvent = "pushRegistrationError"
     static let openedEvent = "pushOpened"
 
     private static weak var shared: PushNotifications?
@@ -36,12 +35,11 @@ final class PushNotifications: RCTEventEmitter {
     }
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
-    @objc override func supportedEvents() -> [String]! { [Self.tokenEvent, Self.errorEvent, Self.openedEvent] }
+    @objc override func supportedEvents() -> [String]! { [Self.tokenEvent, Self.openedEvent] }
 
     @objc override func startObserving() {
         hasListeners = true
         if let token = Self.lastToken { sendEvent(withName: Self.tokenEvent, body: ["token": token]) }
-        if let error = Self.lastError { sendEvent(withName: Self.errorEvent, body: ["message": error]) }
         if let payload = Self.pendingOpen {
             sendEvent(withName: Self.openedEvent, body: payload)
             Self.pendingOpen = nil
@@ -67,7 +65,6 @@ final class PushNotifications: RCTEventEmitter {
 
     @objc static func didFailToRegister(error: Error) {
         lastError = error.localizedDescription
-        shared?.emit(errorEvent, ["message": error.localizedDescription])
     }
 
     fileprivate static func didOpen(userInfo: [AnyHashable: Any]) {
