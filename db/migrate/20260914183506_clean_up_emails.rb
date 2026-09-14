@@ -2,15 +2,16 @@ class CleanUpEmails < ActiveRecord::Migration[8.0]
   # Leftovers from the old Laravel email app. Nothing in this codebase reads
   # or writes any of these anymore; login is handled by login.ltvb.nl and
   # Solid Cache/Queue live in their own SQLite databases.
+  # Ordered children-first: tags and profiles reference profiles/users.
   UNUSED_TABLES = %w[
     attachments
     folders
     tags
+    sessions
+    profiles
+    users
     smtp_credentials
     system_info
-    users
-    profiles
-    sessions
     password_reset_tokens
     personal_access_tokens
     migrations
@@ -39,9 +40,12 @@ class CleanUpEmails < ActiveRecord::Migration[8.0]
       columns.each { |column| remove_column table, column, if_exists: true }
     end
 
+    # The old DB may carry constraints the schema dump does not show.
+    execute "SET FOREIGN_KEY_CHECKS = 0"
     UNUSED_TABLES.each do |table|
       drop_table table, if_exists: true
     end
+    execute "SET FOREIGN_KEY_CHECKS = 1"
   end
 
   def down
