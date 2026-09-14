@@ -60,14 +60,12 @@ final class PushNotifications: RCTEventEmitter {
 
     @objc static func didRegister(deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
-        NSLog("[PushNotifications] APNs device token: %@", token)
         lastToken = token
         lastError = nil
         shared?.emit(tokenEvent, ["token": token])
     }
 
     @objc static func didFailToRegister(error: Error) {
-        NSLog("[PushNotifications] APNs registration failed: %@", error.localizedDescription)
         lastError = error.localizedDescription
         shared?.emit(errorEvent, ["message": error.localizedDescription])
     }
@@ -99,12 +97,10 @@ final class PushNotifications: RCTEventEmitter {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error {
-                NSLog("[PushNotifications] authorization failed: %@", error.localizedDescription)
                 reject("permission_failed", error.localizedDescription, error)
                 return
             }
             center.getNotificationSettings { settings in
-                NSLog("[PushNotifications] authorization granted=%d status=%@", granted, Self.describe(settings.authorizationStatus))
                 if granted {
                     DispatchQueue.main.async { Self.registerForRemote() }
                 }
