@@ -49,8 +49,8 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
 const createStyles = colors => StyleSheet.create({
   navigation: {
     ...glass(colors, { variant: 'subtle' }),
-    borderRadius: 16,
-    padding: 6,
+    borderRadius: 48,
+    padding: 16,
     gap: 6,
   },
   sections: { gap: 6 },
@@ -63,7 +63,7 @@ const createStyles = colors => StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 48,
   },
   sectionText: { color: colors.onSurfaceVariant, fontSize: 14 },
   tabs: { flexDirection: 'row', gap: 4 },
@@ -72,7 +72,7 @@ const createStyles = colors => StyleSheet.create({
     minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12,
+    borderRadius: 48,
     paddingHorizontal: 4,
   },
   tabText: {

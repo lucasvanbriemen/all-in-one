@@ -57,7 +57,7 @@ function AppShell() {
           <ActiveApplication activeSidebarItem={activeSidebarItem} />
         </View>
         {compact && (
-          <View style={compact && {position: 'absolute', bottom: 8, left: 16, right: 16}}>
+          <View style={compact && {position: 'absolute', bottom: 12, left: 12, right: 12}}>
             <MobileNavigation currentlyActive={appToRender} setActiveApp={setAppToRender} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem}/>
           </View>
         )}
