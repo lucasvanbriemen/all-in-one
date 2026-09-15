@@ -9,23 +9,11 @@ import {useCompactLayout} from '../useCompactLayout';
 export function NowPlayingBanner() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const { get, set } = useAppContext();
+  const { get } = useAppContext();
 
   return (
     <View style={styles.content}>
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={[styles.image, compact && styles.compactImage]}/>
-
-      {get('music.now-playing.is-playing') && (
-        <Pressable onPress={() => player.pause()}>
-          <Text>Pause</Text>
-        </Pressable>
-      )}
-
-      {get('music.now-playing.is-playing') === false && (
-        <Pressable onPress={() => player.resume()}>
-          <Text>Resume</Text>
-        </Pressable>
-      )}
 
       <View> 
         <Text style={[styles.title, compact && styles.compactTitle]}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>

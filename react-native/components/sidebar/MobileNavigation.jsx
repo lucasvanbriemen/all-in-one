@@ -19,7 +19,7 @@ export function MobileNavigation() {
     })
   }, []);
 
-  const activeApp = get('app.activeApp') || 'home';
+  const activeApp = get('app.activeApp') || "home";
   const activeItem = useMemo(() => config[activeApp] ?? [], [config, activeApp]);
   useEffect(() => {
     if (activeItem.length && !activeItem.some(row => row.path === get('app.activeSidebarItem'))) {
