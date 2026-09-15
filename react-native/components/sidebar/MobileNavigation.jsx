@@ -4,10 +4,13 @@ import { glass, useThemedStyles } from '../theme';
 
 import {NavigationBlur} from './NavigationBlur';
 import { api } from '../api';
+import { useAppContext } from '../../context/AppContext';
 
 const title = name => name.charAt(0).toUpperCase() + name.slice(1);
 
-export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarItem, setActiveSidebarItem}) {
+export function MobileNavigation() {
+  const { set, get } = useAppContext();
+
   const styles = useThemedStyles(createStyles);
   const [config, setConfig] = useState({});
   useEffect(() => {
@@ -16,20 +19,20 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
     })
   }, []);
 
-  const activeItem = config[currentlyActive]
+  const activeItem = config[get('app.appToRender')] ?? "home";
   useEffect(() => {
-    if (activeItem?.length && !activeItem?.some(row => row.path === activeSidebarItem)) {
-      setActiveSidebarItem(activeItem[0].path);
+    if (activeItem?.length && !activeItem?.some(row => row.path === get('app.appToRender'))) {
+      set('app.appToRender', activeItem[0].path);
     }
-  }, [activeItem, activeSidebarItem, setActiveSidebarItem]);
+  }, [activeItem, get, set]);
 
   return (
     <View style={[styles.navigation, styles.blurredNavigation]}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
       <ScrollView horizontal contentContainerStyle={styles.sections}>
         {activeItem?.map(row => (
-          <Pressable key={row.path}onPress={() => setActiveSidebarItem(row.path)} style={[styles.section, row.path === activeSidebarItem && styles.selected]}>
-            <Text style={[ styles.sectionText, row.path === activeSidebarItem && styles.selectedText, ]}>
+          <Pressable key={row.path}onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
+            <Text style={[ styles.sectionText, row.path === get('app.activeSidebarItem') && styles.selectedText, ]}>
               {row.name}
             </Text>
           </Pressable>
@@ -37,8 +40,8 @@ export function MobileNavigation({currentlyActive, setActiveApp, activeSidebarIt
       </ScrollView>
       <View style={styles.tabs}>
         {config && Object.keys(config).map(app => (
-          <Pressable key={app} onPress={() => {setActiveSidebarItem(config[app]?.[0]?.path ?? null); setActiveApp(app);}} style={[styles.tab, app === currentlyActive && styles.selected]}>
-            <Text style={[styles.tabText, app === currentlyActive && styles.selectedText]}> {title(app)}</Text>
+          <Pressable key={app} onPress={() => {set('app.appToRender', config[app]?.[0]?.path ?? null); set('app.currentlyActive', app);}} style={[styles.tab, app === get('app.currentlyActive') && styles.selected]}>
+            <Text style={[styles.tabText, app === get('app.currentlyActive') && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
       </View>

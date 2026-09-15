@@ -9,7 +9,7 @@ import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
-export function HomePage({activeSidebarItem}) {
+export function HomePage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const [serverData, setServerData] = useState(null);
