@@ -49,25 +49,25 @@ function PushBridge() {
 }
 
 function AppShell() {
-  const [appToRender, setAppToRender] = useState(() => 'home');
-  const [activeSidebarItem, setActiveSidebarItem] = useState(null);
+  const {set, get} = useAppContext();
+
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[appToRender];
+  const ActiveApplication = APPLICATIONS[get("app.appToRender") || "home"];
   const compact = useCompactLayout();
 
   return (
     <TransparentWindow>
       <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
         {!compact && (
-          <Sidebar activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem} currentlyActive={appToRender} setActiveApp={setAppToRender} />
+          <Sidebar />
         )}
 
         <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
-          <ActiveApplication activeSidebarItem={activeSidebarItem} />
+          <ActiveApplication />
         </View>
         {compact && (
-          <View style={compact && {position: 'absolute', bottom: 12, left: 12, right: 12}}>
-            <MobileNavigation currentlyActive={appToRender} setActiveApp={setAppToRender} activeSidebarItem={activeSidebarItem} setActiveSidebarItem={setActiveSidebarItem}/>
+          <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}}>
+            <MobileNavigation />
           </View>
         )}
       </SafeAreaView>
