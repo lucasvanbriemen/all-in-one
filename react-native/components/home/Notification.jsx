@@ -22,6 +22,7 @@ export function Notification({notification}) {
 
     set('app.activeApp', sourceAsArray[0]);
     set('app.activeSidebarItem', sourceAsArray[1]);
+    set('email.selectedEmailId', sourceAsArray[2]);
   }
 
   if (isRead) return null;
