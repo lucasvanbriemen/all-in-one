@@ -49,10 +49,10 @@ function PushBridge() {
 }
 
 function AppShell() {
-  const {set, get} = useAppContext();
+  const {get} = useAppContext();
 
   const styles = useThemedStyles(createStyles);
-  const ActiveApplication = APPLICATIONS[get("app.appToRender") || "home"];
+  const ActiveApplication = APPLICATIONS[get("app.activeApp") || "home"];
   const compact = useCompactLayout();
 
   return (

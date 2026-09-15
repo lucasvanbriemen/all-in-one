@@ -3,20 +3,22 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {EmailListItem} from './EmailListItem';
 import {api} from '../api';
+import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
-export function EmailListing({activeSidebarItem, selectedEmail, onSelectEmail}) {
+export function EmailListing({selectedEmail, onSelectEmail}) {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
+  const { get } = useAppContext();
 
   useEffect(() => {
     api
-      .get('/email/' + activeSidebarItem)
+      .get('/email/' + get('app.activeSidebarItem'))
       .then(data => {
         setItems(data?.emails ?? []);
         onSelectEmail(null);
       })
-  }, [activeSidebarItem, onSelectEmail]);
+  }, [get, onSelectEmail]);
 
   return (
     <View style={styles.content}>

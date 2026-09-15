@@ -6,7 +6,7 @@ import {EmailListing} from './EmailListing';
 import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
-export function EmailPage({activeSidebarItem}) {
+export function EmailPage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   // `selection` is the sidebar's mailbox path; which email is open within that
@@ -16,7 +16,7 @@ export function EmailPage({activeSidebarItem}) {
   return (
     <View style={styles.content}>
       <View style={[styles.listing, compact && selectedEmail && styles.hidden]}>
-        <EmailListing activeSidebarItem={activeSidebarItem} selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
+        <EmailListing selectedEmail={selectedEmail} onSelectEmail={setSelectedEmail} />
       </View>
       <View style={[styles.body, compact && !selectedEmail && styles.hidden]}>
         {compact && (

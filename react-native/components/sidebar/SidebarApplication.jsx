@@ -1,13 +1,15 @@
 import {Animated, Easing} from 'react-native';
+import {AppProvider, useAppContext} from '../../context/AppContext';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect, useRef, useState} from 'react';
 
 import {SidebarRow} from './SidebarRow';
 
-export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, currentlyActive, setActiveApp, item, progress, app}) {
+export function SidebarApplication({item, progress, app}) {
   const styles = useThemedStyles(createStyles);
-  const isExpanded = currentlyActive === app;
+  const { get, set } = useAppContext();
+  const isExpanded = get('app.activeApp') === app;
 
   const [contentHeight, setContentHeight] = useState(0);
   const [titleHeight, setTitleHeight] = useState(0);
@@ -42,7 +44,7 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
     <View style={styles.appWrapper}>
       <Animated.View style={{height: animatedTitleHeight, opacity: titleOpacity, overflow: 'hidden'}}>
         <Pressable
-          onPress={() => setActiveApp(app)}
+          onPress={() => set('app.activeApp', app)}
           onLayout={e => setTitleHeight(e.nativeEvent.layout.height)}
           style={styles.measure}>
           <Text style={styles.title} numberOfLines={1}>{getAppTitle(app)}</Text>
@@ -53,7 +55,7 @@ export function SidebarApplication({activeSidebarItem, setActiveSidebarItem, cur
           onLayout={e => setContentHeight(e.nativeEvent.layout.height)}
           style={styles.measure}>
           {item.map(row => (
-            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && activeSidebarItem === row.path} onPress={() => { setActiveSidebarItem(row.path); setActiveApp(app); }} progress={progress} />
+            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} progress={progress} />
           ))}
         </View>
       </Animated.View>
