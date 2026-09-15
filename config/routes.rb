@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get "/email/:path", to: "emails#index", as: :mailbox
   get "/emails/:id", to: "emails#show", as: :email
+  post "/emails/:id/mark_as_read", to: "emails#mark_as_read", as: :mark_email_as_read
+
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
