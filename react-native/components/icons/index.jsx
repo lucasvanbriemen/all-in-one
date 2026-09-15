@@ -3,6 +3,7 @@ import {ChevronLeft} from './chevronLeft';
 import {ChevronRight} from './chevronRight';
 import {ChevronTop} from './chevronTop';
 import {CodeIcon} from './code';
+import {CrossIcon} from './cross';
 import {FilesIcon} from './files';
 import {GithubIcon} from './github';
 import {HomeIcon} from './home';
@@ -28,6 +29,7 @@ const ICONS = {
   git: GithubIcon,
   pathe: PatheIcon,
   code: CodeIcon,
+  cross: CrossIcon,
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,
   'chevron-top': ChevronTop,

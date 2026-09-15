@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {Icon} from '../icons';
 import {api} from '../api';
 
 export function Notification({notification}) {
@@ -18,21 +19,28 @@ export function Notification({notification}) {
 
   return (
     <View style={styles.notification}>
-      <Text style={styles.title}>{notification.title}</Text>
-      <Text style={styles.body}>{notification.body}</Text>
+      <View style={styles.text}>
+        <Text style={styles.title}>{notification.title}</Text>
+        <Text style={styles.body}>{notification.body}</Text>
+      </View>
 
       <Pressable onPress={markAsRead}>
-        <Text style={styles.markAsRead}>Mark as Read</Text>
+        <Icon name="cross" size={24} color={styles.markAsRead.color} />
       </Pressable>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  text: {
+    flex: 1,
+  },
   notification: {
     ...glass(colors),
     padding: 16,
     borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
   },
   title: {
@@ -43,8 +51,6 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 14,
   },
   markAsRead: {
-    fontSize: 14,
     color: colors.primary,
-    marginTop: 8,
   },
 });
