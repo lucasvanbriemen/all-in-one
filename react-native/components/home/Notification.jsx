@@ -4,9 +4,11 @@ import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
+import {useAppContext} from '../../context/AppContext';
 
 export function Notification({notification}) {
   const styles = useThemedStyles(createStyles);
+  const { get, set } = useAppContext();
 
   const [isRead, setIsRead] = useState(notification.read);
 
@@ -15,14 +17,21 @@ export function Notification({notification}) {
     setIsRead(true);
   }
 
+  async function openNotification() {
+    const sourceAsArray = notification.source.split('.');
+
+    set('app.activeApp', sourceAsArray[0]);
+    set('app.activeSidebarItem', sourceAsArray[1]);
+  }
+
   if (isRead) return null;
 
   return (
     <View style={styles.notification}>
-      <View style={styles.text}>
+      <Pressable style={styles.text} onPress={openNotification}>
         <Text style={styles.title}>{notification.title}</Text>
         <Text style={styles.body}>{notification.body}</Text>
-      </View>
+      </Pressable>
 
       <Pressable onPress={markAsRead}>
         <Icon name="cross" size={24} color={styles.markAsRead.color} />
