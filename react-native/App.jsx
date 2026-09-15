@@ -58,13 +58,12 @@ function AppShell() {
   return (
     <TransparentWindow>
       <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
-        {!compact && (
-          <Sidebar />
-        )}
+        {!compact && <Sidebar />}
 
         <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
           <ActiveApplication />
         </View>
+
         {compact && (
           <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}}>
             <MobileNavigation />
