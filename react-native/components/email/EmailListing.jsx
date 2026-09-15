@@ -28,7 +28,7 @@ export function EmailListing() {
               <Text style={styles.title}>{item.date}</Text>
             )}
 
-            <EmailListItem item={item} isSelected={get('email.selectedEmailId') === item.id} onPress={() => set('email.selectedEmailId', item.id)} />
+            <EmailListItem item={item} isSelected={get('email.selectedEmailId') == item.id} onPress={() => set('email.selectedEmailId', item.id)} />
           </React.Fragment>
         ))}
       </ScrollView>
