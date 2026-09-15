@@ -19,7 +19,7 @@ export function MobileNavigation() {
     })
   }, []);
 
-  const activeItem = config[get('app.appToRender')] ?? "home";
+  const activeItem = [];
   useEffect(() => {
     if (activeItem?.length && !activeItem?.some(row => row.path === get('app.appToRender'))) {
       set('app.appToRender', activeItem[0].path);
@@ -40,8 +40,8 @@ export function MobileNavigation() {
       </ScrollView>
       <View style={styles.tabs}>
         {config && Object.keys(config).map(app => (
-          <Pressable key={app} onPress={() => {set('app.appToRender', config[app]?.[0]?.path ?? null); set('app.currentlyActive', app);}} style={[styles.tab, app === get('app.currentlyActive') && styles.selected]}>
-            <Text style={[styles.tabText, app === get('app.currentlyActive') && styles.selectedText]}> {title(app)}</Text>
+          <Pressable key={app} onPress={() => {set('app.activeSidebarItem', config[app]?.[0]?.path ?? null); set('app.appToRender', app);}} style={[styles.tab, app === get('app.appToRender') && styles.selected]}>
+            <Text style={[styles.tabText, app === get('app.appToRender') && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
       </View>
