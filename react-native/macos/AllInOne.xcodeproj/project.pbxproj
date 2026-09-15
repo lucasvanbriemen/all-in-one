@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1C0000000000000000000B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000B1 /* AppIcon.icon */; };
 		5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5142014C2437B4B30078DB4F /* AppDelegate.mm */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A1C0000000000000000000B1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = "<group>"; };
 		0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VisualEffectBackgroundManager.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.debug.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
+				A1C0000000000000000000B1 /* AppIcon.icon */,
 				514201532437B4B40078DB4F /* Main.storyboard */,
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
@@ -241,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				514201522437B4B40078DB4F /* Assets.xcassets in Resources */,
+				A1C0000000000000000000B2 /* AppIcon.icon in Resources */,
 				514201552437B4B40078DB4F /* Main.storyboard in Resources */,
 				A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */,
 			);
