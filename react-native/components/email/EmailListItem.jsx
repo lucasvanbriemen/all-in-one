@@ -37,6 +37,7 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors, {tone: "surfaceAt3"}),
   },
   cardSelected: {
+    ...glass(colors, {tone: "primaryContainer"}),
     borderColor: colors.primary,
     borderTopColor: colors.primary,
     borderWidth: 2,
