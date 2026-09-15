@@ -2,7 +2,6 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
-import React from 'react';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
