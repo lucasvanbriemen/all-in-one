@@ -16,6 +16,8 @@ export function EmailContent({email}) {
     api.get('/emails/' + emailId).then(data => {
       setDetail(data);
     })
+
+    api.post('/emails/' + emailId + '/mark_as_read');
   }, [emailId]);
 
   if (!email) {

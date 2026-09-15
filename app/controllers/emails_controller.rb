@@ -21,10 +21,8 @@ class EmailsController < ApplicationController
 
   def mark_as_read
     @email = Email.find(params[:id])
-    group = params[:path]
 
-    @notification = Notification.where(source: "email.#{group}.#{@email.id}")
-    @notification.update_all(read: true)
+    Notification.where("source LIKE ?", "email.%.#{@email.id}").update_all(read: true)
   end
 
   def show
