@@ -31,5 +31,13 @@ target 'AllInOne' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Xcode 27 rejects deployment targets below iOS 15; lift any pod that sets a lower one.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |bc|
+        cur = bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+        bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = min_ios_version_supported if cur && cur.to_f < min_ios_version_supported.to_f
+      end
+    end
   end
 end
