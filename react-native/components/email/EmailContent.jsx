@@ -4,11 +4,13 @@ import {glass, useThemedStyles} from '../theme';
 
 import {EmailBody} from './EmailBody';
 import {api} from '../api';
+import {useAppContext} from '../../context/AppContext';
 
-export function EmailContent({email}) {
+export function EmailContent() {
   const styles = useThemedStyles(createStyles);
   const [detail, setDetail] = useState(null);
-  const emailId = email?.id;
+  const { get } = useAppContext();
+  const emailId = get('email.selectedEmailId');
 
   useEffect(() => {
     if (!emailId) return;
@@ -20,7 +22,7 @@ export function EmailContent({email}) {
     api.post('/emails/' + emailId + '/mark_as_read');
   }, [emailId]);
 
-  if (!email) {
+  if (!get('email.selectedEmailId')) {
     return (
       <View style={styles.placeholder}>
         <Text style={styles.placeholderText}>No email selected</Text>
@@ -31,9 +33,9 @@ export function EmailContent({email}) {
   return (
     <View style={styles.content}>
       <View style={styles.header}>
-        <Image source={{uri: email.sender_image_url}} style={styles.senderImage} />
+        <Image source={{uri: detail?.sender_image_url}} style={styles.senderImage} />
         <View style={styles.headerInfo}>
-          <Text style={styles.subject}>{email.subject}</Text>
+          <Text style={styles.subject}>{detail?.subject}</Text>
           {detail && (
             <>
               <View style={styles.meta}>

@@ -6,19 +6,18 @@ import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
-export function EmailListing({selectedEmail, onSelectEmail}) {
+export function EmailListing() {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
-  const { get } = useAppContext();
+  const { get, set } = useAppContext();
 
   useEffect(() => {
     api
       .get('/email/' + get('app.activeSidebarItem'))
       .then(data => {
         setItems(data?.emails ?? []);
-        onSelectEmail(null);
       })
-  }, [get, onSelectEmail]);
+  }, [get]);
 
   return (
     <View style={styles.content}>
@@ -29,11 +28,7 @@ export function EmailListing({selectedEmail, onSelectEmail}) {
               <Text style={styles.title}>{item.date}</Text>
             )}
 
-            <EmailListItem
-              item={item}
-              isSelected={selectedEmail?.id === item.id}
-              onPress={() => onSelectEmail(item)}
-            />
+            <EmailListItem item={item} isSelected={get('email.selectedEmailId') === item.id} onPress={() => set('email.selectedEmailId', item.id)} />
           </React.Fragment>
         ))}
       </ScrollView>
