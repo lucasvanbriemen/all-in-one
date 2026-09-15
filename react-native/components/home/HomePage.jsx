@@ -11,7 +11,6 @@ import {useThemedStyles} from '../theme';
 
 export function HomePage({activeSidebarItem}) {
   const compact = useCompactLayout();
-  const NotificationContainer = compact ? View : ScrollView;
   const styles = useThemedStyles(createStyles);
   const [serverData, setServerData] = useState(null);
   const [notifications, setNotifications] = useState(null);
@@ -27,7 +26,7 @@ export function HomePage({activeSidebarItem}) {
   }, []);
 
   return (
-    <ScrollView style={styles.content}>
+    <View style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData.map((data, index) => (
           <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level}/>
@@ -38,19 +37,18 @@ export function HomePage({activeSidebarItem}) {
 
       <View style={[styles.mainContent, compact && styles.compactMain]}>
         <View style={compact ? undefined : styles.notificationsContainer}>
-          <NotificationContainer>
-            {notifications &&
-              notifications.map((notification, index) => (
+          <ScrollView>
+            {notifications && notifications.map((notification, index) => (
                 <Notification key={index} notification={notification} />
               ))}
-          </NotificationContainer>
+          </ScrollView>
         </View>
 
         <View style={styles.nowPlaying}>
           <NowPlayingCard />
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
