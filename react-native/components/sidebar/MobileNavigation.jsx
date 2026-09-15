@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { glass, useThemedStyles } from '../theme';
 
 import {NavigationBlur} from './NavigationBlur';
@@ -19,10 +19,11 @@ export function MobileNavigation() {
     })
   }, []);
 
-  const activeItem = [];
+  const activeApp = get('app.activeApp') || 'home';
+  const activeItem = useMemo(() => config[activeApp] ?? [], [config, activeApp]);
   useEffect(() => {
-    if (activeItem?.length && !activeItem?.some(row => row.path === get('app.appToRender'))) {
-      set('app.appToRender', activeItem[0].path);
+    if (activeItem.length && !activeItem.some(row => row.path === get('app.activeSidebarItem'))) {
+      set('app.activeSidebarItem', activeItem[0].path);
     }
   }, [activeItem, get, set]);
 
@@ -30,8 +31,8 @@ export function MobileNavigation() {
     <View style={[styles.navigation, styles.blurredNavigation]}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
       <ScrollView horizontal contentContainerStyle={styles.sections}>
-        {activeItem?.map(row => (
-          <Pressable key={row.path}onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
+        {activeItem.map(row => (
+          <Pressable key={row.path} onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
             <Text style={[ styles.sectionText, row.path === get('app.activeSidebarItem') && styles.selectedText, ]}>
               {row.name}
             </Text>
@@ -40,8 +41,8 @@ export function MobileNavigation() {
       </ScrollView>
       <View style={styles.tabs}>
         {config && Object.keys(config).map(app => (
-          <Pressable key={app} onPress={() => {set('app.activeSidebarItem', config[app]?.[0]?.path ?? null); set('app.appToRender', app);}} style={[styles.tab, app === get('app.appToRender') && styles.selected]}>
-            <Text style={[styles.tabText, app === get('app.appToRender') && styles.selectedText]}> {title(app)}</Text>
+          <Pressable key={app} onPress={() => {set('app.activeSidebarItem', config[app]?.[0]?.path ?? null); set('app.activeApp', app);}} style={[styles.tab, app === get('app.activeApp') && styles.selected]}>
+            <Text style={[styles.tabText, app === get('app.activeApp') && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
       </View>
