@@ -17,7 +17,7 @@ export function SearchSongs() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    api.get('/music?term=' + search).then(response => {
+    api.get('/music/search?term=' + search).then(response => {
       setLikedSongs(response);
     });
   }, [search]);
