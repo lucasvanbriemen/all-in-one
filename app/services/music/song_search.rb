@@ -47,9 +47,6 @@ module Music
         image_url: hit["artworkUrl100"] || Song::PLACEHOLDER_IMAGE,
         duration: track["duration"]
       }
-    rescue StandardError => e
-      Rails.logger.warn("[music] could not resolve ISRC for #{artist} - #{title}: #{e.message}")
-      nil
     end
   end
 end
