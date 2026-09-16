@@ -1,8 +1,8 @@
 module Config
   CONFIG = {
-    home: MailboxConfig::GROUPS,
+    home: HomepageConfig::GROUPS,
     code: CodeConfig::GROUPS,
     email: MailboxConfig::GROUPS,
-    music: MailboxConfig::GROUPS
+    music: MusicConfig::GROUPS
   }.freeze
 end
