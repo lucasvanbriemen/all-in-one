@@ -20,7 +20,18 @@ class MusicController < ApplicationController
     end
     return [] unless response.is_a?(Net::HTTPOK)
 
-    render json: JSON.parse(response.body)["results"] || []
+    raw_results = JSON.parse(response.body)["results"] || []
+
+    results = raw_results.map do |raw_result|
+      {
+        title: raw_result["trackName"],
+        artist: raw_result["artistName"],
+        album: raw_result["collectionName"],
+        image_url: raw_result["artworkUrl100"]
+      }
+    end
+
+    render json: results
   end
 
   def show
