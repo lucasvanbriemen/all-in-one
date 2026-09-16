@@ -1,4 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {useEffect, useState} from 'react';
 
 import {LikedSongs} from './LikedSongs';
 import {SearchSongs} from './SearchSongs';
@@ -12,13 +13,19 @@ export function MusicPage() {
 
   const pages = {
     search: <SearchSongs />,
-    liked: <LikedSongs />,
+    songs: <LikedSongs />,
   };
+
+  const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "songs");
+
+  useEffect(() => {
+    setSidebarItem(get("app.activeSidebarItem") ?? "songs");
+  }, [get]);
 
 
   return (
     <View style={styles.content}>
-      {pages[get("app.activeSideBarItem")]}
+      {pages[sidebarItem]}
     </View>
   );
 }
