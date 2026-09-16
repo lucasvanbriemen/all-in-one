@@ -14,18 +14,20 @@ export function SearchSongs() {
   const {set} = useAppContext();
 
   const [likedSongs, setLikedSongs] = useState([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    api.get('/music').then(response => {
+    api.get('/music?term=' + search).then(response => {
       setLikedSongs(response);
     });
-  }, []);
+  }, [search]);
 
   return (
     <View style={styles.content}>
       <TextInput
         style={styles.searchInput}
         placeholder="Search songs..."
+        onChangeText={text => setSearch(text)}
       />
 
       {likedSongs.map((song, index) => (
