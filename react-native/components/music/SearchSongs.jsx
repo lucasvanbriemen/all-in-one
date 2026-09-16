@@ -13,12 +13,12 @@ export function SearchSongs() {
 
   const {set} = useAppContext();
 
-  const [likedSongs, setLikedSongs] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     api.get('/music/search?term=' + search).then(response => {
-      setLikedSongs(response);
+      setSearchResults(response);
     });
   }, [search]);
 
@@ -30,8 +30,8 @@ export function SearchSongs() {
         onChangeText={text => setSearch(text)}
       />
 
-      {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
+      {searchResults.map((song, index) => (
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(searchResults, set, index)} />
       ))}
     </View>
   );
@@ -50,11 +50,10 @@ const createStyles = colors => StyleSheet.create({
     color: colors.outline
   },
   searchInput: {
-    height: 40,
     borderColor: colors.outline,
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    padding: 8,
     marginBottom: 16,
     color: colors.outline,
   },
