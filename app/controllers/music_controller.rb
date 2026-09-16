@@ -8,6 +8,9 @@ class MusicController < ApplicationController
     render json: @songs
   end
 
+  def search
+  end
+
   def show
     isrc = params[:isrc].to_s
     Music::SongDownloader.ensure_downloaded(isrc)

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
+  get "/music/search", to: "music#search", as: :search
   get "/get-mp3/:isrc", to: "music#show", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
