@@ -1,20 +1,16 @@
 module MusicConfig
   GROUPS = [
     {
-      path: "home",
-      name: "Home"
+      path: "songs",
+      name: "Songs"
     },
     {
-      path: "work",
-      name: "Work"
+      path: "search",
+      name: "Search"
     },
     {
-      path: "github",
-      name: "GitHub"
-    },
-    {
-      path: "pathe",
-      name: "Pathe"
+      path: "stats",
+      name: "Statistics"
     }
   ].freeze
 end
