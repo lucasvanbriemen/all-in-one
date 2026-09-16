@@ -12,6 +12,10 @@ module MailboxConfig
     "ntfy@ltvb.nl"
   ].freeze
 
+  IGNORED_EMAIL_SUBJECTS_FOR_NOTIFICATIONS = [
+    "shared the password"
+  ].freeze
+
   GROUPS = [
     {
       path: "home",

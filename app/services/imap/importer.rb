@@ -138,6 +138,8 @@ module Imap
       group = groups.find { |g| Email.in_group(g[:path]).exists?(id: email.id) }
       return unless group && group[:send_notifications]
 
+      return if MailboxConfig::IGNORED_EMAIL_SUBJECTS_FOR_NOTIFICATIONS.any? { |subject| email.subject.include?(subject) }
+
       Notification.create!(
         title: email.subject,
         body: "You have received a new email from #{email.sender_name}",
