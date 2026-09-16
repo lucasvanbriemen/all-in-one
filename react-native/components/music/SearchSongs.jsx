@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {NowPlayingBanner} from './NowPlayingBanner';
@@ -23,11 +23,10 @@ export function SearchSongs() {
 
   return (
     <View style={styles.content}>
-      <NowPlayingBanner />
-
-      <Pressable onPress={() => player.playPlaylist(likedSongs, set)}>
-        <Text>Play All</Text>
-      </Pressable>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search songs..."
+      />
 
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
@@ -47,5 +46,14 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 16,
     color: colors.outline
+  },
+  searchInput: {
+    height: 40,
+    borderColor: colors.outline,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    color: colors.outline,
   },
 });
