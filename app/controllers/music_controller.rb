@@ -1,7 +1,4 @@
 class MusicController < ApplicationController
-  BASE_URL = "https://itunes.apple.com/search"
-  TIMEOUT_SECONDS = 5
-
   def new
   end
 
@@ -12,26 +9,10 @@ class MusicController < ApplicationController
   end
 
   def search
-    uri = URI(BASE_URL)
-    uri.query = URI.encode_www_form(term: params[:term].to_s, entity: "song", country: "NL", limit: 30)
+    term = params[:term].to_s.strip
+    return render json: [] if term.empty?
 
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: TIMEOUT_SECONDS, read_timeout: TIMEOUT_SECONDS) do |http|
-      http.request(Net::HTTP::Get.new(uri))
-    end
-    return [] unless response.is_a?(Net::HTTPOK)
-
-    raw_results = JSON.parse(response.body)["results"] || []
-
-    results = raw_results.map do |raw_result|
-      {
-        title: raw_result["trackName"],
-        artist: raw_result["artistName"],
-        album: raw_result["collectionName"],
-        image_url: raw_result["artworkUrl100"]
-      }
-    end
-
-    render json: results
+    render json: Music::SongSearch.new.search(term)
   end
 
   def show

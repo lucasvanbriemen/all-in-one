@@ -13,6 +13,10 @@ module Music
       request("/album/#{id}")
     end
 
+    def search_tracks(term, limit: 30)
+      request("/search/track?#{URI.encode_www_form(q: term, limit: limit)}")["data"] || []
+    end
+
     private
 
     def request(path)
