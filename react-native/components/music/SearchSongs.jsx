@@ -1,7 +1,6 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {NowPlayingBanner} from './NowPlayingBanner';
 import {Song} from './Song';
 import {api} from '../api';
 import {player} from './player';
@@ -17,10 +16,15 @@ export function SearchSongs() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    api.get('/music/search?term=' + search).then(response => {
+    const timer = setTimeout(() => searchSongs(search), 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  function searchSongs(term) {
+    api.get('/music/search?term=' + term).then(response => {
       setSearchResults(response);
     });
-  }, [search]);
+  }
 
   return (
     <View style={styles.content}>
