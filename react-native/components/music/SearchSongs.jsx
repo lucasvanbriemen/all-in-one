@@ -5,10 +5,13 @@ import {Song} from './Song';
 import {api} from '../api';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
+import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function SearchSongs() {
   const styles = useThemedStyles(createStyles);
+
+  const isCompact = useCompactLayout();
 
   const {set} = useAppContext();
 
@@ -29,7 +32,7 @@ export function SearchSongs() {
   return (
     <View style={styles.content}>
       <TextInput
-        style={styles.searchInput}
+        style={[styles.searchInput, isCompact && styles.searchInputCompact]}
         placeholder="Search songs..."
         onChangeText={text => setSearch(text)}
       />
@@ -58,7 +61,12 @@ const createStyles = colors => StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,
-    marginBottom: 16,
+    marginVertical: 16,
     color: colors.outline,
+    width: '50%',
+    alignSelf: 'center',
+  },
+  searchInputCompact: {
+    width: '100%',
   },
 });
