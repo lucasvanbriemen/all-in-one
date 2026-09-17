@@ -14,6 +14,7 @@ export function Song({song, isEven, onClick}) {
       <View> 
         <Text style={styles.title}>{song.title}</Text>
         <Text style={styles.artist}>{song.artist}</Text>
+        <Text style={styles.isLiked}>{song.is_liked ? 'Liked' : 'Not Liked'}</Text>
       </View>
     </Pressable>
   );
@@ -48,5 +49,9 @@ const createStyles = colors => StyleSheet.create({
   },
   evenBackground: {
     ...glass(colors),
+  },
+  isLiked: {
+    fontSize: 32,
+    color: colors.onSurfaceVariant,
   },
 });
