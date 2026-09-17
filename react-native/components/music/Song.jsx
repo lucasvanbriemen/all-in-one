@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
@@ -9,26 +10,29 @@ export function Song({song, isEven, onClick}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
+  const [isLiked, setIsLiked] = useState(song.is_liked);
 
   function toggleLike() {
-    song.is_liked = !song.is_liked;
+    setIsLiked(liked => !liked);
 
-    api.post(`/songs/${song.isrc}/toggle-like`);
+    api.post(`/music/${song.isrc}/toggle-liked`).catch(e => console.warn(e));
   }
 
   return (
-    <Pressable style={[styles.container, compact && styles.compact, isEven && styles.evenBackground]} onPress={() => onClick()}>
-      <Image source={{uri: song.image_url}} style={styles.image} />
+    <View style={[styles.container, compact && styles.compact, isEven && styles.evenBackground]}>
+      <Pressable style={styles.pressable} onPress={() => onClick()}>
+        <Image source={{uri: song.image_url}} style={styles.image} />
 
-      <View style={styles.textContainer}> 
-        <Text style={styles.title}>{song.title}</Text>
-        <Text style={styles.artist}>{song.artist}</Text>
-      </View>
-
-      <Pressable style={[styles.likeButton, song.is_liked && styles.isLiked]} onPress={toggleLike}>
-        <Icon name={song.is_liked ? "heart" : "heart-outline"} size={16} color={song.is_liked ? colors.onPrimary : colors.onSurfaceVariant} />
+        <View style={styles.textContainer}> 
+          <Text style={styles.title}>{song.title}</Text>
+          <Text style={styles.artist}>{song.artist}</Text>
+        </View>
       </Pressable>
-    </Pressable>
+
+      <Pressable style={[styles.likeButton, isLiked && styles.isLiked]} onPress={toggleLike}>
+        <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onPrimary : colors.onSurfaceVariant} />
+      </Pressable>
+    </View>
   );
 }
 
@@ -72,5 +76,11 @@ const createStyles = colors => StyleSheet.create({
   },
   isLiked: {
     backgroundColor: colors.primary,
+  },
+  pressable: {
+    flex: 1,
+    gap: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

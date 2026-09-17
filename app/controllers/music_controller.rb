@@ -18,7 +18,8 @@ class MusicController < ApplicationController
   def toggle_favorite
     song = Music::Song.find(params[:id])
     song.toggle_favorite!
-    head :ok
+
+    render json: { success: true }
   end
 
   def show
