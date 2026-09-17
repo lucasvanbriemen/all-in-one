@@ -30,7 +30,7 @@ export function Song({song, isEven, onClick}) {
       </Pressable>
 
       <Pressable style={[styles.likeButton, isLiked && styles.isLiked]} onPress={toggleLike}>
-        <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onPrimary : colors.onSurfaceVariant} />
+        <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onSecondary : colors.onSurfaceVariant} />
       </Pressable>
     </View>
   );
@@ -75,7 +75,7 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
   },
   isLiked: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
   },
   pressable: {
     flex: 1,
