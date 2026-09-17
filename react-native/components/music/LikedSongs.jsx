@@ -1,7 +1,6 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {NowPlayingBanner} from './NowPlayingBanner';
 import {Song} from './Song';
 import {api} from '../api';
 import {player} from './player';
