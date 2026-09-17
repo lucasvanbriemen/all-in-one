@@ -6,6 +6,8 @@ import {CodeIcon} from './code';
 import {CrossIcon} from './cross';
 import {FilesIcon} from './files';
 import {GithubIcon} from './github';
+import {HeartIcon} from './heart';
+import {HeartOutlineIcon} from './heartOutline';
 import {HomeIcon} from './home';
 import {LastIcon} from './last';
 import {NextIcon} from './next';
@@ -40,6 +42,8 @@ const ICONS = {
   pause: PauseIcon,
   next: NextIcon,
   last: LastIcon,
+  heart: HeartIcon,
+  'heart-outline': HeartOutlineIcon,
 };
 
 export function Icon({name, size, color}) {
