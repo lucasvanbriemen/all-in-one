@@ -15,6 +15,12 @@ class MusicController < ApplicationController
     render json: Music::SongSearch.new.search(term)
   end
 
+  def toggle_favorite
+    song = Music::Song.find(params[:id])
+    song.toggle_favorite!
+    head :ok
+  end
+
   def show
     isrc = params[:isrc].to_s
     Music::SongDownloader.ensure_downloaded(isrc)
