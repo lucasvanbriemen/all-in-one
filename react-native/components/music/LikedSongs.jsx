@@ -24,7 +24,7 @@ export function LikedSongs() {
 
   return (
     <View style={styles.content}>
-      <View style={[styles.details && isCompact && styles.detailsCompact]}>
+      <View style={[styles.details, isCompact && styles.detailsCompact]}>
         <Text style={styles.greeting}>Liked Songs</Text>
         <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
         <Pressable onPress={() => player.playPlaylist(likedSongs, set)} style={styles.playAllButton}>
