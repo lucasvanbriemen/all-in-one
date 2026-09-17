@@ -39,13 +39,17 @@ module Music
       expected = hit["trackTimeMillis"].to_f / 1000
       track = candidates.find { |t| (t["duration"].to_f - expected).abs <= DURATION_TOLERANCE_SECONDS } || candidates.first
 
+      # existing song?
+      existing = Song.find_by(isrc: track["isrc"])
+
       {
         isrc: track["isrc"],
         title: title,
         artist: artist,
         album: hit["collectionName"],
         image_url: hit["artworkUrl100"] || Song::PLACEHOLDER_IMAGE,
-        duration: track["duration"]
+        duration: track["duration"],
+        is_liked: existing&.is_liked || false
       }
     end
   end
