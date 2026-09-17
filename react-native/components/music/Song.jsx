@@ -1,12 +1,20 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {glass, useTheme, useThemedStyles} from '../theme';
 
-import {Icon} from '../Icon';
+import {Icon} from '../icons';
+import {api} from '../api';
 import {useCompactLayout} from '../useCompactLayout';
 
 export function Song({song, isEven, onClick}) {
   const compact = useCompactLayout();
+  const colors = useTheme();
   const styles = useThemedStyles(createStyles);
+
+  function toggleLike() {
+    song.is_liked = !song.is_liked;
+
+    api.post(`/songs/${song.isrc}/toggle-like`);
+  }
 
   return (
     <Pressable style={[styles.container, compact && styles.compact, isEven && styles.evenBackground]} onPress={() => onClick()}>
@@ -17,8 +25,8 @@ export function Song({song, isEven, onClick}) {
         <Text style={styles.artist}>{song.artist}</Text>
       </View>
 
-      <Pressable style={[styles.likeButton, song.is_liked && styles.isLiked]}>
-        <Icon name={song.is_liked ? "heart" : "heart-outline"} size={32} color={song.is_liked ? colors.onSurfaceVariant : colors.onSurfaceVariant} />
+      <Pressable style={[styles.likeButton, song.is_liked && styles.isLiked]} onPress={toggleLike}>
+        <Icon name={song.is_liked ? "heart" : "heart-outline"} size={16} color={song.is_liked ? colors.onPrimary : colors.onSurfaceVariant} />
       </Pressable>
     </Pressable>
   );
@@ -54,13 +62,15 @@ const createStyles = colors => StyleSheet.create({
   evenBackground: {
     ...glass(colors),
   },
-  isLiked: {
-    fontSize: 32,
-    color: colors.onSurfaceVariant,
+  textContainer: {
+    flex: 1,
   },
   likeButton: {
     padding: 8,
     borderRadius: 8,
     ...glass(colors),
+  },
+  isLiked: {
+    backgroundColor: colors.primary,
   },
 });
