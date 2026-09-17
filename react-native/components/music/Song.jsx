@@ -1,10 +1,10 @@
-import {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
 import {useCompactLayout} from '../useCompactLayout';
+import {useState} from 'react';
 
 export function Song({song, isEven, onClick}) {
   const compact = useCompactLayout();
@@ -15,7 +15,7 @@ export function Song({song, isEven, onClick}) {
   function toggleLike() {
     setIsLiked(liked => !liked);
 
-    api.post(`/music/${song.isrc}/toggle-liked`).catch(e => console.warn(e));
+    api.post(`/music/${song.isrc}/toggle-liked`);
   }
 
   return (
