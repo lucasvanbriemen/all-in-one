@@ -5,10 +5,12 @@ import {Song} from './Song';
 import {api} from '../api';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
+import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function LikedSongs() {
   const styles = useThemedStyles(createStyles);
+  const isCompact = useCompactLayout();
 
   const {set} = useAppContext();
 
@@ -22,7 +24,7 @@ export function LikedSongs() {
 
   return (
     <View style={styles.content}>
-      <View style={styles.details}>
+      <View style={[styles.details && isCompact && styles.detailsCompact]}>
         <Text style={styles.greeting}>Liked Songs</Text>
         <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
         <Pressable onPress={() => player.playPlaylist(likedSongs, set)} style={styles.playAllButton}>
@@ -63,5 +65,9 @@ const createStyles = colors => StyleSheet.create({
     marginVertical: 24,
     width: '50%',
     marginLeft: '25%',
+  },
+  detailsCompact: {
+    width: '100%',
+    marginLeft: '0%',
   }
 });
