@@ -39,7 +39,6 @@ module Music
       expected = hit["trackTimeMillis"].to_f / 1000
       track = candidates.find { |t| (t["duration"].to_f - expected).abs <= DURATION_TOLERANCE_SECONDS } || candidates.first
 
-      # existing song?
       existing = Song.find_by(isrc: track["isrc"])
 
       {
