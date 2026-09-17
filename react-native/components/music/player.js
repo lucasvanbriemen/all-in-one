@@ -22,15 +22,14 @@ export const player = {
     // If we have no specific starting index, shuffle the songs first.
     if (atIndex == null) {
       songs.sort(() => Math.random() - 0.5);
+      atIndex = 0;
     }
 
-    const startPlayingAtIndex = atIndex !== null ? atIndex : 0;
+    const songToPlay = songs[atIndex];
 
-    const songToPlay = songs[startPlayingAtIndex];
+    set('music.last-songs', songs.slice(0, atIndex));
 
-    set('music.last-songs', songs.slice(0, startPlayingAtIndex));
-
-    let songsToCome = songs.slice(startPlayingAtIndex + 1);
+    let songsToCome = songs.slice(atIndex + 1);
     songsToCome.sort(() => Math.random() - 0.5);
 
     set('music.queue', songsToCome);
