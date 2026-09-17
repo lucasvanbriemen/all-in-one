@@ -22,7 +22,12 @@ export const player = {
     const songToPlay = songs[atIndex];
 
     set('music.last-songs', songs.slice(0, atIndex));
-    set('music.queue', songs.slice(atIndex + 1));
+
+    let songsToCome = songs.slice(atIndex + 1);
+    songsToCome.sort(() => Math.random() - 0.5);
+
+    set('music.queue', songsToCome);
+
     await player.play(songToPlay, set);
   },
 
