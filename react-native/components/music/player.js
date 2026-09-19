@@ -87,7 +87,7 @@ export const player = {
     if (!results || results.length === 0) {
       return;
     }
-    await player.playPlaylist(results, set, 0);
+    await player.play(results[0], set);
   },
 
   async pause() {
