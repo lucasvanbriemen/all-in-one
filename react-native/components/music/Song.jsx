@@ -6,7 +6,7 @@ import {api} from '../api';
 import {useCompactLayout} from '../useCompactLayout';
 import {useState} from 'react';
 
-export function Song({song, isEven, onClick}) {
+export function Song({song, isEven, onClick, rightLabel = null}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -29,9 +29,16 @@ export function Song({song, isEven, onClick}) {
         </View>
       </Pressable>
 
-      <Pressable style={[styles.likeButton, isLiked && styles.isLiked]} onPress={toggleLike}>
-        <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onSecondary : colors.onSurfaceVariant} />
-      </Pressable>
+      {!rightLabel && (
+        <Pressable style={[styles.likeButton, isLiked && styles.isLiked]} onPress={toggleLike}>
+          <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onSecondary : colors.onSurfaceVariant} />
+        </Pressable>
+      )}
+      {rightLabel && (
+        <View style={styles.rightLabelContainer}>
+          <Text style={styles.rightLabel}>{rightLabel}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -82,5 +89,14 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  rightLabelContainer: {
+    padding: 8,
+    borderRadius: 8,
+    ...glass(colors),
+  },
+  rightLabel: {
+    fontSize: 14,
+    color: colors.onSurfaceVariant,
   },
 });
