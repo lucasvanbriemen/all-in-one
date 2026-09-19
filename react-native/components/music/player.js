@@ -111,7 +111,8 @@ export const player = {
       if (command === 'next') return player.next(set, get);
       if (command === 'previous') return player.previous(set, get);
     });
-    // iOS only; the module is not compiled into the macOS target.
+
+    // macOS doesnt have SiriIntents.
     let siriSub = null;
     if (NativeModules.SiriIntents) {
       const siriEmitter = new NativeEventEmitter(NativeModules.SiriIntents);
