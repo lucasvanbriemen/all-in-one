@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {EmailListItem} from './EmailListItem';
+import { RefreshControl } from 'react-native';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
@@ -10,17 +11,23 @@ export function EmailListing() {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
+  const [emailRefreshing, setEmailRefreshing] = useState(false);
 
   useEffect(() => {
-    api.get('/email/' + get('app.activeSidebarItem'))
-      .then(data => {
-        setItems(data?.emails ?? []);
-      })
+    api.get('/email/' + get('app.activeSidebarItem')).then(data => {
+      setItems(data?.emails ?? []);
+    });
   }, [get]);
+
+  function getEmails() {
+    return api.get('/email/' + get('app.activeSidebarItem')).then(data => {
+      setItems(data?.emails ?? []);
+    });
+  }
 
   return (
     <View style={styles.content}>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={emailRefreshing} onRefresh={() => {setEmailRefreshing(true); getEmails().finally(() => setEmailRefreshing(false));}} />}>
         {items.map((item, index) => (
           <React.Fragment key={item.id}>
             {items[index - 1]?.date !== item.date && (
