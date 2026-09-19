@@ -54,7 +54,6 @@ export function MobileNavigation() {
 
 const createStyles = colors => StyleSheet.create({
   navigation: {
-    ...glass(colors, { variant: 'subtle' }),
     borderRadius: 48,
     padding: 16,
     position: 'relative',

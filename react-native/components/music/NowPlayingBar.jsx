@@ -57,12 +57,11 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     padding: 16,
-    ...glass(colors),
     borderRadius: 100,
     alignItems: 'center',
     gap: 16,
     flexDirection: 'row',
-    marginBottom: 16,
+    marginBottom: 8,
     position: 'relative',
     overflow: 'hidden',
   },
