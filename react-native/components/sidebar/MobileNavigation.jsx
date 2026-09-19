@@ -57,6 +57,7 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors, { variant: 'subtle' }),
     borderRadius: 48,
     padding: 16,
+    position: 'relative',
     gap: 6,
   },
   sections: {

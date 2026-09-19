@@ -63,6 +63,7 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
     flexDirection: 'row',
     marginBottom: 16,
+    position: 'relative',
   },
   title: {
     fontSize: 24,
