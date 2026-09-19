@@ -306,6 +306,95 @@ another 110 MB in the bundle.
 
 ---
 
+## The Code page
+
+An editor meant for daily use: Monaco in a WebView, a shell in another, and a Node
+file server on `127.0.0.1:4001` behind both (see [The bundled server](#the-bundled-server)).
+Everything below lives in `components/code/`; the server is `scripts/fileserver.mjs`
+with its handlers under `scripts/fileserver/`.
+
+### What it does
+
+| Area | Details |
+|---|---|
+| Tabs | Close (button or ⌘W), reorder by dragging, unsaved dot, error count, git colour, close others / all, reopen closed (⇧⌘T), cycle (⌃Tab, ⇧⌘] / ⇧⌘[). Two files with one name show their folder. |
+| Split editing | ⌘\ splits right (two groups, max); ⌘1 / ⌘2 focus a group; the tab menu moves a file across or joins the groups. |
+| File tree | Lazy folders, hover actions: new file, new folder, rename, delete (with confirm), collapse all, refresh. Rows coloured by git state; folders inherit the worst state inside them. |
+| Search | Contents or file names. Match case, whole word, regex. Grouped results with line previews, jump to line, exclude files, replace in one file or all (`$1` works with regex). |
+| Watching | The server watches the project (`/events`); the tree refreshes and open buffers reload when changed outside. A buffer you were editing shows a conflict banner with *Reload* / *Keep mine*. A write against a file that moved on is refused (409) rather than clobbering it. |
+| Git | Branch, changes, staged; stage / unstage / discard per file or all; commit and amend; switch or create branches; recent commits. Gutter marks added / changed / deleted lines against HEAD; clicking a change opens a side-by-side diff. |
+| Language intelligence | Monaco's own for TS/JS/CSS/HTML/JSON. Everything else goes through `/lsp`: the server spawns whichever language server is on PATH (see `SERVERS` in `scripts/lsp.mjs`) and the page speaks LSP to it — hover, completion, go to definition (across files), references, rename, signature help, document symbols, formatting, diagnostics. `GET /health` lists what this machine has. |
+| Problems | Every diagnostic, from Monaco or a language server, grouped by file; click to jump. Counts in the status bar and on tabs. |
+| Command palette | ⌘P files, ⇧⌘P commands (the app's plus every Monaco action), `:` go to line, `@` symbols (Monaco's outline picker, also ⇧⌘O). |
+| Terminal | Several shells in tabs (⌃⇧`), each kept alive while hidden; ⌘J shows/hides the panel; drag the divider to resize; reconnects when the server comes back. |
+| Settings | Font, tab size, word wrap, minimap, sticky scroll, bracket colours, whitespace, auto save + delay, format on save/paste, terminal font, and every keybinding — edited in place, saved on change. |
+| Session | Recent projects, the last project, its tabs per group, the active file, panel and terminal count come back on launch. Stored by the server at `~/.all-in-one/editor-state.json`. |
+| Offline | Monaco, xterm and Shiki are served by the file server from `node_modules` (`/vendor/<package>`), so nothing loads from a CDN while it runs; the CDN is the fallback when it does not. `stage-sidecar.sh` copies them into the app bundle. |
+| Feedback | Failed reads, writes, git commands and searches surface as toasts. A banner shows while the server is down, with a retry; health is polled every 3 s until it returns. |
+
+### Default shortcuts
+
+`components/code/keymap.js` is the list; the Settings panel edits it. Modifier order
+in a binding does not matter (`cmd+shift+p`, `shift+cmd+p`), and an empty binding
+unbinds the command.
+
+| | |
+|---|---|
+| ⌘P / ⇧⌘P | Go to file / command palette |
+| ⌘S / ⌥⌘S | Save / save all |
+| ⌘W / ⇧⌘W / ⇧⌘T | Close tab / close all / reopen closed |
+| ⌃Tab, ⇧⌘] / ⌃⇧Tab, ⇧⌘[ | Next / previous tab |
+| ⌘\ , ⌘1, ⌘2 | Split editor, focus group |
+| ⌘B / ⌘J / ⌃⇧` | Toggle sidebar / toggle terminal / new terminal |
+| ⇧⌘E, ⇧⌘F, ⌃⇧G, ⇧⌘M, ⌘, | Files, search, git, problems, settings |
+| ⌘O | Open folder |
+| ⇧⌥F / ⌥Z / ⌘= / ⌘- | Format / word wrap / font size |
+| ⌃G / ⇧⌘O | Go to line / go to symbol |
+
+Shortcuts work wherever focus is: the page claims them from AppKit through
+`keyDownEvents`, and the two WebViews intercept the same list and hand it back.
+Inside the terminal, ⌃ + a letter stays with the shell (⌃C above all).
+
+### Language servers
+
+Install any of these and the editor picks it up on next launch (the lookup goes
+through your login shell, so version-manager shims count):
+
+`typescript-language-server`, `vtsls`, `ruby-lsp`, `solargraph`, `pyright-langserver`,
+`pylsp`, `ruff`, `gopls`, `rust-analyzer`, `sourcekit-lsp`, `clangd`, `intelephense`,
+`phpactor`, `vscode-{css,html,json}-language-server`, `yaml-language-server`,
+`docker-langserver`, `bash-language-server`, `lua-language-server`,
+`kotlin-language-server`, `jdtls`, `elixir-ls`, `dart`, `marksman`.
+
+### Server API
+
+All routes take `projectRoot` and project-relative `path`s; anything that escapes the
+root is a 400, a missing file a 404, and errors come back as `{"error": "..."}`.
+
+- Files: `GET/PUT/POST/DELETE /file`, `GET /stat`, `GET /files`, `POST /directory`,
+  `POST /rename?from&to`. `PUT /file` accepts `expectedMtime` and answers 409 on a
+  stale write.
+- Search: `GET /search?type=files|code&term&caseSensitive&wholeWord&regex`,
+  `POST /replace {term, replacement, paths?, ...flags}`.
+- Git: `GET /git/{status,show,diff,log,branches}`,
+  `POST /git/{stage,unstage,discard,commit,checkout}`.
+- State: `GET/PUT/PATCH /state`.
+- Static: `GET /vendor/<package>/<file>`, `GET /import-map`, `GET /health`.
+- Sockets, loopback origins only: `/terminal`, `/events`, `/lsp?language`.
+
+### Tests
+
+```sh
+npm test                          # both projects
+npx jest --selectProjects server  # the file server, against temp dirs and real git
+npx jest --selectProjects app     # reducers, keymap, diff, and the page with a mocked server
+```
+
+The server suite starts the router on a random port; the page suite mocks
+`components/fileSystem.js` and the two WebViews (`__tests__/setup/app.js`).
+
+---
+
 ## Web
 
 ```sh

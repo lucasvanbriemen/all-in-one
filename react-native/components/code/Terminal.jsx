@@ -1,6 +1,7 @@
-import { TERMINAL_OPTIONS, XTERM_CDN, XTERM_FIT_CDN, terminalTheme } from './terminalTheme';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {TERMINAL_OPTIONS, XTERM_CDN, XTERM_FIT_CDN, terminalTheme} from './terminalTheme';
+import {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
 
+import {CDN_SOURCES} from './vendor';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {fileSystem} from '../fileSystem';
@@ -21,7 +22,7 @@ import {useTheme} from '../theme';
  * the frame is blocked as mixed content; from React Native it is just a socket.
  * So the page is the screen and the keyboard, and nothing else.
  */
-export function Terminal({projectRoot, onSearch, style}) {
+export const Terminal = forwardRef(function Terminal({projectRoot, onCommand, onTitle, onExit, appKeys, sources = CDN_SOURCES, serverUp = true, style}, ref) {
   const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
 
@@ -38,8 +39,8 @@ export function Terminal({projectRoot, onSearch, style}) {
   // reload the frame and take the scrollback with it.
   const source = useRef(null);
   source.current ??= {
-    html: terminalHtml(terminalTheme(colors, scheme)),
-    baseUrl: `${XTERM_CDN}/`,
+    html: terminalHtml(terminalTheme(colors, scheme), sources),
+    baseUrl: `${sources.xterm}/`,
   };
 
   const inject = useCallback(script => {
@@ -86,6 +87,11 @@ export function Terminal({projectRoot, onSearch, style}) {
 
       if (message.type === 'exit') {
         inject(`window.notice(${jsString('[shell exited — press any key]')});`);
+        onExit?.(message);
+      }
+
+      if (message.type === 'ready') {
+        onTitle?.(message.cwd?.split('/').pop() || 'shell');
       }
     };
 
@@ -100,7 +106,33 @@ export function Terminal({projectRoot, onSearch, style}) {
         socket.current = null;
       }
     };
-  }, [projectRoot, inject, send]);
+  }, [projectRoot, inject, send, onExit, onTitle]);
+
+  // The server came back: a panel that lost its shell gets a new one without
+  // waiting for a keypress, so the prompt is there when the user looks.
+  const wasUp = useRef(serverUp);
+  useEffect(() => {
+    if (serverUp && !wasUp.current && size.current && !socket.current) {
+      inject('window.reset();');
+      connect();
+    }
+    wasUp.current = serverUp;
+  }, [serverUp, connect, inject]);
+
+  useEffect(() => {
+    if (!loaded || !appKeys) {
+      return;
+    }
+
+    inject(`window.setAppKeys(${JSON.stringify(appKeys)});`);
+  }, [loaded, appKeys, inject]);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inject('window.focusTerminal();'),
+    fit: () => inject('window.fit();'),
+    write: text => send({type: 'input', data: text}),
+    clear: () => inject('window.clear();'),
+  }), [inject, send]);
 
   const onMessage = useCallback(
     event => {
@@ -130,12 +162,17 @@ export function Terminal({projectRoot, onSearch, style}) {
         send({type: 'input', data: message.data});
       }
 
-      // Cmd+P is the app's, not the shell's — same hand-back as the editor.
-      if (message.type === 'search') {
-        onSearch?.();
+      // An app shortcut pressed while the shell has focus — same hand-back
+      // as the editor.
+      if (message.type === 'key') {
+        onCommand?.(message);
+      }
+
+      if (message.type === 'title') {
+        onTitle?.(message.title);
       }
     },
-    [connect, send, inject, onSearch],
+    [connect, send, inject, onCommand, onTitle],
   );
 
   // The palette arrives from a fetch, so it is pushed in rather than being the
@@ -191,7 +228,7 @@ export function Terminal({projectRoot, onSearch, style}) {
       }
     />
   );
-}
+});
 
 /**
  * `injectJavaScript` takes source, not data. JSON is very nearly a subset of
@@ -205,13 +242,13 @@ function jsString(value) {
     .replace(/\u2029/g, '\\u2029');
 }
 
-function terminalHtml(theme) {
+export function terminalHtml(theme, sources = CDN_SOURCES) {
   return `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="${XTERM_CDN}/css/xterm.css" />
+    <link rel="stylesheet" href="${sources.xterm}/css/xterm.css" />
     <style>
       /* A transparent WKWebView still paints whatever the document paints. */
       html, body, #terminal {
@@ -239,9 +276,34 @@ function terminalHtml(theme) {
   </head>
   <body>
     <div id="terminal"></div>
-    <script src="${XTERM_CDN}/lib/xterm.js"></script>
-    <script src="${XTERM_FIT_CDN}/lib/addon-fit.js"></script>
     <script>
+      // The libraries off the file server when it is up, the CDN otherwise —
+      // and the CDN again if the local copy fails to arrive.
+      var SOURCES = ${JSON.stringify(sources)};
+      var CDN = ${JSON.stringify({xterm: XTERM_CDN, xtermFit: XTERM_FIT_CDN})};
+
+      function loadScript(src, onload, onerror) {
+        var script = document.createElement('script');
+        script.src = src;
+        script.onload = onload;
+        script.onerror = onerror;
+        document.head.appendChild(script);
+      }
+
+      function loadLibraries(base, onload, onerror) {
+        loadScript(base.xterm + '/lib/xterm.js', function () {
+          loadScript(base.xtermFit + '/lib/addon-fit.js', onload, onerror);
+        }, onerror);
+      }
+
+      loadLibraries(SOURCES, start, function () {
+        if (SOURCES.xterm === CDN.xterm) {
+          return;
+        }
+        loadLibraries(CDN, start, function () {});
+      });
+
+      function start() {
       var term = new Terminal(Object.assign(
         ${JSON.stringify(TERMINAL_OPTIONS)},
         {theme: ${JSON.stringify(theme)}}
@@ -263,7 +325,14 @@ function terminalHtml(theme) {
       window.write = function (data) { term.write(data); };
       window.notice = function (text) { term.write('\\r\\n\\x1b[2m' + text + '\\x1b[0m\\r\\n'); };
       window.reset = function () { term.reset(); };
+      window.clear = function () { term.clear(); };
       window.setTheme = function (theme) { term.options.theme = theme; };
+      window.focusTerminal = function () { term.focus(); };
+      window.fit = function () { report(); };
+
+      // The shell's own title, when it sets one — most prompts do — names the
+      // tab in the panel.
+      term.onTitleChange(function (title) { post({type: 'title', title: title}); });
 
       // Cell size is what decides cols and rows, so the pty is only told a
       // size the emulator has actually settled on. Reporting the same one
@@ -284,15 +353,43 @@ function terminalHtml(theme) {
 
       term.onData(function (data) { post({type: 'input', data: data}); });
 
-      // Returning false leaves the key to us. Only Cmd+P is taken: every other
+      // The app's shortcuts, as [{key, metaKey, ctrlKey, altKey, shiftKey}].
+      // Returning false leaves the key to us. Only these are taken: every other
       // Cmd combination has to fall through to WebKit, which is what makes
       // Cmd+C and Cmd+V work — xterm copies and pastes off the DOM events the
       // browser fires, not off the keystrokes.
+      var appKeys = [];
+      window.setAppKeys = function (keys) { appKeys = keys || []; };
+
+      function keyMatches(binding, event) {
+        return String(binding.key).toLowerCase() === String(event.key).toLowerCase() &&
+          Boolean(binding.metaKey) === event.metaKey &&
+          Boolean(binding.ctrlKey) === event.ctrlKey &&
+          Boolean(binding.altKey) === event.altKey &&
+          Boolean(binding.shiftKey) === event.shiftKey;
+      }
+
       term.attachCustomKeyEventHandler(function (event) {
-        if (event.type === 'keydown' && event.metaKey && event.key === 'p') {
-          event.preventDefault();
-          post({type: 'search'});
-          return false;
+        if (event.type !== 'keydown') {
+          return true;
+        }
+
+        // Ctrl+letter is the shell's — Ctrl+C above all. Only Cmd/Alt combos
+        // and Ctrl with a non-letter are candidates for the app.
+        var shellOwned = event.ctrlKey && !event.metaKey && !event.altKey && /^[a-z]$/i.test(event.key) && event.key.toLowerCase() !== 'g';
+        if (shellOwned) {
+          return true;
+        }
+
+        for (var index = 0; index < appKeys.length; index++) {
+          if (keyMatches(appKeys[index], event)) {
+            event.preventDefault();
+            post({
+              type: 'key', key: event.key, code: event.code,
+              metaKey: event.metaKey, ctrlKey: event.ctrlKey, altKey: event.altKey, shiftKey: event.shiftKey,
+            });
+            return false;
+          }
         }
 
         return true;
@@ -310,6 +407,7 @@ function terminalHtml(theme) {
       }
 
       report();
+      }
     </script>
   </body>
 </html>`;
