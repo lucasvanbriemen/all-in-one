@@ -7,6 +7,7 @@ const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
 
 export const player = {
   GO_BACK_TO_START_OF_SONG_AFTER_SECONDS: 5,
+  playInterval: null,
 
   async play(song, set, get) {
     await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
@@ -18,7 +19,10 @@ export const player = {
 
     set('music.now-playing', song);
 
-    await player.createPlay(get);
+    await player.createPlay(get); 
+
+    clearInterval(player.playInterval);
+    player.playInterval = setInterval(() => player.createPlay(get), 5000);
   },
 
   async playPlaylist(songs, set, atIndex = null) {
@@ -37,7 +41,7 @@ export const player = {
 
     set('music.queue', songsToShuffle);
 
-    await player.play(songToPlay, set);
+    await player.play(songToPlay, set, get);
   },
 
   async next(set, get) {

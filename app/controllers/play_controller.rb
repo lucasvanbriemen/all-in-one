@@ -1,8 +1,24 @@
 class PlaysController < ApplicationController
-  def new
-  end
+  PLAY_TIMEOUT = 15.seconds # time distance within which repeated plays are considered the same play
 
-  def update
+  def create
+    isrc = params.require(:isrc)
+    seconds_played = params.require(:seconds_played).to_i
+
+    play = Music::Play
+      .where(song_isrc: isrc)
+      .where("updated_at > ?", PLAY_TIMEOUT.ago)
+      .order(updated_at: :desc)
+      .first
+
+    if play.nil? || seconds_played < play.seconds_played
+      play = Music::Play.new(song_isrc: isrc)
+    end
+
+    play.seconds_played = seconds_played
+    play.save!
+
+    render json: { success: true }
   end
 
   def show
