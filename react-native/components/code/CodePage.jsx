@@ -17,7 +17,6 @@ import {GitSidebar} from './GitSidebar';
 import {PANELS} from './PanelSwitcher';
 import {PanelSwitcher} from './PanelSwitcher';
 import {SearchSidebar} from './SearchSidebar';
-import {SettingsPanel} from './SettingsPanel';
 import {StatusBar} from './StatusBar';
 import {TerminalPanel} from './TerminalPanel';
 import {Welcome} from './Welcome';
@@ -1054,18 +1053,6 @@ function CodePageInner() {
                   diffPath={diff?.path}
                   onError={report}
                   onNotice={message => toast.show(message, {kind: 'success'})}
-                />
-              )}
-
-              {panel === 'settings' && (
-                <SettingsPanel
-                  settings={settings}
-                  onChange={patchSettings}
-                  onReset={() => {
-                    setSettings({...DEFAULT_SETTINGS, showSidebar: settings.showSidebar, showTerminal: settings.showTerminal});
-                    setSidebarWidth(DEFAULT_SETTINGS.sidebarWidth);
-                    setTerminalHeight(DEFAULT_SETTINGS.terminalHeight);
-                  }}
                 />
               )}
             </View>
