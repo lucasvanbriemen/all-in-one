@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {Song} from './Song';
@@ -23,7 +23,7 @@ export function LikedSongs() {
   }, []);
 
   return (
-    <View style={styles.content}>
+    <ScrollView style={styles.content}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
         <Text style={styles.greeting}>Liked Songs</Text>
         <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
@@ -35,7 +35,7 @@ export function LikedSongs() {
       {likedSongs.map((song, index) => (
         <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
