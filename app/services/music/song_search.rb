@@ -13,13 +13,21 @@ module Music
     # length. Deezer's first hit is often a live version, so never trust order.
     MAX_DURATION_DIFFERENCE_SECONDS = 30
 
-    def search(term)
+    def search(term, use_liked_songs: false)
+      if use_liked_songs
+        return search_liked_songs(term)
+      end
+
       hits = itunes(term)
       resolved = hits.map { |hit| Thread.new { resolve(hit) } }.map(&:value).compact
       resolved.uniq { |song| song[:isrc] }
     end
 
     private
+
+    def search_liked_songs(term)
+      LikedSongMatcher.new.match(term)
+    end
 
     def itunes(term)
       uri = URI(ITUNES_URL)

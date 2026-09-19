@@ -10,9 +10,10 @@ class MusicController < ApplicationController
 
   def search
     term = params[:term].to_s.strip
+    use_liked_songs = params[:use_liked_songs] == "true"
     return render json: [] if term.empty?
 
-    render json: Music::SongSearch.new.search(term)
+    render json: Music::SongSearch.new.search(term, use_liked_songs: use_liked_songs)
   end
 
   def toggle_favorite

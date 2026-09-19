@@ -81,6 +81,15 @@ export const player = {
     await player.play(previousSong, set);
   },
 
+  // "Hey Siri, play <query>"
+  async playFromQuery(query, set) {
+    const results = await api.get('/music/search?use_liked_songs=true&term=' + encodeURIComponent(query));
+    if (!results || results.length === 0) {
+      return;
+    }
+    await player.play(results[0], set);
+  },
+
   async pause() {
     await NativeModules.AudioPlayer.pause();
   },
@@ -102,9 +111,17 @@ export const player = {
       if (command === 'next') return player.next(set, get);
       if (command === 'previous') return player.previous(set, get);
     });
+
+    // macOS doesnt have SiriIntents.
+    let siriSub = null;
+    if (NativeModules.SiriIntents) {
+      const siriEmitter = new NativeEventEmitter(NativeModules.SiriIntents);
+      siriSub = siriEmitter.addListener('siriPlay', ({query}) => player.playFromQuery(query, set));
+    }
     return () => {
       stateSub.remove();
       commandSub.remove();
+      siriSub?.remove();
     };
   },
 
