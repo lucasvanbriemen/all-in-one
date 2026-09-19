@@ -56,7 +56,7 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
   },
   content: {
-    padding: 16,
+    padding: 8,
     borderRadius: 100,
     alignItems: 'center',
     gap: 16,
