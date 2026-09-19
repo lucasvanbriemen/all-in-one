@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
   get "/music/stats", to: "plays#show", as: :plays_stats
+  post "/music/stats/create", to: "plays#create", as: :plays_stats
   get "/music/search", to: "music#search", as: :search
   get "/get-mp3/:isrc", to: "music#show", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
   post "/music/:id/toggle-liked", to: "music#toggle_favorite", as: :toggle_music_favorite

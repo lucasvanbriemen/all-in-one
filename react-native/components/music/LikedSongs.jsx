@@ -12,7 +12,7 @@ export function LikedSongs() {
   const styles = useThemedStyles(createStyles);
   const isCompact = useCompactLayout();
 
-  const {set} = useAppContext();
+  const {set, get} = useAppContext();
 
   const [likedSongs, setLikedSongs] = useState([]);
 
@@ -27,13 +27,13 @@ export function LikedSongs() {
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
         <Text style={styles.greeting}>Liked Songs</Text>
         <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
-        <Pressable onPress={() => player.playPlaylist(likedSongs, set)} style={styles.playAllButton}>
+        <Pressable onPress={() => player.playPlaylist(likedSongs, set, get)} style={styles.playAllButton}>
           <Text style={styles.playAllButtonText}>Play All</Text>
         </Pressable>
       </View>
 
       {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index, get)} />
       ))}
     </View>
   );

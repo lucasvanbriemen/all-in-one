@@ -1,5 +1,6 @@
 import {NativeEventEmitter, NativeModules} from 'react-native';
 
+import api from '../api';
 import secrets from '../secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
@@ -7,7 +8,7 @@ const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
 export const player = {
   GO_BACK_TO_START_OF_SONG_AFTER_SECONDS: 5,
 
-  async play(song, set) {
+  async play(song, set, get) {
     await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
       title: song.title,
       artist: song.artist,
@@ -16,6 +17,8 @@ export const player = {
     }, { Authorization: `Bearer ${secrets.API_KEY}` });
 
     set('music.now-playing', song);
+
+    await player.createPlay(get);
   },
 
   async playPlaylist(songs, set, atIndex = null) {
@@ -48,7 +51,7 @@ export const player = {
     }
 
     set('music.queue', queue.slice(1));
-    await player.play(queue[0], set);
+    await player.play(queue[0], set, get);
   },
 
   async previous(set, get) {
@@ -71,7 +74,7 @@ export const player = {
     const previousSong = lastSongs[lastSongs.length - 1];
     set('music.last-songs', lastSongs.slice(0, -1));
     set('music.queue', currentlyPlaying ? [currentlyPlaying, ...queue] : [...queue]);
-    await player.play(previousSong, set);
+    await player.play(previousSong, set, get);
   },
 
   async pause() {
@@ -100,4 +103,11 @@ export const player = {
       commandSub.remove();
     };
   },
+
+  async createPlay(get){
+    api.post('/music/stats/create', {
+      isrc: get('music.now-playing.isrc'),
+      seconds_played: await NativeModules.AudioPlayer.currentTime()
+    });
+  }
 };
