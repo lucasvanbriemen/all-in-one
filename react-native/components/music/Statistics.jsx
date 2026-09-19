@@ -26,9 +26,9 @@ export function Statistics() {
   return (
     <View style={styles.content}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
-        <Stat label="Time played" value={statistics?.time_played ?? 0} />
         <Stat label="Total plays" value={statistics?.total_plays ?? 0} />
         <Stat label="Unique songs played" value={statistics?.different_plays ?? 0} />
+        <Stat label="Time played" value={statistics?.time_played ?? 0} />
       </View>
 
       {statistics?.top_songs?.map((song, index) => (
@@ -55,7 +55,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     marginVertical: 16,
- },
+  },
   playAllButtonText: {
     color: colors.onPrimary,
     fontWeight: 'bold',
@@ -64,5 +64,10 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     marginVertical: 16,
+  },
+  detailsCompact: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: 8,
   },
 });
