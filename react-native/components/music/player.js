@@ -1,6 +1,6 @@
 import {NativeEventEmitter, NativeModules} from 'react-native';
 
-import api from '../api';
+import {api} from '../api';
 import secrets from '../secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
@@ -19,13 +19,13 @@ export const player = {
 
     set('music.now-playing', song);
 
-    await player.createPlay(get); 
+    await player.createPlay(song.isrc);
 
     clearInterval(player.playInterval);
-    player.playInterval = setInterval(() => player.createPlay(get), 5000);
+    player.playInterval = setInterval(() => player.createPlay(song.isrc), 5000);
   },
 
-  async playPlaylist(songs, set, atIndex = null) {
+  async playPlaylist(songs, set, atIndex = null, get) {
     let songsToShuffle = [...songs];
     if (atIndex == null) {
       songsToShuffle.sort(() => Math.random() - 0.5);
@@ -108,10 +108,15 @@ export const player = {
     };
   },
 
-  async createPlay(get){
-    api.post('/music/stats/create', {
-      isrc: get('music.now-playing.isrc'),
-      seconds_played: await NativeModules.AudioPlayer.currentTime()
-    });
+  async createPlay(isrc){
+    console.log('Creating play for', isrc);
+
+    try {
+      const seconds_played = await NativeModules.AudioPlayer.currentTime();
+      const response = await api.post('/music/stats/create', { isrc, seconds_played });
+      console.log('Play created successfully:', response);
+    } catch (error) {
+      console.error('Error creating play:', error);
+    }
   }
 };
