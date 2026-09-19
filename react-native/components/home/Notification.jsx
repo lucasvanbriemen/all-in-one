@@ -56,9 +56,11 @@ const createStyles = colors => StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: colors.onSurface,
   },
   body: {
     fontSize: 14,
+    color: colors.onSurfaceVariant,
   },
   markAsRead: {
     color: colors.primary,
