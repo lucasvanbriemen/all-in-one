@@ -81,12 +81,10 @@ export const player = {
     await player.play(previousSong, set);
   },
 
-  // "Hey Siri, play <query> in All in one": look the spoken term up on the
-  // server and play the best match, queueing the rest of the results.
+  // "Hey Siri, play <query>"
   async playFromQuery(query, set) {
     const results = await api.get('/music/search?use_liked_songs=true&term=' + encodeURIComponent(query));
     if (!results || results.length === 0) {
-      console.log('Siri: no songs found for', query);
       return;
     }
     await player.playPlaylist(results, set, 0);
