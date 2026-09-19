@@ -64,13 +64,14 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 16,
     position: 'relative',
+    overflow: 'hidden',
   },
   title: {
-    fontSize: 24,
+    fontSize: 16,
     color: colors.onSurface,
   },
   artist: {
-    fontSize: 14,
+    fontSize: 11,
     color: colors.onSurfaceVariant,
   },
   image: {

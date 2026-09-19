@@ -58,6 +58,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 48,
     padding: 16,
     position: 'relative',
+    overflow: 'hidden',
     gap: 6,
   },
   sections: {
