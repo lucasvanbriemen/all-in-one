@@ -12,8 +12,7 @@ export function EmailListing() {
   const { get, set } = useAppContext();
 
   useEffect(() => {
-    api
-      .get('/email/' + get('app.activeSidebarItem'))
+    api.get('/email/' + get('app.activeSidebarItem'))
       .then(data => {
         setItems(data?.emails ?? []);
       })
