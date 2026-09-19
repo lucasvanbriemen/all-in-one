@@ -2,7 +2,7 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
-import {NavigationBlur} from '../navigation/NavigationBlur';
+import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
