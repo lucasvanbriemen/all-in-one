@@ -3,7 +3,7 @@ import {FileSystemError, ServerUnavailableError, fileSystem} from '../fileSystem
 import {NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useReducer, useRef, useState} from 'react';
 import {ToastProvider, useToast} from './Toast';
-import {activeFile, activeGroup as groupOf, editorReducer, initialEditorState, openPaths, serializeEditorState} from './editorState';
+import {activeFile, editorReducer, activeGroup as groupOf, initialEditorState, openPaths, serializeEditorState} from './editorState';
 import {buildKeymap, commandForEvent, keyDownEventsFor} from './keymap';
 import {glass, useThemedStyles} from '../theme';
 import {gutterChanges, lineDiff} from './lineDiff';
@@ -16,13 +16,11 @@ import {FileTree} from './FileTree';
 import {GitSidebar} from './GitSidebar';
 import {PANELS} from './PanelSwitcher';
 import {PanelSwitcher} from './PanelSwitcher';
-import {ProblemsPanel} from './ProblemsPanel';
 import {SearchSidebar} from './SearchSidebar';
 import {SettingsPanel} from './SettingsPanel';
 import {StatusBar} from './StatusBar';
 import {TerminalPanel} from './TerminalPanel';
 import {Welcome} from './Welcome';
-import {countProblems} from './ProblemsPanel';
 import {resolveVendorSources} from './vendor';
 import {useAppContext} from '../../context/AppContext';
 import {useFileTree} from './useFileTree';
@@ -1058,8 +1056,6 @@ function CodePageInner() {
                   onNotice={message => toast.show(message, {kind: 'success'})}
                 />
               )}
-
-              {panel === 'problems' && <ProblemsPanel diagnostics={diagnostics} onOpen={(path, line, column) => openFile(path, {line, column})} />}
 
               {panel === 'settings' && (
                 <SettingsPanel
