@@ -81,6 +81,17 @@ export const player = {
     await player.play(previousSong, set);
   },
 
+  // "Hey Siri, play <query> in All in one": look the spoken term up on the
+  // server and play the best match, queueing the rest of the results.
+  async playFromQuery(query, set) {
+    const results = await api.get('/music/search?term=' + encodeURIComponent(query));
+    if (!results || results.length === 0) {
+      console.log('Siri: no songs found for', query);
+      return;
+    }
+    await player.playPlaylist(results, set, 0);
+  },
+
   async pause() {
     await NativeModules.AudioPlayer.pause();
   },
@@ -102,9 +113,16 @@ export const player = {
       if (command === 'next') return player.next(set, get);
       if (command === 'previous') return player.previous(set, get);
     });
+    // iOS only; the module is not compiled into the macOS target.
+    let siriSub = null;
+    if (NativeModules.SiriIntents) {
+      const siriEmitter = new NativeEventEmitter(NativeModules.SiriIntents);
+      siriSub = siriEmitter.addListener('siriPlay', ({query}) => player.playFromQuery(query, set));
+    }
     return () => {
       stateSub.remove();
       commandSub.remove();
+      siriSub?.remove();
     };
   },
 

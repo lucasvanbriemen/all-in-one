@@ -11,16 +11,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   ) {
     guard let windowScene = scene as? UIWindowScene,
           let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-          let factory = appDelegate.reactNativeFactory else { return }
+          let rootView = appDelegate.ensureReactNativeStarted() else { return }
 
     let window = UIWindow(windowScene: windowScene)
     self.window = window
     appDelegate.window = window
 
-    factory.startReactNative(
-      withModuleName: "AllInOne",
-      in: window,
-      launchOptions: nil
-    )
+    // Mirrors RCTReactNativeFactory.startReactNative, but reuses the root
+    // view when a Siri background launch already created it.
+    let rootViewController = UIViewController()
+    rootViewController.view = rootView
+    window.rootViewController = rootViewController
+    window.makeKeyAndVisible()
   }
 }

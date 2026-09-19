@@ -17,6 +17,8 @@
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
 		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
 		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
+		AA10D100CA0D10A0D10AA0C /* SiriIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */; };
+		AA10D100EA0D10A0D10AA0E /* SiriIntents.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D100DA0D10A0D10AA0D /* SiriIntents.m */; };
 		AD1600000000000000000002 /* NavigationBlurManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1600000000000000000001 /* NavigationBlurManager.m */; };
 		F5A5F6515E4979B7D8E3498C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -38,6 +40,8 @@
 		AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AllInOne-Bridging-Header.h"; path = "AllInOne/AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
+		AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SiriIntents.swift; path = ../native/Siri/SiriIntents.swift; sourceTree = SOURCE_ROOT; };
+		AA10D100DA0D10A0D10AA0D /* SiriIntents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SiriIntents.m; path = ../native/Siri/SiriIntents.m; sourceTree = SOURCE_ROOT; };
 		AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
 		AD1600000000000000000001 /* NavigationBlurManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AllInOne/NavigationBlurManager.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -67,6 +71,8 @@
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
 				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
 				AA10D1009A0D10A0D10AA09 /* PushNotifications.m */,
+				AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */,
+				AA10D100DA0D10A0D10AA0D /* SiriIntents.m */,
 				AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */,
 				AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -279,6 +285,8 @@
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
 				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,
 				AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */,
+				AA10D100CA0D10A0D10AA0C /* SiriIntents.swift in Sources */,
+				AA10D100EA0D10A0D10AA0E /* SiriIntents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

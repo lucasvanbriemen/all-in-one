@@ -35,6 +35,19 @@
 	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>NSSiriUsageDescription</key>
+	<string>Lets you ask Siri to play songs in All in one.</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>INPlayMediaIntent</string>
+	</array>
+	<key>INSupportedMediaCategories</key>
+	<array>
+		<string>INMediaCategoryMusic</string>
+		<string>INMediaCategoryGeneral</string>
+	</array>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Required by Siri to route music requests to All in one.</string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>All in one alerts you about new email and other events from the server.</string>
 	<key>UIBackgroundModes</key>
