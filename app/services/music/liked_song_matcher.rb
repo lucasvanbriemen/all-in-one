@@ -1,14 +1,7 @@
 require "did_you_mean"
 
 module Music
-  # Matches a spoken or typed query against the liked songs, ranked best first.
-  #
-  # Built for Siri ("play another day in paradise"), so it has to survive the
-  # ways a spoken title differs from the stored one: edition suffixes like
-  # "(2018 Remaster)" or "- Live", the artist tacked on or left off, and
-  # transcription slips ("paradice"). Titles and queries are reduced to word
-  # lists and compared word by word; a word counts as matched when it is
-  # identical or close enough by Jaro-Winkler to be a mishearing.
+  # Gets the closest matching liked songs for a given query.
   class LikedSongMatcher
     # Strip anything in brackets and dash-separated edition suffixes:
     # "Title (2018 Remaster)", "Title [Live]", "Title - Single Version".
@@ -30,10 +23,6 @@ module Music
 
     private
 
-    # Fraction of query words found in the song's title, or in title+artist
-    # when the query says more than the title alone. A title that is matched
-    # in full and nothing else gets a bonus so "Paradise" outranks
-    # "Another Day In Paradise" for the query "paradise".
     def score(query, song)
       title = words(song.title)
       title_and_artist = title + words(song.artist)
