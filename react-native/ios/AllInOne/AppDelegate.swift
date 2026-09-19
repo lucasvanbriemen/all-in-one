@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return view
   }
 
-  // MARK: - Siri ("Hey Siri, play <song> in All in one")
+  // MARK: - Siri ("Hey Siri, play <song>)
 
   func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
     NSLog("[SiriIntents] handlerFor: %@", intent)

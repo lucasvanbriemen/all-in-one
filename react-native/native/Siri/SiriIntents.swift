@@ -2,7 +2,7 @@ import Foundation
 import Intents
 import React
 
-// Lets the user say "Hey Siri, play <song> in All in one".
+// Lets the user say "Hey Siri, play <song>.
 //
 // Siri parses the phrase into an INPlayMediaIntent and hands it to the app
 // (launched in the background if needed) via the app delegate. The spoken
