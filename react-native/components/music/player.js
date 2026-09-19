@@ -9,7 +9,7 @@ export const player = {
   GO_BACK_TO_START_OF_SONG_AFTER_SECONDS: 5,
   playInterval: null,
 
-  async play(song, set, get) {
+  async play(song, set) {
     await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
       title: song.title,
       artist: song.artist,
@@ -25,7 +25,7 @@ export const player = {
     player.playInterval = setInterval(() => player.createPlay(song.isrc), 5000);
   },
 
-  async playPlaylist(songs, set, atIndex = null, get) {
+  async playPlaylist(songs, set, atIndex = null) {
     let songsToShuffle = [...songs];
     if (atIndex == null) {
       songsToShuffle.sort(() => Math.random() - 0.5);
@@ -41,7 +41,7 @@ export const player = {
 
     set('music.queue', songsToShuffle);
 
-    await player.play(songToPlay, set, get);
+    await player.play(songToPlay, set);
   },
 
   async next(set, get) {
@@ -55,7 +55,7 @@ export const player = {
     }
 
     set('music.queue', queue.slice(1));
-    await player.play(queue[0], set, get);
+    await player.play(queue[0], set);
   },
 
   async previous(set, get) {
@@ -78,7 +78,7 @@ export const player = {
     const previousSong = lastSongs[lastSongs.length - 1];
     set('music.last-songs', lastSongs.slice(0, -1));
     set('music.queue', currentlyPlaying ? [currentlyPlaying, ...queue] : [...queue]);
-    await player.play(previousSong, set, get);
+    await player.play(previousSong, set);
   },
 
   async pause() {

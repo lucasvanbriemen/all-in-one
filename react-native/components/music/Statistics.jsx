@@ -13,7 +13,7 @@ export function Statistics() {
   const styles = useThemedStyles(createStyles);
   const isCompact = useCompactLayout();
 
-  const {set, get} = useAppContext();
+  const {set} = useAppContext();
 
   const [statistics, setStatistics] = useState([]);
 
@@ -32,7 +32,7 @@ export function Statistics() {
       </View>
 
       {statistics?.top_songs?.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set, get)} rightLabel={`${song.times_played} plays`} />
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set)} rightLabel={`${song.times_played} plays`} />
       ))}
     </View>
   );
