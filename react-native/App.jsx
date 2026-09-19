@@ -7,6 +7,7 @@ import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MobileNavigation} from './components/sidebar/MobileNavigation';
 import {MusicPage} from './components/music/MusicPage';
+import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
@@ -66,6 +67,7 @@ function AppShell() {
 
         {compact && (
           <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}}>
+            <NowPlayingBar />
             <MobileNavigation />
           </View>
         )}
