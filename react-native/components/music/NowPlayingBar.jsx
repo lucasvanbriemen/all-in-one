@@ -2,6 +2,7 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
+import {NavigationBlur} from '../navigation/NavigationBlur';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
@@ -9,8 +10,14 @@ export function NowPlayingBar() {
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
 
+  if (!get('music.now-playing.title')) {
+    return null;
+  }
+
   return (
     <View style={styles.content}>
+      {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
+
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
       <View style={styles.textContainer}>
