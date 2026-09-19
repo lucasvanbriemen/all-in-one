@@ -5,16 +5,8 @@ module HomepageConfig
       name: "Home"
     },
     {
-      path: "work",
-      name: "Work"
+      path: "apps",
+      name: "App"
     },
-    {
-      path: "github",
-      name: "GitHub"
-    },
-    {
-      path: "pathe",
-      name: "Pathe"
-    }
   ].freeze
 end
