@@ -14,26 +14,23 @@ export function Statistics() {
 
   const {set} = useAppContext();
 
-  const [likedSongs, setLikedSongs] = useState([]);
+  const [statistics, setStatistics] = useState([]);
 
   useEffect(() => {
-    api.get('/music').then(response => {
-      setLikedSongs(response);
+    api.get('/music/stats').then(response => {
+      setStatistics(response);
     });
   }, []);
 
   return (
     <View style={styles.content}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
-        <Text style={styles.greeting}>Liked Songs</Text>
-        <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
-        <Pressable onPress={() => player.playPlaylist(likedSongs, set)} style={styles.playAllButton}>
-          <Text style={styles.playAllButtonText}>Play All</Text>
-        </Pressable>
+        <Text style={styles.subheading}>{statistics?.top_songs?.length ?? 0} songs, {(statistics?.top_songs?.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
+        <Text style={styles.subheading}>{statistics?.total_seconds_played ?? 0} seconds played, {statistics?.top_songs?.reduce((total, song) => total + song.times_played, 0) ?? 0} times played</Text>
       </View>
 
-      {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
+      {statistics?.top_songs?.map((song, index) => (
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(statistics.top_songs, set, index)} />
       ))}
     </View>
   );

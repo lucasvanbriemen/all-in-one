@@ -16,9 +16,17 @@ class MusicController < ApplicationController
   end
 
   def stats
-    @all_plays = Music::Play.all.includes(:song)
+    # Get the songs that have the most seconds played
+    top_songs = Music::Song.joins(:plays)
+                           .select("songs.*, SUM(plays.seconds_played) AS total_seconds_played, COUNT(plays.id) AS times_played")
+                           .group("songs.isrc")
+                           .order("total_seconds_played DESC")
+                           .limit(10)
 
-    render json: @all_plays
+    render json: {
+      top_songs: top_songs,
+      total_seconds_played: Music::Play.sum(:seconds_played)
+    }
   end
 
   def toggle_favorite
