@@ -6,7 +6,7 @@ module HomepageConfig
     },
     {
       path: "apps",
-      name: "App"
+      name: "Apps"
     },
   ].freeze
 end

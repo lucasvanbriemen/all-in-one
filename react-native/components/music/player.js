@@ -29,10 +29,10 @@ export const player = {
 
     set('music.last-songs', songs.slice(0, atIndex));
 
-    let songsToCome = songs.slice(atIndex + 1);
-    songsToCome.sort(() => Math.random() - 0.5);
+    songsToShuffle = songsToShuffle.slice(atIndex + 1);
+    songsToShuffle.sort(() => Math.random() - 0.5);
 
-    set('music.queue', songsToCome);
+    set('music.queue', songsToShuffle);
 
     await player.play(songToPlay, set);
   },
