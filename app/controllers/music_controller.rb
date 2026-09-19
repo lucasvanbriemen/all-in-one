@@ -23,9 +23,12 @@ class MusicController < ApplicationController
                            .order("total_seconds_played DESC")
                            .limit(10)
 
+    seconds_played = top_songs.sum(&:total_seconds_played)
+    time_played = TimeConversion.seconds_to_human_readable(seconds_played)
+
     render json: {
       top_songs: top_songs,
-      total_seconds_played: Music::Play.sum(:seconds_played)
+      time_played: time_played
     }
   end
 
