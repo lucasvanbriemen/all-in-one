@@ -16,6 +16,9 @@ class MusicController < ApplicationController
   end
 
   def stats
+    @all_plays = Music::Play.all.includes(:song)
+
+    render json: @all_plays
   end
 
   def toggle_favorite
