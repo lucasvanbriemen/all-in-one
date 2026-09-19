@@ -90,13 +90,8 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  rightLabelContainer: {
-    padding: 8,
-    borderRadius: 8,
-    ...glass(colors),
-  },
   rightLabel: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
+    color: colors.outline,
   },
 });

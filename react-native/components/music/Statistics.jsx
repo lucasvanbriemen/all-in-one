@@ -32,7 +32,7 @@ export function Statistics() {
       </View>
 
       {statistics?.top_songs?.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(statistics.top_songs, set, index)} />
+        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(statistics.top_songs, set, index)} rightLabel={`${song.times_played} plays`} />
       ))}
     </View>
   );
