@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {Song} from './Song';
+import {Stat} from '../home/Stat';
 import {api} from '../api';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
@@ -25,10 +26,9 @@ export function Statistics() {
   return (
     <View style={styles.content}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
-        <Text style={styles.subheading}>{statistics?.top_songs?.length ?? 0} songs, {(statistics?.top_songs?.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
-        <Text style={styles.subheading}>{statistics?.time_played ?? 0} played, {statistics?.top_songs?.reduce((total, song) => total + song.times_played, 0) ?? 0} times played</Text>
-        <Text style={styles.subheading}>{statistics?.total_plays ?? 0} plays</Text>
-        <Text style={styles.subheading}>{statistics?.different_plays ?? 0} different plays</Text>
+        <Stat label="Time played" value={statistics?.time_played ?? 0} />
+        <Stat label="Total plays" value={statistics?.total_plays ?? 0} />
+        <Stat label="Unique songs played" value={statistics?.different_plays ?? 0} />
       </View>
 
       {statistics?.top_songs?.map((song, index) => (
@@ -61,12 +61,11 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
   },
   details: {
-    marginVertical: 24,
-    width: '50%',
-    marginLeft: '25%',
+    flexDirection: 'row',
+    gap: 16,
+    marginVertical: 16,
   },
-  detailsCompact: {
-    width: '100%',
-    marginLeft: '0%',
+  content: {
+    flex: 1,
   }
 });
