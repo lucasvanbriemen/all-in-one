@@ -19,13 +19,13 @@ export const player = {
   },
 
   async playPlaylist(songs, set, atIndex = null) {
-    // If we have no specific starting index, shuffle the songs first.
+    let songsToShuffle = [...songs];
     if (atIndex == null) {
-      songs.sort(() => Math.random() - 0.5);
+      songsToShuffle.sort(() => Math.random() - 0.5);
       atIndex = 0;
     }
 
-    const songToPlay = songs[atIndex];
+    const songToPlay = songsToShuffle[atIndex];
 
     set('music.last-songs', songs.slice(0, atIndex));
 
