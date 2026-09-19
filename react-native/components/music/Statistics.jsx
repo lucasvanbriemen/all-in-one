@@ -65,7 +65,4 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
     marginVertical: 16,
   },
-  content: {
-    flex: 1,
-  }
 });
