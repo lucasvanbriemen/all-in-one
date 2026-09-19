@@ -15,6 +15,9 @@ class MusicController < ApplicationController
     render json: Music::SongSearch.new.search(term)
   end
 
+  def stats
+  end
+
   def toggle_favorite
     song = Music::Song.find(params[:id])
     song.toggle_favorite!

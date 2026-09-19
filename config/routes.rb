@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
   get "/music", to: "music#index", as: :music
+  get "/music/stats", to: "music#stats", as: :music_stats
   get "/music/search", to: "music#search", as: :search
   get "/get-mp3/:isrc", to: "music#show", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
   post "/music/:id/toggle-liked", to: "music#toggle_favorite", as: :toggle_music_favorite
