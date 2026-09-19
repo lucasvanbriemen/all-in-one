@@ -26,9 +26,7 @@ module Music
     private
 
     def search_liked_songs(term)
-      Music::Song.liked_songs.select do |song|
-        song.title.downcase.include?(term.downcase) || song.artist.downcase.include?(term.downcase)
-      end
+      LikedSongMatcher.new.match(term)
     end
 
     def itunes(term)
