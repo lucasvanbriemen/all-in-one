@@ -27,6 +27,8 @@ export function Statistics() {
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
         <Text style={styles.subheading}>{statistics?.top_songs?.length ?? 0} songs, {(statistics?.top_songs?.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>
         <Text style={styles.subheading}>{statistics?.time_played ?? 0} played, {statistics?.top_songs?.reduce((total, song) => total + song.times_played, 0) ?? 0} times played</Text>
+        <Text style={styles.subheading}>{statistics?.total_plays ?? 0} plays</Text>
+        <Text style={styles.subheading}>{statistics?.different_plays ?? 0} different plays</Text>
       </View>
 
       {statistics?.top_songs?.map((song, index) => (
