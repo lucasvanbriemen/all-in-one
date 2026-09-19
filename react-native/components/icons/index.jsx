@@ -16,6 +16,7 @@ import {PauseIcon} from './pause';
 import {PlayIcon} from './play';
 import React from 'react';
 import {SearchIcon} from './search';
+import {StatsIcon} from './stats';
 import {WorkIcon} from './work';
 
 export {LogoIcon} from './logo';
@@ -38,6 +39,7 @@ const ICONS = {
   'chevron-down': ChevronDown,
   files: FilesIcon,
   search: SearchIcon,
+  stats: StatsIcon,
   play: PlayIcon,
   pause: PauseIcon,
   next: NextIcon,
