@@ -13,7 +13,6 @@ import {CommandPalette} from './CommandPalette';
 import {Divider} from './Divider';
 import {EditorGroup} from './EditorGroup';
 import {FileTree} from './FileTree';
-import {GitSidebar} from './GitSidebar';
 import {PANELS} from './PanelSwitcher';
 import {SearchSidebar} from './SearchSidebar';
 import {StatusBar} from './StatusBar';
@@ -1035,19 +1034,6 @@ function CodePageInner() {
                   onOpenFile={(path, line, column) => openFile(path, {line, column})}
                   onReplaced={outcome => toast.show(`Replaced ${outcome.replacements} occurrence${outcome.replacements === 1 ? '' : 's'} in ${outcome.changed.length} file${outcome.changed.length === 1 ? '' : 's'}.`, {kind: 'success'})}
                   onError={report}
-                />
-              )}
-
-              {panel === 'git' && (
-                <GitSidebar
-                  projectRoot={projectRoot}
-                  git={git}
-                  onRefresh={refreshGit}
-                  onOpenFile={path => openFile(path)}
-                  onShowDiff={showDiff}
-                  diffPath={diff?.path}
-                  onError={report}
-                  onNotice={message => toast.show(message, {kind: 'success'})}
                 />
               )}
             </View>
