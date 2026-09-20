@@ -15,7 +15,6 @@ import {EditorGroup} from './EditorGroup';
 import {FileTree} from './FileTree';
 import {GitSidebar} from './GitSidebar';
 import {PANELS} from './PanelSwitcher';
-import {PanelSwitcher} from './PanelSwitcher';
 import {SearchSidebar} from './SearchSidebar';
 import {StatusBar} from './StatusBar';
 import {TerminalPanel} from './TerminalPanel';
@@ -963,8 +962,6 @@ function CodePageInner() {
     return map;
   }, [diagnostics]);
 
-  const problems = useMemo(() => countProblems(diagnostics), [diagnostics]);
-
   const gutterByGroup = useMemo(() => {
     const map = {};
     for (const group of editor.groups) {
@@ -1009,8 +1006,6 @@ function CodePageInner() {
         {settings.showSidebar && (
           <>
             <View style={[styles.sidebar, {width: sidebarWidth}]} testID="sidebar">
-              <PanelSwitcher panel={panel} onSelect={showPanel} badges={{problems: problems.total, git: git?.changes?.length ?? 0}} />
-
               {panel === 'files' && (
                 <FileTree
                   projectRoot={projectRoot}
@@ -1182,7 +1177,7 @@ function CodePageInner() {
             <StatusBar
               branch={git?.branch}
               changes={git?.changes?.length}
-              problems={problems}
+              problems={0}
               cursor={activePath ? cursor : null}
               language={cursor?.language}
               path={activePath}
