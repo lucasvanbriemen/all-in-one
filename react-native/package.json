@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "macos:release": "scripts/release-macos.sh"
+    "macos:release": "scripts/install-macos.sh",
+    "macos:dist": "scripts/release-macos.sh"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
