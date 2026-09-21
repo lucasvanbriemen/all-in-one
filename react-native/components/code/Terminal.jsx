@@ -22,7 +22,7 @@ import {useTheme} from '../theme';
  * the frame is blocked as mixed content; from React Native it is just a socket.
  * So the page is the screen and the keyboard, and nothing else.
  */
-export const Terminal = forwardRef(function Terminal({projectRoot, onCommand, onTitle, onExit, appKeys, sources = CDN_SOURCES, serverUp = true, style}, ref) {
+export const Terminal = forwardRef(function Terminal({projectRoot, onCommand, onTitle, onExit, appKeys, sources = CDN_SOURCES, style}, ref) {
   const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
 
@@ -110,14 +110,12 @@ export const Terminal = forwardRef(function Terminal({projectRoot, onCommand, on
 
   // The server came back: a panel that lost its shell gets a new one without
   // waiting for a keypress, so the prompt is there when the user looks.
-  const wasUp = useRef(serverUp);
   useEffect(() => {
-    if (serverUp && !wasUp.current && size.current && !socket.current) {
+    if (size.current && !socket.current) {
       inject('window.reset();');
       connect();
     }
-    wasUp.current = serverUp;
-  }, [serverUp, connect, inject]);
+  }, [connect, inject]);
 
   useEffect(() => {
     if (!loaded || !appKeys) {

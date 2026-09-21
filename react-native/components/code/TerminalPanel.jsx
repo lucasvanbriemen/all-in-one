@@ -1,8 +1,8 @@
-import {IconButton} from './ui';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles, withAlpha} from '../theme';
 
+import {IconButton} from './ui';
 import {Terminal} from './Terminal';
 
 /**
@@ -10,7 +10,7 @@ import {Terminal} from './Terminal';
  * and running job survive a switch; the ones not showing are hidden, and told
  * to re-measure when shown again because a hidden panel has no size.
  */
-export function TerminalPanel({projectRoot, terminals, activeId, onActivate, onAdd, onClose, onRename, onCollapse, appKeys, sources, serverUp, onCommand, style}) {
+export function TerminalPanel({projectRoot, terminals, activeId, onActivate, onAdd, onClose, onRename, onCollapse, appKeys, sources, onCommand, style}) {
   const styles = useThemedStyles(createStyles);
   const refs = useRef({});
   const [titles, setTitles] = useState({});
@@ -51,7 +51,6 @@ export function TerminalPanel({projectRoot, terminals, activeId, onActivate, onA
               projectRoot={projectRoot}
               appKeys={appKeys}
               sources={sources}
-              serverUp={serverUp}
               onCommand={onCommand}
               onTitle={title => setTitles(current => (current[terminal.id] === title ? current : {...current, [terminal.id]: title}))}
             />

@@ -969,7 +969,6 @@ function CodePageInner() {
               onOpenFolder={pickFolder}
               onOpenRecent={path => openProject(path, {restore: true})}
               onForgetRecent={path => setRecentProjects(current => current.filter(entry => entry !== path))}
-              serverUp={true}
               keybindings={{openFolder: commands.find(command => command.id === 'openFolder')?.keybinding}}
             />
           )}
@@ -1049,7 +1048,6 @@ function CodePageInner() {
                 onCollapse={() => setShowTerminal(false)}
                 appKeys={appKeys}
                 sources={sources}
-                serverUp={true}
                 onCommand={onKeyDown}
               />
             </>

@@ -1,12 +1,12 @@
 import {IconButton, SmallButton} from './ui';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
 import {glass, useThemedStyles, withAlpha} from '../theme';
 
+import React from 'react';
 import {formatKeybinding} from './keymap';
 
 /** The Code page before a folder is open: open one, or go back to a recent one. */
-export function Welcome({recentProjects = [], onOpenFolder, onOpenRecent, onForgetRecent, serverUp, keybindings}) {
+export function Welcome({recentProjects = [], onOpenFolder, onOpenRecent, onForgetRecent, keybindings}) {
   const styles = useThemedStyles(createStyles);
 
   return (
@@ -15,10 +15,6 @@ export function Welcome({recentProjects = [], onOpenFolder, onOpenRecent, onForg
       <Text style={styles.subtitle}>Open a folder to start editing. {keybindings?.openFolder ? formatKeybinding(keybindings.openFolder) : ''}</Text>
 
       <SmallButton title="Open folder…" tone="accent" onPress={onOpenFolder} style={styles.open} testID="welcome-open" />
-
-      {serverUp === false && (
-        <Text style={styles.warning}>The file server is not running. Start it with `node scripts/fileserver.mjs`, or through the Procfile.</Text>
-      )}
 
       {recentProjects.length > 0 && (
         <View style={styles.recent}>
