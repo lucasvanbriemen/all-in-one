@@ -10,7 +10,7 @@ export const player = {
   playInterval: null,
 
   async play(song, set) {
-    await NativeModules.AudioPlayer.play(BASE_URL + song.isrc, {
+    await NativeModules.AudioPlayer.play(BASE_URL + song.id, {
       title: song.title,
       artist: song.artist,
       album: song.album,
@@ -19,10 +19,10 @@ export const player = {
 
     set('music.now-playing', song);
 
-    await player.createPlay(song.isrc);
+    await player.createPlay(song.id);
 
     clearInterval(player.playInterval);
-    player.playInterval = setInterval(() => player.createPlay(song.isrc), 5000);
+    player.playInterval = setInterval(() => player.createPlay(song.id), 5000);
   },
 
   async playPlaylist(songs, set, atIndex = null) {
@@ -125,12 +125,12 @@ export const player = {
     };
   },
 
-  async createPlay(isrc){
-    console.log('Creating play for', isrc);
+  async createPlay(songId){
+    console.log('Creating play for', songId);
 
     try {
       const seconds_played = await NativeModules.AudioPlayer.currentTime();
-      const response = await api.post('/music/stats/create', { isrc, seconds_played });
+      const response = await api.post('/music/stats/create', { song_id: songId, seconds_played });
       console.log('Play created successfully:', response);
     } catch (error) {
       console.error('Error creating play:', error);

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get "/music/stats", to: "plays#show", as: :plays_stats
   post "/music/stats/create", to: "plays#create", as: :plays_stats_create
   get "/music/search", to: "music#search", as: :search
-  get "/get-mp3/:isrc", to: "music#show", as: :get_mp3, constraints: { isrc: /[^\/]+/ }
+  get "/get-mp3/:id", to: "music#show", as: :get_mp3
   post "/music/:id/toggle-liked", to: "music#toggle_favorite", as: :toggle_music_favorite
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens

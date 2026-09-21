@@ -24,9 +24,9 @@ class MusicController < ApplicationController
   end
 
   def show
-    isrc = params[:isrc].to_s
-    Music::SongDownloader.ensure_downloaded(isrc)
-    send_audio_file(Music::SongDownloader.path(isrc))
+    id = params[:id].to_s
+    Music::SongDownloader.ensure_downloaded(id)
+    send_audio_file(Music::SongDownloader.path(id))
   end
 
   private
