@@ -5,8 +5,8 @@ import os from 'node:os';
 import path from 'node:path';
 
 /**
- * The editor's memory between launches: recent projects, the tabs open in each,
- * settings and keybindings. One JSON file, owned by the client — the server
+ * The editor's memory between launches: recent projects and the tabs open in
+ * each. One JSON file, owned by the client — the server
  * stores what it is given and hands it back, nothing more.
  */
 export const STATE_DIRECTORY = process.env.AIO_STATE_DIR || path.join(os.homedir(), '.all-in-one');

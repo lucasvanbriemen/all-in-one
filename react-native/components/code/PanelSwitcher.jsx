@@ -10,5 +10,4 @@ export const PANELS = [
   {id: 'search', label: 'Search', icon: 'search'},
   {id: 'git', label: 'Source control', icon: 'git'},
   {id: 'problems', label: 'Problems', glyph: '⚠'},
-  {id: 'settings', label: 'Settings', glyph: '⚙'},
 ];

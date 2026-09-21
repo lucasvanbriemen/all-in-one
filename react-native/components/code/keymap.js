@@ -1,12 +1,10 @@
 /**
  * Keyboard shortcuts, as data.
  *
- * A binding is `"cmd+shift+p"`: modifiers in any order, then one key. The
- * defaults follow VS Code where the app has the same command. The user's own
- * bindings come from the saved settings and are merged over these, so a
- * command can be rebound or, with an empty string, unbound.
+ * A binding is `"cmd+shift+p"`: modifiers in any order, then one key. They
+ * follow VS Code where the app has the same command.
  */
-export const DEFAULT_KEYBINDINGS = {
+export const KEYBINDINGS = {
   quickOpen: 'cmd+p',
   commandPalette: 'cmd+shift+p',
   goToSymbol: 'cmd+shift+o',
@@ -30,14 +28,41 @@ export const DEFAULT_KEYBINDINGS = {
   showSearch: 'cmd+shift+f',
   showGit: 'ctrl+shift+g',
   showProblems: 'cmd+shift+m',
-  openSettings: 'cmd+,',
   openFolder: 'cmd+o',
   newFile: 'cmd+n',
   formatDocument: 'shift+alt+f',
-  toggleWordWrap: 'alt+z',
-  zoomIn: 'cmd+=',
-  zoomOut: 'cmd+-',
   dismiss: 'escape',
+};
+
+/** Command ids as the command palette labels them. */
+export const COMMAND_LABELS = {
+  quickOpen: 'Go to file',
+  commandPalette: 'Command palette',
+  goToSymbol: 'Go to symbol in file',
+  goToLine: 'Go to line',
+  save: 'Save',
+  saveAll: 'Save all',
+  closeTab: 'Close tab',
+  closeAllTabs: 'Close all tabs',
+  reopenClosedTab: 'Reopen closed tab',
+  nextTab: 'Next tab',
+  previousTab: 'Previous tab',
+  nextTabAlt: 'Next tab (alternate)',
+  previousTabAlt: 'Previous tab (alternate)',
+  splitEditor: 'Split editor',
+  focusFirstGroup: 'Focus first editor group',
+  focusSecondGroup: 'Focus second editor group',
+  toggleSidebar: 'Toggle sidebar',
+  toggleTerminal: 'Toggle terminal',
+  newTerminal: 'New terminal',
+  showFiles: 'Show files',
+  showSearch: 'Search in files',
+  showGit: 'Show source control',
+  showProblems: 'Show problems',
+  openFolder: 'Open folder',
+  newFile: 'New file',
+  formatDocument: 'Format document',
+  dismiss: 'Dismiss / close overlay',
 };
 
 const MODIFIERS = {
@@ -154,10 +179,8 @@ export function matchesBinding(binding, event) {
  * The user's bindings over the defaults, parsed once. Returned as a list so
  * lookup is a scan — there are a few dozen, and it runs once per key.
  */
-export function buildKeymap(overrides = {}) {
-  const merged = {...DEFAULT_KEYBINDINGS, ...overrides};
-
-  return Object.entries(merged)
+export function buildKeymap() {
+  return Object.entries(KEYBINDINGS)
     .map(([command, text]) => ({command, text, binding: parseKeybinding(text)}))
     .filter(entry => entry.binding);
 }

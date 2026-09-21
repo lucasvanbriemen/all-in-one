@@ -39,7 +39,6 @@ export const CodeEditor = forwardRef(function CodeEditor(
     path,
     projectRoot,
     sources = CDN_SOURCES,
-    settings,
     appKeys,
     gitChanges,
     diffOriginal = null,
@@ -124,14 +123,6 @@ export const CodeEditor = forwardRef(function CodeEditor(
 
     call('setTheme', monacoTheme(colors, scheme));
   }, [loaded, colors, scheme, call]);
-
-  useEffect(() => {
-    if (!loaded || !settings) {
-      return;
-    }
-
-    call('setOptions', editorOptions(settings));
-  }, [loaded, settings, call]);
 
   useEffect(() => {
     if (!loaded || !appKeys) {
@@ -340,27 +331,6 @@ export const CodeEditor = forwardRef(function CodeEditor(
     />
   );
 });
-
-/** The subset of the app's settings Monaco takes directly. */
-export function editorOptions(settings = {}) {
-  return {
-    fontSize: settings.fontSize ?? EDITOR_OPTIONS.fontSize,
-    fontFamily: settings.fontFamily ?? undefined,
-    tabSize: settings.tabSize ?? 2,
-    insertSpaces: settings.insertSpaces ?? true,
-    wordWrap: settings.wordWrap ? 'on' : 'off',
-    minimap: {enabled: Boolean(settings.minimap)},
-    lineNumbers: settings.lineNumbers === false ? 'off' : 'on',
-    renderWhitespace: settings.renderWhitespace ?? 'selection',
-    bracketPairColorization: {enabled: settings.bracketPairColorization ?? true},
-    cursorBlinking: settings.cursorBlinking ?? 'blink',
-    smoothScrolling: true,
-    formatOnPaste: Boolean(settings.formatOnPaste),
-    formatOnType: Boolean(settings.formatOnType),
-    stickyScroll: {enabled: Boolean(settings.stickyScroll)},
-    guides: {indentation: settings.indentGuides ?? true, bracketPairs: settings.bracketPairGuides ?? false},
-  };
-}
 
 /**
  * `injectJavaScript` takes source, not data. JSON is very nearly a subset of

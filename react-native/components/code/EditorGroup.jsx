@@ -23,7 +23,6 @@ export function EditorGroup({
   gutterChanges,
   diff,
   conflict,
-  settings,
   appKeys,
   sources,
   projectRoot,
@@ -97,7 +96,6 @@ export function EditorGroup({
           path={path}
           projectRoot={projectRoot}
           sources={sources}
-          settings={settings}
           appKeys={appKeys}
           gitChanges={gutterChanges}
           diffOriginal={diff ? diff.original : null}

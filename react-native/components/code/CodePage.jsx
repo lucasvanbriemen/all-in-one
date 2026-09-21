@@ -1,14 +1,12 @@
-import {DEFAULT_SETTINGS, mergeSettings} from './settings';
 import {FileSystemError, ServerUnavailableError, fileSystem} from '../fileSystem';
 import {NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useReducer, useRef, useState} from 'react';
 import {ToastProvider, useToast} from './Toast';
 import {activeFile, editorReducer, activeGroup as groupOf, initialEditorState, openPaths, serializeEditorState} from './editorState';
-import {buildKeymap, commandForEvent, keyDownEventsFor} from './keymap';
+import {COMMAND_LABELS, buildKeymap, commandForEvent, keyDownEventsFor} from './keymap';
 import {glass, useThemedStyles} from '../theme';
 import {gutterChanges, lineDiff} from './lineDiff';
 
-import {COMMAND_LABELS} from './SettingsPanel';
 import {CommandPalette} from './CommandPalette';
 import {Divider} from './Divider';
 import {EditorGroup} from './EditorGroup';
@@ -28,6 +26,9 @@ const MAX_RECENT_FILES = 30;
 const MIN_SIDEBAR = 180;
 const MAX_SIDEBAR = 600;
 const MIN_TERMINAL = 100;
+const SIDEBAR_WIDTH = 260;
+const TERMINAL_HEIGHT = 260;
+const AUTOSAVE_DELAY = 800;
 
 export function CodePage() {
   return (
@@ -56,7 +57,6 @@ function CodePageInner() {
   // ---- Persisted state -----------------------------------------------------
 
   const [loadedState, setLoadedState] = useState(null);
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [recentProjects, setRecentProjects] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
   const projectsState = useRef({});
@@ -78,8 +78,10 @@ function CodePageInner() {
   // ---- Panels ---------------------------------------------------------------
 
   const [panel, setPanel] = useState('files');
-  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SETTINGS.sidebarWidth);
-  const [terminalHeight, setTerminalHeight] = useState(DEFAULT_SETTINGS.terminalHeight);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [showTerminal, setShowTerminal] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_WIDTH);
+  const [terminalHeight, setTerminalHeight] = useState(TERMINAL_HEIGHT);
   const dragStart = useRef(null);
   const [palette, setPalette] = useState(null);
   const [searchSeed] = useState('');
@@ -126,11 +128,8 @@ function CodePageInner() {
       .getState()
       .then(state => {
         setLoadedState(state ?? {});
-        setSettings(mergeSettings(state?.settings));
         setRecentProjects(state?.recentProjects ?? []);
         projectsState.current = state?.projects ?? {};
-        setSidebarWidth(state?.settings?.sidebarWidth ?? DEFAULT_SETTINGS.sidebarWidth);
-        setTerminalHeight(state?.settings?.terminalHeight ?? DEFAULT_SETTINGS.terminalHeight);
 
         if (state?.lastProject) {
           fileSystem
@@ -142,7 +141,7 @@ function CodePageInner() {
       .catch(error => {
         setLoadedState({});
         if (!(error instanceof ServerUnavailableError)) {
-          report(error, 'Could not load settings');
+          report(error, 'Could not load saved state');
         }
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,7 +165,6 @@ function CodePageInner() {
 
       fileSystem
         .patchState({
-          settings: {...settings, sidebarWidth, terminalHeight},
           recentProjects,
           lastProject: projectRoot,
           projects: projectsState.current,
@@ -175,11 +173,11 @@ function CodePageInner() {
     }, 600);
 
     return () => clearTimeout(timer);
-  }, [loadedState, settings, sidebarWidth, terminalHeight, recentProjects, projectRoot, editor, recentFiles, panel, terminals.length]);
+  }, [loadedState, recentProjects, projectRoot, editor, recentFiles, panel, terminals.length]);
 
   // ---- Keyboard -------------------------------------------------------------
 
-  const keymap = useMemo(() => buildKeymap(settings.keybindings), [settings.keybindings]);
+  const keymap = useMemo(() => buildKeymap(), []);
   const appKeys = useMemo(() => keyDownEventsFor(keymap), [keymap]);
 
   const activeEditor = useCallback(() => editorRefs.current[editor.activeGroup], [editor.activeGroup]);
@@ -315,18 +313,14 @@ function CodePageInner() {
     path => {
       clearTimeout(saveTimers.current[path]);
 
-      if (!settings.autoSave) {
-        return;
-      }
-
       saveTimers.current[path] = setTimeout(() => {
         const buffer = buffersRef.current[path];
         if (buffer && buffer.dirty && !buffer.conflict) {
           writeBuffer(path, buffer.contents);
         }
-      }, settings.autoSaveDelay);
+      }, AUTOSAVE_DELAY);
     },
-    [settings.autoSave, settings.autoSaveDelay, writeBuffer],
+    [writeBuffer],
   );
 
   const onEditorChange = useCallback(
@@ -354,13 +348,9 @@ function CodePageInner() {
         return;
       }
 
-      if (blur && !settings.autoSave) {
-        return;
-      }
-
       writeBuffer(path, value);
     },
-    [updateBuffer, writeBuffer, settings.autoSave],
+    [updateBuffer, writeBuffer],
   );
 
   const saveActive = useCallback(() => {
@@ -371,11 +361,11 @@ function CodePageInner() {
 
     const ref = activeEditor();
     if (ref) {
-      ref.requestSave(settings.formatOnSave);
+      ref.requestSave(false);
     } else {
       writeBuffer(path, buffersRef.current[path]?.contents ?? '');
     }
-  }, [editor, activeEditor, settings.formatOnSave, writeBuffer]);
+  }, [editor, activeEditor, writeBuffer]);
 
   const saveAll = useCallback(() => {
     for (const [path, buffer] of Object.entries(buffersRef.current)) {
@@ -714,17 +704,7 @@ function CodePageInner() {
     (path, groupId) => {
       const buffer = buffersRef.current[path];
       if (buffer?.dirty && !buffer.conflict) {
-        if (settings.autoSave) {
-          writeBuffer(path, buffer.contents);
-        } else {
-          // The buffer is kept, dirty, so reopening the file shows the edits;
-          // the toast is the chance to write them now.
-          toast.show(`${path} has unsaved changes.`, {
-            kind: 'info',
-            sticky: true,
-            action: {label: 'Save', onPress: () => writeBuffer(path, buffersRef.current[path]?.contents ?? buffer.contents)},
-          });
-        }
+        writeBuffer(path, buffer.contents);
       }
 
       dispatch({type: 'close', path, groupId});
@@ -734,7 +714,7 @@ function CodePageInner() {
         setDiff(null);
       }
     },
-    [settings.autoSave, writeBuffer, diff, toast],
+    [writeBuffer, diff],
   );
 
   // A buffer nobody shows any more is dropped, so a file reopened later is
@@ -772,7 +752,7 @@ function CodePageInner() {
   const showPanel = useCallback(
     id => {
       setPanel(id);
-      setSettings(current => (current.showSidebar ? current : {...current, showSidebar: true}));
+      setShowSidebar(true);
       if (id === 'files' || id === 'search') {
         set('app.activeSidebarItem', id);
       }
@@ -791,7 +771,7 @@ function CodePageInner() {
     const id = ++terminalCounter.current;
     setTerminals(current => [...current, {id}]);
     setActiveTerminal(id);
-    setSettings(current => (current.showTerminal ? current : {...current, showTerminal: true}));
+    setShowTerminal(true);
   }, []);
 
   const closeTerminal = useCallback(
@@ -805,14 +785,9 @@ function CodePageInner() {
     [],
   );
 
-  const patchSettings = useCallback(patch => {
-    setSettings(current => ({...current, ...patch}));
-  }, []);
-
   const commands = useMemo(() => {
-    const binding = id => settings.keybindings[id] ?? keymap.find(entry => entry.command === id)?.text;
+    const binding = id => keymap.find(entry => entry.command === id)?.text;
     const define = (id, run, {label = COMMAND_LABELS[id] ?? id, category = null} = {}) => ({id, label, category, keybinding: binding(id), run});
-    const bump = delta => patchSettings({fontSize: Math.max(8, Math.min(40, settings.fontSize + delta))});
 
     const list = [
       define('quickOpen', () => setPalette({mode: 'files'}), {category: 'Go'}),
@@ -845,28 +820,24 @@ function CodePageInner() {
       }),
       define('focusFirstGroup', () => editor.groups[0] && dispatch({type: 'activateGroup', groupId: editor.groups[0].id}), {category: 'View'}),
       define('focusSecondGroup', () => editor.groups[1] && dispatch({type: 'activateGroup', groupId: editor.groups[1].id}), {category: 'View'}),
-      define('toggleSidebar', () => patchSettings({showSidebar: !settings.showSidebar}), {category: 'View'}),
+      define('toggleSidebar', () => setShowSidebar(current => !current), {category: 'View'}),
       define('toggleTerminal', () => {
-        if (!settings.showTerminal && terminals.length === 0) {
+        if (!showTerminal && terminals.length === 0) {
           addTerminal();
         }
-        patchSettings({showTerminal: !settings.showTerminal});
+        setShowTerminal(current => !current);
       }, {category: 'View'}),
       define('newTerminal', addTerminal, {category: 'Terminal'}),
       define('showFiles', () => showPanel('files'), {category: 'View'}),
       define('showSearch', () => showPanel('search'), {category: 'View'}),
       define('showGit', () => showPanel('git'), {category: 'View'}),
       define('showProblems', () => showPanel('problems'), {category: 'View'}),
-      define('openSettings', () => showPanel('settings'), {category: 'View'}),
       define('openFolder', pickFolder, {category: 'File'}),
       define('newFile', () => {
         showPanel('files');
         toast.show('Use the ＋ in the file tree to name the new file.', {kind: 'info'});
       }, {category: 'File'}),
       define('formatDocument', () => activeEditor()?.runAction('editor.action.formatDocument'), {category: 'Editor'}),
-      define('toggleWordWrap', () => patchSettings({wordWrap: !settings.wordWrap}), {category: 'View'}),
-      define('zoomIn', () => bump(1), {category: 'View'}),
-      define('zoomOut', () => bump(-1), {category: 'View'}),
       define('dismiss', () => {
         setPalette(null);
         setDiff(null);
@@ -875,9 +846,6 @@ function CodePageInner() {
       {id: 'closeProject', label: 'Close folder', category: 'File', run: () => { closeProject(); setProjectRoot(null); }},
       {id: 'refreshGit', label: 'Refresh git status', category: 'Git', run: refreshGit},
       {id: 'stageAll', label: 'Stage all changes', category: 'Git', run: () => fileSystem.git.stage(projectRoot, 'all').then(refreshGit).catch(report)},
-      {id: 'toggleMinimap', label: settings.minimap ? 'Hide minimap' : 'Show minimap', category: 'View', run: () => patchSettings({minimap: !settings.minimap})},
-      {id: 'toggleFormatOnSave', label: settings.formatOnSave ? 'Disable format on save' : 'Enable format on save', category: 'Editor', run: () => patchSettings({formatOnSave: !settings.formatOnSave})},
-      {id: 'toggleAutoSave', label: settings.autoSave ? 'Disable auto save' : 'Enable auto save', category: 'File', run: () => patchSettings({autoSave: !settings.autoSave})},
       {id: 'revealInTree', label: 'Reveal active file in tree', category: 'View', run: () => { const path = activeFile(editor); if (path) { showPanel('files'); tree.reveal(path); } }},
       {id: 'showDiff', label: 'Compare active file with HEAD', category: 'Git', run: () => { const path = activeFile(editor); if (path) { showDiff(path); } }},
       {id: 'reloadEditor', label: 'Reload editor view', category: 'Developer', run: () => activeEditor()?.reload()},
@@ -888,7 +856,7 @@ function CodePageInner() {
     }
 
     return list;
-  }, [settings, keymap, editor, closedTabs, terminals.length, monacoActions, projectRoot, activeEditor, saveActive, saveAll, closeTab, openFile, patchSettings, addTerminal, showPanel, pickFolder, closeProject, refreshGit, report, toast, tree, showDiff]);
+  }, [keymap, editor, closedTabs, terminals.length, showTerminal, monacoActions, projectRoot, activeEditor, saveActive, saveAll, closeTab, openFile, addTerminal, showPanel, pickFolder, closeProject, refreshGit, report, toast, tree, showDiff]);
 
   const runCommand = useCallback(
     id => {
@@ -1001,7 +969,7 @@ function CodePageInner() {
       )}
 
       <View style={styles.body}>
-        {settings.showSidebar && (
+        {showSidebar && (
           <>
             <View style={[styles.sidebar, {width: sidebarWidth}]} testID="sidebar">
               {panel === 'files' && (
@@ -1081,7 +1049,6 @@ function CodePageInner() {
                     gutterChanges={gutterByGroup[group.id]}
                     diff={diff && diff.path === group.active ? diff : null}
                     conflict={Boolean(group.active && buffers[group.active]?.conflict)}
-                    settings={settings}
                     appKeys={appKeys}
                     sources={sources}
                     projectRoot={projectRoot}
@@ -1127,7 +1094,7 @@ function CodePageInner() {
             </View>
           )}
 
-          {projectRoot && settings.showTerminal && terminals.length > 0 && sources && (
+          {projectRoot && showTerminal && terminals.length > 0 && sources && (
             <>
               <Divider
                 direction="vertical"
@@ -1149,7 +1116,7 @@ function CodePageInner() {
                 onActivate={setActiveTerminal}
                 onAdd={addTerminal}
                 onClose={closeTerminal}
-                onCollapse={() => patchSettings({showTerminal: false})}
+                onCollapse={() => setShowTerminal(false)}
                 appKeys={appKeys}
                 sources={sources}
                 serverUp={health.up !== false}
