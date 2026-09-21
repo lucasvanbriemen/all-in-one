@@ -1,14 +1,13 @@
+import {COMMAND_LABELS, buildKeymap, commandForEvent, keyDownEventsFor} from './keymap';
 import {FileSystemError, ServerUnavailableError, fileSystem} from '../fileSystem';
 import {NativeModules, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useReducer, useRef, useState} from 'react';
 import {ToastProvider, useToast} from './Toast';
 import {activeFile, editorReducer, activeGroup as groupOf, initialEditorState, openPaths, serializeEditorState} from './editorState';
-import {COMMAND_LABELS, buildKeymap, commandForEvent, keyDownEventsFor} from './keymap';
 import {glass, useThemedStyles} from '../theme';
 import {gutterChanges, lineDiff} from './lineDiff';
 
 import {CommandPalette} from './CommandPalette';
-import {Divider} from './Divider';
 import {EditorGroup} from './EditorGroup';
 import {FileTree} from './FileTree';
 import {PANELS} from './PanelSwitcher';
@@ -25,7 +24,6 @@ const MAX_RECENT_PROJECTS = 8;
 const MAX_RECENT_FILES = 30;
 const MIN_SIDEBAR = 180;
 const MAX_SIDEBAR = 600;
-const MIN_TERMINAL = 100;
 const SIDEBAR_WIDTH = 260;
 const TERMINAL_HEIGHT = 260;
 const AUTOSAVE_DELAY = 800;
@@ -80,9 +78,6 @@ function CodePageInner() {
   const [panel, setPanel] = useState('files');
   const [showSidebar, setShowSidebar] = useState(true);
   const [showTerminal, setShowTerminal] = useState(true);
-  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_WIDTH);
-  const [terminalHeight, setTerminalHeight] = useState(TERMINAL_HEIGHT);
-  const dragStart = useRef(null);
   const [palette, setPalette] = useState(null);
   const [searchSeed] = useState('');
   const [monacoActions, setMonacoActions] = useState([]);
@@ -942,13 +937,6 @@ function CodePageInner() {
   }, [editor.groups, originals, buffers]);
 
   const activePath = activeFile(editor);
-  const languageServer = cursor?.language && health.info?.languageServers?.[cursor.language];
-
-  const startDrag = useCallback(current => {
-    dragStart.current = current;
-  }, []);
-
-  // ---- Render -------------------------------------------------------------------
 
   return (
     <View
@@ -971,7 +959,7 @@ function CodePageInner() {
       <View style={styles.body}>
         {showSidebar && (
           <>
-            <View style={[styles.sidebar, {width: sidebarWidth}]} testID="sidebar">
+            <View style={[styles.sidebar, {width: SIDEBAR_WIDTH}]} testID="sidebar">
               {panel === 'files' && (
                 <FileTree
                   projectRoot={projectRoot}
@@ -1004,19 +992,6 @@ function CodePageInner() {
                 />
               )}
             </View>
-
-            <Divider
-              direction="horizontal"
-              onResize={delta => {
-                if (dragStart.current === null) {
-                  startDrag(sidebarWidth);
-                }
-                setSidebarWidth(Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, dragStart.current + delta)));
-              }}
-              onEnd={() => {
-                dragStart.current = null;
-              }}
-            />
           </>
         )}
 
@@ -1096,20 +1071,8 @@ function CodePageInner() {
 
           {projectRoot && showTerminal && terminals.length > 0 && sources && (
             <>
-              <Divider
-                direction="vertical"
-                onResize={delta => {
-                  if (dragStart.current === null) {
-                    startDrag(terminalHeight);
-                  }
-                  setTerminalHeight(Math.max(MIN_TERMINAL, dragStart.current - delta));
-                }}
-                onEnd={() => {
-                  dragStart.current = null;
-                }}
-              />
               <TerminalPanel
-                style={{height: terminalHeight}}
+                style={{height: TERMINAL_HEIGHT}}
                 projectRoot={projectRoot}
                 terminals={terminals}
                 activeId={activeTerminal}
