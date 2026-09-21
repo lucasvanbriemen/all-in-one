@@ -15,7 +15,6 @@ import {EditorGroup} from './EditorGroup';
 import {FileTree} from './FileTree';
 import {PANELS} from './PanelSwitcher';
 import {SearchSidebar} from './SearchSidebar';
-import {StatusBar} from './StatusBar';
 import {TerminalPanel} from './TerminalPanel';
 import {Welcome} from './Welcome';
 import {resolveVendorSources} from './vendor';
@@ -1157,24 +1156,6 @@ function CodePageInner() {
                 onCommand={onKeyDown}
               />
             </>
-          )}
-
-          {projectRoot && (
-            <StatusBar
-              branch={git?.branch}
-              changes={git?.changes?.length}
-              problems={0}
-              cursor={activePath ? cursor : null}
-              language={cursor?.language}
-              path={activePath}
-              serverUp={health.up}
-              saving={saving}
-              languageServer={languageServer}
-              onShowGit={() => showPanel('git')}
-              onShowProblems={() => showPanel('problems')}
-              onGoToLine={() => setPalette({mode: 'line'})}
-              onRetryServer={health.refresh}
-            />
           )}
         </View>
       </View>

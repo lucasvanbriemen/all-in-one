@@ -1,4 +1,4 @@
-import {DEFAULT_KEYBINDINGS, DEFAULT_SETTINGS} from './settings';
+import {DEFAULT_SETTINGS} from './settings';
 
 /** Command ids as the settings screen labels them. */
 export const COMMAND_LABELS = {
