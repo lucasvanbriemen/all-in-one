@@ -22,8 +22,6 @@ import {useServerHealth} from './useServerHealth';
 
 const MAX_RECENT_PROJECTS = 8;
 const MAX_RECENT_FILES = 30;
-const MIN_SIDEBAR = 180;
-const MAX_SIDEBAR = 600;
 const SIDEBAR_WIDTH = 260;
 const TERMINAL_HEIGHT = 260;
 const AUTOSAVE_DELAY = 800;
@@ -1141,9 +1139,6 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 12,
-  },
-  sidebar: {
-    minWidth: MIN_SIDEBAR,
   },
   main: {
     flex: 1,
