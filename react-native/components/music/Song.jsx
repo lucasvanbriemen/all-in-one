@@ -15,7 +15,7 @@ export function Song({song, isEven, onClick, rightLabel = null}) {
   function toggleLike() {
     setIsLiked(liked => !liked);
 
-    api.post(`/music/${song.isrc}/toggle-liked`);
+    api.post(`/music/${song.id}/toggle-liked`);
   }
 
   return (

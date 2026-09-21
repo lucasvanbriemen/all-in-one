@@ -4,62 +4,65 @@ module Music
     WORK_ROOT = Rails.root.join("tmp/music-download")
     DOWNLOAD_TIMEOUT_SECONDS = 180
     DOWNLOAD_NAME = "download".freeze
-    # YouTube carries single edits, radio edits and live takes under the same
-    # title; prefer a result whose length matches what Deezer reports.
-    DURATION_TOLERANCE = 0.07
+    # yt-dlp prints these, one per line, next to the audio so a song that is
+    # not in the database yet can be created without another request.
+    METADATA_FIELDS = %w[ %(track,title)s %(artists.0,artist,uploader)s %(album|)s %(thumbnail)s %(duration)s ].freeze
+    VIDEO_ID = /\A[A-Za-z0-9_-]{11}\z/
 
     class << self
-      def path(isrc)
-        AUDIO_DIR.join("#{isrc}.mp3")
+      def path(id)
+        AUDIO_DIR.join("#{id}.mp3")
       end
 
-      def downloaded?(isrc)
-        path(isrc).file?
+      def downloaded?(id)
+        path(id).file?
       end
 
-      def ensure_downloaded(isrc)
-        return true if downloaded?(isrc)
+      def ensure_downloaded(id)
+        return false unless id.match?(VIDEO_ID)
+        return true if downloaded?(id)
 
-        with_lock(isrc) do
-          next true if downloaded?(isrc)
+        with_lock(id) do
+          next true if downloaded?(id)
 
-          details = DeezerClient.new.track_details(isrc)
-          download(isrc, details)
-          download(isrc, details, match_duration: false) unless downloaded?(isrc)
-          next false unless downloaded?(isrc)
+          metadata = download(id)
+          next false unless downloaded?(id)
 
-          create_song(isrc, details)
+          create_song(id, metadata)
           true
         end
       end
 
       private
 
-      def with_lock(isrc)
+      def with_lock(id)
         FileUtils.mkdir_p(AUDIO_DIR)
-        File.open(AUDIO_DIR.join("#{isrc}.lock"), File::RDWR | File::CREAT) do |lock|
+        File.open(AUDIO_DIR.join("#{id}.lock"), File::RDWR | File::CREAT) do |lock|
           lock.flock(File::LOCK_EX)
           yield
         end
       end
 
-      def create_song(isrc, details)
-        return if Song.exists?(isrc: isrc)
+      def create_song(id, metadata)
+        return if metadata.nil? || Song.exists?(id: id)
 
+        title, artist, album, thumbnail, duration = metadata
         Song.create!(
-          isrc: isrc,
-          title: details["title"],
-          artist: details.dig("artist", "name"),
-          image_url: details.dig("album", "cover_medium") || Song::PLACEHOLDER_IMAGE,
-          album: details.dig("album", "title"),
-          duration: details["duration"]
+          id: id,
+          title: title,
+          artist: artist,
+          album: album.presence || title,
+          image_url: thumbnail.presence || Song::PLACEHOLDER_IMAGE,
+          duration: duration.to_i
         )
       end
 
-      def download(isrc, details, match_duration: true)
+      # Returns the metadata lines when the download produced a file.
+      def download(id)
         work_dir = WORK_ROOT.join(SecureRandom.hex(8))
         FileUtils.mkdir_p(work_dir)
         produced = work_dir.join("#{DOWNLOAD_NAME}.mp3")
+        metadata_file = work_dir.join("metadata.txt")
 
         options = [
           tool("yt-dlp"),
@@ -72,61 +75,38 @@ module Music
           "--audio-quality", "0",
           "--restrict-filenames",
           "--no-progress",
-          # yt-dlp walks the search results in order and --max-downloads stops
-          # at the first that passes the filter.
-          "--match-filter", match_filter(match_duration ? details["duration"] : nil),
-          "--max-downloads", "1",
+          "--print-to-file", METADATA_FIELDS.join("\n"), metadata_file.to_s,
           "--ffmpeg-location", Rails.root.join("bin").to_s,
           "--output", work_dir.join(DOWNLOAD_NAME).to_s
         ]
-        search = "ytsearch5: #{details.dig("artist", "name")} #{details["title"]} audio"
+        url = "https://music.youtube.com/watch?v=#{id}"
         env = { "TMP" => work_dir.to_s, "TEMP" => work_dir.to_s, "TMPDIR" => work_dir.to_s }
 
         # Once per player client, stopping at the first that produces the file.
-        # The exit status is ignored: yt-dlp exits non-zero when --max-downloads
-        # stops it, having produced exactly the file that was asked for.
         YtDlp.new.download_attempts.each do |client_options|
           log = work_dir.join("yt-dlp.log").to_s
           client = client_options.last || "default"
-          TimedProcess.run(*options, *client_options, search,
+          TimedProcess.run(*options, *client_options, url,
             env: env, chdir: work_dir.to_s, out: log, err: log,
             timeout_seconds: DOWNLOAD_TIMEOUT_SECONDS)
           break if produced.file?
 
-          output = File.read(log)
-          Rails.logger.warn("[music] #{isrc} attempt failed (#{client}): #{output.lines.last(3).join.strip}")
-          # Walking the player clients only helps against download errors
-          # (403s, withheld formats). When every result was simply rejected by
-          # the duration window, the other clients see the same results, so
-          # skip them and let the caller's unfiltered retry run right away.
-          # Observed: ~15s of identical failing searches per song otherwise.
-          break if filter_rejected_everything?(output)
+          Rails.logger.warn("[music] #{id} attempt failed (#{client}): #{File.read(log).lines.last(3).join.strip}")
         end
 
-        return unless produced.file?
+        return nil unless produced.file?
 
         # Copied then renamed so a half-written file never reads as cached.
-        partial = "#{path(isrc)}.part"
+        partial = "#{path(id)}.part"
         FileUtils.cp(produced, partial)
-        FileUtils.mv(partial, path(isrc))
+        FileUtils.mv(partial, path(id))
+        metadata_file.file? ? File.read(metadata_file).lines.map(&:strip) : nil
       ensure
         FileUtils.rm_rf(work_dir) if work_dir
       end
 
-      def filter_rejected_everything?(output)
-        output.include?("does not pass filter") && !output.include?("ERROR:")
-      end
-
       def tool(name)
         Rails.root.join("bin", name).to_s
-      end
-
-      def match_filter(expected_duration)
-        seconds = expected_duration.to_f
-        return "age_limit<18" unless seconds.positive?
-
-        window = seconds * DURATION_TOLERANCE
-        "age_limit<18 & duration>#{(seconds - window).round} & duration<#{(seconds + window).round}"
       end
     end
   end

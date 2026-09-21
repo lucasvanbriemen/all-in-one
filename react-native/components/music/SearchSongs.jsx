@@ -38,7 +38,7 @@ export function SearchSongs() {
       />
 
       {searchResults.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set)} />
+        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set)} />
       ))}
     </View>
   );

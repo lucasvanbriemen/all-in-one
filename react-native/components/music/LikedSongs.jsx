@@ -33,7 +33,7 @@ export function LikedSongs() {
       </View>
 
       {likedSongs.map((song, index) => (
-        <Song key={song.isrc} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
+        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index)} />
       ))}
     </ScrollView>
   );

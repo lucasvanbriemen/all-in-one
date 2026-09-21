@@ -15,9 +15,9 @@ module Music
       return [] if query.empty?
 
       songs
-        .map { |song| [song, score(query, song)] }
+        .map { |song| [ song, score(query, song) ] }
         .select { |_, score| score >= MIN_SCORE }
-        .sort_by { |song, score| [-score, song.title] }
+        .sort_by { |song, score| [ -score, song.title ] }
         .map(&:first)
     end
 
