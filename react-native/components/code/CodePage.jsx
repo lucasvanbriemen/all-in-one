@@ -10,7 +10,6 @@ import {gutterChanges, lineDiff} from './lineDiff';
 import {CommandPalette} from './CommandPalette';
 import {EditorGroup} from './EditorGroup';
 import {FileTree} from './FileTree';
-import {PANELS} from './PanelSwitcher';
 import {SearchSidebar} from './SearchSidebar';
 import {TerminalPanel} from './TerminalPanel';
 import {Welcome} from './Welcome';
@@ -413,10 +412,6 @@ function CodePageInner() {
       setRecentProjects(current => [root, ...current.filter(entry => entry !== root)].slice(0, MAX_RECENT_PROJECTS));
 
       const saved = projectsState.current[root];
-
-      if (saved?.panel && PANELS.some(entry => entry.id === saved.panel)) {
-        setPanel(saved.panel);
-      }
 
       const wanted = Math.max(1, Math.min(4, saved?.terminals ?? 1));
       const list = Array.from({length: wanted}, () => ({id: ++terminalCounter.current}));
