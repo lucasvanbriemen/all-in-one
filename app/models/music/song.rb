@@ -1,5 +1,4 @@
 module Music
-  # Keyed by YouTube video id.
   class Song < ApplicationRecord
     has_many :plays
 
