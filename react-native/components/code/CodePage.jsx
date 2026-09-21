@@ -17,7 +17,6 @@ import {resolveVendorSources} from './vendor';
 import {useAppContext} from '../../context/AppContext';
 import {useFileTree} from './useFileTree';
 import {useProjectEvents} from './useProjectEvents';
-import {useServerHealth} from './useServerHealth';
 
 const MAX_RECENT_PROJECTS = 8;
 const MAX_RECENT_FILES = 30;
@@ -46,7 +45,6 @@ function CodePageInner() {
   const {get, set} = useAppContext();
   const sidebarItem = get('app.activeSidebarItem');
 
-  const health = useServerHealth();
   const [sources, setSources] = useState(null);
 
   // ---- Persisted state -----------------------------------------------------
@@ -91,20 +89,12 @@ function CodePageInner() {
 
   const page = useRef(null);
 
-  const markServerDown = health.markDown;
-
   const report = useCallback(
     (error, context) => {
-      if (error instanceof ServerUnavailableError) {
-        markServerDown();
-        toast.show('The file server is not running.', {kind: 'error'});
-        return;
-      }
-
       const message = error instanceof FileSystemError ? error.message : error?.message ?? String(error);
       toast.show(context ? `${context}: ${message}` : message, {kind: 'error'});
     },
-    [markServerDown, toast],
+    [toast],
   );
 
   const tree = useFileTree(projectRoot, {onError: report});
@@ -489,25 +479,17 @@ function CodePageInner() {
 
     return new Promise(resolve => {
       gitTimer.current = setTimeout(async () => {
-        try {
-          const status = await fileSystem.git.status(projectRoot);
-          setGit(status);
+        const status = await fileSystem.git.status(projectRoot);
+        setGit(status);
 
-          if (status.repository) {
-            for (const path of openPaths(editor)) {
-              loadOriginal(projectRoot, path);
-            }
+        if (status.repository) {
+          for (const path of openPaths(editor)) {
+            loadOriginal(projectRoot, path);
           }
-        } catch (error) {
-          if (error instanceof ServerUnavailableError) {
-            markServerDown();
-          }
-        } finally {
-          resolve();
         }
       }, 150);
     });
-  }, [projectRoot, editor, loadOriginal, markServerDown]);
+  }, [projectRoot, editor, loadOriginal]);
 
   useEffect(() => {
     if (projectRoot) {
@@ -600,7 +582,7 @@ function CodePageInner() {
     [tree, updateBuffer, toast, projectRoot, refreshGit],
   );
 
-  useProjectEvents(projectRoot, onProjectChanges, {enabled: health.up !== false});
+  useProjectEvents(projectRoot, onProjectChanges, {enabled: true});
 
   // ---- Tree actions ------------------------------------------------------------
 
@@ -940,14 +922,6 @@ function CodePageInner() {
       onKeyDown={onKeyDown}
       keyDownEvents={appKeys}
       testID="code-page">
-      {health.up === false && (
-        <View style={styles.serverBanner} testID="server-banner">
-          <Text style={styles.serverBannerText}>The file server is not running. Files, search, git and the terminal are unavailable until it is back.</Text>
-          <Pressable onPress={health.refresh} style={styles.serverRetry}>
-            <Text style={styles.serverRetryText}>Retry</Text>
-          </Pressable>
-        </View>
-      )}
 
       <View style={styles.body}>
         {showSidebar && (
@@ -995,7 +969,7 @@ function CodePageInner() {
               onOpenFolder={pickFolder}
               onOpenRecent={path => openProject(path, {restore: true})}
               onForgetRecent={path => setRecentProjects(current => current.filter(entry => entry !== path))}
-              serverUp={health.up}
+              serverUp={true}
               keybindings={{openFolder: commands.find(command => command.id === 'openFolder')?.keybinding}}
             />
           )}
@@ -1075,7 +1049,7 @@ function CodePageInner() {
                 onCollapse={() => setShowTerminal(false)}
                 appKeys={appKeys}
                 sources={sources}
-                serverUp={health.up !== false}
+                serverUp={true}
                 onCommand={onKeyDown}
               />
             </>
