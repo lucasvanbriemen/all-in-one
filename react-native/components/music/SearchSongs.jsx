@@ -13,7 +13,7 @@ export function SearchSongs() {
 
   const isCompact = useCompactLayout();
 
-  const {set} = useAppContext();
+  const {get, set} = useAppContext();
 
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState('');
@@ -38,7 +38,7 @@ export function SearchSongs() {
       />
 
       {searchResults.map((song, index) => (
-        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set)} />
+        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set, get)} />
       ))}
     </View>
   );

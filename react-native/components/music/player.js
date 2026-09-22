@@ -9,7 +9,7 @@ export const player = {
   GO_BACK_TO_START_OF_SONG_AFTER_SECONDS: 5,
   playInterval: null,
 
-  async play(song, set) {
+  async play(song, set, get) {
     await NativeModules.AudioPlayer.play(BASE_URL + song.id, {
       title: song.title,
       artist: song.artist,
@@ -18,6 +18,12 @@ export const player = {
     }, { Authorization: `Bearer ${secrets.API_KEY}` });
 
     set('music.now-playing', song);
+
+    // Get the next song and prepare the song
+    const queue = get('music.queue') || [];
+    if (queue.length > 0) {
+      api.get(`/get-mp3/${queue[0].id}/prepare`);
+    }
 
     await player.createPlay(song.id);
 
@@ -41,7 +47,7 @@ export const player = {
 
     set('music.queue', songsToShuffle);
 
-    await player.play(songToPlay, set);
+    await player.play(songToPlay, set, get);
   },
 
   async next(set, get) {
@@ -55,7 +61,7 @@ export const player = {
     }
 
     set('music.queue', queue.slice(1));
-    await player.play(queue[0], set);
+    await player.play(queue[0], set, get);
   },
 
   async previous(set, get) {
@@ -78,16 +84,16 @@ export const player = {
     const previousSong = lastSongs[lastSongs.length - 1];
     set('music.last-songs', lastSongs.slice(0, -1));
     set('music.queue', currentlyPlaying ? [currentlyPlaying, ...queue] : [...queue]);
-    await player.play(previousSong, set);
+    await player.play(previousSong, set, get);
   },
 
   // "Hey Siri, play <query>"
-  async playFromQuery(query, set) {
+  async playFromQuery(query, set, get) {
     const results = await api.get('/music/search?use_liked_songs=true&term=' + encodeURIComponent(query));
     if (!results || results.length === 0) {
       return;
     }
-    await player.play(results[0], set);
+    await player.play(results[0], set, get);
   },
 
   async pause() {
@@ -116,7 +122,7 @@ export const player = {
     let siriSub = null;
     if (NativeModules.SiriIntents) {
       const siriEmitter = new NativeEventEmitter(NativeModules.SiriIntents);
-      siriSub = siriEmitter.addListener('siriPlay', ({query}) => player.playFromQuery(query, set));
+      siriSub = siriEmitter.addListener('siriPlay', ({query}) => player.playFromQuery(query, set, get));
     }
     return () => {
       stateSub.remove();
