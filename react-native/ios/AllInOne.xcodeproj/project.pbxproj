@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-AllInOne.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-AllInOne.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		5CE1DE1E5CE1DE1E5CE1DE02 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE1DE1E5CE1DE1E5CE1DE01 /* SceneDelegate.swift */; };
+		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A1C0000000000000000000A2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000A1 /* AppIcon.icon */; };
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
@@ -30,9 +30,9 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = AllInOne/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-AllInOne.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne.debug.xcconfig"; path = "Target Support Files/Pods-AllInOne/Pods-AllInOne.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-AllInOne.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne.release.xcconfig"; path = "Target Support Files/Pods-AllInOne/Pods-AllInOne.release.xcconfig"; sourceTree = "<group>"; };
+		5CE1DE1E5CE1DE1E5CE1DE01 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = AllInOne/SceneDelegate.swift; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-AllInOne.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllInOne.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AllInOne/AppDelegate.swift; sourceTree = "<group>"; };
-		5CE1DE1E5CE1DE1E5CE1DE01 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = AllInOne/SceneDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AllInOne/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1C0000000000000000000A1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = "<group>"; };
 		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
@@ -40,9 +40,9 @@
 		AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AllInOne-Bridging-Header.h"; path = "AllInOne/AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
+		AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
 		AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SiriIntents.swift; path = ../native/Siri/SiriIntents.swift; sourceTree = SOURCE_ROOT; };
 		AA10D100DA0D10A0D10AA0D /* SiriIntents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SiriIntents.m; path = ../native/Siri/SiriIntents.m; sourceTree = SOURCE_ROOT; };
-		AA10D100AA0D10A0D10AA0A /* AllInOne.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllInOne.entitlements; sourceTree = "<group>"; };
 		AD1600000000000000000001 /* NavigationBlurManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AllInOne/NavigationBlurManager.m; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */

@@ -31,7 +31,7 @@ export const player = {
     player.playInterval = setInterval(() => player.createPlay(song.id), 5000);
   },
 
-  async playPlaylist(songs, set, atIndex = null) {
+  async playPlaylist(songs, set, atIndex = null, get) {
     let songsToShuffle = [...songs];
     if (atIndex == null) {
       songsToShuffle.sort(() => Math.random() - 0.5);
