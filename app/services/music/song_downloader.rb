@@ -79,7 +79,7 @@ module Music
           "--ffmpeg-location", Rails.root.join("bin").to_s,
           "--output", work_dir.join(DOWNLOAD_NAME).to_s
         ]
-        url = "https://music.youtube.com/watch?v=#{id}"
+        url = "https://www.youtube.com/watch?v=#{id}"
         env = { "TMP" => work_dir.to_s, "TEMP" => work_dir.to_s, "TMPDIR" => work_dir.to_s }
 
         # Once per player client, stopping at the first that produces the file.
