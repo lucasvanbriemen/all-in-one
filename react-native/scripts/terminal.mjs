@@ -1,4 +1,3 @@
-import {WebSocketServer} from 'ws';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -12,7 +11,7 @@ import pty from 'node-pty';
  * server. A pty is a stream in both directions and the browser's `fetch` is
  * not, hence the socket: one per panel, one shell behind each.
  */
-const ENDPOINT = '/terminal';
+export const ENDPOINT = '/terminal';
 
 /** Until the page has measured itself and told us what it can actually fit. */
 const DEFAULT_SIZE = {cols: 80, rows: 24};
@@ -27,33 +26,13 @@ const DEFAULT_SIZE = {cols: 80, rows: 24};
  */
 const LOOPBACK_ORIGINS = ['127.0.0.1', 'localhost', '::1'];
 
-export function attachTerminal(server) {
-  // `noServer`, so the origin is checked before the handshake is answered
-  // rather than after a socket is already live.
-  const sockets = new WebSocketServer({noServer: true});
+/**
+ * Called by the shared upgrade dispatcher in `fileserver.mjs` once the origin
+ * has been checked. Exported so every socket endpoint shares one check.
+ */
+export {openShell};
 
-  server.on('upgrade', (request, socket, head) => {
-    const {pathname, searchParams} = new URL(request.url, 'http://localhost');
-
-    if (pathname !== ENDPOINT) {
-      socket.destroy();
-      return;
-    }
-
-    if (!fromLoopback(request.headers.origin)) {
-      console.error(`Refused terminal from origin: ${request.headers.origin}`);
-      socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
-      socket.destroy();
-      return;
-    }
-
-    sockets.handleUpgrade(request, socket, head, connection => {
-      openShell(connection, searchParams);
-    });
-  });
-}
-
-function fromLoopback(origin) {
+export function fromLoopback(origin) {
   if (!origin) {
     return true;
   }

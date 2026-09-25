@@ -80,6 +80,26 @@ for arch in ${SIDECAR_ARCHS:-arm64}; do
   cp "$src/pty.node" "$src/spawn-helper" "$DEST/node_modules/node-pty/prebuilds/darwin-$arch/"
 done
 
+# The editor's browser-side libraries, served by the file server at
+# `/vendor/<package>` so the Code page needs no CDN (see `handlers/vendor.mjs`).
+# Only what the two WebViews load: Monaco's minified build, xterm and its fit
+# addon, and the Shiki packages behind the syntax highlighting.
+for pkg in monaco-editor @xterm/xterm @xterm/addon-fit shiki \
+           @shikijs/core @shikijs/engine-javascript @shikijs/engine-oniguruma \
+           @shikijs/langs @shikijs/monaco @shikijs/themes @shikijs/types @shikijs/vscode-textmate; do
+  if [ ! -d "node_modules/$pkg" ]; then
+    echo "error: node_modules/$pkg is missing — run npm install" >&2
+    exit 1
+  fi
+  mkdir -p "$DEST/node_modules/$(dirname "$pkg")"
+  cp -R "node_modules/$pkg" "$DEST/node_modules/$pkg"
+done
+# Monaco ships an unminified `dev` build and source maps beside `min`; neither
+# is loaded, and together they are most of the package.
+rm -rf "$DEST/node_modules/monaco-editor/dev" "$DEST/node_modules/monaco-editor/esm" "$DEST/node_modules/monaco-editor/min-maps"
+find "$DEST/node_modules/shiki" "$DEST/node_modules/@shikijs" -name '*.d.mts' -delete
+find "$DEST/node_modules/shiki" "$DEST/node_modules/@shikijs" -name '*.d.ts' -delete
+
 chmod +x "$DEST/bin/node"
 find "$DEST/node_modules/node-pty/prebuilds" -name spawn-helper -exec chmod +x {} \;
 
