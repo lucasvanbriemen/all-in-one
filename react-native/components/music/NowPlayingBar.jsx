@@ -15,7 +15,7 @@ export function NowPlayingBar() {
   }
 
   return (
-    <Pressable style={styles.content} onPress={() => set('music.now-playing.is-expanded', true)}>
+    <Pressable style={styles.content} onPress={() => set('music.is-expanded', true)}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
 
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />

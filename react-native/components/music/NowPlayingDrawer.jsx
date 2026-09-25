@@ -10,7 +10,7 @@ export function NowPlayingDrawer() {
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
   const {height} = useWindowDimensions();
-  const open = get('music.now-playing.is-expanded') === true;
+  const open = get('music.is-expanded') === true;
   const progress = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
