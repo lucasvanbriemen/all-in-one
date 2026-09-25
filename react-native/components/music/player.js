@@ -67,7 +67,7 @@ export const player = {
   async previous(set, get) {
     // Like most players: past the first few seconds, "previous" restarts the
     // current song; before that, it jumps to the actual previous song.
-    const position = await NativeModules.AudioPlayer.currentTime();
+    const position = await player.currentTime();
     if (get('music.now-playing') && position > player.GO_BACK_TO_START_OF_SONG_AFTER_SECONDS) {
       NativeModules.AudioPlayer.seek(0);
       return;
@@ -102,6 +102,10 @@ export const player = {
 
   async resume() {
     await NativeModules.AudioPlayer.resume();
+  },
+
+  async currentTime() {
+    return await NativeModules.AudioPlayer.currentTime();
   },
 
   subscribe(set, get) {
