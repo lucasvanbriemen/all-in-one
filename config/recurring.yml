@@ -31,3 +31,9 @@ production:
     class: FetchAllImapEmailsJob
     queue: default
     schedule: every <%= ENV.fetch("IMAP_FETCH_INTERVAL_SECONDS", 15) %> seconds
+  
+  # Rate limit is 4 times a day
+  sync_all_bank_connections:
+    class: SyncAllBankConnectionsJob
+    queue: default
+    schedule: every 6 hours

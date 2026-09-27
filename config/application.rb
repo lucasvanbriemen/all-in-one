@@ -16,6 +16,9 @@ module LoginRuby
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    Rails.autoloaders.main.collapse("#{root}/app/models/configs")
+    Rails.autoloaders.main.collapse("#{root}/app/models/email")
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

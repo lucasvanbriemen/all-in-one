@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
+  get "/money/connect", to: "money#connect", as: :money_connect
+  get "/money/callback", to: "money#callback", as: :money_callback
   get "/music", to: "music#index", as: :music
   get "/music/stats", to: "plays#show", as: :plays_stats
   post "/music/stats/create", to: "plays#create", as: :plays_stats_create
