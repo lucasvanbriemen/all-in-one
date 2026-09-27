@@ -1,7 +1,4 @@
 module Bank
-  # Detects fixed recurring expenses (subscriptions, rent, insurance, ...) by
-  # grouping expenses per counterparty and checking for a regular interval and
-  # a stable amount.
   class RecurringCosts
     LOOKBACK_MONTHS = 6
     MIN_OCCURRENCES = 3
@@ -23,9 +20,9 @@ module Bank
         .order(:booking_date)
 
       transactions.group_by { |t| key_for(t) }
-        .flat_map { |key, group| cluster_by_amount(group).map { |cluster| [key, cluster, group.size > cluster.size] } }
+        .flat_map { |key, group| cluster_by_amount(group).map { |cluster| [ key, cluster, group.size > cluster.size ] } }
         .filter_map { |key, cluster, labelled| analyze(key, cluster, labelled) }
-        .sort_by { |r| [r[:stopped] ? 1 : 0, -r[:monthly_amount]] }
+        .sort_by { |r| [ r[:stopped] ? 1 : 0, -r[:monthly_amount] ] }
     end
 
     private
@@ -42,7 +39,7 @@ module Bank
         if current && (transaction.amount.abs - current.last.amount.abs) <= current.last.amount.abs * AMOUNT_TOLERANCE
           current << transaction
         else
-          clusters << [transaction]
+          clusters << [ transaction ]
         end
       end.map { |cluster| cluster.sort_by(&:booking_date) }
     end
