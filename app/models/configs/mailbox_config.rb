@@ -5,7 +5,8 @@ module MailboxConfig
     "Failure Notice",
     "Returned to Sender",
     "Undeliverable:",
-    "Mail delivery failed"
+    "Mail delivery failed",
+    "Weekly report for"
   ].freeze
 
   INTERNAL_EMAILS = [
