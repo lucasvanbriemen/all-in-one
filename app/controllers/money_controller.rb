@@ -46,7 +46,7 @@ class MoneyController < ApplicationController
           attentionLevel: monthly_average[:expense] > monthly_average[:income] ? "high" : "low"
         }
       ],
-      transactions: Bank::Transaction.order(booking_date: :desc).limit(10)
+      transactions: Bank::Transaction.order(booking_date: :desc).limit(50)
     }
   end
 end
