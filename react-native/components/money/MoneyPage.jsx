@@ -3,6 +3,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Stat} from '../home/Stat';
 import {api} from '../api';
+import {format} from './format';
 import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
@@ -22,7 +23,7 @@ export function MoneyPage() {
     <View style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData?.map((data, index) => (
-          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.attentionLevel}/>
+          <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
         ))}
       </View>
     </View>
