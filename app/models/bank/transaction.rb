@@ -48,7 +48,6 @@ module Bank
         counterparty_iban: counterparty_account["iban"],
         transaction_type: payload.dig("bank_transaction_code", "description"),
         status: payload["status"],
-        category: MoneyConfig.category_for(counterparty["name"], remittance.join(" ")),
         raw: payload
       }
     end
