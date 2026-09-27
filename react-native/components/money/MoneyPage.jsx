@@ -30,4 +30,14 @@ export function MoneyPage() {
 }
 
 const createStyles = colors => StyleSheet.create({
+  compactStats: { flexWrap: 'wrap', gap: 8 },
+  content: {
+    flex: 1,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingTop: 16,
+  },
 });
+
