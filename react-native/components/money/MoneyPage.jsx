@@ -22,7 +22,7 @@ export function MoneyPage() {
   return (
     <View style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
-        {serverData && serverData?.map((data, index) => (
+        {serverData && serverData?.data?.map((data, index) => (
           <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
         ))}
       </View>
