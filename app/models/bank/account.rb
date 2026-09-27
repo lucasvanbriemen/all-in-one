@@ -1,7 +1,4 @@
 module Bank
-  # A bank account exposed through a connection. +uid+ is Enable Banking's
-  # handle for the account and is what every balance and transaction call is
-  # addressed by; the IBAN is for display.
   class Account < ApplicationRecord
     belongs_to :connection, foreign_key: :bank_connection_id, inverse_of: :accounts
     has_many :transactions, foreign_key: :bank_account_id, inverse_of: :account, dependent: :destroy
