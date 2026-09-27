@@ -18,10 +18,6 @@ module Banking
       return if @connection.expired?
 
       @connection.accounts.each { |account| sync_account(account) }
-      @connection.record_sync_success!
-    rescue StandardError => e
-      Rails.logger.warn("[banking] sync of #{@connection.aspsp_name} failed: #{e.message}")
-      @connection.record_sync_failure!(e)
     end
 
     private

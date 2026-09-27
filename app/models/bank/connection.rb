@@ -39,13 +39,5 @@ module Bank
       end
       connection
     end
-
-    def record_sync_success!
-      update!(last_synced_at: Time.current, last_sync_error: nil)
-    end
-
-    def record_sync_failure!(error)
-      update!(last_sync_error: "#{error.class}: #{error.message}".truncate(60_000))
-    end
   end
 end
