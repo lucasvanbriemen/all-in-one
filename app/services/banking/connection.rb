@@ -9,16 +9,8 @@ module Banking
     JWT_TTL = 1.hour
     CONSENT_DURATION = 90.days # 90 is the default that every bank uses.
 
-    def self.app_id
-      ENV.fetch("BANKING_APP_ID")
-    end
-
-    def self.key_path
-      Rails.root.join(ENV.fetch("BANKING_KEY_PATH")).to_s
-    end
-
     def self.private_key
-      @private_key ||= OpenSSL::PKey::RSA.new(File.read(key_path))
+      @private_key ||= OpenSSL::PKey::RSA.new(File.read(Rails.root.join(ENV.fetch("BANKING_KEY_PATH")).to_s))
     end
 
     def self.aspsps(country)
@@ -97,7 +89,7 @@ module Banking
 
     def self.jwt
       now = Time.now.to_i
-      header = base64url(JSON.generate(typ: "JWT", alg: "RS256", kid: app_id))
+      header = base64url(JSON.generate(typ: "JWT", alg: "RS256", kid: ENV.fetch("BANKING_APP_ID")))
       payload = base64url(JSON.generate(iss: "enablebanking.com", aud: "api.enablebanking.com", iat: now, exp: now + JWT_TTL.to_i))
       signature = private_key.sign(OpenSSL::Digest::SHA256.new, "#{header}.#{payload}")
       "#{header}.#{payload}.#{base64url(signature)}"
