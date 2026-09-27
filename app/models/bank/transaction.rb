@@ -5,6 +5,7 @@ module Bank
     scope :income, -> { where("amount > 0") }
     scope :expense, -> { where("amount < 0") }
 
+    scope :salary, -> { income.where(counterparty_name: MoneyConfig::SALARY_COMES_FROM) }
     scope :excluding_savings, -> { where.not("counterparty_name LIKE ?", MoneyConfig::SAVING_ACCOUNT_NAME + "%") }
 
     attribute :raw, :json
@@ -12,6 +13,7 @@ module Bank
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
 
     TAKE_AVERAGE_OVER_MONTHS = 2
+    SALARY_DAY = 24
 
     # Total per month, averaged over the last N full months (current month excluded).
     def self.monthly_average
@@ -21,6 +23,24 @@ module Bank
       {
         income: (scope.income.sum(:amount) / TAKE_AVERAGE_OVER_MONTHS).round(2),
         expense: (scope.expense.sum(:amount).abs / TAKE_AVERAGE_OVER_MONTHS).round(2)
+      }
+    end
+
+
+    # Most recent salary payment and when the next one is expected: the 24th of
+    # next month, or the last weekday before it when that falls on a weekend.
+    def self.expected_salary
+      payments = salary.order(booking_date: :desc).limit(TAKE_AVERAGE_OVER_MONTHS)
+      average_salary = payments.sum { |p| p.amount } / TAKE_AVERAGE_OVER_MONTHS
+
+      last_payment = payments.first
+
+      next_expected = last_payment.booking_date.next_month.change(day: SALARY_DAY)
+      next_expected -= 1 while next_expected.on_weekend?
+
+      {
+        expected_amount: average_salary,
+        expected_date: next_expected
       }
     end
 
