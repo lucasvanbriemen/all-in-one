@@ -1,19 +1,11 @@
 module Bank
-  # A booked transaction. +amount+ is signed: negative when money left the
-  # account, so sums over a period need no case on direction. Pending
-  # transactions have no entry_reference yet and are skipped until booked.
   class Transaction < ApplicationRecord
     belongs_to :account, foreign_key: :bank_account_id, inverse_of: :transactions
 
-    # MariaDB stores json columns as longtext with a validity check, which
-    # Rails does not recognise as JSON on its own.
     attribute :raw, :json
 
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
 
-    # Upserts one transaction from the API payload. Returns nil for pending
-    # entries: they have no booking date yet and their reference can change
-    # once booked, so they are picked up on a later sync instead.
     def self.from_api!(account, payload)
       reference = payload["entry_reference"]
       return nil if reference.blank? || payload["booking_date"].blank? || payload["status"] != "BOOK"
@@ -26,8 +18,6 @@ module Bank
     def self.attributes_from_api(payload)
       amount = BigDecimal(payload.dig("transaction_amount", "amount"))
       amount = -amount if payload["credit_debit_indicator"] == "DBIT"
-      # The other party is the creditor when money left the account and the
-      # debtor when it came in; the remaining side is this account itself.
       side = payload["credit_debit_indicator"] == "DBIT" ? "creditor" : "debtor"
       counterparty = payload[side].presence || {}
       counterparty_account = payload["#{side}_account"].presence || {}
