@@ -19,9 +19,10 @@ module Bank
       account
     end
 
-    # Stores the most useful balance the bank reports. Banks return several
-    # kinds; the expected balance (booked plus pending) matches what the
-    # banking app shows, with the booked balance as a fallback.
+    # XPCD = expected: booked + pending, matches the ING app
+    # ITAV = interim available: spendable now, may include overdraft
+    # CLBD = closing booked: end of last business day, settled only
+    # ITBD = interim booked: settled so far today, no pending
     BALANCE_PREFERENCE = %w[XPCD ITAV CLBD ITBD].freeze
 
     def update_balance!(balances)
