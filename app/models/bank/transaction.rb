@@ -5,6 +5,8 @@ module Bank
     scope :income, -> { where("amount > 0") }
     scope :expense, -> { where("amount < 0") }
 
+    scope :excluding_savings, -> { where.not("counterparty_name LIKE ?", MoneyConfig::SAVING_ACCOUNT_NAME + "%") }
+
     attribute :raw, :json
 
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
@@ -14,7 +16,7 @@ module Bank
     # Total per month, averaged over the last N full months (current month excluded).
     def self.monthly_average
       range = TAKE_AVERAGE_OVER_MONTHS.months.ago.beginning_of_month.to_date...Date.current.beginning_of_month
-      scope = where(booking_date: range)
+      scope = excluding_savings.where(booking_date: range)
 
       {
         income: (scope.income.sum(:amount) / TAKE_AVERAGE_OVER_MONTHS).round(2),
