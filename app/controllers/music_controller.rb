@@ -29,6 +29,12 @@ class MusicController < ApplicationController
     send_audio_file(Music::SongDownloader.path(id))
   end
 
+  def prepare_song
+    id = params[:id].to_s
+    Music::SongDownloader.ensure_downloaded(id)
+    render json: { success: true }
+  end
+
   private
 
   def send_audio_file(path)
