@@ -10,8 +10,6 @@ Rails.application.routes.draw do
 
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
-  get "/money", to: "money#index", as: :money
-  get "/money/transactions", to: "money#transactions", as: :money_transactions
   get "/money/connect", to: "money#connect", as: :money_connect
   get "/money/callback", to: "money#callback", as: :money_callback
   post "/money/sync", to: "money#sync", as: :money_sync

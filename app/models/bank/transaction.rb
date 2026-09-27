@@ -11,11 +11,6 @@ module Bank
 
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
 
-    scope :in_month, ->(month) { where(booking_date: month.beginning_of_month..month.end_of_month) }
-    scope :debits, -> { where("amount < 0") }
-    scope :credits, -> { where("amount > 0") }
-    scope :recent, -> { order(booking_date: :desc, id: :desc) }
-
     # Upserts one transaction from the API payload. Returns nil for pending
     # entries: they have no booking date yet and their reference can change
     # once booked, so they are picked up on a later sync instead.
@@ -50,12 +45,6 @@ module Bank
         status: payload["status"],
         raw: payload
       }
-    end
-
-    # Rebuilds every derived column from the stored payload, for after the
-    # category patterns or the mapping change. No API call needed.
-    def self.reapply_from_raw!
-      find_each { |transaction| transaction.update!(attributes_from_api(transaction.raw)) }
     end
 
     def debit?

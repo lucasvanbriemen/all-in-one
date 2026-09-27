@@ -1,28 +1,4 @@
 class MoneyController < ApplicationController
-  # Accounts with their latest balance, plus the state of the consent so the
-  # app can show a reconnect prompt before it lapses.
-  def index
-    connections = Bank::Connection.includes(:accounts).order(:aspsp_name)
-
-    render json: {
-      connections: connections.map { |connection| connection_json(connection) },
-      month: month_summary(Date.current)
-    }
-  end
-
-  def transactions
-    month = params[:month].present? ? Date.parse("#{params[:month]}-01") : Date.current
-    scope = Bank::Transaction.in_month(month).recent
-    scope = scope.where(category: params[:category]) if params[:category].present?
-    scope = scope.where(bank_account_id: params[:account_id]) if params[:account_id].present?
-
-    render json: {
-      month: month.strftime("%Y-%m"),
-      transactions: scope.limit(Bank::Transaction::ITEMS_PER_PAGE * 4)
-    }
-  end
-
-  # Starts the bank consent flow: redirects the browser to the bank.
   def connect
     state = SecureRandom.hex(16)
     session[:banking_state] = state
@@ -72,17 +48,6 @@ class MoneyController < ApplicationController
       last_synced_at: connection.last_synced_at,
       last_sync_error: connection.last_sync_error,
       accounts: connection.accounts
-    }
-  end
-
-  def month_summary(month)
-    scope = Bank::Transaction.in_month(month).where.not(category: "savings")
-    {
-      month: month.strftime("%Y-%m"),
-      income: scope.credits.sum(:amount),
-      spending: scope.debits.sum(:amount).abs,
-      to_savings: Bank::Transaction.in_month(month).where(category: "savings").sum(:amount).abs,
-      by_category: scope.debits.group(:category).sum(:amount).transform_values(&:abs)
     }
   end
 end
