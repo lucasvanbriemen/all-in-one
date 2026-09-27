@@ -31,8 +31,8 @@ production:
     class: FetchAllImapEmailsJob
     queue: default
     schedule: every <%= ENV.fetch("IMAP_FETCH_INTERVAL_SECONDS", 15) %> seconds
-  # Banks cap unattended PSD2 calls at four per account per day, so this
-  # runs well inside that. A user-triggered refresh in the app counts too.
+  
+  # Rate limit is 4 times a day
   sync_all_bank_connections:
     class: SyncAllBankConnectionsJob
     queue: default
