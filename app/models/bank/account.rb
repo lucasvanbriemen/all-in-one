@@ -32,9 +32,5 @@ module Bank
         balance_updated_at: Time.current
       )
     end
-
-    def as_json(options = {})
-      super({ only: %i[id uid iban name product currency balance_amount balance_type balance_updated_at] }.merge(options))
-    end
   end
 end

@@ -46,13 +46,5 @@ module Bank
         raw: payload
       }
     end
-
-    def debit?
-      amount.negative?
-    end
-
-    def as_json(options = {})
-      super({ only: %i[id booking_date value_date amount currency description counterparty_name counterparty_iban transaction_type category] }.merge(options))
-    end
   end
 end
