@@ -31,8 +31,6 @@ module Bank
       transaction.counterparty_iban.presence || transaction.counterparty_name.to_s.downcase.squish
     end
 
-    # One counterparty can carry several distinct recurring payments (e.g. a
-    # hosting provider with two products). Split into clusters of similar amounts.
     def cluster_by_amount(group)
       group.sort_by { |t| t.amount.abs }.each_with_object([]) do |transaction, clusters|
         current = clusters.last
