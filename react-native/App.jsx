@@ -6,6 +6,7 @@ import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
 import {MobileNavigation} from './components/sidebar/MobileNavigation';
+import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {NowPlayingDrawer} from './components/music/NowPlayingDrawer';
@@ -23,6 +24,7 @@ const APPLICATIONS = {
   home: HomePage,
   code: CodePage,
   music: MusicPage,
+  money: MoneyPage,
 };
 
 export default function App() {
