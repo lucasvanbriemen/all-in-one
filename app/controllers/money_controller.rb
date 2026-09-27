@@ -28,22 +28,25 @@ class MoneyController < ApplicationController
     balance = Bank::Account.first.balance_amount
     monthly_average = Bank::Transaction.monthly_average
 
-    render json: [
-      {
-        value: balance,
-        label: "Balance",
-        attentionLevel: "low"
-      },
-      {
-        value: monthly_average[:income],
-        label: "Average Income",
-        attentionLevel: "low"
-      },
-      {
-        value: monthly_average[:expense],
-        label: "Average Expense",
-        attentionLevel: monthly_average[:expense] > monthly_average[:income] ? "high" : "low"
-      }
-    ]
+    render json: {
+      data: [
+        {
+          value: balance,
+          label: "Balance",
+          attentionLevel: "low"
+        },
+        {
+          value: monthly_average[:income],
+          label: "Average Income",
+          attentionLevel: "low"
+        },
+        {
+          value: monthly_average[:expense],
+          label: "Average Expense",
+          attentionLevel: monthly_average[:expense] > monthly_average[:income] ? "high" : "low"
+        }
+      ],
+      transactions: Bank::Transaction.order(booking_date: :desc).limit(10)
+    }
   end
 end
