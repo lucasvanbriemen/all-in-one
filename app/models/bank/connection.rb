@@ -7,17 +7,10 @@ module Bank
 
     validates :session_id, :aspsp_name, :aspsp_country, :valid_until, presence: true
 
-    # Consents that are about to expire get a reconnect prompt in the app.
-    EXPIRY_WARNING = 7.days
-
     scope :active, -> { where("valid_until > ?", Time.current) }
 
     def expired?
       valid_until <= Time.current
-    end
-
-    def expiring_soon?
-      valid_until <= EXPIRY_WARNING.from_now
     end
 
     # Creates or refreshes a connection from an Enable Banking session

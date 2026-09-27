@@ -12,8 +12,6 @@ class MoneyController < ApplicationController
     redirect_to auth.fetch("url"), allow_other_host: true
   end
 
-  # Where the bank sends the user back. Exchanges the code for a session,
-  # stores it, and kicks off the first sync.
   def callback
     if params[:state].blank? || params[:state] != session.delete(:banking_state)
       return render json: { error: "state mismatch" }, status: :unprocessable_entity
