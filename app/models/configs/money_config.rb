@@ -22,11 +22,12 @@ module MoneyConfig
     { name: "tax", patterns: [ /belastingdienst/i ] },
     { name: "insurance", patterns: [ /fbto/i, /monuta/i, /verzekering/i ] },
     { name: "car", patterns: [ /tinq/i, /esso/i, /total /i, /shell/i, /wegen ?belasting/i, /parking/i, /parkbee/i ] },
-    { name: "family", patterns: [ /^ouders$/i ] },
+    { name: "family", patterns: [ /\bouders\b/i ] },
     { name: "hosting", patterns: [ /strato/i, /transip/i ] },
+    { name: "bank_fees", patterns: [ /kosten ing/i ] },
     { name: "groceries", patterns: [ /albert heijn/i, /dirk vdbroek/i, /jumbo/i, /keurslagerij/i, /lidl/i, /aldi/i ] },
     { name: "cinema", patterns: [ /pathe/i ] },
-    { name: "eating_out", patterns: [ /mcdonalds/i, /mcd /i, /foodticket/i, /thuisbezorgd/i ] },
+    { name: "eating_out", patterns: [ /mcdonald/i, /mcd /i, /kfc/i, /foodticket/i, /thuisbezorgd/i ] },
     { name: "shopping", patterns: [ /coolblue/i, /bol\.com/i, /karwei/i ] },
     { name: "leisure", patterns: [ /snowworld/i, /skydive/i, /boulderhal/i, /ticketmaster/i, /ticketcounter/i ] }
   ].freeze

@@ -34,9 +34,14 @@ module Banking
       end
     end
 
+    # Until a sync has completed once, always read the full history: a run
+    # that failed halfway leaves the newest transactions stored and the
+    # older ones missing, so the newest booking date alone would hide the gap.
     def date_from(account)
       newest = account.transactions.maximum(:booking_date)
-      newest ? newest - OVERLAP : HISTORY.ago.to_date
+      return HISTORY.ago.to_date if newest.nil? || @connection.last_synced_at.nil?
+
+      newest - OVERLAP
     end
   end
 end

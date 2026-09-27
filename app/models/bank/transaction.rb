@@ -5,6 +5,10 @@ module Bank
   class Transaction < ApplicationRecord
     belongs_to :account, foreign_key: :bank_account_id, inverse_of: :transactions
 
+    # MariaDB stores json columns as longtext with a validity check, which
+    # Rails does not recognise as JSON on its own.
+    attribute :raw, :json
+
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
 
     scope :in_month, ->(month) { where(booking_date: month.beginning_of_month..month.end_of_month) }
@@ -13,10 +17,11 @@ module Bank
     scope :recent, -> { order(booking_date: :desc, id: :desc) }
 
     # Upserts one transaction from the API payload. Returns nil for pending
-    # entries, which cannot be identified reliably across syncs.
+    # entries: they have no booking date yet and their reference can change
+    # once booked, so they are picked up on a later sync instead.
     def self.from_api!(account, payload)
       reference = payload["entry_reference"]
-      return nil if reference.blank?
+      return nil if reference.blank? || payload["booking_date"].blank? || payload["status"] != "BOOK"
 
       transaction = account.transactions.find_or_initialize_by(entry_reference: reference)
       transaction.update!(attributes_from_api(payload))
@@ -26,8 +31,11 @@ module Bank
     def self.attributes_from_api(payload)
       amount = BigDecimal(payload.dig("transaction_amount", "amount"))
       amount = -amount if payload["credit_debit_indicator"] == "DBIT"
-      counterparty = payload["creditor"].presence || payload["debtor"].presence || {}
-      counterparty_account = payload["creditor_account"].presence || payload["debtor_account"].presence || {}
+      # The other party is the creditor when money left the account and the
+      # debtor when it came in; the remaining side is this account itself.
+      side = payload["credit_debit_indicator"] == "DBIT" ? "creditor" : "debtor"
+      counterparty = payload[side].presence || {}
+      counterparty_account = payload["#{side}_account"].presence || {}
       remittance = Array(payload["remittance_information"])
 
       {
@@ -43,6 +51,12 @@ module Bank
         category: MoneyConfig.category_for(counterparty["name"], remittance.join(" ")),
         raw: payload
       }
+    end
+
+    # Rebuilds every derived column from the stored payload, for after the
+    # category patterns or the mapping change. No API call needed.
+    def self.reapply_from_raw!
+      find_each { |transaction| transaction.update!(attributes_from_api(transaction.raw)) }
     end
 
     def debit?
