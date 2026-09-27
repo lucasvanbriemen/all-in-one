@@ -43,6 +43,12 @@ module Banking
       get("/sessions/#{session_id}")
     end
 
+    # Full account record (iban, name, product, currency). POST /sessions
+    # already includes this per account; GET /sessions/:id only lists uids.
+    def self.account_details(account_uid)
+      get("/accounts/#{account_uid}/details")
+    end
+
     def self.balances(account_uid)
       get("/accounts/#{account_uid}/balances").fetch("balances")
     end

@@ -1,0 +1,39 @@
+module Banking
+  # Pulls the latest balance and transactions for every account of a
+  # connection into the database. Safe to run repeatedly: transactions are
+  # matched on the bank's entry reference, and the window re-reads a few
+  # days before the last known booking so late bookings are picked up.
+  class Sync
+    # Days re-read before the newest stored booking date on every run.
+    OVERLAP = 3.days
+
+    def initialize(connection)
+      @connection = connection
+    end
+
+    def run
+      return if @connection.expired?
+
+      @connection.accounts.each { |account| sync_account(account) }
+      @connection.record_sync_success!
+    rescue Banking::Connection::Error => e
+      Rails.logger.warn("[banking] sync of #{@connection.aspsp_name} failed: #{e.message}")
+      @connection.record_sync_failure!(e)
+    end
+
+    private
+
+    def sync_account(account)
+      account.update_balance!(Banking::Connection.balances(account.uid))
+
+      Banking::Connection.transactions(account.uid, date_from: date_from(account)).each do |payload|
+        Bank::Transaction.from_api!(account, payload)
+      end
+    end
+
+    def date_from(account)
+      newest = account.transactions.maximum(:booking_date)
+      newest ? newest - OVERLAP : Banking::Connection::HISTORY_LIMIT.ago.to_date
+    end
+  end
+end
