@@ -21,6 +21,6 @@ class MoneyController < ApplicationController
     connection = Bank::Connection.from_session!(Banking::Connection.create_session(params[:code]))
     SyncBankConnectionJob.perform_later(connection.id)
 
-    redirect_to money_path
+    render plain: "Bank connected. Syncing accounts in the background."
   end
 end
