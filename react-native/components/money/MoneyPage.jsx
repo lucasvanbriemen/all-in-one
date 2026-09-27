@@ -1,25 +1,33 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {useAppContext} from '../../context/AppContext';
+import {Stat} from '../home/Stat';
+import {api} from '../api';
+import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function MoneyPage() {
+  const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
+  const [serverData, setServerData] = useState([]);
 
-  const {get} = useAppContext();
+  useEffect(() => {
+    api.get('/money').then(response => {
+      setServerData(response);
+  
+    });
+  }, []);
 
   return (
     <View style={styles.content}>
-      <Text>Money Page</Text>
+      <View style={[styles.statsContainer, compact && styles.compactStats]}>
+        {serverData && serverData?.map((data, index) => (
+          <Stat key={index} value={data.balance} label="Balance" attentionLevel="high"/>
+        ))}
+      </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });

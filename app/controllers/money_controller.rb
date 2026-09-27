@@ -23,4 +23,10 @@ class MoneyController < ApplicationController
 
     render plain: "Bank connected. Syncing accounts in the background."
   end
+
+  def show
+    balance = Bank::Account.first.balance_amount
+
+    render json: [ { balance: balance } ]
+  end
 end
