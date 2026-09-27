@@ -10,4 +10,5 @@ module MoneyConfig
   ASPSP = { name: "ING", country: "NL" }.freeze
 
   SAVING_ACCOUNT_NAME = "Oranje spaarrekening".freeze
+  SALARY_COMES_FROM = "WebinarGeek B.V.".freeze
 end
