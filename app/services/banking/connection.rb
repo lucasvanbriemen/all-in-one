@@ -21,16 +21,10 @@ module Banking
       @private_key ||= OpenSSL::PKey::RSA.new(File.read(key_path))
     end
 
-    # -- API -----------------------------------------------------------------
-
-    # Banks available in a country, e.g. aspsps("NL").
     def self.aspsps(country)
       get("/aspsps", country: country).fetch("aspsps")
     end
 
-    # Starts the consent flow. Returns the url the user has to open at their
-    # bank; the bank redirects back to +redirect_url+ with a +code+ parameter
-    # that create_session exchanges for a session.
     def self.authorize(aspsp_name:, country:, redirect_url:, state:)
       post("/auth", {
         access: { valid_until: CONSENT_DURATION.from_now.utc.iso8601 },
@@ -41,12 +35,10 @@ module Banking
       })
     end
 
-    # Exchanges the code from the callback for a session with its accounts.
     def self.create_session(code)
       post("/sessions", { code: code })
     end
 
-    # Looks up an existing session, including its accounts and validity.
     def self.session(session_id)
       get("/sessions/#{session_id}")
     end
@@ -55,8 +47,6 @@ module Banking
       get("/accounts/#{account_uid}/balances").fetch("balances")
     end
 
-    # All transactions booked since +date_from+, following the continuation
-    # key until the bank has nothing more.
     def self.transactions(account_uid, date_from:)
       transactions = []
       continuation_key = nil
@@ -72,8 +62,6 @@ module Banking
 
       transactions
     end
-
-    # -- HTTP ----------------------------------------------------------------
 
     def self.get(path, params = {})
       uri = URI("#{BASE_URL}#{path}")
@@ -112,7 +100,5 @@ module Banking
     def self.base64url(data)
       Base64.urlsafe_encode64(data, padding: false)
     end
-
-    private_class_method :get, :post, :perform, :jwt, :base64url
   end
 end
