@@ -1,7 +1,6 @@
 module Bank
-  # One authorised Enable Banking session. Consent is time-boxed by the bank,
-  # so once valid_until passes the user has to go through the bank login
-  # again (BankingController#connect), which replaces the session id here.
+  # The connection we approved, representing an authorised Enable Banking session.
+  # When invalid or expired, the user must re-authorise the connection through the bank using /money/connect
   class Connection < ApplicationRecord
     has_many :accounts, foreign_key: :bank_connection_id, inverse_of: :connection, dependent: :destroy
 
@@ -14,10 +13,6 @@ module Bank
     end
 
     # Creates or refreshes a connection from an Enable Banking session
-    # payload. POST /sessions includes the session id; GET /sessions/:id does
-    # not, so it can be passed explicitly. A re-authorisation of the same
-    # bank replaces the previous session so accounts keep their ids and
-    # history.
     def self.from_session!(session, session_id: session["session_id"])
       aspsp = session.fetch("aspsp")
       connection = find_or_initialize_by(aspsp_name: aspsp.fetch("name"), aspsp_country: aspsp.fetch("country"))
