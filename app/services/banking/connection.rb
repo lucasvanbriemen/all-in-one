@@ -3,27 +3,11 @@ require "openssl"
 require "base64"
 
 module Banking
-  # Client for the Enable Banking API (https://enablebanking.com/docs/api).
-  #
-  # Every request is authenticated with a short-lived RS256 JWT signed by the
-  # application's private key; the key id is the application id. Bank data is
-  # then addressed by the session and account uids returned when the user
-  # authorises access, so nothing here holds state between calls.
-  #
-  # Errors from the API are raised as Banking::Connection::Error so callers
-  # can record them on the connection and move on, the way the IMAP importer
-  # does with its credentials.
   module Connection
     BASE_URL = "https://api.enablebanking.com".freeze
     TIMEOUT_SECONDS = 15
     JWT_TTL = 1.hour
-    # How long a fresh consent is asked for. ING allows up to 180 days but
-    # 90 is the PSD2 default that every bank accepts.
-    CONSENT_DURATION = 90.days
-    # ING returns at most this many days of history on a new session.
-    HISTORY_LIMIT = 90.days
-
-    Error = Class.new(StandardError)
+    CONSENT_DURATION = 90.days # 90 is the default that every bank uses.
 
     def self.app_id
       ENV.fetch("BANKING_APP_ID")
@@ -38,12 +22,6 @@ module Banking
     end
 
     # -- API -----------------------------------------------------------------
-
-    # Details of the registered application: environment, redirect urls and
-    # allowed countries. Handy as a connectivity check.
-    def self.application
-      get("/application")
-    end
 
     # Banks available in a country, e.g. aspsps("NL").
     def self.aspsps(country)
@@ -120,13 +98,7 @@ module Banking
       end
 
       body = JSON.parse(response.body.presence || "{}")
-      return body if response.is_a?(Net::HTTPSuccess)
-
-      raise Error, "#{request.method} #{uri.path} failed (#{response.code}): #{body["message"] || body["error"] || response.body.to_s.truncate(200)}"
-    rescue JSON::ParserError => e
-      raise Error, "#{request.method} #{uri.path} returned invalid JSON: #{e.message}"
-    rescue Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
-      raise Error, "#{request.method} #{uri.path} failed: #{e.class}: #{e.message}"
+      body
     end
 
     def self.jwt
