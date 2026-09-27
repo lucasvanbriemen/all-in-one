@@ -10,14 +10,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_27_161628) do
-  create_table "bank_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+ActiveRecord::Schema[8.0].define(version: 2026_09_27_161936) do
+  create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "bank_connection_id", null: false
+    t.string "uid", null: false
+    t.string "iban", null: false
+    t.string "name"
+    t.string "product"
+    t.string "currency", null: false
+    t.decimal "balance_amount", precision: 12, scale: 2
+    t.string "balance_type"
+    t.datetime "balance_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "session_id"
-    t.string "aspsp_name"
-    t.string "aspsp_country"
-    t.datetime "valid_until"
+    t.index ["bank_connection_id"], name: "index_bank_accounts_on_bank_connection_id"
+  end
+
+  create_table "bank_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.string "aspsp_name", null: false
+    t.string "aspsp_country", null: false
+    t.datetime "valid_until", null: false
+    t.datetime "last_synced_at"
+    t.text "last_sync_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "bank_transactions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "bank_account_id", null: false
+    t.string "entry_reference", null: false
+    t.date "booking_date", null: false
+    t.date "value_date"
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "currency", null: false
+    t.text "description"
+    t.string "counterparty_name"
+    t.string "counterparty_iban"
+    t.string "transaction_type"
+    t.string "status", null: false
+    t.string "category"
+    t.text "raw", size: :long, collation: "utf8mb4_bin"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_bank_transactions_on_bank_account_id"
+    t.check_constraint "json_valid(`raw`)", name: "raw"
   end
 
   create_table "device_tokens", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -82,5 +119,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_27_161628) do
     t.index ["email"], name: "sender_email_email_unique", unique: true
   end
 
+  add_foreign_key "bank_accounts", "bank_connections"
+  add_foreign_key "bank_transactions", "bank_accounts"
   add_foreign_key "emails", "senders", name: "emails_sender_id_foreign", on_delete: :nullify
 end
