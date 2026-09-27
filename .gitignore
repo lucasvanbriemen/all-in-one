@@ -48,3 +48,4 @@ config/apns.p8
 /bin/ffmpeg
 /bin/ffprobe
 /storage/audio/
+config/*.pem
