@@ -1,12 +1,8 @@
 module MoneyConfig
   GROUPS = [
     {
-      path: "accounts",
-      name: "Accounts"
-    },
-    {
-      path: "transactions",
-      name: "Transactions"
+      path: "overview",
+      name: "Overview"
     }
   ].freeze
 
