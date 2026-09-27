@@ -34,7 +34,7 @@ class MoneyController < ApplicationController
       state: state
     )
     redirect_to auth.fetch("url"), allow_other_host: true
-  rescue Banking::Connection::Error => e
+  rescue StandardError => e
     render json: { error: e.message }, status: :bad_gateway
   end
 
@@ -50,7 +50,7 @@ class MoneyController < ApplicationController
     SyncBankConnectionJob.perform_later(connection.id)
 
     redirect_to money_path
-  rescue Banking::Connection::Error => e
+  rescue StandardError => e
     render json: { error: e.message }, status: :bad_gateway
   end
 
