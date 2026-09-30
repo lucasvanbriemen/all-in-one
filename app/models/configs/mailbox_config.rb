@@ -6,7 +6,11 @@ module MailboxConfig
     "Returned to Sender",
     "Undeliverable:",
     "Mail delivery failed",
-    "Weekly report for"
+    "Weekly report for",
+    "newsletter",
+    "privacybeleid",
+    "Deployed rails version",
+    "Webinar sign-up"
   ].freeze
 
   INTERNAL_EMAILS = [
