@@ -32,5 +32,15 @@ module Bank
         balance_updated_at: Time.current
       )
     end
+
+    def next_payday
+      today = Date.current
+      payday = MoneyConfig::PAYDAY
+      next_payday = Date.new(today.year, today.month, payday)
+      next_payday -= 1 while next_payday.saturday? || next_payday.sunday?
+      next_payday < today ? (next_payday = Date.new(today.year, today.month + 1, payday); next_payday -= 1 while next_payday.saturday? || next_payday.sunday?) : next_payday
+
+      next_payday
+    end
   end
 end
