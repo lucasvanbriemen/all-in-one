@@ -22,27 +22,27 @@ export function OverviewCard() {
     <Pressable style={styles.content} onPress={() => setShouldShowNumbers(!shouldShowNumbers)}>
       <View style={styles.row}>
         <Text style={[styles.title, styles.titleHighlight]}>Money to be used</Text>
-        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? overview?.balance_min_fixed_costs : '•••'}</Text>
+        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? format.money(overview?.balance_min_fixed_costs) : '•••'}</Text>
       </View>
 
       <View style={[styles.row, styles.rowEven]}>
         <Text style={[styles.title, styles.titleHighlight]}>Money per day</Text>
-        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? overview?.money_per_day : '•••'}</Text>
+        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? format.money(overview?.money_per_day) : '•••'}</Text>
       </View>
 
       <View style={styles.row}>
         <Text style={styles.title}>Fixed costs till next payday</Text>
-        <Text style={styles.number}>{shouldShowNumbers ? overview?.fixed_costs_till_next_payday : '•••'}</Text>
+        <Text style={styles.number}>{shouldShowNumbers ? format.money(overview?.fixed_costs_till_next_payday) : '•••'}</Text>
       </View>
 
       <View style={[styles.row, styles.rowEven]}>
         <Text style={styles.title}>Expected Variable Costs</Text>
-        <Text style={styles.number}>{shouldShowNumbers ? overview?.variable_costs_till_next_payday : '•••'}</Text>
+        <Text style={styles.number}>{shouldShowNumbers ? format.money(overview?.variable_costs_till_next_payday) : '•••'}</Text>
       </View>
 
       <View style={[styles.row]}>
         <Text style={styles.title}>Next payday</Text>
-        <Text style={styles.number}>{shouldShowNumbers ? overview?.next_payday : '•••'}</Text>
+        <Text style={styles.number}>{shouldShowNumbers ? format.date(overview?.next_payday) : '•••'}</Text>
       </View>
 
       {!shouldShowNumbers ? (
