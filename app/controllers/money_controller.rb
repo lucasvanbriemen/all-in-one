@@ -64,4 +64,19 @@ class MoneyController < ApplicationController
       transactions: Bank::Transaction.order(booking_date: :desc).limit(50)
     }
   end
+
+  def list_overview
+    balance = Bank::Account.first.balance_amount
+    next_payday = Bank::Account.first.next_payday
+    durration_to_next_payday = (next_payday - Date.current).to_i
+
+    expected_fixed_costs = Banking::RecurringCosts.call.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] }.round(2)
+
+    render json: {
+      balance: balance,
+      next_payday: next_payday,
+      durration_to_next_payday: durration_to_next_payday,
+      expected_fixed_costs: expected_fixed_costs
+    }
+  end
 end

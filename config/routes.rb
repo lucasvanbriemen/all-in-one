@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get "/money/connect", to: "money#connect", as: :money_connect
   get "/money/callback", to: "money#callback", as: :money_callback
   get "/money", to: "money#show", as: :money
+  get "/money/overview", to: "money#list_overview", as: :money_overview
 
   get "/music", to: "music#index", as: :music
   get "/music/stats", to: "plays#show", as: :plays_stats
