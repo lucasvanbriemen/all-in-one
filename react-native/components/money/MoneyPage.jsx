@@ -15,7 +15,6 @@ export function MoneyPage() {
   useEffect(() => {
     api.get('/money').then(response => {
       setServerData(response);
-  
     });
   }, []);
 
@@ -41,4 +40,3 @@ const createStyles = colors => StyleSheet.create({
     paddingTop: 16,
   },
 });
-

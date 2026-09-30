@@ -81,7 +81,7 @@ class MoneyController < ApplicationController
       next_payday: next_payday,
       durration_to_next_payday: durration_to_next_payday,
       fixed_costs_till_next_payday: fixed_costs_till_next_payday,
-      money_per_day: money_per_day
+      money_per_day: money_per_day.round(2)
     }
   end
 end
