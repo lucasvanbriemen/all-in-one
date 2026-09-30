@@ -27,12 +27,9 @@ class MoneyController < ApplicationController
   def show
     balance = Bank::Account.first.balance_amount
     monthly_average = Bank::Transaction.monthly_average
-    # recurring = Bank::RecurringCosts.call
+    recurring = Banking::RecurringCosts.call
     salary = Bank::Transaction.expected_salary
-    # fixed_costs = recurring.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] }.round(2)
-    #
-    render plain: Bank::Account.first.next_payday
-    return
+    fixed_costs = recurring.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] }.round(2)
 
     render json: {
       data: [
@@ -52,7 +49,7 @@ class MoneyController < ApplicationController
           attentionLevel: monthly_average[:expense] > monthly_average[:income] ? "high" : "low"
         },
         {
-          # value: fixed_costs,
+          value: fixed_costs,
           label: "Fixed Costs",
           attentionLevel: "low"
         },
@@ -63,7 +60,7 @@ class MoneyController < ApplicationController
         }
       ],
       salary: salary,
-      # recurring: recurring,
+      recurring: recurring,
       transactions: Bank::Transaction.order(booking_date: :desc).limit(50)
     }
   end

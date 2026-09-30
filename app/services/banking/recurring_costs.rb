@@ -1,4 +1,4 @@
-module Bank
+module Banking
   class RecurringCosts
     LOOKBACK_MONTHS = 6
     MIN_OCCURRENCES = 3
