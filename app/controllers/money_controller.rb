@@ -70,13 +70,13 @@ class MoneyController < ApplicationController
     next_payday = Bank::Account.first.next_payday
     durration_to_next_payday = (next_payday - Date.current).to_i
 
-    expected_fixed_costs = Banking::RecurringCosts.call.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] }.round(2)
+    fixed_costs_till_next_payday = Banking::RecurringCosts.call.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] / 30 * durration_to_next_payday }.round(2)
 
     render json: {
       balance: balance,
       next_payday: next_payday,
       durration_to_next_payday: durration_to_next_payday,
-      expected_fixed_costs: expected_fixed_costs
+      fixed_costs_till_next_payday: fixed_costs_till_next_payday
     }
   end
 end
