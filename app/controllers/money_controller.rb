@@ -61,7 +61,7 @@ class MoneyController < ApplicationController
           attentionLevel: "low"
         },
         {
-          value: salary&.dig(:amount),
+          value: salary&.dig(:expected_amount),
           label: "Salary",
           attentionLevel: "low"
         }
