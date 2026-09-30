@@ -1,8 +1,7 @@
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {Stat} from '../home/Stat';
 import {api} from '../api';
 import {format} from './format';
 import {useCompactLayout} from '../useCompactLayout';
@@ -11,6 +10,7 @@ export function OverviewCard() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const [overview, setOverview] = useState([]);
+  const [shouldShowNumbers, setShouldShowNumbers] = useState(false);
 
   useEffect(() => {
     api.get('/money/overview').then(response => {
@@ -19,7 +19,7 @@ export function OverviewCard() {
   }, []);
 
   return (
-    <View style={styles.content}>
+    <Pressable style={styles.content} onPress={() => setShouldShowNumbers(!shouldShowNumbers)}>
       <View style={styles.row}>
         <Text style={[styles.title, styles.titleHighlight]}>balance min fixed costs</Text>
         <Text style={[styles.number, styles.titleHighlight]}>{overview?.balance_min_fixed_costs}</Text>
@@ -39,7 +39,14 @@ export function OverviewCard() {
         <Text style={styles.title}>next payday</Text>
         <Text style={styles.number}>{overview?.next_payday}</Text>
       </View>
-    </View>
+
+      {shouldShowNumbers ? (
+        <View style={[StyleSheet.absoluteFill, styles.overlay]}>
+          <Text style={[styles.title, styles.titleHighlight, styles.overlayText]}>Sensitive Numbers</Text>
+        </View>
+      ) : null}
+
+    </Pressable>
   );
 }
 
@@ -69,6 +76,17 @@ const createStyles = colors => StyleSheet.create({
   },
   titleHighlight: {
     color: colors.primary,
+    fontWeight: 'bold',
+  },
+  overlay: {
+    ...glass(colors),
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlayText: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
