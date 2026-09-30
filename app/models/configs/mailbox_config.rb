@@ -10,7 +10,9 @@ module MailboxConfig
     "newsletter",
     "privacybeleid",
     "Deployed rails version",
-    "Webinar sign-up"
+    "Webinar sign-up",
+    "Je Icloud-opslag is vol",
+    "Terms of Service"
   ].freeze
 
   INTERNAL_EMAILS = [
