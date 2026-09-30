@@ -22,25 +22,25 @@ export function OverviewCard() {
     <Pressable style={styles.content} onPress={() => setShouldShowNumbers(!shouldShowNumbers)}>
       <View style={styles.row}>
         <Text style={[styles.title, styles.titleHighlight]}>balance min fixed costs</Text>
-        <Text style={[styles.number, styles.titleHighlight]}>{overview?.balance_min_fixed_costs}</Text>
+        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? overview?.balance_min_fixed_costs : '•••'}</Text>
       </View>
 
       <View style={[styles.row, styles.rowEven]}>
         <Text style={[styles.title, styles.titleHighlight]}>money per day</Text>
-        <Text style={[styles.number, styles.titleHighlight]}>{overview?.money_per_day}</Text>
+        <Text style={[styles.number, styles.titleHighlight]}>{shouldShowNumbers ? overview?.money_per_day : '•••'}</Text>
       </View>
 
       <View style={styles.row}>
         <Text style={styles.title}>fixed costs till next payday</Text>
-        <Text style={styles.number}>{overview?.fixed_costs_till_next_payday}</Text>
+        <Text style={styles.number}>{shouldShowNumbers ? overview?.fixed_costs_till_next_payday : '•••'}</Text>
       </View>
 
       <View style={[styles.row, styles.rowEven]}>
         <Text style={styles.title}>next payday</Text>
-        <Text style={styles.number}>{overview?.next_payday}</Text>
+        <Text style={styles.number}>{shouldShowNumbers ? overview?.next_payday : '•••'}</Text>
       </View>
 
-      {shouldShowNumbers ? (
+      {!shouldShowNumbers ? (
         <View style={[StyleSheet.absoluteFill, styles.overlay]}>
           <Text style={[styles.title, styles.titleHighlight, styles.overlayText]}>Sensitive Numbers</Text>
         </View>
