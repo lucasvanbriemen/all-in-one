@@ -12,4 +12,9 @@ module MoneyConfig
   SAVING_ACCOUNT_NAME = "Oranje spaarrekening".freeze
   SALARY_COMES_FROM = "WebinarGeek B.V.".freeze
   PAYDAY = 24 # The friday before that date if its on a weekend
+
+  MERCHANT_GROUPS = {
+    "Fuel" => %w[shell bp esso tango tinq totalenergies total texaco q8 gulf avia firezone],
+    "Groceries" => %w[albert\ heijn jumbo lidl aldi plus dirk]
+  }.freeze
 end

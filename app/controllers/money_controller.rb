@@ -30,6 +30,8 @@ class MoneyController < ApplicationController
     recurring = Banking::RecurringCosts.call
     salary = Bank::Transaction.expected_salary
     fixed_costs = recurring.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] }.round(2)
+    variable = Banking::VariableCosts.call(recurring: recurring)
+    variable_costs = variable.sum { |r| r[:monthly_amount] }.round(2)
 
     render json: {
       data: [
@@ -54,6 +56,11 @@ class MoneyController < ApplicationController
           attentionLevel: "low"
         },
         {
+          value: variable_costs,
+          label: "Variable Costs",
+          attentionLevel: "low"
+        },
+        {
           value: salary&.dig(:amount),
           label: "Salary",
           attentionLevel: "low"
@@ -61,6 +68,7 @@ class MoneyController < ApplicationController
       ],
       salary: salary,
       recurring: recurring,
+      variable: variable,
       transactions: Bank::Transaction.order(booking_date: :desc).limit(50)
     }
   end
@@ -70,10 +78,12 @@ class MoneyController < ApplicationController
     next_payday = Bank::Account.first.next_payday
     durration_to_next_payday = (next_payday - Date.current).to_i
 
-    fixed_costs_till_next_payday = Banking::RecurringCosts.call.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] / 30 * durration_to_next_payday }.round(2)
+    recurring = Banking::RecurringCosts.call
+    fixed_costs_till_next_payday = recurring.reject { |r| r[:stopped] }.sum { |r| r[:monthly_amount] / 30 * durration_to_next_payday }.round(2)
+    variable_costs_till_next_payday = Banking::VariableCosts.call(recurring: recurring).sum { |r| r[:monthly_amount] / 30 * durration_to_next_payday }.round(2)
 
-    money_per_day = (balance - fixed_costs_till_next_payday) / durration_to_next_payday
-    balence_min_fixed_costs = balance - fixed_costs_till_next_payday
+    money_per_day = (balance - fixed_costs_till_next_payday - variable_costs_till_next_payday) / durration_to_next_payday
+    balence_min_fixed_costs = balance - fixed_costs_till_next_payday - variable_costs_till_next_payday
 
     render json: {
       balance: balance,
@@ -81,6 +91,7 @@ class MoneyController < ApplicationController
       next_payday: next_payday,
       durration_to_next_payday: durration_to_next_payday,
       fixed_costs_till_next_payday: fixed_costs_till_next_payday,
+      variable_costs_till_next_payday: variable_costs_till_next_payday,
       money_per_day: money_per_day.round(2)
     }
   end
