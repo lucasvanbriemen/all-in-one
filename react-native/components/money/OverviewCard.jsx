@@ -20,10 +20,10 @@ export function OverviewCard() {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.title}>{overview?.balance_min_fixed_costs}</Text>
-      <Text style={styles.title}>{overview?.money_per_day}</Text>
-      <Text style={styles.title}>{overview?.fixed_costs_till_next_payday}</Text>
-      <Text style={styles.title}>{overview?.next_payday}</Text>
+      <Text style={styles.title}>{overview?.balance_min_fixed_costs} balance min fixed costs</Text>
+      <Text style={styles.title}>{overview?.money_per_day} money per day</Text>
+      <Text style={styles.title}>{overview?.fixed_costs_till_next_payday} fixed costs till next payday</Text>
+      <Text style={styles.title}>{overview?.next_payday} next payday</Text>
     </View>
   );
 }
