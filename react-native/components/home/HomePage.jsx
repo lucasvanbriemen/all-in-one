@@ -3,6 +3,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Notification} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
+import {OverviewCard} from '../money/OverviewCard';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
@@ -47,6 +48,7 @@ export function HomePage() {
         <View style={styles.nowPlaying}>
           <NowPlayingCard />
         </View>
+        <OverviewCard />
       </View>
     </View>
   );
