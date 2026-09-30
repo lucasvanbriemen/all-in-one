@@ -29,16 +29,10 @@ export function OverviewCard() {
 }
 
 const createStyles = colors => StyleSheet.create({
-  compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
     ...glass(colors),
     padding: 16,
     borderRadius: 16,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-    paddingTop: 16,
-  },
+  }
 });
 
