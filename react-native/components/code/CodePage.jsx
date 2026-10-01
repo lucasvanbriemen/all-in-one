@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -29,7 +29,21 @@ export function CodePage() {
   const [openedFiles, setOpenedFiles] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
   const [searching, setSearching] = useState(false);
+
+  const [terminals, setTerminals] = useState([]);
+  const [visibleTerminal, setVisibleTerminal] = useState(null);
+
   const page = useRef(null);
+
+ 
+  useEffect(() => {
+    if (projectRoot && terminals.length === 0) {
+      const newTerminal = { id: Date.now(), visible: true };
+      setTerminals([newTerminal]);
+      setVisibleTerminal(newTerminal.id);
+    }
+  }, [projectRoot, terminals.length]);
+
 
   const save = useCallback(
     async (contents = source) => {
@@ -164,7 +178,27 @@ export function CodePage() {
             />
 
             <View style={styles.terminal}>
-              <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
+              <View style={styles.terminalTabs}>
+                {terminals.map((terminal, index) => (
+                  <Pressable key={terminal.id} onPress={() => setVisibleTerminal(terminal.id)} style={[ styles.terminalTab, terminal.id === visibleTerminal && styles.terminalTabActive]}>
+                    <Text>Terminal {index + 1}</Text>
+                  </Pressable>
+                ))}
+
+                <Pressable onPress={() => {
+                  const newTerminal = { id: Date.now(), visible: true };
+                  setTerminals(prev => [...prev, newTerminal]);
+                  setVisibleTerminal(newTerminal.id);
+                }}><Text>Add Terminal</Text></Pressable>
+              </View>
+
+              <View style={styles.terminalPanes}>
+                {terminals.map(terminal => (
+                  <View key={terminal.id} pointerEvents={terminal.id === visibleTerminal ? 'auto' : 'none'} style={[styles.terminalPane, terminal.id !== visibleTerminal && styles.hiddenTerminal]}>
+                    <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
+                  </View>
+                ))}
+              </View>
             </View>
           </>
         )}
@@ -209,6 +243,32 @@ const createStyles = colors => StyleSheet.create({
   },
   fileTree: {
     flex: 1,
+  },
+  terminalTabs: {
+    flexDirection: 'row',
+    gap: 8,
+    padding: 8,
+  },
+  terminalTab: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  terminalTabActive: {
+    ...glass(colors, {variant: 'accent'}),
+  },
+  terminalPanes: {
+    flex: 1,
+  },
+  // Every pane keeps its full size so xterm never measures a collapsed view;
+  // the inactive ones are only made invisible and pushed behind the active one.
+  terminalPane: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
+  },
+  hiddenTerminal: {
+    opacity: 0,
+    zIndex: 0,
   },
   terminal: {
     borderRadius: 16,
