@@ -21,55 +21,31 @@ export function ReminderForm({onCreate}) {
 
   return (
     <View style={styles.form}>
-      <TextInput
-        style={styles.input}
-        placeholder="Remind me to..."
-        placeholderTextColor={styles.placeholder.color}
-        enableFocusRing={false}
-        value={title}
-        onChangeText={setTitle}
-        onSubmitEditing={submit}
-        returnKeyType="done"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Details (optional)"
-        placeholderTextColor={styles.placeholder.color}
-        enableFocusRing={false}
-        value={description}
-        onChangeText={setDescription}
-      />
-        <Pressable style={[styles.button]} onPress={submit}>
-          <Text style={styles.buttonText}>Add</Text>
-        </Pressable>
+      <TextInput style={styles.input} placeholder="Remind me to..." placeholderTextColor={styles.placeholder.color} enableFocusRing={false} value={title} onChangeText={setTitle}/>
+      <TextInput style={styles.input} placeholder="Details (optional)" placeholderTextColor={styles.placeholder.color} enableFocusRing={false} value={description} onChangeText={setDescription}/>
+      <Pressable style={[styles.button]} onPress={submit}>
+        <Text style={styles.buttonText}>Add</Text>
+      </Pressable>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
   form: {gap: 8, marginTop: 8},
-  row: {flexDirection: 'row', gap: 8, alignItems: 'center'},
   input: {
     padding: 8,
     borderRadius: 8,
     color: colors.onSurface,
     ...glass(colors, {variant: 'subtle'}),
   },
-  date: {flex: 1},
   placeholder: {color: colors.outline},
   button: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    ...glass(colors, {variant: 'accent'}),
+    backgroundColor: colors.primary,
   },
-  buttonDisabled: {opacity: 0.5},
   buttonText: {
     color: colors.onPrimary,
-    fontWeight: 'bold',
-  },
-  error: {
-    color: colors.error,
-    fontSize: 12,
   },
 });
