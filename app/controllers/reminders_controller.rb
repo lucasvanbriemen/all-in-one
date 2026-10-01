@@ -1,14 +1,18 @@
 class RemindersController < ApplicationController
-  def new
-  end
-
   def index
-    @reminders = Reminder.uncompleted.order(created_at: :desc)
+    @reminders = Reminder.reminding.order(remind_at: :asc, created_at: :asc)
 
     render json: @reminders
   end
 
   def create
+    @reminder = Reminder.new(reminder_params)
+
+    if @reminder.save
+      render json: @reminder, status: :created
+    else
+      render json: { errors: @reminder.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -17,6 +21,9 @@ class RemindersController < ApplicationController
     render json: @reminder
   end
 
-  def show
+  private
+
+  def reminder_params
+    params.permit(:title, :description, :remind_at)
   end
 end

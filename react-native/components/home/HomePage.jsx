@@ -5,6 +5,8 @@ import {glass, useThemedStyles} from '../theme';
 import {Notification} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
 import {OverviewCard} from '../money/OverviewCard';
+import {Reminder} from './Reminder';
+import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
@@ -55,11 +57,24 @@ export function HomePage() {
         </View>
 
         <View style={styles.reminders}>
-          <ScrollView>
-            {reminders && reminders.map((reminder, index) => (
-              <Text key={index}>{reminder.title}</Text>
+          <Text style={styles.cardTitle}>Reminders</Text>
+          <ScrollView style={styles.reminderList}>
+            {reminders && reminders.length === 0 && (
+              <Text style={styles.empty}>Nothing to remind you of right now.</Text>
+            )}
+            {reminders && reminders.map(reminder => (
+              <Reminder
+                key={reminder.id}
+                reminder={reminder}
+                onComplete={done => setReminders(current => current.filter(r => r.id !== done.id))}
+              />
             ))}
           </ScrollView>
+          <ReminderForm onCreate={created => {
+            if (new Date(created.remind_at) <= new Date()) {
+              setReminders(current => [...(current || []), created]);
+            }
+          }} />
         </View>
         <OverviewCard />
       </View>
@@ -95,6 +110,17 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     padding: 16,
     borderRadius: 16,
+  },
+  reminderList: {flex: 1},
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: colors.onSurface,
+  },
+  empty: {
+    fontSize: 14,
+    color: colors.onSurfaceVariant,
   },
   mainContent: {
     flex: 1,
