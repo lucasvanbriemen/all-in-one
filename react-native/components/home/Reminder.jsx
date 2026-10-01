@@ -1,9 +1,10 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
+import React from 'react';
 import {api} from '../api';
+import {format} from "../money/format";
 
 export function Reminder({reminder, onComplete}) {
   const styles = useThemedStyles(createStyles);
@@ -18,7 +19,7 @@ export function Reminder({reminder, onComplete}) {
       <View style={styles.text}>
         <Text style={styles.title}>{reminder.title}</Text>
         {reminder.description ? <Text style={styles.body}>{reminder.description}</Text> : null}
-        <Text style={styles.date}>{formatRemindAt(reminder.remind_at)}</Text>
+        <Text style={styles.date}>{format.date(reminder.remind_at)}</Text>
       </View>
 
       <Pressable onPress={complete} hitSlop={8}>
@@ -26,12 +27,6 @@ export function Reminder({reminder, onComplete}) {
       </Pressable>
     </View>
   );
-}
-
-function formatRemindAt(value) {
-  if (!value) return '';
-  const date = new Date(value);
-  return date.toLocaleDateString(undefined, {weekday: 'short', day: 'numeric', month: 'short'});
 }
 
 const createStyles = colors => StyleSheet.create({
