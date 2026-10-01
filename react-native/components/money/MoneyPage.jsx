@@ -27,6 +27,14 @@ export function MoneyPage() {
           <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
         ))}
       </View>
+
+      <ScrollView>
+        {recurring && recurring?.map((data, index) => (
+          <View>
+            <Text>{data.counterparty}: {format.money(data.amount)}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
