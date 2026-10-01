@@ -1,6 +1,6 @@
-class CreateNotesTable < ActiveRecord::Migration[8.0]
+class CreateRemindersTable < ActiveRecord::Migration[8.0]
   def change
-    create_table :reminders_tables do |t|
+    create_table :reminders do |t|
       t.timestamps
 
       t.string :title
