@@ -13,6 +13,7 @@ module MailboxConfig
     "Webinar sign-up",
     "Je Icloud-opslag is vol",
     "Terms of Service"
+    "Your filmticket"
   ].freeze
 
   INTERNAL_EMAILS = [
