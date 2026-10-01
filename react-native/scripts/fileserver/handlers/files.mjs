@@ -49,6 +49,13 @@ export async function createFile({request, response, searchParams}) {
   sendJson(response, {path: target.wantedPath});
 }
 
+export async function createFolder({response, searchParams}) {
+  const target = resolveTarget(searchParams);
+
+  await fs.mkdir(target.absolute);
+  sendJson(response, {path: target.wantedPath});
+}
+
 function resolveTarget(searchParams) {
   const projectRoot = searchParams.get('projectRoot');
   const requestedPath = searchParams.get('path');

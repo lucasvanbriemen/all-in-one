@@ -2,7 +2,9 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 
 import {FileIcon} from '../icons/FileIcon';
 import {Icon} from '../icons';
+import {NewEntryInput} from './NewEntryInput';
 import {fileSystem} from '../fileSystem';
+import {showNewEntryMenu} from './showNewEntryMenu';
 import {sortFiles} from './sortFiles';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
@@ -11,6 +13,8 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  // 'file' | 'folder' while this folder's name field is showing.
+  const [newEntryKind, setNewEntryKind] = useState(null);
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
@@ -33,8 +37,42 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
     setIsOpen(true);
   }
 
+  async function handleContextMenu(event) {
+    // Files have no menu of their own: their right-click falls through to the
+    // folder (or the tree root) that contains them.
+    if (!folder.isDirectory) {
+      return;
+    }
+
+    event.stopPropagation();
+
+    const kind = await showNewEntryMenu();
+
+    if (kind) {
+      setNewEntryKind(kind);
+    }
+  }
+
+  async function createEntry(name) {
+    const kind = newEntryKind;
+    const path = `${folder.fullPath}/${name}`;
+    setNewEntryKind(null);
+
+    if (kind === 'folder') {
+      await fileSystem.createFolder(projectRoot, path);
+    } else {
+      await fileSystem.createFile(projectRoot, path);
+    }
+
+    await openDirectory();
+
+    if (kind === 'file') {
+      onOpenFile(path);
+    }
+  }
+
   return (
-    <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]}>
+    <View style={[styles.editor, {marginLeft: (16 * (itemsDeep ?? 0))}]} onAuxClick={handleContextMenu}>
       <Pressable style={styles.row} onPress={() => handleFileSelect(folder)}>
         {folder.isDirectory ? (
           <Icon name={isOpen ? 'chevron-down' : 'chevron-right'} size={16} color="black" />
@@ -46,6 +84,12 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
 
         <Text>{folder.name}</Text>
       </Pressable>
+
+      {newEntryKind && (
+        <View style={styles.newEntry}>
+          <NewEntryInput kind={newEntryKind} onSubmit={createEntry} onCancel={() => setNewEntryKind(null)} />
+        </View>
+      )}
 
       {children?.map(subFile => (
         <FileNode
@@ -68,5 +112,9 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     gap: 4,
     alignItems: 'center',
+  },
+  newEntry: {
+    marginLeft: 16,
+    marginTop: 4,
   },
 });

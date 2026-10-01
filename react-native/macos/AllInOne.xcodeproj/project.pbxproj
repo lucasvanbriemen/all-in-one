@@ -17,6 +17,8 @@
 		9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */; };
 		A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */; };
 		A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */; };
+		A1B2C3D4000700FDA0DE0007 /* ContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000500FDA0DE0005 /* ContextMenu.swift */; };
+		A1B2C3D4000800FDA0DE0008 /* ContextMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */; };
 		A1C0000000000000000000B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000B1 /* AppIcon.icon */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
@@ -44,6 +46,8 @@
 		71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FolderPicker.swift; sourceTree = "<group>"; };
 		A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FolderPicker.m; sourceTree = "<group>"; };
+		A1B2C3D4000500FDA0DE0005 /* ContextMenu.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContextMenu.swift; sourceTree = "<group>"; };
+		A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ContextMenu.m; sourceTree = "<group>"; };
 		A1C0000000000000000000B1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = SOURCE_ROOT; };
 		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
@@ -99,6 +103,8 @@
 				0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */,
 				A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */,
 				A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */,
+				A1B2C3D4000500FDA0DE0005 /* ContextMenu.swift */,
+				A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */,
 				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
 				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
@@ -393,6 +399,8 @@
 				990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */,
 				A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */,
 				A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */,
+				A1B2C3D4000700FDA0DE0007 /* ContextMenu.swift in Sources */,
+				A1B2C3D4000800FDA0DE0008 /* ContextMenu.m in Sources */,
 				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
 				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,

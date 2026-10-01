@@ -50,18 +50,30 @@ export const fileSystem = {
   },
 
   writeFile(projectRoot, path, contents) {
-    const fullUrl = `/file?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
+    return this.sendRequest("PUT", "/file", projectRoot, path, { contents });
+  },
+
+  createFile(projectRoot, path) {
+    return this.sendRequest("POST", "/file", projectRoot, path, { contents: "" });
+  },
+
+  createFolder(projectRoot, path) {
+    return this.sendRequest("POST", "/folder", projectRoot, path);
+  },
+
+  sendRequest(method, url, projectRoot, path, body = null) {
+    const fullUrl = `${url}?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {
-      method: "PUT",
+      method,
       headers: {
         ...this.defaultHeaders,
       },
-      body: JSON.stringify({ contents }),
+      ...(body && { body: JSON.stringify(body) }),
     };
     return fetch(BASE_URL + fullUrl, options)
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error(`PUT ${fullUrl} failed with ${response.status}`);
+          throw new Error(`${method} ${fullUrl} failed with ${response.status}`);
         }
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();

@@ -5,26 +5,61 @@ import {useEffect, useState} from 'react';
 import {FileIcon} from '../icons/FileIcon';
 import {FileNode} from './FileNode';
 import {NativeModules} from 'react-native';
+import {NewEntryInput} from './NewEntryInput';
 import {fileSystem} from '../fileSystem';
+import {showNewEntryMenu} from './showNewEntryMenu';
 import {sortFiles} from './sortFiles';
 
 export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot, openedFiles, setOpenedFiles}) {
   const styles = useThemedStyles(createStyles);
   const [files, setFiles] = useState([]);
+  // 'file' | 'folder' while the root-level name field is showing.
+  const [newEntryKind, setNewEntryKind] = useState(null);
 
   useEffect(() => {
-    async function fetchFiles() {
-      if (!projectRoot) {
-        return;
-      }
-
-      const unsortedFiles = await fileSystem.listFiles(projectRoot, '');
-      const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
-      setFiles(sortedFiles);
-    }
-
     fetchFiles();
   }, [projectRoot]);
+
+  async function fetchFiles() {
+    if (!projectRoot) {
+      return;
+    }
+
+    const unsortedFiles = await fileSystem.listFiles(projectRoot, '');
+    const sortedFiles = sortFiles(unsortedFiles.contents ?? []);
+    setFiles(sortedFiles);
+  }
+
+  // Right-click anywhere in the tree that isn't a folder row targets the root.
+  // Folder rows stop the event in FileNode, so they never reach here.
+  async function handleContextMenu() {
+    if (!projectRoot) {
+      return;
+    }
+
+    const kind = await showNewEntryMenu();
+
+    if (kind) {
+      setNewEntryKind(kind);
+    }
+  }
+
+  async function createEntry(name) {
+    const kind = newEntryKind;
+    setNewEntryKind(null);
+
+    if (kind === 'folder') {
+      await fileSystem.createFolder(projectRoot, name);
+    } else {
+      await fileSystem.createFile(projectRoot, name);
+    }
+
+    await fetchFiles();
+
+    if (kind === 'file') {
+      onOpenFile(name);
+    }
+  }
 
   function handleFileSelect(file) {
     if (file.isDirectory) {
@@ -64,10 +99,15 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
   }
 
   return (
-    <ScrollView style={styles.editor}>
+    <ScrollView style={styles.editor} contentContainerStyle={styles.editorContent}>
       <Pressable onPress={() => openFolder()} style={[styles.openFoler, !projectRoot && styles.noProjectRootRow]}>
         <Text style={[styles.openFolderText, !projectRoot && styles.noProjectRootRowText]}>Open folder</Text>
       </Pressable>
+
+      <View style={styles.tree} onAuxClick={handleContextMenu}>
+      {newEntryKind && (
+        <NewEntryInput kind={newEntryKind} onSubmit={createEntry} onCancel={() => setNewEntryKind(null)} />
+      )}
 
       {files.map(file => (
         <View key={file.name}>
@@ -94,6 +134,7 @@ export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProje
           )}
         </View>
       ))}
+      </View>
     </ScrollView>
   );
 }
@@ -121,6 +162,12 @@ const createStyles = colors => StyleSheet.create({
   },
   chevronSpacer: {
     width: 16,
+  },
+  editorContent: {
+    flexGrow: 1,
+  },
+  tree: {
+    flex: 1,
   },
   editor: {
     ...glass(colors, {variant: 'subtle'}),
