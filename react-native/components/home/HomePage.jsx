@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {glass, useThemedStyles} from '../theme';
 
 import {Notification} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
@@ -8,13 +9,13 @@ import {Stat} from './Stat';
 import {api} from '../api';
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 
 export function HomePage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const [serverData, setServerData] = useState(null);
   const [notifications, setNotifications] = useState(null);
+  const [reminders, setReminders] = useState(null);
 
   useEffect(() => {
     api.get('/server_data').then(response => {
@@ -23,6 +24,10 @@ export function HomePage() {
 
     api.get('/notifications').then(response => {
       setNotifications(response);
+    });
+
+    api.get('/reminders').then(response => {
+      setReminders(response);
     });
   }, []);
 
@@ -47,6 +52,14 @@ export function HomePage() {
 
         <View style={styles.nowPlaying}>
           <NowPlayingCard />
+        </View>
+
+        <View style={styles.reminders}>
+          <ScrollView>
+            {reminders && reminders.map((reminder, index) => (
+              <Text key={index}>{reminder.title}</Text>
+            ))}
+          </ScrollView>
         </View>
         <OverviewCard />
       </View>
@@ -76,6 +89,12 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 16,
     color: colors.outline
+  },
+  reminders: {
+    flex: 1,
+    ...glass(colors),
+    padding: 16,
+    borderRadius: 16,
   },
   mainContent: {
     flex: 1,
