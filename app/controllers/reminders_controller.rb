@@ -1,4 +1,4 @@
-class ReminderController < ApplicationController
+class RemindersController < ApplicationController
   def new
   end
 
