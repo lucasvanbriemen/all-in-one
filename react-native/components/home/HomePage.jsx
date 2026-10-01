@@ -63,11 +63,7 @@ export function HomePage() {
               <Text style={styles.empty}>Nothing to remind you of right now.</Text>
             )}
             {reminders && reminders.map(reminder => (
-              <Reminder
-                key={reminder.id}
-                reminder={reminder}
-                onComplete={done => setReminders(current => current.filter(r => r.id !== done.id))}
-              />
+              <Reminder key={reminder.id} reminder={reminder} onComplete={done => setReminders(current => current.filter(r => r.id !== done.id))}/>
             ))}
           </ScrollView>
           <ReminderForm onCreate={created => {
