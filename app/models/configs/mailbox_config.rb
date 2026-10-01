@@ -13,7 +13,6 @@ module MailboxConfig
     "Webinar sign-up",
     "Je Icloud-opslag is vol",
     "Terms of Service"
-    "Your filmticket"
   ].freeze
 
   INTERNAL_EMAILS = [
@@ -22,6 +21,7 @@ module MailboxConfig
 
   IGNORED_EMAIL_SUBJECTS_FOR_NOTIFICATIONS = [
     "shared the password"
+    "Your filmticket"
   ].freeze
 
   GROUPS = [
