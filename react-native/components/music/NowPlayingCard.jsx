@@ -42,6 +42,20 @@ export function NowPlayingCard() {
         <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
           <Icon name="next" size={24} color={styles.controlText.color} />
         </Pressable>
+
+        <Pressable
+          onPress={() => player.toggleRepeat(set, get)}
+          style={({pressed}) => [
+            styles.control,
+            !get('music.repeat') && styles.controlInactive,
+            pressed && styles.controlPressed,
+          ]}>
+          <Icon
+            name="repeat"
+            size={24}
+            color={get('music.repeat') ? styles.controlText.color : styles.controlInactiveText.color}
+          />
+        </Pressable>
       </View>
     </View>
   );
@@ -83,6 +97,13 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
     ...glass(colors, {variant: 'accent'}),
     borderRadius: 100,
+  },
+  controlInactive: {
+    ...glass(colors, {variant: 'subtle'}),
+    borderRadius: 100,
+  },
+  controlInactiveText: {
+    color: colors.onSurfaceVariant,
   },
   controlPressed: {
     opacity: 0.82,

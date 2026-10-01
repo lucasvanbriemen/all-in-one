@@ -15,6 +15,7 @@ import {PatheIcon} from './pathe';
 import {PauseIcon} from './pause';
 import {PlayIcon} from './play';
 import React from 'react';
+import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
 import {StatsIcon} from './stats';
 import {WorkIcon} from './work';
@@ -44,6 +45,7 @@ const ICONS = {
   pause: PauseIcon,
   next: NextIcon,
   last: LastIcon,
+  repeat: RepeatIcon,
   heart: HeartIcon,
   'heart-outline': HeartOutlineIcon,
 };

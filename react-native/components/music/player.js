@@ -96,6 +96,22 @@ export const player = {
     await player.play(results[0], set, get);
   },
 
+  toggleRepeat(set, get) {
+    player.setRepeat(!get('music.repeat'), set);
+  },
+
+  setRepeat(enabled, set) {
+    set('music.repeat', enabled);
+    NativeModules.AudioPlayer.setRepeat(enabled);
+  },
+
+  // Restart the current song from the beginning; used when repeat is on and
+  // the song has played to the end.
+  async repeatCurrent() {
+    NativeModules.AudioPlayer.seek(0);
+    await NativeModules.AudioPlayer.resume();
+  },
+
   async pause() {
     await NativeModules.AudioPlayer.pause();
   },
@@ -114,12 +130,14 @@ export const player = {
       set('music.now-playing.is-playing', isPlaying);
 
       if (ended) {
+        if (get('music.repeat')) return player.repeatCurrent();
         return player.next(set, get);
       }
     });
-    const commandSub = emitter.addListener('remoteCommand', ({command}) => {
+    const commandSub = emitter.addListener('remoteCommand', ({command, enabled}) => {
       if (command === 'next') return player.next(set, get);
       if (command === 'previous') return player.previous(set, get);
+      if (command === 'repeat') return set('music.repeat', enabled);
     });
 
     // macOS doesnt have SiriIntents.

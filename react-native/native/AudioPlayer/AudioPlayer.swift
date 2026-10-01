@@ -27,6 +27,7 @@ final class AudioPlayer: RCTEventEmitter {
     private var artwork: MPMediaItemArtwork?
     private var rateObserver: NSKeyValueObservation?
     private var commandsRegistered = false
+    private var repeatEnabled = false
     private var hasListeners = false
 
     @objc override static func requiresMainQueueSetup() -> Bool { true }
@@ -145,6 +146,15 @@ final class AudioPlayer: RCTEventEmitter {
         }
     }
 
+    // JS owns repeat behaviour (it restarts the song on `ended`); the native
+    // side only mirrors the flag into the system's repeat-mode control.
+    @objc func setRepeat(_ enabled: Bool) {
+        DispatchQueue.main.async {
+            self.repeatEnabled = enabled
+            self.updateRepeatCommand()
+        }
+    }
+
     @objc func updateMetadata(_ metadata: NSDictionary) {
         DispatchQueue.main.async {
             self.metadata = metadata as? [String: Any] ?? [:]
@@ -194,6 +204,24 @@ final class AudioPlayer: RCTEventEmitter {
             self?.seek(event.positionTime)
             return .success
         }
+        center.changeRepeatModeCommand.isEnabled = true
+        center.changeRepeatModeCommand.addTarget { [weak self] event in
+            guard let self, let event = event as? MPChangeRepeatModeCommandEvent else { return .commandFailed }
+            // Only "one song" repeat exists in this app; treat "all" the same.
+            self.repeatEnabled = event.repeatType != .off
+            self.updateRepeatCommand()
+            guard self.hasListeners else { return .success }
+            self.sendEvent(withName: Self.remoteCommandEvent, body: [
+                "command": "repeat",
+                "enabled": self.repeatEnabled,
+            ])
+            return .success
+        }
+        updateRepeatCommand()
+    }
+
+    private func updateRepeatCommand() {
+        MPRemoteCommandCenter.shared().changeRepeatModeCommand.currentRepeatType = repeatEnabled ? .one : .off
     }
 
     // MARK: - Now Playing
