@@ -8,17 +8,14 @@ export function ReminderForm({onCreate}) {
   const styles = useThemedStyles(createStyles);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [remindAt, setRemindAt] = useState('');
 
   async function submit() {
     const reminder = await api.post('/reminders', {
       title: title.trim(),
-      description: description.trim() || null,
-      remind_at: remindAt.trim() || null,
+      description: description.trim() || null
     });
     setTitle('');
     setDescription('');
-    setRemindAt('');
     onCreate(reminder);
   }
 
@@ -42,23 +39,9 @@ export function ReminderForm({onCreate}) {
         value={description}
         onChangeText={setDescription}
       />
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.input, styles.date]}
-          placeholder="YYYY-MM-DD (default: in a week)"
-          placeholderTextColor={styles.placeholder.color}
-          enableFocusRing={false}
-          value={remindAt}
-          onChangeText={setRemindAt}
-          onSubmitEditing={submit}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <Pressable style={[styles.button, (!title.trim() || saving) && styles.buttonDisabled]} onPress={submit}>
+        <Pressable style={[styles.button]} onPress={submit}>
           <Text style={styles.buttonText}>Add</Text>
         </Pressable>
-      </View>
-      {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
 }
