@@ -7,6 +7,7 @@ import {FileTree} from './FileTree';
 import {SearchSidebar} from './SearchSidebar';
 import {Terminal} from './Terminal';
 import {fileSystem} from '../fileSystem';
+import {useAppContext} from '../../context/AppContext';
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -19,7 +20,9 @@ const KEY_DOWN_EVENTS = [
   {key: 'Escape'},
 ];
 
-export function CodePage({activeSidebarItem}) {
+export function CodePage() {
+  const { get, set } = useAppContext()
+
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
@@ -127,13 +130,13 @@ export function CodePage({activeSidebarItem}) {
 
   return (
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
-      {activeSidebarItem == "files" && (
+      {get("app.activeSidebarItem") == "files" && (
         <View style={styles.fileTree}>
           <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
         </View>
       )}
 
-      {activeSidebarItem == "search" && (
+      {get("app.activeSidebarItem") == "search" && (
         <View style={styles.fileTree}>
           <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
         </View>
