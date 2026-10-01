@@ -38,12 +38,6 @@ export function FileNode({projectRoot, folder, onOpenFile, itemsDeep}) {
   }
 
   async function handleContextMenu(event) {
-    // Files have no menu of their own: their right-click falls through to the
-    // folder (or the tree root) that contains them.
-    if (!folder.isDirectory) {
-      return;
-    }
-
     event.stopPropagation();
 
     const kind = await showNewEntryMenu();

@@ -3,6 +3,8 @@ import {NativeModules} from 'react-native';
 const ACTIONS = [
   {title: 'New file', kind: 'file'},
   {title: 'New folder', kind: 'folder'},
+  {title: 'rename', kind: 'rename'},
+  {title: 'delete', kind: 'delete'}
 ];
 
 /**
