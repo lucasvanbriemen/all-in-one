@@ -1,6 +1,6 @@
 class RemindersController < ApplicationController
   def index
-    @reminders = Reminder.reminding.order(remind_at: :asc, created_at: :asc)
+    @reminders = Reminder.uncompleted.order(remind_at: :asc, created_at: :asc)
 
     render json: @reminders
   end
