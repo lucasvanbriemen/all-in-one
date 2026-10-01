@@ -15,6 +15,7 @@ module MoneyConfig
 
   MERCHANT_GROUPS = {
     "Fuel" => %w[shell bp esso tango tinq totalenergies total texaco q8 gulf avia firezone],
-    "Groceries" => %w[albert\ heijn jumbo lidl aldi plus dirk]
+    "Groceries" => %w[albert\ heijn jumbo lidl aldi plus dirk],
+    "Cinema" => %w[pathe]
   }.freeze
 end

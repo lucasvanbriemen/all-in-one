@@ -95,4 +95,11 @@ class MoneyController < ApplicationController
       money_per_day: money_per_day.round(2)
     }
   end
+
+  def recurring_costs
+    recurring = Banking::RecurringCosts.call
+    render json: {
+      recurring: recurring
+    }
+  end
 end

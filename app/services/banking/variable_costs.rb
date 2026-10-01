@@ -4,8 +4,8 @@ module Banking
   # not caught by RecurringCosts, which requires stable amounts and intervals.
   class VariableCosts
     LOOKBACK_MONTHS = 6
-    # Share of the months with data a merchant must appear in (at least 2).
-    MIN_ACTIVE_SHARE = 2.0 / 3
+    # Share of the months in the window a merchant must appear in (at least 2).
+    MIN_ACTIVE_SHARE = 0.5
 
     def self.call(recurring: [])
       new(recurring: recurring).call
@@ -20,7 +20,7 @@ module Banking
         .where(booking_date: lookback_start..)
         .order(:booking_date)
 
-      @months_in_window = months_between(transactions.first&.booking_date, Date.current)
+      @months_in_window = months_between(first_full_month(transactions), Date.current)
       return [] if @months_in_window < 2
 
       transactions.group_by { |t| key_for(t) }
@@ -33,6 +33,15 @@ module Banking
 
     def lookback_start
       LOOKBACK_MONTHS.months.ago.beginning_of_month.to_date
+    end
+
+    # The oldest month in the window is only counted when it is covered from
+    # the start, so a single late transaction does not add a whole month.
+    def first_full_month(transactions)
+      first = transactions.first&.booking_date
+      return nil if first.nil?
+
+      first == first.beginning_of_month ? first : first.next_month.beginning_of_month
     end
 
     # Calendar months with data, counting the current (partial) month as one.
