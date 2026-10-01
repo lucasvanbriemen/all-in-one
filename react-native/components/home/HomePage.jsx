@@ -71,9 +71,7 @@ export function HomePage() {
             ))}
           </ScrollView>
           <ReminderForm onCreate={created => {
-            if (new Date(created.remind_at) <= new Date()) {
-              setReminders(current => [...(current || []), created]);
-            }
+            setReminders(current => [...(current || []), created]);
           }} />
         </View>
         <OverviewCard />

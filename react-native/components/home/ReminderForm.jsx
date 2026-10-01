@@ -9,30 +9,17 @@ export function ReminderForm({onCreate}) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [remindAt, setRemindAt] = useState('');
-  const [error, setError] = useState(null);
-  const [saving, setSaving] = useState(false);
 
   async function submit() {
-    if (!title.trim() || saving) return;
-
-    setSaving(true);
-    setError(null);
-
-    try {
-      const reminder = await api.post('/reminders', {
-        title: title.trim(),
-        description: description.trim() || null,
-        remind_at: remindAt.trim() || null,
-      });
-      setTitle('');
-      setDescription('');
-      setRemindAt('');
-      onCreate(reminder);
-    } catch (e) {
-      setError('Could not save reminder');
-    } finally {
-      setSaving(false);
-    }
+    const reminder = await api.post('/reminders', {
+      title: title.trim(),
+      description: description.trim() || null,
+      remind_at: remindAt.trim() || null,
+    });
+    setTitle('');
+    setDescription('');
+    setRemindAt('');
+    onCreate(reminder);
   }
 
   return (
