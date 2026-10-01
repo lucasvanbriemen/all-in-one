@@ -56,10 +56,7 @@ class MoneyController < ApplicationController
           attentionLevel: "low"
         }
       ],
-      salary: salary,
-      recurring: recurring,
-      variable: variable,
-      transactions: Bank::Transaction.order(booking_date: :desc).limit(50)
+      recurring: recurring
     }
   end
 
@@ -83,13 +80,6 @@ class MoneyController < ApplicationController
       fixed_costs_till_next_payday: fixed_costs_till_next_payday,
       variable_costs_till_next_payday: variable_costs_till_next_payday,
       money_per_day: money_per_day.round(2)
-    }
-  end
-
-  def recurring_costs
-    recurring = Banking::RecurringCosts.call
-    render json: {
-      recurring: recurring
     }
   end
 end
