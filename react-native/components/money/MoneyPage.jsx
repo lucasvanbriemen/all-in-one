@@ -10,18 +10,20 @@ import {useThemedStyles} from '../theme';
 export function MoneyPage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const [serverData, setServerData] = useState([]);
+  const [statisics, setStatisics] = useState([]);
+  const [recurring, setRecurring] = useState([]);
 
   useEffect(() => {
     api.get('/money').then(response => {
-      setServerData(response);
+      setStatisics(response.data);
+      setRecurring(response.recurring);
     });
   }, []);
 
   return (
     <View style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
-        {serverData && serverData?.data?.map((data, index) => (
+        {statisics && statisics?.map((data, index) => (
           <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
         ))}
       </View>
