@@ -20,7 +20,7 @@ module MailboxConfig
   ].freeze
 
   IGNORED_EMAIL_SUBJECTS_FOR_NOTIFICATIONS = [
-    "shared the password"
+    "shared the password",
     "Your filmticket"
   ].freeze
 

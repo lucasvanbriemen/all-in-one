@@ -41,16 +41,6 @@ class MoneyController < ApplicationController
           attentionLevel: "low"
         },
         {
-          value: monthly_average[:income],
-          label: "Average Income",
-          attentionLevel: "low"
-        },
-        {
-          value: monthly_average[:expense],
-          label: "Average Expense",
-          attentionLevel: monthly_average[:expense] > monthly_average[:income] ? "high" : "low"
-        },
-        {
           value: fixed_costs,
           label: "Fixed Costs",
           attentionLevel: "low"
