@@ -6,16 +6,17 @@ import {useThemedStyles} from '../theme';
 
 /**
  * The inline name field that appears in the tree after "New file" or
- * "New folder". Submits on Enter, cancels on Escape, blur, or an empty name.
+ * "New folder", and in place of a row while it is being renamed. Submits on
+ * Enter, cancels on Escape, blur, or an empty name.
  */
-export function NewEntryInput({kind, onSubmit, onCancel}) {
+export function NewEntryInput({kind, initialName = '', onSubmit, onCancel}) {
   const styles = useThemedStyles(createStyles);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(initialName);
 
   function submit() {
     const trimmed = name.trim();
 
-    if (!trimmed) {
+    if (!trimmed || trimmed === initialName) {
       return onCancel();
     }
 
@@ -30,6 +31,7 @@ export function NewEntryInput({kind, onSubmit, onCancel}) {
 
       <TextInput
         autoFocus
+        selectTextOnFocus
         style={styles.input}
         placeholder={kind === 'folder' ? 'Folder name' : 'File name'}
         placeholderTextColor={styles.placeholder.color}

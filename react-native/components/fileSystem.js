@@ -61,6 +61,14 @@ export const fileSystem = {
     return this.sendRequest("POST", "/folder", projectRoot, path);
   },
 
+  deleteEntry(projectRoot, path) {
+    return this.sendRequest("DELETE", "/entry", projectRoot, path);
+  },
+
+  renameEntry(projectRoot, path, newPath) {
+    return this.sendRequest("POST", "/rename", projectRoot, path, { to: newPath });
+  },
+
   sendRequest(method, url, projectRoot, path, body = null) {
     const fullUrl = `${url}?path=${encodeURIComponent(path)}&projectRoot=${encodeURIComponent(projectRoot)}`;
     const options = {

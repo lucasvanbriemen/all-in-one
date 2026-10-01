@@ -1,4 +1,4 @@
-import { createFile, createFolder, deleteFile, listDirectory, readFile, writeFile } from './handlers/files.mjs';
+import { createFile, createFolder, deleteEntry, listDirectory, readFile, renameEntry, writeFile } from './handlers/files.mjs';
 
 import { search } from './handlers/search.mjs';
 
@@ -6,7 +6,8 @@ const routes = [
   { method: 'GET', path: '/file', handler: readFile },
   { method: 'PUT', path: '/file', handler: writeFile },
   { method: 'POST', path: '/file', handler: createFile },
-  { method: 'DELETE', path: '/file', handler: deleteFile },
+  { method: 'DELETE', path: '/entry', handler: deleteEntry },
+  { method: 'POST', path: '/rename', handler: renameEntry },
   { method: 'POST', path: '/folder', handler: createFolder },
   { method: 'GET', path: '/files', handler: listDirectory },
   { method: 'GET', path: '/search', handler: search },
