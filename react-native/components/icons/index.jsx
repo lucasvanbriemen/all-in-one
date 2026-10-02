@@ -18,9 +18,11 @@ import React from 'react';
 import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
 import {StatsIcon} from './stats';
+import {WEATHER_ICONS} from './weather';
 import {WorkIcon} from './work';
 
 export {LogoIcon} from './logo';
+export {WeatherIcon} from './weather';
 
 // Keyed by the `path` of each entry in Config::CONFIG (app/models/config.rb),
 // which is what the sidebar rows are identified by. An entry without an icon
@@ -48,6 +50,7 @@ const ICONS = {
   repeat: RepeatIcon,
   heart: HeartIcon,
   'heart-outline': HeartOutlineIcon,
+  ...WEATHER_ICONS,
 };
 
 export function Icon({name, size, color}) {
