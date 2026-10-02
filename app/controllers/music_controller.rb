@@ -3,7 +3,7 @@ class MusicController < ApplicationController
   end
 
   def index
-    @songs = Music::Song.liked_songs
+    @songs = Music::Song.liked_songs.order(created_at: :desc)
 
     render json: @songs
   end
