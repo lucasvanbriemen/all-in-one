@@ -3,6 +3,7 @@ import {glass, useTheme, useThemedStyles} from '../theme';
 import {useEffect, useRef, useState} from 'react';
 
 import {LogoIcon} from '../icons';
+import {Platform} from 'react-native';
 import {SidebarApplication} from './SidebarApplication';
 import {api} from '../api';
 
@@ -35,7 +36,18 @@ export function Sidebar() {
 
   useEffect(() => {
     api.get('/meta_data').then(data => {
-      setItems(data.config);
+      const currentPlatform = Platform.OS.toLowerCase();
+
+      // Keep only the apps allowed on the current platform
+      const allowedApps = {};
+      for (const app in data.config) {
+        const platforms = (data.allowed_platforms[app] || []).map(p => p.toLowerCase());
+        if (platforms.includes(currentPlatform)) {
+          allowedApps[app] = data.config[app];
+        }
+      }
+
+      setItems(allowedApps);
     })
   }, []);
 
