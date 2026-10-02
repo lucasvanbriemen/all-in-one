@@ -13,4 +13,6 @@ module MusicConfig
       name: "Statistics"
     }
   ].freeze
+
+  ALLOWED_PLATFORMS = ["web", "macOS", "iOS"].freeze
 end

@@ -13,4 +13,6 @@ module CodeConfig
       name: "Git"
     }
   ].freeze
+
+  ALLOWED_PLATFORMS = ["macOS"].freeze
 end

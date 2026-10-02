@@ -6,6 +6,8 @@ module MoneyConfig
     }
   ].freeze
 
+  ALLOWED_PLATFORMS = ["web", "macOS", "iOS"].freeze
+
   # Bank to connect to from the app: Enable Banking name and ISO country.
   ASPSP = { name: "ING", country: "NL" }.freeze
 

@@ -57,6 +57,8 @@ module MailboxConfig
     }
   ].freeze
 
+  ALLOWED_PLATFORMS = ["web", "macOS", "iOS"].freeze
+
   def self.find(path)
     GROUPS.find { |group| group[:path] == path }
   end
