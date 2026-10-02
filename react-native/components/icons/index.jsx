@@ -21,7 +21,6 @@ import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
 import {StatsIcon} from './stats';
 import {WorkIcon} from './work';
-import {CloudIcon, MoonIcon, RainIcon, SnowIcon, StormIcon, SunIcon} from './weather';
 
 export {LogoIcon} from './logo';
 
@@ -34,12 +33,6 @@ const ICONS = {
   month: CalendarIcon,
   calendar: CalendarIcon,
   agenda: AgendaIcon,
-  sun: SunIcon,
-  moon: MoonIcon,
-  cloud: CloudIcon,
-  rain: RainIcon,
-  snow: SnowIcon,
-  storm: StormIcon,
   work: WorkIcon,
   github: GithubIcon,
   git: GithubIcon,
