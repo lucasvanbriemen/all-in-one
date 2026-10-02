@@ -1,5 +1,3 @@
-import {AgendaIcon} from './agenda';
-import {CalendarIcon} from './calendar';
 import {ChevronDown} from './chevronDown';
 import {ChevronLeft} from './chevronLeft';
 import {ChevronRight} from './chevronRight';
@@ -30,9 +28,6 @@ export {LogoIcon} from './logo';
 // doesn't break the client.
 const ICONS = {
   home: HomeIcon,
-  month: CalendarIcon,
-  calendar: CalendarIcon,
-  agenda: AgendaIcon,
   work: WorkIcon,
   github: GithubIcon,
   git: GithubIcon,
