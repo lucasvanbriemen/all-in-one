@@ -52,7 +52,7 @@ export function HomePage() {
           </ScrollView>
         </View>
 
-        <View style={[styles.nowPlaying, styles.column]}>
+        <View style={styles.nowPlaying}>
           <NowPlayingCard />
         </View>
 
@@ -84,9 +84,6 @@ const createStyles = colors => StyleSheet.create({
   },
   nowPlaying: {
     flex: 1,
-  },
-  column: {
-    gap: 16,
   },
   content: {
     flex: 1,
