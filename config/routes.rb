@@ -24,7 +24,6 @@ Rails.application.routes.draw do
   post "/calendar/google/sync", to: "google_calendar#sync", as: :google_calendar_sync
   delete "/calendar/google/:id", to: "google_calendar#disconnect", as: :google_calendar_disconnect
 
-  get "/weather", to: "weather#show", as: :weather
   get "/privacy", to: "privacy#show", as: :privacy
 
   get "/server_data", to: "server#index", as: :server_data
