@@ -8,6 +8,7 @@ import {OverviewCard} from '../money/OverviewCard';
 import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
+import {WeatherCard} from './WeatherCard';
 import {api} from '../api';
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
@@ -52,8 +53,9 @@ export function HomePage() {
           </ScrollView>
         </View>
 
-        <View style={styles.nowPlaying}>
+        <View style={styles.itemRow}>
           <NowPlayingCard />
+          <WeatherCard />
         </View>
 
         <View style={styles.reminders}>
@@ -82,7 +84,7 @@ const createStyles = colors => StyleSheet.create({
   notificationsContainer: {
     flex: 2,
   },
-  nowPlaying: {
+  itemRow: {
     flex: 1,
   },
   content: {

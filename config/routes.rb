@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get "/emails/:id", to: "emails#show", as: :email
   post "/emails/:id/mark_as_read", to: "emails#mark_as_read", as: :mark_email_as_read
 
+  get "/weather", to: "weather#index", as: :weather
+
   get "/reminders", to: "reminders#index", as: :reminders
   post "/reminders", to: "reminders#create", as: :create_reminder
   post "/reminders/:id", to: "reminders#update", as: :update_reminder
@@ -44,6 +46,8 @@ Rails.application.routes.draw do
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
+
+  get "/privacy", to: "account#privacy", as: :privacy
 
   get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
