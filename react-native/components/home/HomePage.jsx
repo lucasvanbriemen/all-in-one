@@ -9,7 +9,6 @@ import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
 import {UpcomingEvents} from './UpcomingEvents';
-import {WeatherCard} from './WeatherCard';
 import {api} from '../api';
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
@@ -55,7 +54,6 @@ export function HomePage() {
         </View>
 
         <View style={[styles.nowPlaying, styles.column]}>
-          <WeatherCard />
           <NowPlayingCard />
           <UpcomingEvents />
         </View>
