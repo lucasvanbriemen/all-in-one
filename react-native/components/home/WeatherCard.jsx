@@ -1,34 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { glass, useThemedStyles } from '../theme';
+import { glass, useTheme, useThemedStyles } from '../theme';
 
-import {api} from '../api';
-import { useCompactLayout } from '../useCompactLayout';
-import { useEffect } from 'react';
+import { ChevronDown } from '../icons/chevronDown';
+import { ChevronTop } from '../icons/chevronTop';
+import { WeatherIcon } from '../icons';
+import { api } from '../api';
 
 export function WeatherCard() {
-  const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
+  const colors = useTheme();
 
-  const [weather, setWeather] = useState([]);
+  const [weather, setWeather] = useState({});
 
   useEffect(() => {
     api.get('/weather').then(response => setWeather(response));
   }, []);
 
   return (
-    <View style={[styles.content]}>
-      <View style={styles.row}>
-        <Text style={styles.feels_like}>Feels like {weather.feels_like}</Text>
-        <View style={styles.row}>
-          <Text style={styles.minmax}>Min: {weather.min}</Text>
-          <Text style={styles.minmax}>Max: {weather.max}</Text>
+    <View style={styles.content}>
+      <View style={styles.header}>
+        <WeatherIcon condition={weather.condition} size={40} color={colors.primary} />
+        <View>
+          <Text style={styles.temperature}>{weather.feels_like}</Text>
+          <Text style={styles.subtle}>{weather.condition}</Text>
         </View>
       </View>
 
       <View style={styles.row}>
-        <Text style={styles.minmax}>Humidity: {weather.humidity}</Text>
-        <Text style={styles.minmax}>Condition: {weather.condition}</Text>
+        <View style={styles.stat}>
+          <ChevronDown size={14} color={colors.secondary} />
+          <Text style={styles.subtle}>{weather.min}</Text>
+        </View>
+        <View style={styles.stat}>
+          <ChevronTop size={14} color={colors.secondary} />
+          <Text style={styles.subtle}>{weather.max}</Text>
+        </View>
+        <View style={styles.stat}>
+          <WeatherIcon condition="Drizzle" size={14} color={colors.secondary} />
+          <Text style={styles.subtle}>{weather.humidity}</Text>
+        </View>
       </View>
     </View>
   );
@@ -40,22 +51,29 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     borderRadius: 8,
     marginVertical: 16,
+    gap: 12,
   },
-
-  feels_like: {
-    fontSize: 24,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  temperature: {
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
     color: colors.primary,
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-    gap: 8,
+    gap: 16,
   },
-  minmax: {
+  stat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  subtle: {
     color: colors.secondary,
   },
 });
