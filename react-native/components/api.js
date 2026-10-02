@@ -1,12 +1,11 @@
-import secrets from './secerts.json';
-
 import {Platform} from 'react-native';
+import secrets from './secerts.json';
 
 // On web the browser enforces CORS, so requests go through the Vite dev
 // proxy (`/__api` → the Rails server, see `vite.config.js`) and stay
 // same-origin. Native platforms talk to the server directly.
-export const BASE_URL = Platform.OS === 'web' ? "/__api" : "http://localhost:3000";
-// const BASE_URL = "https://aio.ltvb.nl";
+// export const BASE_URL = Platform.OS === 'web' ? "/__api" : "http://localhost:3000";
+const BASE_URL = "https://aio.ltvb.nl";
 
 export const api = {
   // A getter so every request reads the *current* CSRF token — Turbo swaps
