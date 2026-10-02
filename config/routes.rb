@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   get "/emails/:id", to: "emails#show", as: :email
   post "/emails/:id/mark_as_read", to: "emails#mark_as_read", as: :mark_email_as_read
 
+  get "/weather", to: "weather#index", as: :weather
+
+
   get "/reminders", to: "reminders#index", as: :reminders
   post "/reminders", to: "reminders#create", as: :create_reminder
   post "/reminders/:id", to: "reminders#update", as: :update_reminder
