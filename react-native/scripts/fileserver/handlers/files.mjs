@@ -33,11 +33,23 @@ export async function writeFile({request, response, searchParams}) {
   sendJson(response, {path: target.wantedPath});
 }
 
-export async function deleteFile({response, searchParams}) {
+export async function deleteEntry({response, searchParams}) {
   const target = resolveTarget(searchParams);
 
-  await fs.unlink(target.absolute);
+  // Files and folders share one route, so remove whichever this is.
+  await fs.rm(target.absolute, {recursive: true});
   sendJson(response, {path: target.wantedPath});
+}
+
+export async function renameEntry({request, response, searchParams}) {
+  const target = resolveTarget(searchParams);
+  const projectRoot = searchParams.get('projectRoot');
+
+  const to = JSON.parse(await readBody(request)).to;
+  const destination = resolveInProject(projectRoot, to);
+
+  await fs.rename(target.absolute, destination);
+  sendJson(response, {path: to});
 }
 
 export async function createFile({request, response, searchParams}) {
@@ -46,6 +58,13 @@ export async function createFile({request, response, searchParams}) {
   let contents = JSON.parse(await readBody(request)).contents;
 
   await fs.writeFile(target.absolute, contents, 'utf8');
+  sendJson(response, {path: target.wantedPath});
+}
+
+export async function createFolder({response, searchParams}) {
+  const target = resolveTarget(searchParams);
+
+  await fs.mkdir(target.absolute);
   sendJson(response, {path: target.wantedPath});
 }
 
