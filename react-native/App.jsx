@@ -1,8 +1,8 @@
 import {AppProvider, useAppContext} from './context/AppContext';
 import React, { useEffect, useState } from 'react';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet, View} from 'react-native';
 
-import {CalendarPage} from './components/calendar/CalendarPage';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
@@ -11,7 +11,6 @@ import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {NowPlayingDrawer} from './components/music/NowPlayingDrawer';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -23,7 +22,6 @@ import {useThemedStyles} from './components/theme';
 const APPLICATIONS = {
   email: EmailPage,
   home: HomePage,
-  calendar: CalendarPage,
   code: CodePage,
   music: MusicPage,
   money: MoneyPage,
