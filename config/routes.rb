@@ -10,7 +10,6 @@ Rails.application.routes.draw do
 
   get "/weather", to: "weather#index", as: :weather
 
-
   get "/reminders", to: "reminders#index", as: :reminders
   post "/reminders", to: "reminders#create", as: :create_reminder
   post "/reminders/:id", to: "reminders#update", as: :update_reminder
