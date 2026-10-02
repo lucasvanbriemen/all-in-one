@@ -20,17 +20,6 @@ class GoogleCalendarController < ApplicationController
     render plain: "Google Calendar connected for #{email}. Syncing in the background."
   end
 
-  def status
-    render json: GoogleCalendarConnection.all.map { |c|
-      { id: c.id, email: c.email, last_synced_at: c.last_synced_at, last_sync_error: c.last_sync_error }
-    }
-  end
-
-  def sync
-    GoogleCalendarConnection.pluck(:id).each { |id| SyncGoogleCalendarJob.perform_later(id) }
-    head :accepted
-  end
-
   def disconnect
     connection = GoogleCalendarConnection.find(params[:id])
     connection.destroy
