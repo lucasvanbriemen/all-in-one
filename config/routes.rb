@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   post "/reminders", to: "reminders#create", as: :create_reminder
   post "/reminders/:id", to: "reminders#update", as: :update_reminder
 
+  get "/calendar/google/connect", to: "google_calendar#connect", as: :google_calendar_connect
+  get "/calendar/google/callback", to: "google_calendar#callback", as: :google_calendar_callback
+  delete "/calendar/google/:id", to: "google_calendar#disconnect", as: :google_calendar_disconnect
+
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_01_201328) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_02_100000) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "bank_connection_id", null: false
     t.string "uid", null: false
@@ -57,6 +57,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_201328) do
     t.check_constraint "json_valid(`raw`)", name: "raw"
   end
 
+  create_table "calendar_events", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "location"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at"
+    t.boolean "all_day", default: false, null: false
+    t.string "source", default: "local", null: false
+    t.string "calendar_id"
+    t.string "calendar_name"
+    t.string "external_id"
+    t.string "color"
+    t.string "html_link"
+    t.index ["calendar_id", "external_id"], name: "index_calendar_events_on_calendar_id_and_external_id", unique: true
+    t.index ["starts_at"], name: "index_calendar_events_on_starts_at"
+  end
+
   create_table "device_tokens", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "token", null: false
     t.string "platform", null: false
@@ -84,6 +103,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_01_201328) do
     t.index ["subject", "html_body"], name: "ft_both", type: :fulltext
     t.index ["subject"], name: "emails_subject_index"
     t.index ["subject"], name: "ft_subject", type: :fulltext
+  end
+
+  create_table "google_calendar_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email", null: false
+    t.text "access_token", null: false
+    t.text "refresh_token", null: false
+    t.datetime "token_expires_at", null: false
+    t.text "sync_tokens", size: :long, collation: "utf8mb4_bin"
+    t.datetime "last_synced_at"
+    t.text "last_sync_error"
+    t.index ["email"], name: "index_google_calendar_connections_on_email", unique: true
+    t.check_constraint "json_valid(`sync_tokens`)", name: "sync_tokens"
   end
 
   create_table "imap_credentials", id: { type: :bigint, unsigned: true }, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|

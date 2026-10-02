@@ -37,3 +37,9 @@ production:
     class: SyncAllBankConnectionsJob
     queue: default
     schedule: every 6 hours
+
+  # Google only returns changes since the last pull (sync tokens), so this is cheap.
+  sync_all_google_calendars:
+    class: SyncAllGoogleCalendarsJob
+    queue: default
+    schedule: every 10 minutes
