@@ -9,16 +9,10 @@ import {sortFiles} from './sortFiles';
 import {useState} from 'react';
 import {useThemedStyles} from '../theme';
 
-/**
- * One row in the tree, file or folder. Creating inside a folder is handled
- * here; renaming or deleting this row changes the parent's listing, so those
- * finish by calling `onChanged` so the parent refetches.
- */
 export function FileNode({projectRoot, folder, onOpenFile, onChanged, itemsDeep}) {
   const styles = useThemedStyles(createStyles);
   const [children, setChildren] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  // 'file' | 'folder' while this folder's name field is showing.
   const [newEntryKind, setNewEntryKind] = useState(null);
   const [isRenaming, setIsRenaming] = useState(false);
 

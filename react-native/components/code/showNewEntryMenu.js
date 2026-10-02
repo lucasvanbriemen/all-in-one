@@ -10,15 +10,6 @@ const ENTRY_ACTIONS = [
   {title: 'Delete', kind: 'delete'},
 ];
 
-/**
- * Right-click menu for the file tree. Resolves with the chosen action's kind
- * ('file', 'folder', 'rename' or 'delete'), or null when the menu is
- * dismissed. The menu itself is AppKit's, see
- * macos/AllInOne-macOS/ContextMenu.swift.
- *
- * Without an entry (the tree background) only the create actions show. A
- * folder gets all four; a file can only be renamed or deleted.
- */
 export async function showNewEntryMenu(entry = null) {
   const actions = [];
 
