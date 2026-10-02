@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
+  get "/privacy", to: "account#privacy", as: :privacy
+
   get "meta_data", to: "account#show"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
