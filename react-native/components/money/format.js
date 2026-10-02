@@ -8,7 +8,7 @@ export const format = {
   },
 
   date(value){
-    date = new Date(value);
+    const date = new Date(value);
 
     // Return Fr 23 oct
     return date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' });

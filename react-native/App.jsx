@@ -10,7 +10,7 @@ import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {NowPlayingDrawer} from './components/music/NowPlayingDrawer';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
@@ -29,11 +29,13 @@ const APPLICATIONS = {
 
 export default function App() {
   return (
-    <AppProvider>
-      <PlayerBridge />
-      <PushBridge />
-      <AppShell />
-    </AppProvider>
+    <SafeAreaProvider>
+      <AppProvider>
+        <PlayerBridge />
+        <PushBridge />
+        <AppShell />
+      </AppProvider>
+    </SafeAreaProvider>
   );
 }
 

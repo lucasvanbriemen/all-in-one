@@ -67,8 +67,9 @@ export const greeting = {
     const greetingFormat = RULES.greeting[Math.floor(Math.random() * RULES.greeting.length)];
     const opener = RULES.opener[Math.floor(Math.random() * RULES.opener.length)];
     const interjection = RULES.interjection[Math.floor(Math.random() * RULES.interjection.length)];
-    const followup = this.validFollowupList(daypart)[Math.floor(Math.random() * this.validFollowupList(daypart).length)].text;
     const daypart = this.partOfDay(new Date().getHours());
+    const followups = this.validFollowupList(daypart);
+    const followup = followups[Math.floor(Math.random() * followups.length)].text;
 
     return this.formatGreetingItem(greetingFormat, opener, interjection, followup, name, daypart, Math.random() < 0.6 ? '!' : '.');
   },
