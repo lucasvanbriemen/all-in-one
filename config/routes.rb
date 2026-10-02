@@ -12,6 +12,21 @@ Rails.application.routes.draw do
   post "/reminders", to: "reminders#create", as: :create_reminder
   post "/reminders/:id", to: "reminders#update", as: :update_reminder
 
+  get "/calendar/events", to: "calendar_events#index", as: :calendar_events
+  get "/calendar/events/upcoming", to: "calendar_events#upcoming", as: :upcoming_calendar_events
+  post "/calendar/events", to: "calendar_events#create", as: :create_calendar_event
+  patch "/calendar/events/:id", to: "calendar_events#update", as: :update_calendar_event
+  delete "/calendar/events/:id", to: "calendar_events#destroy", as: :delete_calendar_event
+
+  get "/calendar/google/connect", to: "google_calendar#connect", as: :google_calendar_connect
+  get "/calendar/google/callback", to: "google_calendar#callback", as: :google_calendar_callback
+  get "/calendar/google", to: "google_calendar#status", as: :google_calendar_status
+  post "/calendar/google/sync", to: "google_calendar#sync", as: :google_calendar_sync
+  delete "/calendar/google/:id", to: "google_calendar#disconnect", as: :google_calendar_disconnect
+
+  get "/weather", to: "weather#show", as: :weather
+  get "/privacy", to: "privacy#show", as: :privacy
+
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
 

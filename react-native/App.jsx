@@ -2,6 +2,7 @@ import {AppProvider, useAppContext} from './context/AppContext';
 import React, { useEffect, useState } from 'react';
 import {StyleSheet, View} from 'react-native';
 
+import {CalendarPage} from './components/calendar/CalendarPage';
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
 import {HomePage} from './components/home/HomePage';
@@ -22,6 +23,7 @@ import {useThemedStyles} from './components/theme';
 const APPLICATIONS = {
   email: EmailPage,
   home: HomePage,
+  calendar: CalendarPage,
   code: CodePage,
   music: MusicPage,
   money: MoneyPage,
