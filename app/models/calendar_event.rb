@@ -1,7 +1,6 @@
 class CalendarEvent < ApplicationRecord
   validates :title, presence: true
   validates :starts_at, presence: true
-  validate :ends_after_start
 
   # Everything overlapping the window: an event that started before `from`
   # but runs into it still belongs on that day.
@@ -19,12 +18,5 @@ class CalendarEvent < ApplicationRecord
 
   def ends_at
     super || starts_at
-  end
-
-  private
-
-  def ends_after_start
-    return if starts_at.blank? || self[:ends_at].blank?
-    errors.add(:ends_at, "must be after the start") if self[:ends_at] < starts_at
   end
 end
