@@ -3,3 +3,4 @@ css: bin/rails dartsass:watch
 node: cd react-native && node --watch --watch-path=scripts scripts/fileserver.mjs
 metro: cd react-native && npm run start
 reactNative: cd react-native && (npm run macos; tail -f /dev/null)
+whatsapp: cd whatsapp-bridge && node --env-file-if-exists=.env index.mjs
