@@ -198,14 +198,17 @@ export function CodePage() {
 
         {projectRoot && (
           <>
-            <CodeEditor
-              value={source}
-              path={currentFile}
-              onChange={setSource}
-              onSave={save}
-              onSearch={openSearch}
-              onClose={closeCurrentFile}
-            />
+            {currentFile && (
+              <CodeEditor
+                value={source}
+                path={currentFile}
+                onChange={setSource}
+                onSave={save}
+                onSearch={openSearch}
+                onClose={closeCurrentFile}
+              />
+            )}
+
 
             <View style={styles.terminal}>
               <View style={styles.terminalTabs}>
