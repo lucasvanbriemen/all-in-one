@@ -181,7 +181,7 @@ export function CodePage() {
               <View style={styles.terminalTabs}>
                 {terminals.map((terminal, index) => (
                   <Pressable key={terminal.id} onPress={() => setVisibleTerminal(terminal.id)} style={[ styles.terminalTab, terminal.id === visibleTerminal && styles.terminalTabActive]}>
-                    <Text>Terminal {index + 1}</Text>
+                    <Text style={[styles.terminalTabText, terminal.id === visibleTerminal && styles.terminalTabActiveText]}>Terminal {index + 1}</Text>
                   </Pressable>
                 ))}
 
@@ -255,7 +255,13 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
   },
   terminalTabActive: {
-    ...glass(colors, {variant: 'accent'}),
+    backgroundColor: colors.primary,
+  },
+  terminalTabText: {
+    color: colors.onSurface,
+  },
+  terminalTabActiveText: {
+    color: colors.onPrimary,
   },
   terminalPanes: {
     flex: 1,
