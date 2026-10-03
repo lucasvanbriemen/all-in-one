@@ -114,6 +114,7 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors, {variant: 'subtle'}),
     padding: 8,
     borderRadius: 8,
+    gap: 4,
   },
   activeSearchOption: {
     backgroundColor: colors.primary,
