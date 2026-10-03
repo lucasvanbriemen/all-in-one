@@ -46,12 +46,26 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
   }, [searchTerm, projectRoot, searchingTerm]);
 
   function formatSearchResult(result) {
-    let formatted = result
-
     // Remove all whitespace from the result name
-    formatted = formatted?.name?.replace(/\s+/g, '') ?? '';
+    const name = result?.name?.replace(/\s+/g, '') ?? '';
 
-    return formatted;
+    // Only highlight when searching code with a non-empty term
+    if (searchingTerm !== 'code' || !searchTerm) {
+      return name;
+    }
+
+    // Escape regex metacharacters so a term like "foo(" doesn't throw
+    const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+
+    // split() with a capturing group keeps the matches at odd indexes
+    return name.split(regex).map((part, i) =>
+      i % 2 === 1 ? (
+        <Text key={i} style={styles.highlight}>{part}</Text>
+      ) : (
+        part
+      ),
+    );
   }
 
   return (
@@ -112,6 +126,10 @@ const createStyles = colors => StyleSheet.create({
   resultText: {
     borderRadius: 8,
     color: colors.onSurface,
+  },
+  highlight: {
+    backgroundColor: colors.primary,
+    color: colors.onPrimary,
   },
   resultTextSmall: {
     fontSize: 12,
