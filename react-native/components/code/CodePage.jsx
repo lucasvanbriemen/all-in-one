@@ -238,7 +238,7 @@ const createStyles = colors => StyleSheet.create({
     opacity: 0.75,
   },
   openedFileActive: {
-    ...glass(colors, {variant: 'accent'}),
+    backgroundColor: colors.primary,
     opacity: 1,
   },
   fileTree: {
