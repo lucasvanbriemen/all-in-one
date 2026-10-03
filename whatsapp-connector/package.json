@@ -1,5 +1,5 @@
 {
-  "name": "whatsapp-bridge",
+  "name": "whatsapp-connector",
   "private": true,
   "type": "module",
   "description": "Links to WhatsApp as a companion device and relays messages to Rails.",
