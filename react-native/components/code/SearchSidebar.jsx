@@ -45,6 +45,14 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
     search();
   }, [searchTerm, projectRoot, searchingTerm]);
 
+  function formatSearchResult(result) {
+    let formatted = result
+
+    // Remove all whitespace from the result name
+    formatted = formatted?.name?.replace(/\s+/g, '') ?? '';
+
+    return formatted;
+  }
 
   return (
     <ScrollView style={styles.editor}>
@@ -62,7 +70,7 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
 
       {searchResults.map((result, index) => (
         <Pressable key={index} onPress={() => onOpenFile(result.path)} style={styles.resultContainer}>
-          <Text style={styles.resultText} lineBreakMode="tail" numberOfLines={1}>{result?.name}</Text>
+          <Text style={styles.resultText} lineBreakMode="tail" numberOfLines={1}>{formatSearchResult(result)}</Text>
           <Text style={[styles.resultText, styles.resultTextSmall]}>{result.path}</Text>
         </Pressable>
       ))}
