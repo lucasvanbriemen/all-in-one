@@ -33,8 +33,8 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
       {searchResults.map((result, index) => (
-        <Pressable key={index} onPress={() => onOpenFile(result)}>
-          <Text style={styles.result}>{result}</Text>
+        <Pressable key={index} onPress={() => onOpenFile(result.path)}>
+          <Text style={styles.result}>{result.path}</Text>
         </Pressable>
       ))}
     </ScrollView>

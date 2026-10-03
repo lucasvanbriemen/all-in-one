@@ -17,5 +17,5 @@ if (process.env.AIO_EXIT_ON_STDIN_EOF === '1') {
 }
 
 server.listen(PORT, HOST, () => {
-  console.log(`listening on http://${HOST}:${PORT}`);
+  console.log(`listening on http://${HOST}:${PORT}!`);
 });
