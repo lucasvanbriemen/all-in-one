@@ -1,17 +1,10 @@
+import {Browsers, DisconnectReason, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState} from 'baileys';
+
 import {Boom} from '@hapi/boom';
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import pino from 'pino';
-import {
-  Browsers,
-  DisconnectReason,
-  fetchLatestBaileysVersion,
-  jidNormalizedUser,
-  makeCacheableSignalKeyStore,
-  makeWASocket,
-  useMultiFileAuthState,
-} from 'baileys';
 
 /**
  * WhatsApp bridge.
