@@ -18,6 +18,7 @@ const AUTO_SAVE_DELAY = 800;
 const KEY_DOWN_EVENTS = [
   {key: 'p', metaKey: true},
   {key: 'f', metaKey: true, shiftKey: true},
+  {key: 'w', metaKey: true},
   {key: 'Escape'},
 ];
 
@@ -105,6 +106,15 @@ export function CodePage() {
     setSearching(mode);
   }, [set]);
 
+  // Close the current open file and show the next one if there is one. Shared
+  // by the native key handler and the WebViews, which hand Cmd+W back the same
+  // way they hand back Cmd+P: a keystroke left to WebKit closes the window.
+  const closeCurrentFile = useCallback(() => {
+    const newOpenedFiles = openedFiles.filter(file => file !== currentFile);
+    setOpenedFiles(newOpenedFiles);
+    setCurrentFile(newOpenedFiles[0] ?? null);
+  }, [openedFiles, currentFile]);
+
   const onKeyDown = useCallback(event => {
     const {key, metaKey, ctrlKey, shiftKey} = event.nativeEvent ?? event;
 
@@ -118,10 +128,15 @@ export function CodePage() {
       openSearch('code');
     }
 
+    if (key === 'w' && (metaKey || ctrlKey)) {
+      event.preventDefault?.();
+      closeCurrentFile();
+    }
+
     if (key === 'Escape') {
       setSearching(null);
     }
-  }, [openSearch]);
+  }, [openSearch, closeCurrentFile]);
 
   // Nothing in this tree takes focus on its own, and on macOS key events are
   // only emitted from the first responder — a plain View never becomes one, and
@@ -189,6 +204,7 @@ export function CodePage() {
               onChange={setSource}
               onSave={save}
               onSearch={openSearch}
+              onClose={closeCurrentFile}
             />
 
             <View style={styles.terminal}>
@@ -209,7 +225,7 @@ export function CodePage() {
               <View style={styles.terminalPanes}>
                 {terminals.map(terminal => (
                   <View key={terminal.id} pointerEvents={terminal.id === visibleTerminal ? 'auto' : 'none'} style={[styles.terminalPane, terminal.id !== visibleTerminal && styles.hiddenTerminal]}>
-                    <Terminal projectRoot={projectRoot} onSearch={openSearch} />
+                    <Terminal projectRoot={projectRoot} onSearch={openSearch} onClose={closeCurrentFile} />
                   </View>
                 ))}
               </View>

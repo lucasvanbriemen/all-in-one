@@ -21,7 +21,7 @@ import {useTheme} from '../theme';
  * the frame is blocked as mixed content; from React Native it is just a socket.
  * So the page is the screen and the keyboard, and nothing else.
  */
-export function Terminal({projectRoot, onSearch, style}) {
+export function Terminal({projectRoot, onSearch, onClose, style}) {
   const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
 
@@ -134,8 +134,13 @@ export function Terminal({projectRoot, onSearch, style}) {
       if (message.type === 'search') {
         onSearch?.(message.mode);
       }
+
+      // Cmd+W closes the file, not the window.
+      if (message.type === 'close') {
+        onClose?.();
+      }
     },
-    [connect, send, inject, onSearch],
+    [connect, send, inject, onSearch, onClose],
   );
 
   // The palette arrives from a fetch, so it is pushed in rather than being the
@@ -284,7 +289,7 @@ function terminalHtml(theme) {
 
       term.onData(function (data) { post({type: 'input', data: data}); });
 
-      // Returning false leaves the key to us. Only Cmd+P and Cmd+Shift+F are taken: every other
+      // Returning false leaves the key to us. Only Cmd+P, Cmd+Shift+F and Cmd+W are taken: every other
       // Cmd combination has to fall through to WebKit, which is what makes
       // Cmd+C and Cmd+V work — xterm copies and pastes off the DOM events the
       // browser fires, not off the keystrokes.
@@ -298,6 +303,13 @@ function terminalHtml(theme) {
         if (event.type === 'keydown' && event.metaKey && event.shiftKey && event.key.toLowerCase() === 'f') {
           event.preventDefault();
           post({type: 'search', mode: 'code'});
+          return false;
+        }
+
+        // Left to WebKit, Cmd+W closes the window.
+        if (event.type === 'keydown' && event.metaKey && event.key === 'w') {
+          event.preventDefault();
+          post({type: 'close'});
           return false;
         }
 

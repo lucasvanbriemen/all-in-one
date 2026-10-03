@@ -34,6 +34,7 @@ export function CodeEditor({
   onChange,
   onSave,
   onSearch,
+  onClose,
   style,
 }) {
   const webView = useRef(null);
@@ -115,8 +116,13 @@ export function CodeEditor({
       if (message.type === 'search') {
         onSearch?.(message.mode);
       }
+
+      // Cmd+W closes the file, not the window.
+      if (message.type === 'close') {
+        onClose?.();
+      }
     },
-    [language, onChange, onSave, onSearch],
+    [language, onChange, onSave, onSearch, onClose],
   );
 
   return (
@@ -438,6 +444,11 @@ function editorHtml(file) {
         // Cmd+Shift+F is search in files, as in VS Code.
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyF, function () {
           post({type: 'search', mode: 'code'});
+        });
+
+        // Cmd+W closes the file. Left to WebKit it would close the window.
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyW, function () {
+          post({type: 'close'});
         });
 
         // Clicking away — into the file tree, or out of the window — is a save.
