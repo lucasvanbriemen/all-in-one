@@ -61,8 +61,9 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
       {searchResults.map((result, index) => (
-        <Pressable key={index} onPress={() => onOpenFile(result.path)}>
-          <Text style={styles.result}>{result.path}</Text>
+        <Pressable key={index} onPress={() => onOpenFile(result.path)} style={styles.resultContainer}>
+          <Text style={styles.resultText} lineBreakMode="tail" numberOfLines={1}>{result?.name}</Text>
+          <Text style={[styles.resultText, styles.resultTextSmall]}>{result.path}</Text>
         </Pressable>
       ))}
     </ScrollView>
@@ -100,10 +101,19 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  result: {
+  resultText: {
+    borderRadius: 8,
+    color: colors.onSurface,
+  },
+  resultTextSmall: {
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+  },
+  resultContainer: {
+    marginVertical: 8,
+    ...glass(colors, {variant: 'subtle'}),
     padding: 8,
     borderRadius: 8,
-    marginBottom: 8,
   },
   activeSearchOption: {
     backgroundColor: colors.primary,

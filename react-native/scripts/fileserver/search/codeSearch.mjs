@@ -98,7 +98,7 @@ async function searchFile(absolutePath, searchTermLower, projectRoot, results) {
       path: relative,
       line: index + 1,
       column: column + 1,
-      text: line.length > MAX_PREVIEW_LENGTH ? line.slice(0, MAX_PREVIEW_LENGTH) : line,
+      name: line.length > MAX_PREVIEW_LENGTH ? line.slice(0, MAX_PREVIEW_LENGTH) : line,
     });
     matchesInFile++;
   }

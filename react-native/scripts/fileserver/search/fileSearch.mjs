@@ -35,7 +35,9 @@ async function searchForFiles(directory, searchTermLower, matches) {
     }
 
     if (entry.name.toLowerCase().includes(searchTermLower)) {
-      matches.push({path: fullPath});
+      const fileName = fullPath.split(path.sep).pop();
+
+      matches.push({path: fullPath, name: fileName});
     }
   }
 }
