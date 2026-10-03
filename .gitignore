@@ -51,5 +51,5 @@ config/apns.p8
 config/*.pem
 
 /storage/whatsapp/
-/whatsapp-bridge/node_modules
-/whatsapp-bridge/.env
+/whatsapp-connector/node_modules
+/whatsapp-connector/.env
