@@ -8,33 +8,33 @@ import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing() {
-  const [items, setItems] = useState([]);
+  const [emails, setEmails] = useState([]);
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
   const [emailRefreshing, setEmailRefreshing] = useState(false);
 
   useEffect(() => {
     api.get('/email/' + get('app.activeSidebarItem')).then(data => {
-      setItems(data?.emails ?? []);
+      setEmails(data?.emails ?? []);
     });
   }, [get]);
 
   function getEmails() {
     return api.get('/email/' + get('app.activeSidebarItem')).then(data => {
-      setItems(data?.emails ?? []);
+      setEmails(data?.emails ?? []);
     });
   }
 
   return (
     <View style={styles.content}>
       <ScrollView refreshControl={<RefreshControl refreshing={emailRefreshing} onRefresh={() => {setEmailRefreshing(true); getEmails().finally(() => setEmailRefreshing(false));}} />}>
-        {items.map((item, index) => (
-          <React.Fragment key={item.id}>
-            {items[index - 1]?.date !== item.date && (
-              <Text style={styles.title}>{item.date}</Text>
+        {emails.map((email, index) => (
+          <React.Fragment key={email.id}>
+            {email[index - 1]?.date !== email.date && (
+              <Text style={styles.title}>{email.date}</Text>
             )}
 
-            <EmailListItem item={item} isSelected={get('email.selectedEmailId') == item.id} onPress={() => set('email.selectedEmailId', item.id)} />
+            <EmailListItem item={email} isSelected={get('email.selectedEmailId') == email.id} onPress={() => set('email.selectedEmailId', email.id)} />
           </React.Fragment>
         ))}
       </ScrollView>
