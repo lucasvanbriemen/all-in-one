@@ -31,12 +31,13 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
   return (
     <ScrollView style={styles.editor}>
       <View style={styles.searchOptions}>
-        <View style={[styles.searchOption, searchingTerm === 'code' && styles.activeSearchOption]}>
+        <Pressable style={[styles.searchOption, searchingTerm === 'code' && styles.activeSearchOption]} onPress={() => setSearchingTerm('code')}>
           <Text style={[styles.searchOptionText, searchingTerm === 'code' && styles.activeSearchOptionText]}>Code</Text>
-        </View>
-        <View style={[styles.searchOption, searchingTerm === 'files' && styles.activeSearchOption]}>
+        </Pressable>
+
+        <Pressable style={[styles.searchOption, searchingTerm === 'files' && styles.activeSearchOption]} onPress={() => setSearchingTerm('files')}>
           <Text style={[styles.searchOptionText, searchingTerm === 'files' && styles.activeSearchOptionText]}>Files</Text>
-        </View>
+        </Pressable>
       </View>
 
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
