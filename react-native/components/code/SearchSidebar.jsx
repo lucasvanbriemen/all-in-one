@@ -30,6 +30,15 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
 
   return (
     <ScrollView style={styles.editor}>
+      <View style={styles.searchOptions}>
+        <View style={[styles.searchOption, searchingTerm === 'code' && styles.activeSearchOption]}>
+          <Text style={[styles.searchOptionText, searchingTerm === 'code' && styles.activeSearchOptionText]}>Code</Text>
+        </View>
+        <View style={[styles.searchOption, searchingTerm === 'files' && styles.activeSearchOption]}>
+          <Text style={[styles.searchOptionText, searchingTerm === 'files' && styles.activeSearchOptionText]}>Files</Text>
+        </View>
+      </View>
+
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
       {searchResults.map((result, index) => (
@@ -54,5 +63,37 @@ const createStyles = colors => StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     ...glass(colors, {variant: 'subtle'}),
+  },
+  searchOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    ...glass(colors, {variant: 'subtle'}),
+    gap: 8,
+    borderRadius: 100,
+    padding: 8,
+  },
+  searchOption: {
+    padding: 8,
+    borderRadius: 100,
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  result: {
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  activeSearchOption: {
+    backgroundColor: colors.primary,
+  },
+  searchOptionText: {
+    textAlign: 'center',
+    color: colors.onSurface,
+  },
+  activeSearchOptionText: {
+    color: colors.onPrimary,
   },
 });
