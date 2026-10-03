@@ -1,4 +1,4 @@
-module MoneyConfig
+module MessagesConfig
   GROUPS = [
     {
       path: "whatsapp",
