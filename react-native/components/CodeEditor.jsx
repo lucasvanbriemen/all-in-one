@@ -113,7 +113,7 @@ export function CodeEditor({
       // Cmd+P is the app's, not the editor's — Monaco is the only thing that
       // sees the keystroke while the WebView holds focus, so it hands it back.
       if (message.type === 'search') {
-        onSearch?.();
+        onSearch?.(message.mode);
       }
     },
     [language, onChange, onSave, onSearch],
@@ -432,7 +432,12 @@ function editorHtml(file) {
         // Same reasoning as save: bound here so the keystroke never reaches
         // WebKit, which would otherwise open its own print dialog.
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP, function () {
-          post({type: 'search'});
+          post({type: 'search', mode: 'files'});
+        });
+
+        // Cmd+Shift+F is search in files, as in VS Code.
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyF, function () {
+          post({type: 'search', mode: 'code'});
         });
 
         // Clicking away — into the file tree, or out of the window — is a save.

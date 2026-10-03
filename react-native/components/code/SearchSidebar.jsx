@@ -5,13 +5,31 @@ import {useEffect, useState} from 'react';
 import {fileSystem} from '../fileSystem';
 import {useRef} from 'react';
 
-export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot, openedFiles, setOpenedFiles}) {
+// `mode` is 'files' or 'code' when a shortcut opened the sidebar, and null
+// when it was opened from the sidebar itself or closed with Escape.
+export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
   const styles = useThemedStyles(createStyles);
 
   const inputRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchingTerm, setSearchingTerm] = useState('files');
+  const [searchingTerm, setSearchingTerm] = useState(mode ?? 'files');
   const [searchResults, setSearchResults] = useState([]);
+
+  // A shortcut both picks the tab and puts the cursor in the input, so typing
+  // can start straight away like VS Code's quick open.
+  useEffect(() => {
+    if (!mode) {
+      return;
+    }
+
+    setSearchingTerm(mode);
+    inputRef.current?.focus?.();
+  }, [mode]);
+
+  const selectMode = next => {
+    setSearchingTerm(next);
+    onModeChange?.(next);
+  };
 
   useEffect(() => {
     async function search() {
@@ -31,11 +49,11 @@ export function SearchSidebar({currentFile, onOpenFile, onSave, projectRoot, set
   return (
     <ScrollView style={styles.editor}>
       <View style={styles.searchOptions}>
-        <Pressable style={[styles.searchOption, searchingTerm === 'code' && styles.activeSearchOption]} onPress={() => setSearchingTerm('code')}>
+        <Pressable style={[styles.searchOption, searchingTerm === 'code' && styles.activeSearchOption]} onPress={() => selectMode('code')}>
           <Text style={[styles.searchOptionText, searchingTerm === 'code' && styles.activeSearchOptionText]}>Code</Text>
         </Pressable>
 
-        <Pressable style={[styles.searchOption, searchingTerm === 'files' && styles.activeSearchOption]} onPress={() => setSearchingTerm('files')}>
+        <Pressable style={[styles.searchOption, searchingTerm === 'files' && styles.activeSearchOption]} onPress={() => selectMode('files')}>
           <Text style={[styles.searchOptionText, searchingTerm === 'files' && styles.activeSearchOptionText]}>Files</Text>
         </Pressable>
       </View>

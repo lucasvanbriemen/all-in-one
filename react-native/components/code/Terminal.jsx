@@ -132,7 +132,7 @@ export function Terminal({projectRoot, onSearch, style}) {
 
       // Cmd+P is the app's, not the shell's — same hand-back as the editor.
       if (message.type === 'search') {
-        onSearch?.();
+        onSearch?.(message.mode);
       }
     },
     [connect, send, inject, onSearch],
@@ -284,14 +284,20 @@ function terminalHtml(theme) {
 
       term.onData(function (data) { post({type: 'input', data: data}); });
 
-      // Returning false leaves the key to us. Only Cmd+P is taken: every other
+      // Returning false leaves the key to us. Only Cmd+P and Cmd+Shift+F are taken: every other
       // Cmd combination has to fall through to WebKit, which is what makes
       // Cmd+C and Cmd+V work — xterm copies and pastes off the DOM events the
       // browser fires, not off the keystrokes.
       term.attachCustomKeyEventHandler(function (event) {
         if (event.type === 'keydown' && event.metaKey && event.key === 'p') {
           event.preventDefault();
-          post({type: 'search'});
+          post({type: 'search', mode: 'files'});
+          return false;
+        }
+
+        if (event.type === 'keydown' && event.metaKey && event.shiftKey && event.key.toLowerCase() === 'f') {
+          event.preventDefault();
+          post({type: 'search', mode: 'code'});
           return false;
         }
 

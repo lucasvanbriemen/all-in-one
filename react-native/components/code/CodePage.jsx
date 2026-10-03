@@ -17,6 +17,7 @@ const AUTO_SAVE_DELAY = 800;
 // Cmd+P off the print dialog and Escape from beeping.
 const KEY_DOWN_EVENTS = [
   {key: 'p', metaKey: true},
+  {key: 'f', metaKey: true, shiftKey: true},
   {key: 'Escape'},
 ];
 
@@ -28,7 +29,10 @@ export function CodePage() {
   const [currentFile, setCurrentFile] = useState(null);
   const [openedFiles, setOpenedFiles] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
-  const [searching, setSearching] = useState(false);
+  // Which search the sidebar is showing, or null when it was closed with
+  // Escape. Mirrors VS Code: Cmd+P is quick-open for files, Cmd+Shift+F is
+  // search in files.
+  const [searching, setSearching] = useState(null);
 
   const [terminals, setTerminals] = useState([]);
   const [visibleTerminal, setVisibleTerminal] = useState(null);
@@ -96,18 +100,28 @@ export function CodePage() {
   // `keyDownEvents` chain when it is on a native view, through Monaco's own
   // binding when it is in the editor's WebView, and through the document on
   // the web build. All three land here.
+  const openSearch = useCallback(mode => {
+    set('app.activeSidebarItem', 'search');
+    setSearching(mode);
+  }, [set]);
+
   const onKeyDown = useCallback(event => {
-    const {key, metaKey, ctrlKey} = event.nativeEvent ?? event;
+    const {key, metaKey, ctrlKey, shiftKey} = event.nativeEvent ?? event;
 
     if (key === 'p' && (metaKey || ctrlKey)) {
       event.preventDefault?.();
-      setSearching(true);
+      openSearch('files');
+    }
+
+    if ((key === 'f' || key === 'F') && (metaKey || ctrlKey) && shiftKey) {
+      event.preventDefault?.();
+      openSearch('code');
     }
 
     if (key === 'Escape') {
-      setSearching(false);
+      setSearching(null);
     }
-  }, []);
+  }, [openSearch]);
 
   // Nothing in this tree takes focus on its own, and on macOS key events are
   // only emitted from the first responder — a plain View never becomes one, and
@@ -152,7 +166,7 @@ export function CodePage() {
 
       {get("app.activeSidebarItem") == "search" && (
         <View style={styles.fileTree}>
-          <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} />
+          <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} mode={searching} onModeChange={setSearching} />
         </View>
       )}
 
@@ -174,7 +188,7 @@ export function CodePage() {
               path={currentFile}
               onChange={setSource}
               onSave={save}
-              onSearch={() => setSearching(true)}
+              onSearch={openSearch}
             />
 
             <View style={styles.terminal}>
@@ -195,7 +209,7 @@ export function CodePage() {
               <View style={styles.terminalPanes}>
                 {terminals.map(terminal => (
                   <View key={terminal.id} pointerEvents={terminal.id === visibleTerminal ? 'auto' : 'none'} style={[styles.terminalPane, terminal.id !== visibleTerminal && styles.hiddenTerminal]}>
-                    <Terminal projectRoot={projectRoot} onSearch={() => setSearching(true)} />
+                    <Terminal projectRoot={projectRoot} onSearch={openSearch} />
                   </View>
                 ))}
               </View>
