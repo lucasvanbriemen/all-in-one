@@ -274,7 +274,7 @@ const server = http.createServer(async (request, response) => {
       return reply(200, state);
     }
 
-    if (request.method === 'POST' && url.pathname === '/pair') {
+    if (url.pathname === '/pair') {
       const {phone} = await readJson(request);
       const digits = String(phone || PHONE_NUMBER).replace(/\D/g, '');
       if (!digits) return reply(400, {error: 'phone is required'});
@@ -291,7 +291,7 @@ const server = http.createServer(async (request, response) => {
       return reply(200, {id: sent.key.id, chat: sent.key.remoteJid});
     }
 
-    if (request.method === 'POST' && url.pathname === '/logout') {
+    if (url.pathname === '/logout') {
       await sock?.logout().catch(() => {});
       fs.rmSync(AUTH_DIR, {recursive: true, force: true});
       state.status = 'needs_relink';
