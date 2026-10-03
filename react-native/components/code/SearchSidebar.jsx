@@ -83,7 +83,7 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
       <TextInput ref={inputRef} style={styles.input} placeholder="Looking for something?" enableFocusRing={false} value={searchTerm} onChangeText={setSearchTerm} />
 
       {searchResults.map((result, index) => (
-        <Pressable key={index} onPress={() => onOpenFile(result.path)} style={styles.resultContainer}>
+        <Pressable key={index} onPress={() => onOpenFile(result.path, result.line ? {line: result.line, column: result.column} : null)} style={styles.resultContainer}>
           <Text style={styles.resultText} lineBreakMode="tail" numberOfLines={1}>{formatSearchResult(result)}</Text>
           <Text style={[styles.resultText, styles.resultTextSmall]}>{result.path}</Text>
         </Pressable>

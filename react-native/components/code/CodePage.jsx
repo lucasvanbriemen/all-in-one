@@ -28,6 +28,9 @@ export function CodePage() {
   const styles = useThemedStyles(createStyles);
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
+  // Where the editor should put the cursor once the file is shown. Set by a
+  // code search result; the nonce lets the same line be requested twice.
+  const [position, setPosition] = useState(null);
   const [openedFiles, setOpenedFiles] = useState([]);
   const [projectRoot, setProjectRoot] = useState(null);
   // Which search the sidebar is showing, or null when it was closed with
@@ -62,7 +65,7 @@ export function CodePage() {
   );
 
   const openFile = useCallback(
-    async path => {
+    async (path, target = null) => {
       // The outgoing file first — the debounce below may still be pending, and
       // it is cancelled the moment `currentFile` changes.
       await save();
@@ -80,6 +83,7 @@ export function CodePage() {
 
       setSource(contents);
       setCurrentFile(path);
+      setPosition(target ? {...target, nonce: Date.now()} : null);
     },
     [save, projectRoot, openedFiles, setOpenedFiles],
   );
@@ -202,6 +206,7 @@ export function CodePage() {
               <CodeEditor
                 value={source}
                 path={currentFile}
+                position={position}
                 onChange={setSource}
                 onSave={save}
                 onSearch={openSearch}

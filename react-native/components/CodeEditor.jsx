@@ -31,6 +31,7 @@ export function CodeEditor({
   value = '',
   language,
   path,
+  position,
   onChange,
   onSave,
   onSearch,
@@ -81,6 +82,19 @@ export function CodeEditor({
       `window.setFile(${JSON.stringify({path, value, language})}); true;`,
     );
   }, [loaded, path, value, language]);
+
+  // Declared after the file effect so the cursor lands in the file that was
+  // just switched to. `position` carries a nonce, so re-requesting the same
+  // line still moves the cursor back there.
+  useEffect(() => {
+    if (!loaded || !position) {
+      return;
+    }
+
+    webView.current?.injectJavaScript(
+      `window.revealPosition(${JSON.stringify(position)}); true;`,
+    );
+  }, [loaded, position]);
 
   // The palette arrives from a fetch, so the theme is pushed in rather than
   // baked into the document.
@@ -176,6 +190,7 @@ function editorHtml(file) {
       var editor = null;
       var theme = null;
       var pendingFile = null;
+      var pendingPosition = null;
 
       // One model per file, keyed by path. Sharing a model across files shares
       // its undo stack with them: every switch pushed the new text onto the one
@@ -391,6 +406,20 @@ function editorHtml(file) {
         }
       };
 
+      // Takes {line, column}. Runs after setFile, so it overrides whatever
+      // view state the switch restored.
+      window.revealPosition = function (target) {
+        if (!editor || !editor.getModel()) {
+          pendingPosition = target;
+          return;
+        }
+
+        var position = {lineNumber: target.line, column: target.column || 1};
+        editor.setPosition(position);
+        editor.revealPositionInCenter(position);
+        editor.focus();
+      };
+
       function post(message) {
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(JSON.stringify(message));
@@ -420,6 +449,11 @@ function editorHtml(file) {
         // nothing.
         window.setFile(pendingFile || ${JSON.stringify(file)});
         pendingFile = null;
+
+        if (pendingPosition) {
+          window.revealPosition(pendingPosition);
+          pendingPosition = null;
+        }
 
         // Bound after the first file, so opening one is not itself a change.
         // The listener is the editor's rather than the model's, so it follows
