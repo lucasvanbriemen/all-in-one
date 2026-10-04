@@ -1,4 +1,4 @@
-import { Browsers, DisconnectReason, downloadContentFromMessage, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState } from 'baileys';
+import { Browsers, DisconnectReason, aesDecryptGCM, downloadContentFromMessage, hmacSign, proto, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState } from 'baileys';
 
 import {Boom} from '@hapi/boom';
 import fs from 'node:fs';
@@ -312,11 +312,26 @@ export const bridge = {
       return null;
     }
 
-    // Edits encrypted with a per-message secret; Baileys cannot decrypt these, so only mark the target as edited.
+    // Edits encrypted with the target message's secret. Rails holds the secret, so ship the
+    // ciphertext plus every JID spelling the sender might have used and decrypt on request.
     if (kind === 'secretEncryptedMessage') {
-      const target = inner.secretEncryptedMessage?.targetMessageKey;
+      const secret = inner.secretEncryptedMessage;
+      const target = secret?.targetMessageKey;
       if (!target) return null;
-      return {event: 'message_edited', payload: {...bridge.keyPayload(target), body: null, at: sentAt}};
+      await Promise.all([bridge.resolveLid(target.remoteJid), bridge.resolveLid(target.participant)]);
+      const origSender = target.fromMe ? key : (target.remoteJid.endsWith('@g.us') ? target.participant : target.remoteJid);
+      return {event: 'message_edited', payload: {
+        ...bridge.keyPayload(target),
+        body: null,
+        at: sentAt,
+        encrypted: {
+          type: secret.secretEncType ?? null,
+          payload: bridge.b64(secret.encPayload),
+          iv: bridge.b64(secret.encIv),
+          creators: bridge.jidVariants(target.fromMe ? null : origSender),
+          editors: bridge.jidVariants(key.fromMe ? null : (key.participant || key.remoteJid)),
+        },
+      }};
     }
 
     if (kind === 'senderKeyDistributionMessage' || kind === 'unknown') return null;
@@ -334,6 +349,7 @@ export const bridge = {
       kind,
       body: bridge.textOf(inner),
       media: bridge.mediaOf(kind, inner),
+      message_secret: bridge.b64((inner.messageContextInfo || content.messageContextInfo)?.messageSecret),
       quoted_id: context.stanzaId || null,
       mentions: (context.mentionedJid || []).map(bridge.normalize),
       status: message.status ?? null,
@@ -382,6 +398,44 @@ export const bridge = {
       file_sha256: bridge.b64(media.fileSha256),
       file_enc_sha256: bridge.b64(media.fileEncSha256),
     };
+  },
+
+  // All spellings of a user JID (phone and LID) that WhatsApp may have fed into a message-secret key.
+  jidVariants(jid) {
+    const me = bridge.state.me || {};
+    const out = new Set();
+    if (!jid) {
+      if (me.id) out.add(me.id);
+      if (me.lid) out.add(me.lid);
+    } else {
+      const clean = jidNormalizedUser(jid);
+      out.add(clean);
+      const phone = bridge.lidToPhone.get(clean);
+      if (phone) out.add(phone);
+      for (const [lid, pn] of bridge.lidToPhone) if (pn === clean) out.add(lid);
+    }
+    return [...out];
+  },
+
+  // Same derivation as Baileys' decryptPollVote, with whatsmeow's "Message Edit" use case and no AAD.
+  decryptEdit({secret, target_id, creators, editors, payload, iv}) {
+    const key0 = hmacSign(Buffer.from(secret, 'base64'), new Uint8Array(32));
+    const cipher = Buffer.from(payload, 'base64');
+    const nonce = Buffer.from(iv, 'base64');
+    let lastError;
+    for (const creator of creators) {
+      for (const editor of editors) {
+        const info = Buffer.concat([Buffer.from(target_id), Buffer.from(creator), Buffer.from(editor), Buffer.from('Message Edit'), new Uint8Array([1])]);
+        const decKey = hmacSign(info, key0);
+        try {
+          const plain = aesDecryptGCM(cipher, decKey, nonce, Buffer.alloc(0));
+          return proto.Message.decode(plain);
+        } catch (error) {
+          lastError = error;
+        }
+      }
+    }
+    throw lastError || new Error('no jid candidates');
   },
 
   b64(bytes) {
@@ -477,6 +531,18 @@ export const bridge = {
         if (!jid) return reply(400, {error: 'jid is required'});
         const avatar = await sock.profilePictureUrl(toJid(jid), 'image').catch(() => null);
         return reply(200, {jid: normalize(toJid(jid)), url: avatar});
+      }
+
+      case 'POST /decrypt-edit': {
+        const body = await bridge.readJson(request);
+        if (!body.secret || !body.payload || !body.iv || !body.target_id) return reply(400, {error: 'secret, payload, iv and target_id are required'});
+        try {
+          const message = bridge.decryptEdit(body);
+          const edited = message.protocolMessage?.editedMessage || message.editedMessage?.message?.protocolMessage?.editedMessage || message;
+          return reply(200, {body: bridge.textOf(edited), kind: Object.keys(message)[0] || null});
+        } catch (error) {
+          return reply(422, {error: `decrypt failed: ${error.message}`});
+        }
       }
 
       case 'POST /media': {

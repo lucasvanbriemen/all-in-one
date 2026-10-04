@@ -100,6 +100,7 @@ module Whatsapp
         kind: payload["kind"],
         body: payload["body"],
         media: payload["media"],
+        message_secret: payload["message_secret"] || record.message_secret,
         quoted_id: payload["quoted_id"],
         mentions: payload["mentions"],
         status: payload["status"],
@@ -112,10 +113,30 @@ module Whatsapp
     end
 
     def message_edited(payload)
-      # Secret-encrypted edits arrive without a readable body; keep the old text and only mark the edit.
+      scope = Message.where(chat_jid: payload["chat"], wa_id: payload["id"])
+      body = payload["body"]
+      body ||= decrypt_edit(scope.first, payload["encrypted"]) if payload["encrypted"]
+      # Without a readable body keep the old text and only mark the edit.
       changes = { edited_at: time(payload["at"]) }
-      changes[:body] = payload["body"] unless payload["body"].nil?
-      Message.where(chat_jid: payload["chat"], wa_id: payload["id"]).update_all(changes)
+      changes[:body] = body unless body.nil?
+      scope.update_all(changes)
+    end
+
+    # Secret-encrypted edits are keyed on the original message's secret, which only we stored.
+    def decrypt_edit(message, encrypted)
+      return nil unless message&.message_secret.present?
+
+      Bridge.decrypt_edit(
+        secret: message.message_secret,
+        target_id: message.wa_id,
+        creators: encrypted["creators"],
+        editors: encrypted["editors"],
+        payload: encrypted["payload"],
+        iv: encrypted["iv"]
+      )["body"]
+    rescue Bridge::Error => e
+      Rails.logger.warn("[whatsapp] could not decrypt edit of #{message.wa_id}: #{e.message}")
+      nil
     end
 
     def message_deleted(payload)

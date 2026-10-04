@@ -27,6 +27,8 @@ module Whatsapp
     def self.mark_read(chat:, messages:) = post("/read", chat: chat, messages: messages)
     def self.typing(chat:, typing: true) = post("/typing", chat: chat, typing: typing)
 
+    def self.decrypt_edit(**args) = post("/decrypt-edit", **args)
+
     # Returns [mimetype, bytes] for a message's media, fetched and decrypted by the connector.
     def self.download_media(kind:, media:)
       uri = URI("#{BASE_URL}/media")

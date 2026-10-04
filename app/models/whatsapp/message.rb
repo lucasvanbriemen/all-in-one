@@ -8,6 +8,7 @@ module Whatsapp
 
     PER_PAGE = 50
     # Download credentials stay server-side; clients get a media URL instead.
+    # Never expose the per-message secret; it unlocks edits, poll votes and reactions on this message.
     MEDIA_SECRET_KEYS = %w[url direct_path media_key file_sha256 file_enc_sha256].freeze
     MEDIA_DIR = Rails.root.join("storage", "whatsapp", "media")
 
