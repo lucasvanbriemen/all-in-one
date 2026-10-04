@@ -1,20 +1,9 @@
 require "net/http"
 
 module Whatsapp
-  # HTTP client for the Node connector in whatsapp-connector/.
   class Bridge
     BASE_URL = ENV.fetch("WHATSAPP_BRIDGE_URL", "http://127.0.0.1:4002")
     SECRET = ENV["WHATSAPP_BRIDGE_SECRET"]
-
-    class Error < StandardError
-      attr_reader :status, :body
-
-      def initialize(status, body)
-        @status = status
-        @body = body
-        super(body.is_a?(Hash) ? body["error"] : body.to_s)
-      end
-    end
 
     def self.state = get("/state")
     def self.chats = get("/chats")
@@ -46,7 +35,6 @@ module Whatsapp
       request["X-Bridge-Secret"] = SECRET
       response = Net::HTTP.start(uri.host, uri.port, read_timeout: 30) { |http| http.request(request) }
       body = response.body.present? ? JSON.parse(response.body) : nil
-      raise Error.new(response.code.to_i, body) unless response.is_a?(Net::HTTPSuccess)
 
       body
     end
