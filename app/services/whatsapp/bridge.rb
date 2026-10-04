@@ -5,6 +5,16 @@ module Whatsapp
     BASE_URL = ENV.fetch("WHATSAPP_BRIDGE_URL", "http://127.0.0.1:4002")
     SECRET = ENV["WHATSAPP_BRIDGE_SECRET"]
 
+    # Raised when the connector answers with an error or is unreachable.
+    class Error < StandardError
+      attr_reader :status
+
+      def initialize(status, message)
+        @status = status
+        super(message)
+      end
+    end
+
     def self.state = get("/state")
     def self.chats = get("/chats")
     def self.contacts = get("/contacts")
@@ -35,8 +45,11 @@ module Whatsapp
       request["X-Bridge-Secret"] = SECRET
       response = Net::HTTP.start(uri.host, uri.port, read_timeout: 30) { |http| http.request(request) }
       body = response.body.present? ? JSON.parse(response.body) : nil
+      raise Error.new(response.code.to_i, body&.dig("error") || response.message) unless response.is_a?(Net::HTTPSuccess)
 
       body
+    rescue Errno::ECONNREFUSED, Net::OpenTimeout
+      raise Error.new(503, "whatsapp connector is not running")
     end
   end
 end
