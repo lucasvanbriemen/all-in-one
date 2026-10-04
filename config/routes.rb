@@ -33,17 +33,6 @@ Rails.application.routes.draw do
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
-  get "/messages", to: "messages#index", as: :messages
-  get "/messages/whatsapp", to: "messaging/whatsapp#show", as: :whatsapp_account
-  post "/messages/whatsapp/pair", to: "messaging/whatsapp#pair", as: :whatsapp_pair
-  post "/messages/whatsapp/sync", to: "messaging/whatsapp#sync", as: :whatsapp_sync
-  post "/messages/whatsapp/logout", to: "messaging/whatsapp#logout", as: :whatsapp_logout
-  post "/messages/whatsapp/webhook", to: "messaging/whatsapp_webhook#create", as: :whatsapp_webhook
-  get "/messages/:id", to: "messages#show", as: :conversation
-  post "/messages/:id", to: "messages#create", as: :send_message
-  post "/messages/:id/mark_as_read", to: "messages#mark_as_read", as: :mark_conversation_as_read
-  post "/messages/react/:message_id", to: "messages#react", as: :react_to_message
-
   get "/privacy", to: "account#privacy", as: :privacy
 
   get "meta_data", to: "account#show"
