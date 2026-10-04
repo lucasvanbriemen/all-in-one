@@ -31,6 +31,15 @@ class WhatsappController < ApplicationController
     }
   end
 
+  def avatar
+    chat = Whatsapp::Chat.find_by!(jid: params[:jid])
+    url = chat.refresh_avatar!
+    return head :not_found if url.blank?
+
+    expires_in 1.hour, public: false
+    redirect_to url, allow_other_host: true
+  end
+
   def media
     message = Whatsapp::Message.find_by!(chat_jid: params[:jid], wa_id: params[:id])
     return head :not_found unless message.downloadable_media?
@@ -70,7 +79,7 @@ class WhatsappController < ApplicationController
     {
       jid: chat.jid,
       name: chat.display_name,
-      avatar_url: chat.avatar_url,
+      avatar_url: whatsapp_avatar_path(chat.jid),
       is_group: chat.is_group,
       unread_count: chat.unread_count,
       pinned: chat.pinned,

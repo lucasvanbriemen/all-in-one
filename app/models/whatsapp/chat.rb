@@ -15,8 +15,22 @@ module Whatsapp
       name.presence || contact&.display_name || jid.split("@").first
     end
 
+    AVATAR_TTL = 1.day
+
+    # Profile pictures are fetched lazily from the connector and refreshed daily; WhatsApp's CDN links expire.
     def avatar_url
-      contact&.avatar_url
+      self[:avatar_url].presence || contact&.avatar_url
+    end
+
+    def refresh_avatar!
+      return avatar_url if avatar_checked_at && avatar_checked_at > AVATAR_TTL.ago
+
+      url = Bridge.avatar(jid)["url"]
+      update_columns(avatar_url: url, avatar_checked_at: Time.current)
+      url
+    rescue Bridge::Error => e
+      Rails.logger.warn("[whatsapp] avatar lookup failed for #{jid}: #{e.message}")
+      avatar_url
     end
 
     def last_message

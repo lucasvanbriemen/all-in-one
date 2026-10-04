@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
   get "/whatsapp/chats", to: "whatsapp#index", as: :whatsapp_chats
   get "/whatsapp/chats/:jid", to: "whatsapp#show", as: :whatsapp_chat, constraints: { jid: /[^\/]+/ }
+  get "/whatsapp/chats/:jid/avatar", to: "whatsapp#avatar", as: :whatsapp_avatar, constraints: { jid: /[^\/]+/ }
   get "/whatsapp/chats/:jid/messages/:id/media", to: "whatsapp#media", as: :whatsapp_media, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/send", to: "whatsapp#send_message", as: :whatsapp_send, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/react", to: "whatsapp#react", as: :whatsapp_react, constraints: { jid: /[^\/]+/ }

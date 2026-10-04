@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_04_190000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_04_191500) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -339,6 +339,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_04_190000) do
     t.text "description"
     t.string "owner_jid"
     t.text "participants", size: :long, collation: "utf8mb4_bin"
+    t.string "avatar_url"
+    t.datetime "avatar_checked_at"
     t.index ["jid"], name: "index_whatsapp_chats_on_jid", unique: true
     t.index ["last_message_at"], name: "index_whatsapp_chats_on_last_message_at"
     t.check_constraint "json_valid(`participants`)", name: "participants"
