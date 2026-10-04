@@ -10,45 +10,31 @@ const PORT = Number(process.env.PORT || 4002);
 const HOST = process.env.HOST || '127.0.0.1';
 const AUTH_DIR = process.env.AUTH_DIR || path.resolve('../storage/whatsapp/auth');
 const WEBHOOK_URL = process.env.WEBHOOK_URL || null;
-/** Shared with Rails: sent on webhooks, required on API calls. Empty disables the check. */
 const BRIDGE_SECRET = process.env.BRIDGE_SECRET || '';
-/** Digits only, country code first. Setting it makes the bridge pair itself on first boot. */
 const PHONE_NUMBER = (process.env.PHONE_NUMBER || '').replace(/\D/g, '');
-/** History sync can be thousands of rows; they travel to Rails in batches of this size. */
 const BATCH_SIZE = 200;
 
-const log = pino({level: process.env.LOG_LEVEL || 'info'});
-/** Baileys is chatty; it gets its own, quieter logger. */
-const socketLog = pino({level: process.env.BAILEYS_LOG_LEVEL || 'warn'});
+const log = pino({level:  'info'});
+const socketLog = pino({level: 'warn'});
 
 const PROTOCOL_REVOKE = 0;
 const PROTOCOL_MESSAGE_EDIT = 14;
 
 const state = {
-  /** connecting | pairing | open | needs_relink | closed */
   status: 'connecting',
-  /** Set while a pairing code is valid for entry on the phone. */
   pairingCode: null,
-  /** The linked account, once known. */
   me: null,
   lastError: null,
   connectedAt: null,
 };
 
-/** Caches, keyed by normalised JID. Rebuilt from history on every connect. */
 const contacts = new Map();
 const chats = new Map();
-/** lid → phone JID. WhatsApp is moving to privacy ids; this keeps one identity per person. */
 const lidToPhone = new Map();
 
 let sock = null;
-/** Set once a pairing code has been requested for this socket, so a reconnect does not ask twice. */
 let pairingRequested = false;
 let reconnectDelay = 1000;
-
-// ---------------------------------------------------------------------------
-// Connection
-// ---------------------------------------------------------------------------
 
 async function connect() {
   fs.mkdirSync(AUTH_DIR, {recursive: true});
@@ -65,22 +51,16 @@ async function connect() {
       creds: auth.creds,
       keys: makeCacheableSignalKeyStore(auth.keys, socketLog),
     },
-    // Pairing by code only succeeds with a browser identity WhatsApp recognises;
-    // a custom device name makes the phone reject the code.
     browser: Browsers.ubuntu('Chrome'),
     printQRInTerminal: false,
-    // Stay invisible: do not flip the phone's own notifications off by looking "online".
     markOnlineOnConnect: false,
-    // Full history is huge and arrives as one burst; the recent slice is enough to start.
     syncFullHistory: false,
-    // Needed for retries of messages we sent; we keep nothing, so there is nothing to give back.
     getMessage: async () => undefined,
   });
 
   sock.ev.on('creds.update', saveCreds);
   sock.ev.on('connection.update', onConnectionUpdate);
 
-  // --- history: the initial dump after linking, and later backfills --------
   sock.ev.on('messaging-history.set', async ({chats: historyChats, contacts: historyContacts, messages}) => {
     const events = [];
     for (const contact of historyContacts) events.push({event: 'contact', payload: rememberContact(contact)});
@@ -93,7 +73,6 @@ async function connect() {
     await emitBatch(events);
   });
 
-  // --- contacts & chats ------------------------------------------------------
   sock.ev.on('contacts.upsert', list => emitBatch(list.map(c => ({event: 'contact', payload: rememberContact(c)}))));
   sock.ev.on('contacts.update', list => emitBatch(list.map(c => ({event: 'contact', payload: rememberContact(c)}))));
   sock.ev.on('chats.upsert', list => emitBatch(list.map(c => ({event: 'chat', payload: rememberChat(c)}))));
@@ -108,7 +87,6 @@ async function connect() {
     return emit('lid_mapping', mapping);
   });
 
-  // --- groups ----------------------------------------------------------------
   sock.ev.on('groups.upsert', list => emitBatch(list.map(g => ({event: 'group', payload: groupPayload(g)}))));
   sock.ev.on('groups.update', list => emitBatch(list.map(g => ({event: 'group', payload: groupPayload(g)}))));
   sock.ev.on('group-participants.update', ({id, author, participants, action}) => emit('group_participants', {
@@ -118,11 +96,9 @@ async function connect() {
     participants: participants.map(p => normalize(typeof p === 'string' ? p : p.id)),
   }));
 
-  // --- messages --------------------------------------------------------------
   sock.ev.on('messages.upsert', async ({messages, type}) => {
     const events = [];
     for (const message of messages) {
-      // `append` is history being replayed; `notify` is live traffic.
       const event = await messageEvent(message, type === 'notify');
       if (event) events.push(event);
     }
@@ -138,7 +114,6 @@ async function connect() {
     return emitBatch(item.keys.map(key => ({event: 'message_deleted', payload: keyPayload(key)})));
   });
 
-  // --- presence --------------------------------------------------------------
   sock.ev.on('presence.update', ({id, presences}) => emitBatch(Object.entries(presences).map(([participant, data]) => ({
     event: 'presence',
     payload: {
@@ -151,8 +126,6 @@ async function connect() {
 }
 
 async function onConnectionUpdate({connection, lastDisconnect, qr}) {
-  // A QR means the socket is ready to pair. We swap it for a code instead,
-  // which can be typed on the phone itself.
   if (qr && PHONE_NUMBER && !pairingRequested) {
     pairingRequested = true;
     await requestPairingCode(PHONE_NUMBER).catch(() => {});
@@ -179,7 +152,6 @@ async function onConnectionUpdate({connection, lastDisconnect, qr}) {
     state.lastError = String(reason);
 
     if (code === DisconnectReason.loggedOut) {
-      // The phone unlinked us. Credentials are dead; wipe and wait for a new pairing.
       log.warn('Logged out by the phone. Clearing session, pairing is needed again.');
       fs.rmSync(AUTH_DIR, {recursive: true, force: true});
       state.status = 'needs_relink';
@@ -221,15 +193,6 @@ function onFatal(error) {
   process.exit(1);
 }
 
-// ---------------------------------------------------------------------------
-// Identity: one JID per person
-// ---------------------------------------------------------------------------
-
-/**
- * Strips the device suffix and, for a privacy id (`@lid`), swaps in the phone
- * JID when we know it. Everything Rails receives goes through here, so one
- * person is one conversation however WhatsApp chose to address them.
- */
 function normalize(jid) {
   if (!jid) return null;
   const clean = jidNormalizedUser(jid);
@@ -257,10 +220,6 @@ async function resolveLid(jid) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Contacts, chats, groups
-// ---------------------------------------------------------------------------
-
 function rememberContact(contact) {
   if (contact.lid && contact.phoneNumber) rememberMapping(contact.lid, contact.phoneNumber);
   const id = normalize(contact.phoneNumber || contact.id);
@@ -269,12 +228,9 @@ function rememberContact(contact) {
     ...previous,
     id,
     lid: contact.lid ? jidNormalizedUser(contact.lid) : previous.lid || (contact.id?.endsWith('@lid') ? jidNormalizedUser(contact.id) : null),
-    // `name` is what the user saved in their address book, `notify` is the
-    // name the contact chose for themselves. The first wins when both exist.
     name: contact.name ?? previous.name ?? null,
     push_name: contact.notify ?? previous.push_name ?? null,
     verified_name: contact.verifiedName ?? previous.verified_name ?? null,
-    // 'changed' means a new picture exists but the URL has to be fetched (GET /avatar).
     avatar_url: contact.imgUrl === 'changed' ? previous.avatar_url ?? null : contact.imgUrl ?? previous.avatar_url ?? null,
     avatar_changed: contact.imgUrl === 'changed' || undefined,
     status: contact.status ?? previous.status ?? null,
@@ -298,7 +254,6 @@ function rememberChat(chat) {
     archived: chat.archived ?? previous.archived ?? false,
     pinned: chat.pinned != null ? Boolean(chat.pinned) : previous.pinned ?? false,
     read_only: chat.readOnly ?? previous.read_only ?? false,
-    // 0 means unmuted; anything else is a unix time, or -1 for "forever".
     muted_until: muteEnd === undefined ? previous.muted_until ?? null
       : muteEnd === 0 ? null
       : muteEnd < 0 ? 'forever'
@@ -321,16 +276,6 @@ function groupPayload(group) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Messages
-// ---------------------------------------------------------------------------
-
-/**
- * Turns one WhatsApp message into the event Rails should receive: a plain
- * `message`, or a `reaction`, `message_edited` or `message_deleted` for the
- * protocol traffic that masquerades as a message. Returns null for the
- * housekeeping (key shares, sync notices) nobody needs to see.
- */
 async function messageEvent(message, live) {
   const content = message.message;
   if (!content) return null;
@@ -338,7 +283,6 @@ async function messageEvent(message, live) {
   const key = message.key;
   await Promise.all([resolveLid(key.remoteJid), resolveLid(key.participant)]);
 
-  // Ephemeral and view-once wrappers hide the real message one level down.
   const inner = content.ephemeralMessage?.message
     || content.viewOnceMessage?.message
     || content.viewOnceMessageV2?.message
@@ -354,7 +298,6 @@ async function messageEvent(message, live) {
     return {event: 'reaction', payload: {
       ...keyPayload(reaction.key),
       sender: senderOf(message),
-      // Empty text is WhatsApp's way of saying the reaction was taken back.
       emoji: reaction.text || null,
       at: reaction.senderTimestampMs ? new Date(Number(reaction.senderTimestampMs)).toISOString() : sentAt,
     }};
@@ -389,7 +332,6 @@ async function messageEvent(message, live) {
     media: mediaOf(kind, inner),
     quoted_id: context.stanzaId || null,
     mentions: (context.mentionedJid || []).map(normalize),
-    // Delivery status for our own messages: 0 error, 1 pending, 2 server, 3 delivered, 4 read, 5 played.
     status: message.status ?? null,
   }};
 }
@@ -428,20 +370,14 @@ function mediaOf(kind, inner) {
     seconds: media.seconds || null,
     width: media.width || null,
     height: media.height || null,
-    // A tiny JPEG preview WhatsApp ships inline; enough for a thumbnail without a download.
     thumbnail: media.jpegThumbnail ? Buffer.from(media.jpegThumbnail).toString('base64') : null,
   };
 }
-
-// ---------------------------------------------------------------------------
-// Outbound: webhook to Rails, or stdout while there is none
-// ---------------------------------------------------------------------------
 
 async function emit(event, payload) {
   return deliver({event, payload});
 }
 
-/** Many events in one request. A history dump is thousands; live traffic is usually one. */
 async function emitBatch(events) {
   if (events.length === 0) return;
   if (events.length === 1) return deliver(events[0]);
@@ -472,10 +408,6 @@ async function deliver(body) {
 function countKinds(events) {
   return events.reduce((acc, e) => ((acc[e.event] = (acc[e.event] || 0) + 1), acc), {});
 }
-
-// ---------------------------------------------------------------------------
-// Inbound: HTTP API for Rails
-// ---------------------------------------------------------------------------
 
 const server = http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${HOST}`);
@@ -533,7 +465,6 @@ const server = http.createServer(async (request, response) => {
         const {to, text, quote_id, mentions} = await readJson(request);
         if (!to || !text) return reply(400, {error: 'to and text are required'});
         const options = {};
-        // Quoting needs the original message, which we do not keep; a bare key is enough for WhatsApp to link them.
         if (quote_id) options.quoted = {key: {remoteJid: toJid(to), id: quote_id, fromMe: false}, message: {conversation: ''}};
         const sent = await sock.sendMessage(toJid(to), {text, mentions: mentions?.map(toJid)}, options);
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
@@ -580,7 +511,6 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-/** Accepts a JID as-is, or a bare phone number and turns it into one. */
 function toJid(to) {
   return to.includes('@') ? to : `${to.replace(/\D/g, '')}@s.whatsapp.net`;
 }
@@ -599,8 +529,6 @@ function readJson(request) {
     request.on('error', reject);
   });
 }
-
-// ---------------------------------------------------------------------------
 
 server.listen(PORT, HOST, () => {
   log.info({url: `http://${HOST}:${PORT}`, authDir: AUTH_DIR, webhook: WEBHOOK_URL || 'stdout'}, 'Bridge API listening');
