@@ -33,6 +33,16 @@ Rails.application.routes.draw do
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
+  post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
+  get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
+  post "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
+  get "/whatsapp/chats", to: "whatsapp#index", as: :whatsapp_chats
+  get "/whatsapp/chats/:jid", to: "whatsapp#show", as: :whatsapp_chat, constraints: { jid: /[^\/]+/ }
+  post "/whatsapp/chats/:jid/send", to: "whatsapp#send_message", as: :whatsapp_send, constraints: { jid: /[^\/]+/ }
+  post "/whatsapp/chats/:jid/react", to: "whatsapp#react", as: :whatsapp_react, constraints: { jid: /[^\/]+/ }
+  post "/whatsapp/chats/:jid/read", to: "whatsapp#mark_read", as: :whatsapp_read, constraints: { jid: /[^\/]+/ }
+  post "/whatsapp/chats/:jid/typing", to: "whatsapp#typing", as: :whatsapp_typing, constraints: { jid: /[^\/]+/ }
+
   get "/privacy", to: "account#privacy", as: :privacy
 
   get "meta_data", to: "account#show"

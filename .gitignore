@@ -49,3 +49,7 @@ config/apns.p8
 /bin/ffprobe
 /storage/audio/
 config/*.pem
+
+/storage/whatsapp/
+/whatsapp-connector/node_modules
+/whatsapp-connector/.env

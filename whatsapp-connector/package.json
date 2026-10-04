@@ -1,0 +1,17 @@
+{
+  "name": "whatsapp-connector",
+  "private": true,
+  "type": "module",
+  "description": "Links to WhatsApp as a companion device and relays messages to Rails.",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "baileys": "7.0.0-rc14",
+    "pino": "^9.6.0"
+  }
+}
