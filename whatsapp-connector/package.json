@@ -4,10 +4,14 @@
   "type": "module",
   "description": "Links to WhatsApp as a companion device and relays messages to Rails.",
   "scripts": {
-    "start": "node --env-file-if-exists=.env index.mjs"
+    "start": "node --env-file-if-exists=.env index.mjs",
+    "postinstall": "patch-package"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
