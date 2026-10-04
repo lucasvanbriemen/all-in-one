@@ -1,0 +1,13 @@
+module Whatsapp
+  class Contact < ApplicationRecord
+    self.table_name = "whatsapp_contacts"
+
+    def display_name
+      name.presence || verified_name.presence || push_name.presence || phone_number
+    end
+
+    def phone_number
+      "+#{jid.split('@').first}"
+    end
+  end
+end
