@@ -1,4 +1,4 @@
-import { Browsers, DisconnectReason, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState } from 'baileys';
+import { Browsers, DisconnectReason, downloadContentFromMessage, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState } from 'baileys';
 
 import {Boom} from '@hapi/boom';
 import fs from 'node:fs';
@@ -15,6 +15,16 @@ const PHONE_NUMBER = (process.env.PHONE_NUMBER || '').replace(/\D/g, '');
 
 const PROTOCOL_REVOKE = 0;
 const PROTOCOL_MESSAGE_EDIT = 14;
+
+// Message kind -> Baileys media type used to decrypt downloads.
+const MEDIA_TYPES = {
+  imageMessage: 'image',
+  videoMessage: 'video',
+  ptvMessage: 'video',
+  audioMessage: 'audio',
+  documentMessage: 'document',
+  stickerMessage: 'sticker',
+};
 
 export const bridge = {
   BATCH_SIZE: 200,
@@ -273,6 +283,7 @@ export const bridge = {
       || content.viewOnceMessage?.message
       || content.viewOnceMessageV2?.message
       || content.documentWithCaptionMessage?.message
+      || content.editedMessage?.message
       || content;
 
     const kind = Object.keys(inner).find(k => k !== 'messageContextInfo' && k !== 'senderKeyDistributionMessage') || 'unknown';
@@ -299,6 +310,13 @@ export const bridge = {
         return {event: 'message_edited', payload: {...bridge.keyPayload(protocol.key), body: bridge.textOf(edited), at: sentAt}};
       }
       return null;
+    }
+
+    // Edits encrypted with a per-message secret; Baileys cannot decrypt these, so only mark the target as edited.
+    if (kind === 'secretEncryptedMessage') {
+      const target = inner.secretEncryptedMessage?.targetMessageKey;
+      if (!target) return null;
+      return {event: 'message_edited', payload: {...bridge.keyPayload(target), body: null, at: sentAt}};
     }
 
     if (kind === 'senderKeyDistributionMessage' || kind === 'unknown') return null;
@@ -357,7 +375,30 @@ export const bridge = {
       width: media.width || null,
       height: media.height || null,
       thumbnail: media.jpegThumbnail ? Buffer.from(media.jpegThumbnail).toString('base64') : null,
+      // Needed to fetch and decrypt the full file later via POST /media.
+      url: media.url || null,
+      direct_path: media.directPath || null,
+      media_key: bridge.b64(media.mediaKey),
+      file_sha256: bridge.b64(media.fileSha256),
+      file_enc_sha256: bridge.b64(media.fileEncSha256),
     };
+  },
+
+  b64(bytes) {
+    return bytes ? Buffer.from(bytes).toString('base64') : null;
+  },
+
+  async downloadMedia(kind, media) {
+    const type = MEDIA_TYPES[kind];
+    if (!type || !media?.media_key) return null;
+    const stream = await downloadContentFromMessage({
+      mediaKey: Buffer.from(media.media_key, 'base64'),
+      directPath: media.direct_path || undefined,
+      url: media.url || undefined,
+    }, type);
+    const chunks = [];
+    for await (const chunk of stream) chunks.push(chunk);
+    return Buffer.concat(chunks);
   },
 
   async emit(event, payload) {
@@ -436,6 +477,21 @@ export const bridge = {
         if (!jid) return reply(400, {error: 'jid is required'});
         const avatar = await sock.profilePictureUrl(toJid(jid), 'image').catch(() => null);
         return reply(200, {jid: normalize(toJid(jid)), url: avatar});
+      }
+
+      case 'POST /media': {
+        if (!requireOpen()) return;
+        const {kind, media} = await bridge.readJson(request);
+        if (!kind || !media) return reply(400, {error: 'kind and media are required'});
+        let buffer;
+        try {
+          buffer = await bridge.downloadMedia(kind, media);
+        } catch (error) {
+          return reply(502, {error: `download failed: ${error.message}`});
+        }
+        if (!buffer) return reply(422, {error: 'message has no downloadable media'});
+        response.writeHead(200, {'Content-Type': media.mimetype || 'application/octet-stream', 'Content-Length': buffer.length});
+        return response.end(buffer);
       }
 
       case 'POST /pair': {

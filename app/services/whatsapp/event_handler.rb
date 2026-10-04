@@ -112,7 +112,10 @@ module Whatsapp
     end
 
     def message_edited(payload)
-      Message.where(chat_jid: payload["chat"], wa_id: payload["id"]).update_all(body: payload["body"], edited_at: time(payload["at"]))
+      # Secret-encrypted edits arrive without a readable body; keep the old text and only mark the edit.
+      changes = { edited_at: time(payload["at"]) }
+      changes[:body] = payload["body"] unless payload["body"].nil?
+      Message.where(chat_jid: payload["chat"], wa_id: payload["id"]).update_all(changes)
     end
 
     def message_deleted(payload)

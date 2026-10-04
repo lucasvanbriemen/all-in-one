@@ -31,6 +31,15 @@ class WhatsappController < ApplicationController
     }
   end
 
+  def media
+    message = Whatsapp::Message.find_by!(chat_jid: params[:jid], wa_id: params[:id])
+    return head :not_found unless message.downloadable_media?
+
+    mimetype, bytes = message.media_file
+    expires_in 1.year, public: false
+    send_data bytes, type: mimetype, disposition: "inline", filename: message.media["filename"].presence
+  end
+
   def send_message
     sent = Whatsapp::Bridge.send_text(to: params[:jid], text: params[:text], quote_id: params[:quote_id], mentions: params[:mentions])
     render json: sent
@@ -80,7 +89,8 @@ class WhatsappController < ApplicationController
       from_me: message.from_me,
       kind: message.kind,
       body: message.deleted? ? nil : message.body,
-      media: message.media,
+      media: message.public_media,
+      media_url: (whatsapp_media_path(message.chat_jid, message.wa_id) if message.downloadable_media?),
       quoted_id: message.quoted_id,
       mentions: message.mentions,
       status: message.status,

@@ -27,6 +27,16 @@ module Whatsapp
     def self.mark_read(chat:, messages:) = post("/read", chat: chat, messages: messages)
     def self.typing(chat:, typing: true) = post("/typing", chat: chat, typing: typing)
 
+    # Returns [mimetype, bytes] for a message's media, fetched and decrypted by the connector.
+    def self.download_media(kind:, media:)
+      uri = URI("#{BASE_URL}/media")
+      request = Net::HTTP::Post.new(uri)
+      request["Content-Type"] = "application/json"
+      request.body = { kind: kind, media: media }.to_json
+      response = perform(request, uri, raw: true)
+      [ response["Content-Type"], response.body ]
+    end
+
     def self.get(path, params = {})
       uri = URI("#{BASE_URL}#{path}")
       uri.query = params.compact.to_query if params.compact.any?
@@ -41,13 +51,16 @@ module Whatsapp
       perform(request, uri)
     end
 
-    def self.perform(request, uri)
+    def self.perform(request, uri, raw: false)
       request["X-Bridge-Secret"] = SECRET
-      response = Net::HTTP.start(uri.host, uri.port, read_timeout: 30) { |http| http.request(request) }
-      body = response.body.present? ? JSON.parse(response.body) : nil
-      raise Error.new(response.code.to_i, body&.dig("error") || response.message) unless response.is_a?(Net::HTTPSuccess)
+      response = Net::HTTP.start(uri.host, uri.port, read_timeout: 120) { |http| http.request(request) }
+      unless response.is_a?(Net::HTTPSuccess)
+        error = JSON.parse(response.body)["error"] rescue nil
+        raise Error.new(response.code.to_i, error || response.message)
+      end
+      return response if raw
 
-      body
+      response.body.present? ? JSON.parse(response.body) : nil
     rescue Errno::ECONNREFUSED, Net::OpenTimeout
       raise Error.new(503, "whatsapp connector is not running")
     end

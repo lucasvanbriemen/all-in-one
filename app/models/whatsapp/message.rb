@@ -7,6 +7,9 @@ module Whatsapp
     attribute :mentions, :json
 
     PER_PAGE = 50
+    # Download credentials stay server-side; clients get a media URL instead.
+    MEDIA_SECRET_KEYS = %w[url direct_path media_key file_sha256 file_enc_sha256].freeze
+    MEDIA_DIR = Rails.root.join("storage", "whatsapp", "media")
 
     belongs_to :chat, class_name: "Whatsapp::Chat", primary_key: :jid, foreign_key: :chat_jid, optional: true
     belongs_to :sender, class_name: "Whatsapp::Contact", primary_key: :jid, foreign_key: :sender_jid, optional: true
@@ -18,6 +21,36 @@ module Whatsapp
 
     def deleted?
       deleted_at.present?
+    end
+
+    def downloadable_media?
+      media.is_a?(Hash) && media["media_key"].present?
+    end
+
+    def public_media
+      media.is_a?(Hash) ? media.except(*MEDIA_SECRET_KEYS) : media
+    end
+
+    def media_cache_path
+      MEDIA_DIR.join(chat_jid.parameterize, "#{wa_id.parameterize}#{media_extension}")
+    end
+
+    # Returns [mimetype, bytes], fetching through the connector on first access and caching on disk afterwards.
+    def media_file
+      path = media_cache_path
+      return [ media["mimetype"], File.binread(path) ] if path.exist?
+
+      mimetype, bytes = Bridge.download_media(kind: kind, media: media)
+      FileUtils.mkdir_p(path.dirname)
+      File.binwrite(path, bytes)
+      [ mimetype.presence || media["mimetype"], bytes ]
+    end
+
+    private
+
+    def media_extension
+      ext = Rack::Mime::MIME_TYPES.key(media["mimetype"].to_s.split(";").first)
+      ext || File.extname(media["filename"].to_s)
     end
 
     def display_sender_name
