@@ -1,4 +1,6 @@
 class WhatsappController < ApplicationController
+  skip_before_action :require_login, only: [ :avatar ]
+
   rescue_from Whatsapp::Bridge::Error do |error|
     render json: { error: error.message }, status: error.status
   end
@@ -9,7 +11,7 @@ class WhatsappController < ApplicationController
   end
 
   def pair
-    phone = ENV("PHONE_NUMBER")
+    phone = ENV["PHONE_NUMBER"]
     render json: Whatsapp::Bridge.pair(phone)
   end
 
