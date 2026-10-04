@@ -1,35 +1,10 @@
+import { Browsers, DisconnectReason, fetchLatestBaileysVersion, jidNormalizedUser, makeCacheableSignalKeyStore, makeWASocket, useMultiFileAuthState } from 'baileys';
+
 import {Boom} from '@hapi/boom';
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import pino from 'pino';
-import {
-  Browsers,
-  DisconnectReason,
-  fetchLatestBaileysVersion,
-  jidNormalizedUser,
-  makeCacheableSignalKeyStore,
-  makeWASocket,
-  useMultiFileAuthState,
-} from 'baileys';
-
-/**
- * WhatsApp connector.
- *
- * Links to the user's WhatsApp account as a companion device (the same
- * protocol WhatsApp Web speaks) and does exactly three things:
- *
- *   1. keeps the session alive and reconnects when it drops;
- *   2. relays everything that happens — messages, reactions, edits, deletes,
- *      contacts, chats, groups, presence — to Rails (`WEBHOOK_URL`), or to
- *      stdout when no webhook is configured;
- *   3. answers a small HTTP API so Rails can ask for a pairing code, read the
- *      connection state, pull the chat and contact lists, and send.
- *
- * It owns no data. Rails is the source of truth; this process is a modem.
- * The contact and chat maps below are caches so `GET /chats` can answer
- * without a round trip to the phone, nothing more.
- */
 
 const PORT = Number(process.env.PORT || 4002);
 const HOST = process.env.HOST || '127.0.0.1';
