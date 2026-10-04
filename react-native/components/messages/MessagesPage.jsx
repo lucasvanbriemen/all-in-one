@@ -27,7 +27,7 @@ export function MessagesPage() {
             
             <View>
               <Text style={styles.chatName}>{chat.name}: ({chat.unread_count})</Text>
-              <Text style={styles.lastMessage}>Last message: {chat.last_message?.body ?? 'No messages'}</Text>
+              <Text style={styles.lastMessage} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
             </View>
           </View>
         ))}
@@ -45,6 +45,14 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     paddingTop: 16,
+  },
+  chatName: {
+    fontSize: 16,
+  },
+  lastMessage: {
+    color: colors.secondary,
+    fontSize: 14,
+    marginTop: 4,
   },
   chatContainer: {
     marginTop: 8,
