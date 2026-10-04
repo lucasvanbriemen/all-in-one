@@ -1,3 +1,5 @@
+require "net/http"
+
 module Whatsapp
   class Chat < ApplicationRecord
     self.table_name = "whatsapp_chats"
@@ -16,6 +18,7 @@ module Whatsapp
     end
 
     AVATAR_TTL = 1.day
+    AVATAR_DIR = Rails.root.join("storage", "whatsapp", "avatars")
 
     # Profile pictures are fetched lazily from the connector and refreshed daily; WhatsApp's CDN links expire.
     def avatar_url
@@ -31,6 +34,23 @@ module Whatsapp
     rescue Bridge::Error => e
       Rails.logger.warn("[whatsapp] avatar lookup failed for #{jid}: #{e.message}")
       avatar_url
+    end
+
+    # Downloads the picture once per URL and serves it from disk; the CDN forces downloads on direct navigation.
+    def avatar_file
+      url = refresh_avatar!
+      return nil if url.blank?
+
+      path = AVATAR_DIR.join("#{jid.parameterize}-#{Digest::SHA1.hexdigest(url)[0, 12]}.jpg")
+      unless path.exist?
+        response = Net::HTTP.get_response(URI(url))
+        return nil unless response.is_a?(Net::HTTPSuccess)
+
+        FileUtils.mkdir_p(path.dirname)
+        Dir.glob(AVATAR_DIR.join("#{jid.parameterize}-*.jpg")).each { |old| File.delete(old) }
+        File.binwrite(path, response.body)
+      end
+      path
     end
 
     def last_message

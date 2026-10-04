@@ -33,11 +33,11 @@ class WhatsappController < ApplicationController
 
   def avatar
     chat = Whatsapp::Chat.find_by!(jid: params[:jid])
-    url = chat.refresh_avatar!
-    return head :not_found if url.blank?
+    path = chat.avatar_file
+    return head :not_found unless path
 
     expires_in 1.hour, public: false
-    redirect_to url, allow_other_host: true
+    send_file path, type: "image/jpeg", disposition: "inline"
   end
 
   def media
