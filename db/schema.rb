@@ -101,111 +101,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_03_200000) do
     t.integer "fetch_attempts", default: 0, null: false
     t.index ["last_fetched_at"], name: "imap_credentials_last_fetched_at_index"
   end
-
-  create_table "messages", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "conversation_id", null: false
-    t.string "external_id", null: false
-    t.string "thread_id"
-    t.string "sender_id"
-    t.string "sender_name"
-    t.string "subtype"
-    t.text "text", size: :long
-    t.text "raw", size: :long, collation: "utf8mb4_bin"
-    t.datetime "posted_at", null: false
-    t.index ["conversation_id", "external_id"], name: "index_messages_on_conversation_id_and_external_id", unique: true
-    t.index ["conversation_id", "posted_at"], name: "index_messages_on_conversation_id_and_posted_at"
-    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
-  end
-
-  create_table "messaging_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "provider", null: false
-    t.string "status", default: "disconnected", null: false
-    t.string "external_id", comment: "The account's own id at the provider, e.g. the phone JID"
-    t.string "name"
-    t.string "pairing_code"
-    t.text "last_error"
-    t.datetime "connected_at"
-    t.index ["provider"], name: "index_messaging_accounts_on_provider", unique: true
-  end
-
-  create_table "messaging_contacts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
-    t.string "external_id", null: false
-    t.string "alt_external_id", comment: "WhatsApp privacy id (LID) when the contact has one"
-    t.string "name", comment: "As saved in the user's address book"
-    t.string "push_name", comment: "As chosen by the contact themselves"
-    t.string "verified_name"
-    t.string "avatar_url"
-    t.string "status_text"
-    t.index ["account_id", "alt_external_id"], name: "index_messaging_contacts_on_account_id_and_alt_external_id"
-    t.index ["account_id", "external_id"], name: "index_messaging_contacts_on_account_id_and_external_id", unique: true
-    t.index ["account_id"], name: "index_messaging_contacts_on_account_id"
-  end
-
-  create_table "messaging_conversations", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
-    t.string "external_id", null: false
-    t.string "alt_external_id", comment: "WhatsApp privacy id (LID) for direct chats"
-    t.string "kind", default: "direct", null: false
-    t.string "name"
-    t.text "description"
-    t.string "avatar_url"
-    t.integer "unread_count", default: 0, null: false
-    t.boolean "archived", default: false, null: false
-    t.boolean "pinned", default: false, null: false
-    t.boolean "read_only", default: false, null: false
-    t.datetime "muted_until"
-    t.boolean "muted_forever", default: false, null: false
-    t.datetime "last_message_at"
-    t.text "participants", size: :long, comment: "JSON [{id, admin}] for groups"
-    t.index ["account_id", "alt_external_id"], name: "idx_on_account_id_alt_external_id_690cb88ab5"
-    t.index ["account_id", "external_id"], name: "index_messaging_conversations_on_account_id_and_external_id", unique: true
-    t.index ["account_id", "last_message_at"], name: "idx_on_account_id_last_message_at_93a54620fa"
-    t.index ["account_id"], name: "index_messaging_conversations_on_account_id"
-  end
-
-  create_table "messaging_messages", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "conversation_id", null: false
-    t.string "external_id", null: false
-    t.string "sender_id", comment: "External id of the sender"
-    t.string "sender_name"
-    t.boolean "from_me", default: false, null: false
-    t.string "kind", default: "conversation", null: false
-    t.text "body", size: :long
-    t.text "media", size: :long, comment: "JSON description of attached media"
-    t.string "quoted_external_id"
-    t.text "mentions", comment: "JSON array of external ids"
-    t.integer "status", comment: "0 error, 1 pending, 2 sent, 3 delivered, 4 read, 5 played"
-    t.datetime "sent_at", null: false
-    t.datetime "edited_at"
-    t.datetime "deleted_at"
-    t.boolean "live", default: false, null: false, comment: "Arrived while linked, as opposed to replayed from history"
-    t.index ["conversation_id", "external_id"], name: "index_messaging_messages_on_conversation_id_and_external_id", unique: true
-    t.index ["conversation_id", "sent_at"], name: "index_messaging_messages_on_conversation_id_and_sent_at"
-    t.index ["conversation_id"], name: "index_messaging_messages_on_conversation_id"
-  end
-
-  create_table "messaging_reactions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "message_id", null: false
-    t.string "sender_id", null: false
-    t.string "emoji", null: false
-    t.datetime "reacted_at"
-    t.index ["message_id", "sender_id"], name: "index_messaging_reactions_on_message_id_and_sender_id", unique: true
-    t.index ["message_id"], name: "index_messaging_reactions_on_message_id"
-  end
-
+ 
   create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -235,8 +131,4 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_03_200000) do
   add_foreign_key "bank_accounts", "bank_connections"
   add_foreign_key "bank_transactions", "bank_accounts"
   add_foreign_key "emails", "senders", name: "emails_sender_id_foreign", on_delete: :nullify
-  add_foreign_key "messaging_contacts", "messaging_accounts", column: "account_id"
-  add_foreign_key "messaging_conversations", "messaging_accounts", column: "account_id"
-  add_foreign_key "messaging_messages", "messaging_conversations", column: "conversation_id"
-  add_foreign_key "messaging_reactions", "messaging_messages", column: "message_id"
 end
