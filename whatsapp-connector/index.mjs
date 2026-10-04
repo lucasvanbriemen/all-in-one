@@ -163,7 +163,7 @@ export const bridge = {
   },
 
   scheduleReconnect() {
-    setTimeout(() => bridge.connect().catch(bridge.onFatal), bridge.reconnectDelay);
+    setTimeout(() => bridge.connect(), bridge.reconnectDelay);
     bridge.reconnectDelay = Math.min(bridge.reconnectDelay * 2, 60_000);
   },
 
@@ -178,10 +178,6 @@ export const bridge = {
       bridge.state.lastError = error.message;
       throw error;
     }
-  },
-
-  onFatal() {
-    process.exit(1);
   },
 
   normalize(jid) {
@@ -494,7 +490,7 @@ export const bridge = {
     http.createServer(bridge.handleRequest).listen(PORT, HOST);
     process.on('SIGINT', () => process.exit(0));
     process.on('SIGTERM', () => process.exit(0));
-    bridge.connect().catch(bridge.onFatal);
+    bridge.connect();
   },
 };
 
