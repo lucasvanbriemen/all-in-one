@@ -22,11 +22,11 @@ export function MessagesPage() {
     <View style={styles.content}>
       <ScrollView>
         {chats && chats?.map((chat, index) => (
-          <View key={index} style={styles.chatContainer}>
+          <View key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat]}>
             <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
             
             <View>
-              <Text style={styles.chatName}>{chat.name}: ({chat.unread_count})</Text>
+              <Text style={styles.chatName}>{chat.name}</Text>
               <Text style={styles.lastMessage} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
             </View>
           </View>
@@ -67,5 +67,12 @@ const createStyles = colors => StyleSheet.create({
     height: 45,
     borderRadius: 25,
     marginRight: 16,
+  },
+  unreadChat: {
+    ...glass(colors, {variant: 'primaryContainer'}),
+
+    borderColor: colors.primary,
+    borderTopColor: colors.primary,
+    borderWidth: 2,
   },
 });

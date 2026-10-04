@@ -127,6 +127,13 @@ const GLASS_VARIANTS = {
     highlight: 0.5,
     useToneForBorder: true
   },
+  primaryContainer: {
+    tone: 'primaryContainer',
+    tint: 0.82,
+    border: 0.9,
+    highlight: 0.5,
+    useToneForBorder: true
+  },
 };
 
 /**
