@@ -47,16 +47,16 @@ module Whatsapp
       [ mimetype.presence || media["mimetype"], bytes ]
     end
 
+    def display_sender_name
+      return "You" if from_me
+      sender&.display_name || sender_name.presence || sender_jid.to_s.split("@").first
+    end
+
     private
 
     def media_extension
       ext = Rack::Mime::MIME_TYPES.key(media["mimetype"].to_s.split(";").first)
       ext || File.extname(media["filename"].to_s)
-    end
-
-    def display_sender_name
-      return "You" if from_me
-      sender&.display_name || sender_name.presence || sender_jid.to_s.split("@").first
     end
   end
 end
