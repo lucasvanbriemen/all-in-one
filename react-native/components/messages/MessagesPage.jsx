@@ -10,28 +10,21 @@ import {useThemedStyles} from '../theme';
 export function MessagesPage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const [statisics, setStatisics] = useState([]);
-  const [recurring, setRecurring] = useState([]);
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
-    api.get('/money').then(response => {
-      setStatisics(response.data);
-      setRecurring(response.recurring);
+    api.get('/whatsapp/chats').then(response => {
+      setChats(response);
     });
   }, []);
 
   return (
     <View style={styles.content}>
-      <View style={[styles.statsContainer, compact && styles.compactStats]}>
-        {statisics && statisics?.map((data, index) => (
-          <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
-        ))}
-      </View>
-
       <ScrollView>
-        {recurring && recurring?.map((data, index) => (
-          <View>
-            <Text>{data.counterparty}: {format.money(data.amount)}</Text>
+        {chats && chats?.map((chat, index) => (
+          <View key={index}>
+            <Text>{chat.name}: ({chat.unread_count})</Text>
+            <Text>Last message: {chat.last_message?.body ?? 'No messages'}</Text>
           </View>
         ))}
       </ScrollView>
