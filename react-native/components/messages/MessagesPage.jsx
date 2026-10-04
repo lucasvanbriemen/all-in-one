@@ -20,31 +20,38 @@ export function MessagesPage() {
 
   return (
     <View style={styles.content}>
-      <ScrollView>
-        {chats && chats?.map((chat, index) => (
-          <View key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat]}>
-            <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
-            
-            <View>
-              <Text style={styles.chatName}>{chat.name}</Text>
-              <Text style={styles.lastMessage} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
+      <View style={styles.chatListing}>
+        <ScrollView>
+          {chats && chats?.map((chat, index) => (
+            <View key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat]}>
+              <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
+              
+              <View>
+                <Text style={styles.chatName}>{chat.name}</Text>
+                <Text style={styles.lastMessage} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
+              </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      </View>
+
+
+      <View style={styles.additionalContent}>
+        <Text>No additional content</Text>
+      </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  compactStats: { flexWrap: 'wrap', gap: 8 },
-  content: {
+  chatListing: {
     flex: 1,
   },
-  statsContainer: {
+  compactStats: { flexWrap: 'wrap', gap: 8 },
+  content: {
     flexDirection: 'row',
     gap: 16,
-    paddingTop: 16,
+    flex: 1,
   },
   chatName: {
     fontSize: 16,
@@ -74,5 +81,8 @@ const createStyles = colors => StyleSheet.create({
     borderColor: colors.primary,
     borderTopColor: colors.primary,
     borderWidth: 2,
+  },
+  additionalContent: {
+    flex: 2
   },
 });
