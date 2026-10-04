@@ -14,7 +14,6 @@ const BRIDGE_SECRET = process.env.BRIDGE_SECRET;
 const PHONE_NUMBER = (process.env.PHONE_NUMBER || '').replace(/\D/g, '');
 const BATCH_SIZE = 200;
 
-const log = pino({level:  'info'});
 const socketLog = pino({level: 'warn'});
 
 const PROTOCOL_REVOKE = 0;
@@ -69,7 +68,6 @@ async function connect() {
       const event = await messageEvent(message, false);
       if (event) events.push(event);
     }
-    log.info({contacts: historyContacts.length, chats: historyChats.length, messages: messages.length}, 'History received');
     await emitBatch(events);
   });
 
@@ -131,7 +129,6 @@ async function onConnectionUpdate({connection, lastDisconnect, qr}) {
     await requestPairingCode(PHONE_NUMBER).catch(() => {});
   } else if (qr && !PHONE_NUMBER) {
     state.status = 'pairing';
-    log.warn('Not linked. Set PHONE_NUMBER or POST /pair {"phone": "..."} to get a pairing code.');
   }
 
   if (connection === 'open') {
@@ -142,7 +139,6 @@ async function onConnectionUpdate({connection, lastDisconnect, qr}) {
     state.connectedAt = new Date().toISOString();
     state.me = sock.user ? {id: jidNormalizedUser(sock.user.id), lid: sock.user.lid ? jidNormalizedUser(sock.user.lid) : null, name: sock.user.name || null} : null;
     if (state.me?.lid) rememberMapping(state.me.lid, state.me.id);
-    log.info({me: state.me}, 'WhatsApp connected');
     await emit('connection', {status: 'open', me: state.me});
   }
 
@@ -152,7 +148,6 @@ async function onConnectionUpdate({connection, lastDisconnect, qr}) {
     state.lastError = String(reason);
 
     if (code === DisconnectReason.loggedOut) {
-      log.warn('Logged out by the phone. Clearing session, pairing is needed again.');
       fs.rmSync(AUTH_DIR, {recursive: true, force: true});
       state.status = 'needs_relink';
       state.me = null;
@@ -162,7 +157,6 @@ async function onConnectionUpdate({connection, lastDisconnect, qr}) {
     }
 
     state.status = 'closed';
-    log.warn({reason}, 'Connection closed, reconnecting');
     await emit('connection', {status: 'closed', reason});
     scheduleReconnect();
   }
@@ -178,18 +172,15 @@ async function requestPairingCode(phone) {
     const code = await sock.requestPairingCode(phone);
     state.status = 'pairing';
     state.pairingCode = code;
-    log.info({code}, 'Pairing code ready. WhatsApp > Linked devices > Link with phone number.');
     await emit('pairing_code', {code});
     return code;
   } catch (error) {
     state.lastError = error.message;
-    log.error({err: error}, 'Could not request pairing code');
     throw error;
   }
 }
 
 function onFatal(error) {
-  log.fatal({err: error}, 'Bridge crashed');
   process.exit(1);
 }
 
@@ -205,18 +196,13 @@ function rememberMapping(lid, pn) {
   return mapping;
 }
 
-/** Asks the signal store for the phone behind a LID the first time we meet it. */
 async function resolveLid(jid) {
   if (!jid?.endsWith('@lid')) return;
   const clean = jidNormalizedUser(jid);
   if (lidToPhone.has(clean)) return;
-  try {
-    const found = await sock.signalRepository.lidMapping.getPNsForLIDs([clean]);
-    for (const {lid, pn} of found || []) {
-      if (pn) await emit('lid_mapping', rememberMapping(lid, pn));
-    }
-  } catch (error) {
-    log.debug({jid, err: error.message}, 'No phone known for LID yet');
+  const found = await sock.signalRepository.lidMapping.getPNsForLIDs([clean]);
+  for (const {lid, pn} of found || []) {
+    if (pn) await emit('lid_mapping', rememberMapping(lid, pn));
   }
 }
 
@@ -479,13 +465,6 @@ const server = http.createServer(async (request, response) => {
       return reply(200, {ok: true});
     }
 
-    case 'POST /logout':
-      await sock?.logout().catch(() => {});
-      fs.rmSync(AUTH_DIR, {recursive: true, force: true});
-      state.status = 'needs_relink';
-      state.me = null;
-      return reply(200, {status: state.status});
-
     default:
       return reply(404, {error: 'not found'});
   }
@@ -511,7 +490,7 @@ function readJson(request) {
 }
 
 server.listen(PORT, HOST, () => {
-  log.info({url: `http://${HOST}:${PORT}`, authDir: AUTH_DIR, webhook: WEBHOOK_URL || 'stdout'}, 'Bridge API listening');
+  
 });
 
 process.on('SIGINT', () => process.exit(0));
