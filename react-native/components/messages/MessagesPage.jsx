@@ -24,8 +24,11 @@ export function MessagesPage() {
         {chats && chats?.map((chat, index) => (
           <View key={index} style={styles.chatContainer}>
             <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
-            <Text>{chat.name}: ({chat.unread_count})</Text>
-            <Text>Last message: {chat.last_message?.body ?? 'No messages'}</Text>
+            
+            <View>
+              <Text style={styles.chatName}>{chat.name}: ({chat.unread_count})</Text>
+              <Text style={styles.lastMessage}>Last message: {chat.last_message?.body ?? 'No messages'}</Text>
+            </View>
           </View>
         ))}
       </ScrollView>
@@ -48,10 +51,12 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     padding: 16,
     borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   avatar: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 25,
     marginRight: 16,
   },
