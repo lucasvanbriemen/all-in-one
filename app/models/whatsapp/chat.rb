@@ -14,7 +14,7 @@ module Whatsapp
     scope :recent, -> { order(pinned: :desc, last_message_at: :desc) }
 
     def display_name
-      name.presence || contact&.display_name || jid.split("@").first
+      name.presence || contact&.display_name || (jid.end_with?("@lid") ? "Unknown contact" : jid.split("@").first)
     end
 
     AVATAR_TTL = 1.day

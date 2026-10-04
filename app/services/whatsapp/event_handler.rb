@@ -21,7 +21,7 @@ module Whatsapp
       when "message_deleted" then message_deleted(payload)
       when "message_status" then Message.where(chat_jid: payload["chat"], wa_id: payload["id"]).update_all(status: payload["status"])
       when "reaction" then reaction(payload)
-      when "lid_mapping" then Contact.where(lid: payload["lid"]).where.not(jid: payload["phone"]).update_all(jid: payload["phone"])
+      when "lid_mapping" then LidMerge.call(lid: payload["lid"], phone: payload["phone"])
       when "presence" then nil # Ephemeral; not stored.
       else Rails.logger.warn("[whatsapp] unknown event #{event}")
       end
