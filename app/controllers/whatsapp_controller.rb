@@ -9,7 +9,8 @@ class WhatsappController < ApplicationController
   end
 
   def pair
-    render json: Whatsapp::Bridge.pair(params[:phone])
+    phone = ENV("PHONE_NUMBER")
+    render json: Whatsapp::Bridge.pair(phone)
   end
 
   def index

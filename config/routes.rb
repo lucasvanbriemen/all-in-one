@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
-  post "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
+  get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
   get "/whatsapp/chats", to: "whatsapp#index", as: :whatsapp_chats
   get "/whatsapp/chats/:jid", to: "whatsapp#show", as: :whatsapp_chat, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/send", to: "whatsapp#send_message", as: :whatsapp_send, constraints: { jid: /[^\/]+/ }

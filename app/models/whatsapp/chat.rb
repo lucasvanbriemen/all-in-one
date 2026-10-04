@@ -2,6 +2,9 @@ module Whatsapp
   class Chat < ApplicationRecord
     self.table_name = "whatsapp_chats"
 
+    # MariaDB exposes json columns as longtext, so Rails would otherwise store Ruby inspect output.
+    attribute :participants, :json
+
     has_many :messages, class_name: "Whatsapp::Message", primary_key: :jid, foreign_key: :chat_jid
     has_one :contact, class_name: "Whatsapp::Contact", primary_key: :jid, foreign_key: :jid
 
