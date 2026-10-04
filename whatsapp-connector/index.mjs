@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT || 4002);
 const HOST = process.env.HOST || '127.0.0.1';
 const AUTH_DIR = process.env.AUTH_DIR || path.resolve('../storage/whatsapp/auth');
 const WEBHOOK_URL = process.env.WEBHOOK_URL || null;
-const BRIDGE_SECRET = process.env.BRIDGE_SECRET || '';
+const BRIDGE_SECRET = process.env.BRIDGE_SECRET;
 const PHONE_NUMBER = (process.env.PHONE_NUMBER || '').replace(/\D/g, '');
 const BATCH_SIZE = 200;
 
@@ -387,26 +387,11 @@ async function emitBatch(events) {
 }
 
 async function deliver(body) {
-  if (!WEBHOOK_URL) {
-    if (body.event === 'batch') log.info({count: body.payload.events.length, kinds: countKinds(body.payload.events)}, 'batch');
-    else log.info({...body.payload, event: body.event}, 'event');
-    return;
-  }
-
-  try {
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'X-Bridge-Secret': BRIDGE_SECRET},
-      body: JSON.stringify(body),
-    });
-    if (!response.ok) log.warn({event: body.event, status: response.status}, 'Webhook rejected event');
-  } catch (error) {
-    log.warn({event: body.event, err: error.message}, 'Webhook unreachable');
-  }
-}
-
-function countKinds(events) {
-  return events.reduce((acc, e) => ((acc[e.event] = (acc[e.event] || 0) + 1), acc), {});
+  await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'X-Bridge-Secret': BRIDGE_SECRET},
+    body: JSON.stringify(body),
+  });
 }
 
 const server = http.createServer(async (request, response) => {
@@ -421,93 +406,88 @@ const server = http.createServer(async (request, response) => {
     return false;
   };
 
-  if (BRIDGE_SECRET && request.headers['x-bridge-secret'] !== BRIDGE_SECRET) {
+  if (request.headers['x-bridge-secret'] !== BRIDGE_SECRET) {
     return reply(401, {error: 'unauthorized'});
   }
 
-  try {
-    const route = `${request.method} ${url.pathname}`;
+  const route = `${request.method} ${url.pathname}`;
 
-    switch (route) {
-      case 'GET /state':
-        return reply(200, {...state, cached: {contacts: contacts.size, chats: chats.size, lid_mappings: lidToPhone.size}});
+  switch (route) {
+    case 'GET /state':
+      return reply(200, {...state, cached: {contacts: contacts.size, chats: chats.size, lid_mappings: lidToPhone.size}});
 
-      case 'GET /chats':
-        return reply(200, [...chats.values()]);
+    case 'GET /chats':
+      return reply(200, [...chats.values()]);
 
-      case 'GET /contacts':
-        return reply(200, [...contacts.values()]);
+    case 'GET /contacts':
+      return reply(200, [...contacts.values()]);
 
-      case 'GET /groups': {
-        if (!requireOpen()) return;
-        const groups = await sock.groupFetchAllParticipating();
-        return reply(200, Object.values(groups).map(groupPayload));
-      }
-
-      case 'GET /avatar': {
-        if (!requireOpen()) return;
-        const jid = url.searchParams.get('jid');
-        if (!jid) return reply(400, {error: 'jid is required'});
-        const avatar = await sock.profilePictureUrl(toJid(jid), 'image').catch(() => null);
-        return reply(200, {jid: normalize(toJid(jid)), url: avatar});
-      }
-
-      case 'POST /pair': {
-        const {phone} = await readJson(request);
-        const digits = String(phone || PHONE_NUMBER).replace(/\D/g, '');
-        if (!digits) return reply(400, {error: 'phone is required'});
-        if (state.status === 'open') return reply(409, {error: 'already linked', me: state.me});
-        return reply(200, {code: await requestPairingCode(digits)});
-      }
-
-      case 'POST /send': {
-        if (!requireOpen()) return;
-        const {to, text, quote_id, mentions} = await readJson(request);
-        if (!to || !text) return reply(400, {error: 'to and text are required'});
-        const options = {};
-        if (quote_id) options.quoted = {key: {remoteJid: toJid(to), id: quote_id, fromMe: false}, message: {conversation: ''}};
-        const sent = await sock.sendMessage(toJid(to), {text, mentions: mentions?.map(toJid)}, options);
-        return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
-      }
-
-      case 'POST /react': {
-        if (!requireOpen()) return;
-        const {chat, message_id, from_me, participant, emoji} = await readJson(request);
-        if (!chat || !message_id) return reply(400, {error: 'chat and message_id are required'});
-        const key = {remoteJid: toJid(chat), id: message_id, fromMe: Boolean(from_me), participant: participant ? toJid(participant) : undefined};
-        await sock.sendMessage(toJid(chat), {react: {text: emoji || '', key}});
-        return reply(200, {ok: true});
-      }
-
-      case 'POST /read': {
-        if (!requireOpen()) return;
-        const {chat, messages} = await readJson(request);
-        if (!chat || !Array.isArray(messages) || messages.length === 0) return reply(400, {error: 'chat and messages[] are required'});
-        await sock.readMessages(messages.map(m => ({remoteJid: toJid(chat), id: m.id, fromMe: false, participant: m.participant ? toJid(m.participant) : undefined})));
-        return reply(200, {ok: true});
-      }
-
-      case 'POST /typing': {
-        if (!requireOpen()) return;
-        const {chat, typing} = await readJson(request);
-        if (!chat) return reply(400, {error: 'chat is required'});
-        await sock.sendPresenceUpdate(typing === false ? 'paused' : 'composing', toJid(chat));
-        return reply(200, {ok: true});
-      }
-
-      case 'POST /logout':
-        await sock?.logout().catch(() => {});
-        fs.rmSync(AUTH_DIR, {recursive: true, force: true});
-        state.status = 'needs_relink';
-        state.me = null;
-        return reply(200, {status: state.status});
-
-      default:
-        return reply(404, {error: 'not found'});
+    case 'GET /groups': {
+      if (!requireOpen()) return;
+      const groups = await sock.groupFetchAllParticipating();
+      return reply(200, Object.values(groups).map(groupPayload));
     }
-  } catch (error) {
-    log.error({err: error}, 'API request failed');
-    reply(500, {error: error.message});
+
+    case 'GET /avatar': {
+      if (!requireOpen()) return;
+      const jid = url.searchParams.get('jid');
+      if (!jid) return reply(400, {error: 'jid is required'});
+      const avatar = await sock.profilePictureUrl(toJid(jid), 'image').catch(() => null);
+      return reply(200, {jid: normalize(toJid(jid)), url: avatar});
+    }
+
+    case 'POST /pair': {
+      const {phone} = await readJson(request);
+      const digits = String(phone || PHONE_NUMBER).replace(/\D/g, '');
+      if (!digits) return reply(400, {error: 'phone is required'});
+      if (state.status === 'open') return reply(409, {error: 'already linked', me: state.me});
+      return reply(200, {code: await requestPairingCode(digits)});
+    }
+
+    case 'POST /send': {
+      if (!requireOpen()) return;
+      const {to, text, quote_id, mentions} = await readJson(request);
+      if (!to || !text) return reply(400, {error: 'to and text are required'});
+      const options = {};
+      if (quote_id) options.quoted = {key: {remoteJid: toJid(to), id: quote_id, fromMe: false}, message: {conversation: ''}};
+      const sent = await sock.sendMessage(toJid(to), {text, mentions: mentions?.map(toJid)}, options);
+      return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
+    }
+
+    case 'POST /react': {
+      if (!requireOpen()) return;
+      const {chat, message_id, from_me, participant, emoji} = await readJson(request);
+      if (!chat || !message_id) return reply(400, {error: 'chat and message_id are required'});
+      const key = {remoteJid: toJid(chat), id: message_id, fromMe: Boolean(from_me), participant: participant ? toJid(participant) : undefined};
+      await sock.sendMessage(toJid(chat), {react: {text: emoji || '', key}});
+      return reply(200, {ok: true});
+    }
+
+    case 'POST /read': {
+      if (!requireOpen()) return;
+      const {chat, messages} = await readJson(request);
+      if (!chat || !Array.isArray(messages) || messages.length === 0) return reply(400, {error: 'chat and messages[] are required'});
+      await sock.readMessages(messages.map(m => ({remoteJid: toJid(chat), id: m.id, fromMe: false, participant: m.participant ? toJid(m.participant) : undefined})));
+      return reply(200, {ok: true});
+    }
+
+    case 'POST /typing': {
+      if (!requireOpen()) return;
+      const {chat, typing} = await readJson(request);
+      if (!chat) return reply(400, {error: 'chat is required'});
+      await sock.sendPresenceUpdate(typing === false ? 'paused' : 'composing', toJid(chat));
+      return reply(200, {ok: true});
+    }
+
+    case 'POST /logout':
+      await sock?.logout().catch(() => {});
+      fs.rmSync(AUTH_DIR, {recursive: true, force: true});
+      state.status = 'needs_relink';
+      state.me = null;
+      return reply(200, {status: state.status});
+
+    default:
+      return reply(404, {error: 'not found'});
   }
 });
 
