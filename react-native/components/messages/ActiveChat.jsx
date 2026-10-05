@@ -3,46 +3,35 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
-import {ActiveChat} from './ActiveChat';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
-export function MessagesPage() {
+export function ActiveChat() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const [chats, setChats] = useState([]);
-  const {set, get} = useAppContext();
+  const [chat, setChat] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const {get} = useAppContext();
 
   useEffect(() => {
-    api.get('/whatsapp/chats').then(response => {
-      setChats(response);
+    api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
+      setChat(response);
+      setMessages(response.messages ?? []);
+      console.log(response);
     });
-  }, []);
+  }, [get]);
 
   return (
     <View style={styles.content}>
-      <View style={styles.chatListing}>
-        <ScrollView>
-          {chats && chats?.map((chat, index) => (
-            <Pressable key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat, get("whatsapp.activeJid") === chat.jid && styles.activeChat]} onPress={() => set("whatsapp.activeJid", chat.jid)}>
-              <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
-              
-              <View>
-                <Text style={[styles.chatName, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]}>{chat.name}</Text>
-                <Text style={[styles.lastMessage, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
-              </View>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
+      <Text>Active Chat</Text>
 
-      {get("whatsapp.activeJid") != null && <ActiveChat />}
-
-      {get("whatsapp.activeJid") == null && (
-        <View style={styles.additionalContent}>
-          <Text>No additional content</Text>
-        </View>
-      )}
+      <ScrollView>
+        {messages.map((message, index) => (
+          <View key={index} style={styles.chatContainer}>
+            <Text>{message.body}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -55,7 +44,7 @@ const createStyles = colors => StyleSheet.create({
   content: {
     flexDirection: 'row',
     gap: 16,
-    flex: 1,
+    flex: 2,
   },
   chatName: {
     fontSize: 16,
