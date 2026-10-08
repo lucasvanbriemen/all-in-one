@@ -3,31 +3,17 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
-import {Message} from './Message';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
-export function ActiveChat() {
+export function Message({message}) {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const [chat, setChat] = useState([]);
-  const [messages, setMessages] = useState([]);
   const {get} = useAppContext();
 
-  useEffect(() => {
-    api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
-      setChat(response);
-      setMessages(response.messages ?? []);
-    });
-  }, [get]);
-
   return (
-    <View style={styles.content}>
-      <ScrollView>
-        {messages.map((message, index) => (
-          <Message key={index} message={message} />
-        ))}
-      </ScrollView>
+    <View style={styles.chatContainer}>
+      <Text>{message.body}</Text>
     </View>
   );
 }
