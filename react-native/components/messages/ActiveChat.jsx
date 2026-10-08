@@ -17,7 +17,7 @@ export function ActiveChat() {
   useEffect(() => {
     api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
       setChat(response);
-      setMessages(response.messages ?? []);
+      setMessages((response.messages ?? []).slice().reverse());
     });
   }, [get]);
 
