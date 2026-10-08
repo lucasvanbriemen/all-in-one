@@ -12,7 +12,7 @@ export function Message({message}) {
   const {get} = useAppContext();
 
   return (
-    <View style={styles.chatContainer}>
+    <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
       <Text>{message.body}</Text>
     </View>
   );
@@ -22,7 +22,6 @@ const createStyles = colors => StyleSheet.create({
   chatListing: {
     flex: 1,
   },
-  compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
     flexDirection: 'row',
     gap: 16,
@@ -41,8 +40,8 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     padding: 16,
     borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignSelf: 'flex-start',
+    maxWidth: '75%',
   },
   avatar: {
     width: 45,
@@ -68,5 +67,9 @@ const createStyles = colors => StyleSheet.create({
 
   additionalContent: {
     flex: 2
+  },
+  from_me: {
+    backgroundColor: colors.primaryContainer,
+    alignSelf: 'flex-end',
   },
 });
