@@ -17,14 +17,11 @@ export function ActiveChat() {
     api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
       setChat(response);
       setMessages(response.messages ?? []);
-      console.log(response);
     });
   }, [get]);
 
   return (
     <View style={styles.content}>
-      <Text>Active Chat</Text>
-
       <ScrollView>
         {messages.map((message, index) => (
           <View key={index} style={styles.chatContainer}>
