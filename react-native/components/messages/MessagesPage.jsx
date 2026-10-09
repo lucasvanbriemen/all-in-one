@@ -21,7 +21,7 @@ export function MessagesPage() {
 
   return (
     <View style={styles.content}>
-      {compact && !get("whatsapp.activeJid") && (
+      {(compact && !get("whatsapp.activeJid") || !compact) && (
         <> 
           <View style={styles.chatListing}>
             <ScrollView>
