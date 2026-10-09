@@ -11,14 +11,18 @@ export function Message({message}) {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const {get} = useAppContext();
+  const [mediaAspectRatio, setMediaAspectRatio] = useState(3 / 2);
 
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
       {message.kind === "imageMessage" && (
         <>
-          <Image source={{uri: `${BASE_URL}/${message.media_url}`}} style={{width: 200, height: 200, borderRadius: 16}} />
-          <Text>Image</Text>
+          <Image
+            source={{uri: `${BASE_URL}/${message.media_url}`}}
+            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
+            onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
+          />
         </>
       )}
 
@@ -91,5 +95,9 @@ const createStyles = colors => StyleSheet.create({
     marginLeft: 'auto',
     fontSize: 11,
     opacity: 0.5,
+  },
+  media: {
+    width: 300,
+    borderRadius: 16,
   },
 });
