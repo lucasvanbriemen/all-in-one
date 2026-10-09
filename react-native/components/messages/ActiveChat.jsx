@@ -12,7 +12,7 @@ export function ActiveChat() {
   const styles = useThemedStyles(createStyles);
   const [chat, setChat] = useState([]);
   const [messages, setMessages] = useState([]);
-  const {get} = useAppContext();
+  const {get, set} = useAppContext();
   const [messageInput, setMessageInput] = useState('');
 
   useEffect(() => {
@@ -45,6 +45,15 @@ export function ActiveChat() {
 
   return (
     <View style={styles.content}>
+      {compact && (
+        <View style={styles.chatListing}>
+          <Pressable onPress={() => set("whatsapp.activeJid", null)}>
+            <Text style={styles.goBack}>Back</Text>
+          </Pressable>
+          <Text style={styles.chatName}>{chat.name}</Text>
+        </View>
+      )}
+
       <ScrollView>
         {messages.map((message, index) => (
           <Message key={index} message={message} />
