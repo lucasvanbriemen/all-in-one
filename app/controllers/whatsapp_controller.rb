@@ -24,6 +24,7 @@ class WhatsappController < ApplicationController
     chat = Whatsapp::Chat.find_by!(jid: params[:jid])
     page = params[:page].to_i.clamp(1, 10_000)
     messages = chat.messages.newest_first.includes(:sender, :reactions).limit(Whatsapp::Message::PER_PAGE).offset((page - 1) * Whatsapp::Message::PER_PAGE)
+    mark_read
 
     render json: {
       chat: chat_json(chat),
@@ -76,7 +77,6 @@ class WhatsappController < ApplicationController
     messages = chat.messages.active.where(from_me: false).newest_first.limit(20)
     Whatsapp::Bridge.mark_read(chat: chat.jid, messages: messages.map { |m| { id: m.wa_id, participant: (m.sender_jid if chat.is_group) }.compact }) if messages.any?
     chat.update!(unread_count: 0)
-    head :ok
   end
 
   def typing
