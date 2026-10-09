@@ -76,11 +76,15 @@ class WhatsappController < ApplicationController
 
   private
 
+  def me_jid
+    @me_jid ||= Whatsapp::Connection.current.me_jid
+  end
+
   def chat_json(chat)
     last = chat.last_message
     {
       jid: chat.jid,
-      name: chat.display_name,
+      name: chat.display_name(me_jid: me_jid),
       avatar_url: whatsapp_avatar_path(chat.jid),
       is_group: chat.is_group,
       unread_count: chat.unread_count,

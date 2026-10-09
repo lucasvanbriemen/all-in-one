@@ -13,8 +13,23 @@ module Whatsapp
     scope :visible, -> { where(archived: false) }
     scope :recent, -> { order(pinned: :desc, last_message_at: :desc) }
 
-    def display_name
-      name.presence || contact&.display_name || (jid.end_with?("@lid") ? "Unknown contact" : jid.split("@").first)
+    # Contacts are keyed by phone jid; a chat still stored under a privacy id finds its contact through the lid column.
+    def resolved_contact
+      contact || (Contact.find_by(lid: jid) if jid.end_with?("@lid"))
+    end
+
+    def display_name(me_jid: Connection.current.me_jid)
+      return "You" if jid == me_jid
+
+      name.presence || resolved_contact&.display_name.presence || last_sender_name.presence ||
+        (jid.end_with?("@lid") ? "Unknown contact" : "+#{jid.split("@").first}")
+    end
+
+    # The push name people set on their phone travels with every message they send us.
+    def last_sender_name
+      return nil if is_group
+
+      messages.where(from_me: false).where.not(sender_name: [ nil, "" ]).order(sent_at: :desc).pick(:sender_name)
     end
 
     AVATAR_TTL = 1.day
@@ -22,7 +37,7 @@ module Whatsapp
 
     # Profile pictures are fetched lazily from the connector and refreshed daily; WhatsApp's CDN links expire.
     def avatar_url
-      self[:avatar_url].presence || contact&.avatar_url
+      self[:avatar_url].presence || resolved_contact&.avatar_url
     end
 
     def refresh_avatar!

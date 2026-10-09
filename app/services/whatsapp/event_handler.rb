@@ -49,6 +49,8 @@ module Whatsapp
         status: payload["status"]
       )
       record.save!
+      # A contact that carries both spellings is the mapping; fold any chat still stored under the lid.
+      LidMerge.call(lid: record.lid, phone: record.jid) if record.lid.present? && !record.jid.end_with?("@lid")
     end
 
     def chat(payload)

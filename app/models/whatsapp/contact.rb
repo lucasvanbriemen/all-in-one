@@ -3,7 +3,7 @@ module Whatsapp
     self.table_name = "whatsapp_contacts"
 
     def display_name
-      name.presence || verified_name.presence || push_name.presence || (jid.end_with?("@lid") ? "Unknown contact" : phone_number)
+      name.presence || verified_name.presence || push_name.presence || (jid.end_with?("@lid") ? nil : phone_number)
     end
 
     def phone_number

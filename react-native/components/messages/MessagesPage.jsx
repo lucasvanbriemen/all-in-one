@@ -25,7 +25,7 @@ export function MessagesPage() {
         <ScrollView>
           {chats && chats?.map((chat, index) => (
             <Pressable key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat, get("whatsapp.activeJid") === chat.jid && styles.activeChat]} onPress={() => set("whatsapp.activeJid", chat.jid)}>
-              <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.avatar} />
+              <Avatar name={chat.name} url={chat.avatar_url} styles={styles} />
               
               <View>
                 <Text style={[styles.chatName, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]}>{chat.name}</Text>
@@ -43,6 +43,23 @@ export function MessagesPage() {
           <Text>No additional content</Text>
         </View>
       )}
+    </View>
+  );
+}
+
+// Falls back to initials: not everyone has a profile picture, and WhatsApp hides pictures from non-contacts.
+function Avatar({name, url, styles}) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [url]);
+
+  if (url && !failed) {
+    return <Image source={{uri: BASE_URL + url}} style={styles.avatar} onError={() => setFailed(true)} />;
+  }
+
+  const initials = (name || '').replace(/[^\p{L}\p{N} ]/gu, '').trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase() || '?';
+  return (
+    <View style={[styles.avatar, styles.avatarFallback]}>
+      <Text style={styles.avatarInitials}>{initials}</Text>
     </View>
   );
 }
@@ -78,6 +95,16 @@ const createStyles = colors => StyleSheet.create({
     height: 45,
     borderRadius: 25,
     marginRight: 16,
+  },
+  avatarFallback: {
+    backgroundColor: colors.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInitials: {
+    color: colors.onSecondary,
+    fontSize: 16,
+    fontWeight: '600',
   },
   unreadChat: {
     ...glass(colors, {variant: 'primaryContainer'}),

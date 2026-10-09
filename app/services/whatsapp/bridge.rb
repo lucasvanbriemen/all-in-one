@@ -20,6 +20,7 @@ module Whatsapp
     def self.contacts = get("/contacts")
     def self.groups = get("/groups")
     def self.avatar(jid) = get("/avatar", jid: jid)
+    def self.resolve_lid(lid) = get("/lid", jid: lid)
 
     def self.pair(phone = nil) = post("/pair", phone: phone)
     def self.send_text(to:, text:, quote_id: nil, mentions: nil) = post("/send", to: to, text: text, quote_id: quote_id, mentions: mentions)

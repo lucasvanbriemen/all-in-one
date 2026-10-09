@@ -73,6 +73,9 @@ export const bridge = {
 
     sock.ev.on('messaging-history.set', async ({chats, contacts, messages}) => {
       const events = [];
+      // History sync often spells a chat or contact by privacy id only; the signal store may already know the phone.
+      for (const contact of contacts) await bridge.resolveLid(contact.id);
+      for (const chat of chats) await bridge.resolveLid(chat.id);
       for (const contact of contacts) events.push({event: 'contact', payload: bridge.rememberContact(contact)});
       for (const chat of chats) events.push({event: 'chat', payload: bridge.rememberChat(chat)});
       for (const message of messages) {
@@ -206,14 +209,16 @@ export const bridge = {
     return mapping;
   },
 
+  // Returns the phone jid for a lid when the signal store knows it, emitting the mapping the first time.
   async resolveLid(jid) {
-    if (!jid?.endsWith('@lid')) return;
+    if (!jid?.endsWith('@lid')) return null;
     const clean = jidNormalizedUser(jid);
-    if (bridge.lidToPhone.has(clean)) return;
-    const found = await bridge.sock.signalRepository.lidMapping.getPNsForLIDs([clean]);
+    if (bridge.lidToPhone.has(clean)) return bridge.lidToPhone.get(clean);
+    const found = await bridge.sock.signalRepository.lidMapping.getPNsForLIDs([clean]).catch(() => null);
     for (const {lid, pn} of found || []) {
       if (pn) await bridge.emit('lid_mapping', bridge.rememberMapping(lid, pn));
     }
+    return bridge.lidToPhone.get(clean) || null;
   },
 
   rememberContact(contact) {
@@ -529,8 +534,20 @@ export const bridge = {
         if (!requireOpen()) return;
         const jid = url.searchParams.get('jid');
         if (!jid) return reply(400, {error: 'jid is required'});
-        const avatar = await sock.profilePictureUrl(toJid(jid), 'image').catch(() => null);
+        // WhatsApp answers differently per spelling of the same person, so try the phone jid and the lid.
+        let avatar = null;
+        for (const candidate of bridge.jidVariants(toJid(jid))) {
+          avatar = await sock.profilePictureUrl(candidate, 'image').catch(() => null);
+          if (avatar) break;
+        }
         return reply(200, {jid: normalize(toJid(jid)), url: avatar});
+      }
+
+      case 'GET /lid': {
+        if (!requireOpen()) return;
+        const jid = url.searchParams.get('jid');
+        if (!jid?.endsWith('@lid')) return reply(400, {error: 'jid must be a lid'});
+        return reply(200, {lid: jidNormalizedUser(jid), phone: await bridge.resolveLid(jid)});
       }
 
       case 'POST /decrypt-edit': {
