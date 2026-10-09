@@ -48,7 +48,17 @@ class WhatsappController < ApplicationController
 
     mimetype, bytes = message.media_file
     expires_in 1.year, public: false
-    send_data bytes, type: mimetype, disposition: "inline", filename: message.media["filename"].presence
+    response.headers["Accept-Ranges"] = "bytes"
+
+    # WebKit only plays audio/video from servers that honour byte ranges.
+    ranges = Rack::Utils.get_byte_ranges(request.headers["Range"], bytes.bytesize)
+    if ranges&.one?
+      range = ranges.first
+      response.headers["Content-Range"] = "bytes #{range.begin}-#{range.end}/#{bytes.bytesize}"
+      send_data bytes.byteslice(range), type: mimetype, disposition: "inline", status: :partial_content
+    else
+      send_data bytes, type: mimetype, disposition: "inline", filename: message.media["filename"].presence
+    end
   end
 
   def send_message

@@ -3,6 +3,7 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {MediaPlayer} from './MediaPlayer';
 import {format} from '../money/format';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
@@ -11,7 +12,9 @@ export function Message({message}) {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const {get} = useAppContext();
-  const [mediaAspectRatio, setMediaAspectRatio] = useState(3 / 2);
+  const {width, height} = message.media || {};
+  const [mediaAspectRatio, setMediaAspectRatio] = useState(width && height ? width / height : 3 / 2);
+  const mediaUri = `${BASE_URL}/${message.media_url}`;
 
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
@@ -24,6 +27,19 @@ export function Message({message}) {
             onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
           />
         </>
+      )}
+
+      {message.kind === "videoMessage" && message.media_url && (
+        <MediaPlayer
+          kind="video"
+          uri={mediaUri}
+          style={[styles.media, {aspectRatio: mediaAspectRatio}]}
+          onAspectRatio={setMediaAspectRatio}
+        />
+      )}
+
+      {message.kind === "audioMessage" && message.media_url && (
+        <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
       )}
 
       <Text>{message.body}</Text>
@@ -99,5 +115,10 @@ const createStyles = colors => StyleSheet.create({
   media: {
     width: 300,
     borderRadius: 16,
+    overflow: 'hidden',
+  },
+  audio: {
+    width: 300,
+    height: 54,
   },
 });
