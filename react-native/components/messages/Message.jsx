@@ -3,6 +3,7 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {format} from '../money/format';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
@@ -14,6 +15,7 @@ export function Message({message}) {
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
       <Text>{message.body}</Text>
+      <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
     </View>
   );
 }
@@ -42,6 +44,8 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     alignSelf: 'flex-start',
     maxWidth: '75%',
+    flexDirection: 'row',
+    gap: 8,
   },
   avatar: {
     width: 45,
@@ -71,5 +75,11 @@ const createStyles = colors => StyleSheet.create({
   from_me: {
     backgroundColor: colors.primaryContainer,
     alignSelf: 'flex-end',
+  },
+  timestamp: {
+    marginTop: 4,
+    fontSize: 12,
+    color: colors.secondary,
+    marginTop: 4,
   },
 });

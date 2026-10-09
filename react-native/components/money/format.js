@@ -12,5 +12,12 @@ export const format = {
 
     // Return Fr 23 oct
     return date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' });
+  },
+
+  time(value){
+    const date = new Date(value);
+
+    // Return 14:30
+    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
 };
