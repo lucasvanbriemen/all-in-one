@@ -1,5 +1,5 @@
 import {BASE_URL, api} from '../api';
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
@@ -13,6 +13,7 @@ export function ActiveChat() {
   const [chat, setChat] = useState([]);
   const [messages, setMessages] = useState([]);
   const {get} = useAppContext();
+  const [messageInput, setMessageInput] = useState('');
 
   useEffect(() => {
     api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
@@ -21,12 +22,40 @@ export function ActiveChat() {
     });
   }, [get]);
 
+  async function sendMessage() {
+    const text = messageInput.trim();
+    if (text === '') return;
+    const jid = get("whatsapp.activeJid");
+    const sent = await api.post('/whatsapp/chats/' + jid + '/send', {text});
+
+    // The send endpoint only returns {id, chat, sent_at}; build a message
+    // in the same shape as the index endpoint so it renders like the rest.
+    setMessages(prev => [...prev, {
+      id: sent.id,
+      chat_jid: jid,
+      from_me: true,
+      kind: 'text',
+      body: text,
+      sent_at: sent.sent_at,
+      status: 'sent',
+      reactions: [],
+    }]);
+    setMessageInput('');
+  }
+
   return (
     <View style={styles.content}>
       <ScrollView>
         {messages.map((message, index) => (
           <Message key={index} message={message} />
         ))}
+
+        <View>
+          <TextInput value={messageInput} onChangeText={setMessageInput} placeholder="Type a message" style={styles.messageInput} />
+          <Pressable onPress={sendMessage}>
+            <Text>Send</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );
@@ -82,5 +111,13 @@ const createStyles = colors => StyleSheet.create({
 
   additionalContent: {
     flex: 2
+  },
+
+  messageInput: {
+    borderWidth: 1,
+    borderColor: colors.secondary,
+    borderRadius: 8,
+    padding: 16,
+    marginTop: 8,
   },
 });
