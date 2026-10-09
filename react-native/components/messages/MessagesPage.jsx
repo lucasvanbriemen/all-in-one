@@ -21,20 +21,24 @@ export function MessagesPage() {
 
   return (
     <View style={styles.content}>
-      <View style={styles.chatListing}>
-        <ScrollView>
-          {chats && chats?.map((chat, index) => (
-            <Pressable key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat, get("whatsapp.activeJid") === chat.jid && styles.activeChat]} onPress={() => set("whatsapp.activeJid", chat.jid)}>
-              <Avatar name={chat.name} url={chat.avatar_url} styles={styles} />
-              
-              <View>
-                <Text style={[styles.chatName, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]}>{chat.name}</Text>
-                <Text style={[styles.lastMessage, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
-              </View>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
+      {compact && !get("whatsapp.activeJid") && (
+        <> 
+          <View style={styles.chatListing}>
+            <ScrollView>
+              {chats && chats?.map((chat, index) => (
+                <Pressable key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat, get("whatsapp.activeJid") === chat.jid && styles.activeChat]} onPress={() => set("whatsapp.activeJid", chat.jid)}>
+                  <Avatar name={chat.name} url={chat.avatar_url} styles={styles} />
+                  
+                  <View>
+                    <Text style={[styles.chatName, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]}>{chat.name}</Text>
+                    <Text style={[styles.lastMessage, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        </> 
+      )}
 
       {get("whatsapp.activeJid") != null && <ActiveChat />}
 
@@ -117,6 +121,10 @@ const createStyles = colors => StyleSheet.create({
   activeChat: {
     backgroundColor: colors.primary,
     borderWidth: 2,
+  },
+  chatName: {
+    fontSize: 16,
+    color: colors.onSurface,
   },
   activeChatName: {
     color: colors.onPrimary,
