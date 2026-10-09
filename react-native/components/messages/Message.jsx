@@ -42,7 +42,7 @@ export function Message({message}) {
         <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
       )}
 
-      <Text>{message.body}</Text>
+      <Text style={styles.content}>{message.body}</Text>
       <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
     </View>
   );
@@ -107,10 +107,14 @@ const createStyles = colors => StyleSheet.create({
     backgroundColor: colors.primaryContainer,
     alignSelf: 'flex-end',
   },
+  content: {
+    color: colors.onSurface,
+  },
   timestamp: {
     marginLeft: 'auto',
     fontSize: 11,
-    opacity: 0.5,
+    opacity: 0.75,
+    color: colors.onSurfaceVariant
   },
   media: {
     width: 300,
