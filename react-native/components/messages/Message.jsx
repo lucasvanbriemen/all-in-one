@@ -19,7 +19,7 @@ export function Message({message}) {
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
-      {message.kind === "imageMessage" && (
+      {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
         <>
           <Image
             source={{uri: `${BASE_URL}/${message.media_url}`}}
