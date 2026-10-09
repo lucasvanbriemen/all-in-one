@@ -40,11 +40,14 @@ const createStyles = colors => StyleSheet.create({
   chatContainer: {
     marginTop: 8,
     ...glass(colors),
-    padding: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 16,
     alignSelf: 'flex-start',
     maxWidth: '75%',
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
     gap: 8,
   },
   avatar: {
@@ -77,9 +80,8 @@ const createStyles = colors => StyleSheet.create({
     alignSelf: 'flex-end',
   },
   timestamp: {
-    marginTop: 4,
-    fontSize: 12,
-    color: colors.secondary,
-    marginTop: 4,
+    marginLeft: 'auto',
+    fontSize: 11,
+    opacity: 0.5,
   },
 });
