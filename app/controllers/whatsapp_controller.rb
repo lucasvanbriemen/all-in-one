@@ -1,5 +1,5 @@
 class WhatsappController < ApplicationController
-  skip_before_action :require_login, only: [ :avatar ]
+  skip_before_action :require_login, only: [ :avatar, :media ]
 
   rescue_from Whatsapp::Bridge::Error do |error|
     render json: { error: error.message }, status: error.status

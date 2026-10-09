@@ -14,6 +14,14 @@ export function Message({message}) {
 
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
+
+      {message.kind === "imageMessage" && (
+        <>
+          <Image source={{uri: `${BASE_URL}/${message.media_url}`}} style={{width: 200, height: 200, borderRadius: 16}} />
+          <Text>Image</Text>
+        </>
+      )}
+
       <Text>{message.body}</Text>
       <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
     </View>
