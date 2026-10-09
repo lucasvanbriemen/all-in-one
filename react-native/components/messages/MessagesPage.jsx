@@ -42,7 +42,7 @@ export function MessagesPage() {
 
       {get("whatsapp.activeJid") != null && <ActiveChat />}
 
-      {get("whatsapp.activeJid") == null && (
+      {get("whatsapp.activeJid") == null && !compact && (
         <View style={styles.additionalContent}>
           <Text>No additional content</Text>
         </View>
