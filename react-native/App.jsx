@@ -49,10 +49,23 @@ function PlayerBridge() {
   return null;
 }
 
-// Registers for notifications and requests permission on app launch.
+// Registers for notifications and requests permission on app launch
 function PushBridge() {
-  push.subscribe();
-  push.requestPermission();
+  const {set} = useAppContext();
+
+  useEffect(() => {
+    const unsubscribe = push.subscribe(({source}) => {
+      const [kind, mailbox, emailId] = String(source || '').split('.');
+      if (kind !== 'email' || !mailbox || !emailId) return;
+
+      set('app.activeApp', 'email');
+      set('app.activeSidebarItem', mailbox);
+      set('email.selectedEmailId', Number(emailId));
+    });
+    push.requestPermission();
+    return unsubscribe;
+  }, [set]);
+
   return null;
 }
 
