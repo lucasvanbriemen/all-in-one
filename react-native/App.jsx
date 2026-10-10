@@ -56,11 +56,11 @@ function PushBridge() {
   useEffect(() => {
     const unsubscribe = push.subscribe(({source}) => {
       const [kind, mailbox, emailId] = String(source || '').split('.');
-      if (kind !== 'email' || !mailbox || !emailId) return;
 
-      set('app.activeApp', 'email');
+      set('app.activeApp', kind);
       set('app.activeSidebarItem', mailbox);
       set('email.selectedEmailId', Number(emailId));
+      set('app.activeJid', emailId);
     });
     push.requestPermission();
     return unsubscribe;
