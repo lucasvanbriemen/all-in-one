@@ -180,7 +180,7 @@ const createStyles = colors => StyleSheet.create({
     position: 'absolute',
     bottom: -25,
     left: 8,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAt1,
     padding: 8,
     borderRadius: 16,
   },
