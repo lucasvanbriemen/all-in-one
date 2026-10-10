@@ -1,7 +1,11 @@
+import {AlertIcon} from './alert';
+import {CheckDoubleIcon} from './checkDouble';
+import {CheckIcon} from './check';
 import {ChevronDown} from './chevronDown';
 import {ChevronLeft} from './chevronLeft';
 import {ChevronRight} from './chevronRight';
 import {ChevronTop} from './chevronTop';
+import {ClockIcon} from './clock';
 import {CodeIcon} from './code';
 import {CrossIcon} from './cross';
 import {FilesIcon} from './files';
@@ -50,6 +54,10 @@ const ICONS = {
   repeat: RepeatIcon,
   heart: HeartIcon,
   'heart-outline': HeartOutlineIcon,
+  check: CheckIcon,
+  'check-double': CheckDoubleIcon,
+  clock: ClockIcon,
+  alert: AlertIcon,
   ...WEATHER_ICONS,
 };
 

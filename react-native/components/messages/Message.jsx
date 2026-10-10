@@ -3,10 +3,29 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {Icon} from '../icons';
 import {MediaPlayer} from './MediaPlayer';
 import {format} from '../money/format';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
+
+const STATUS_INDICATORS = {
+  0: 'failed',
+  1: 'not_sent',
+  2: 'sent_not_received',
+  3: 'received',
+  4: 'read',
+  5: 'read',
+};
+
+// WhatsApp's tick colors; null falls back to the grey timestamp color.
+const STATUS_ICONS = {
+  failed: {icon: 'alert', color: '#f15c6d'},
+  not_sent: {icon: 'clock', color: null},
+  sent_not_received: {icon: 'check', color: null},
+  received: {icon: 'check-double', color: null},
+  read: {icon: 'check-double', color: '#53bdeb'},
+};
 
 export function Message({message}) {
   const compact = useCompactLayout();
@@ -15,6 +34,7 @@ export function Message({message}) {
   const {width, height} = message.media || {};
   const [mediaAspectRatio, setMediaAspectRatio] = useState(width && height ? width / height : 3 / 2);
   const mediaUri = `${BASE_URL}/${message.media_url}`;
+  const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
 
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
@@ -43,7 +63,12 @@ export function Message({message}) {
       )}
 
       <Text style={styles.content}>{message.body}</Text>
-      <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
+      <View style={styles.meta}>
+        <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
+        {message.from_me && indicator && (
+          <Icon name={indicator.icon} size={16} color={indicator.color || styles.timestamp.color} />
+        )}
+      </View>
     </View>
   );
 }
@@ -110,8 +135,13 @@ const createStyles = colors => StyleSheet.create({
   content: {
     color: colors.onSurface,
   },
-  timestamp: {
+  meta: {
     marginLeft: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  timestamp: {
     fontSize: 11,
     opacity: 0.75,
     color: colors.onSurfaceVariant
