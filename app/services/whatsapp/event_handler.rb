@@ -111,8 +111,6 @@ module Whatsapp
 
       Chat.where(jid: payload["chat"]).where("last_message_at IS NULL OR last_message_at < ?", record.sent_at).update_all(last_message_at: record.sent_at) if record.sent_at
 
-      return if record.from_me
-
       Notification.create!(
         title: payload["sender_name"],
         body: payload["body"],
