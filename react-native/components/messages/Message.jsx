@@ -38,7 +38,7 @@ export function Message({message}) {
   const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
 
   return (
-    <View style={[styles.chatWrapper, message.from_me && styles.from_me, message.reactions.length > 0 && {marginBottom: 20}]}>
+    <View style={[styles.chatWrapper, message.reactions.length > 0 && {marginBottom: 20}]}>
       <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
         {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
