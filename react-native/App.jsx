@@ -1,7 +1,7 @@
 import {AppProvider, useAppContext} from './context/AppContext';
 import React, { useEffect, useState } from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
@@ -106,7 +106,9 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
     flexDirection: 'row',
   },
-  edgeWrapper: {padding: 0, paddingTop: 48, gap: 0},
+  // On iOS SafeAreaView already adds the notch/status-bar inset on top of this
+  // padding; the extra 48 only clears the transparent titlebar on macOS/web.
+  edgeWrapper: {padding: 0, paddingTop: Platform.OS === 'ios' ? 0 : 48, gap: 0},
   edgeContent: {paddingBottom: 0, paddingHorizontal: 16, borderRadius: 0},
   compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
   compactContent: {
