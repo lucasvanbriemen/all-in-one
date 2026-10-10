@@ -5,10 +5,11 @@ import {glass, useThemedStyles} from '../theme';
 
 import {Message} from './Message';
 import {useAppContext} from '../../context/AppContext';
-import {useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 export function ActiveChat() {
   const compact = useCompactLayout();
+  const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
   const [chat, setChat] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -45,7 +46,7 @@ export function ActiveChat() {
   }
 
   return (
-    <View style={styles.content}>
+    <View style={[styles.content, {paddingBottom: bottomInset}]}>
       {compact && (
         <View style={styles.chatListing}>
           <Pressable onPress={() => set("whatsapp.activeJid", null)}>

@@ -5,6 +5,7 @@ import {EmailListItem} from './EmailListItem';
 import { RefreshControl } from 'react-native';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
+import {useBottomInset} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing() {
@@ -12,6 +13,7 @@ export function EmailListing() {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
   const [emailRefreshing, setEmailRefreshing] = useState(false);
+  const bottomInset = useBottomInset();
 
   useEffect(() => {
     api.get('/email/' + get('app.activeSidebarItem')).then(data => {
@@ -27,7 +29,7 @@ export function EmailListing() {
 
   return (
     <View style={styles.content}>
-      <ScrollView refreshControl={<RefreshControl refreshing={emailRefreshing} onRefresh={() => {setEmailRefreshing(true); getEmails().finally(() => setEmailRefreshing(false));}} />}>
+      <ScrollView contentContainerStyle={{paddingBottom: bottomInset}} refreshControl={<RefreshControl refreshing={emailRefreshing} onRefresh={() => {setEmailRefreshing(true); getEmails().finally(() => setEmailRefreshing(false));}} />}>
         {emails.map((email, index) => (
           <React.Fragment key={email.id}>
             {email[index - 1]?.date !== email.date && (

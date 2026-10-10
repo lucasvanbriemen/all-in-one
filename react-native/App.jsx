@@ -70,7 +70,7 @@ function PushBridge() {
 }
 
 function AppShell() {
-  const {get} = useAppContext();
+  const {get, set} = useAppContext();
 
   const styles = useThemedStyles(createStyles);
   const ActiveApplication = APPLICATIONS[get("app.activeApp") || "home"];
@@ -87,7 +87,7 @@ function AppShell() {
 
         {compact && (
           <>
-            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}}>
+            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 24)}>
               <NowPlayingBar />
               <MobileNavigation />
             </View>

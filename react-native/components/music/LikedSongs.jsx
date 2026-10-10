@@ -5,12 +5,13 @@ import {Song} from './Song';
 import {api} from '../api';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
-import {useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function LikedSongs() {
   const styles = useThemedStyles(createStyles);
   const isCompact = useCompactLayout();
+  const bottomInset = useBottomInset();
 
   const {set, get} = useAppContext();
 
@@ -23,7 +24,7 @@ export function LikedSongs() {
   }, []);
 
   return (
-    <ScrollView style={styles.content}>
+    <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: bottomInset}}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
         <Text style={styles.greeting}>Liked Songs</Text>
         <Text style={styles.subheading}>{likedSongs.length} songs, {(likedSongs.reduce((total, song) => total + song.duration, 0) / 60).toFixed(0)} minutes</Text>

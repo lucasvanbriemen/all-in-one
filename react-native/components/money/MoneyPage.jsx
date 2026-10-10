@@ -4,11 +4,12 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Stat} from '../home/Stat';
 import {api} from '../api';
 import {format} from './format';
-import {useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function MoneyPage() {
   const compact = useCompactLayout();
+  const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
   const [statisics, setStatisics] = useState([]);
   const [recurring, setRecurring] = useState([]);
@@ -28,7 +29,7 @@ export function MoneyPage() {
         ))}
       </View>
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: bottomInset}}>
         {recurring && recurring?.map((data, index) => (
           <View>
             <Text>{data.counterparty}: {format.money(data.amount)}</Text>

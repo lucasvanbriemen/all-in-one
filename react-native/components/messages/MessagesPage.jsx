@@ -5,10 +5,11 @@ import {glass, useThemedStyles} from '../theme';
 
 import {ActiveChat} from './ActiveChat';
 import {useAppContext} from '../../context/AppContext';
-import {useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 export function MessagesPage() {
   const compact = useCompactLayout();
+  const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
   const [chats, setChats] = useState([]);
   const {set, get} = useAppContext();
@@ -24,7 +25,7 @@ export function MessagesPage() {
       {(compact && !get("whatsapp.activeJid") || !compact) && (
         <> 
           <View style={styles.chatListing}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{paddingBottom: bottomInset}}>
               {chats && chats?.map((chat, index) => (
                 <Pressable key={index} style={[styles.chatContainer, chat.unread_count > 0 && styles.unreadChat, get("whatsapp.activeJid") === chat.jid && styles.activeChat]} onPress={() => set("whatsapp.activeJid", chat.jid)}>
                   <Avatar name={chat.name} url={chat.avatar_url} styles={styles} />
