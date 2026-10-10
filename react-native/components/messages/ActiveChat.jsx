@@ -2,10 +2,10 @@ import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {Message} from './Message';
 import {useAppContext} from '../../context/AppContext';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 export function ActiveChat() {
   const compact = useCompactLayout();
@@ -53,6 +53,7 @@ export function ActiveChat() {
             <Text style={styles.goBack}>Back</Text>
           </Pressable>
           <Text style={styles.chatName}>{chat.name}</Text>
+          <Text style={styles.goBack}> </Text>
         </View>
       )}
 
@@ -74,7 +75,16 @@ export function ActiveChat() {
 
 const createStyles = colors => StyleSheet.create({
   chatListing: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  chatName: {
+    fontSize: 16,
     flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
