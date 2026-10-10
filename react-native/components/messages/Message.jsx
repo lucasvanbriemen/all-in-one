@@ -1,7 +1,7 @@
 import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {glass, useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {MediaPlayer} from './MediaPlayer';
@@ -18,17 +18,18 @@ const STATUS_INDICATORS = {
   5: 'read',
 };
 
-// WhatsApp's tick colors; null falls back to the grey timestamp color.
+// `color` names a theme color; null falls back to the grey timestamp color.
 const STATUS_ICONS = {
-  failed: {icon: 'alert', color: '#f15c6d'},
+  failed: {icon: 'alert', color: 'error'},
   not_sent: {icon: 'clock', color: null},
   sent_not_received: {icon: 'check', color: null},
   received: {icon: 'check-double', color: null},
-  read: {icon: 'check-double', color: '#53bdeb'},
+  read: {icon: 'check-double', color: 'primary'},
 };
 
 export function Message({message}) {
   const compact = useCompactLayout();
+  const colors = useTheme();
   const styles = useThemedStyles(createStyles);
   const {get} = useAppContext();
   const {width, height} = message.media || {};
@@ -66,7 +67,7 @@ export function Message({message}) {
       <View style={styles.meta}>
         <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
         {message.from_me && indicator && (
-          <Icon name={indicator.icon} size={16} color={indicator.color || styles.timestamp.color} />
+          <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
         )}
       </View>
     </View>
