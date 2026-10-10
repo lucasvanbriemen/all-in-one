@@ -1,6 +1,6 @@
 import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {Message} from './Message';
@@ -14,6 +14,7 @@ export function ActiveChat() {
   const [messages, setMessages] = useState([]);
   const {get, set} = useAppContext();
   const [messageInput, setMessageInput] = useState('');
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
     api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
@@ -54,18 +55,18 @@ export function ActiveChat() {
         </View>
       )}
 
-      <ScrollView>
+      <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: false })} contentContainerStyle={styles.messagesContainer}>
         {messages.map((message, index) => (
           <Message key={index} message={message} />
         ))}
-
-        <View>
-          <TextInput value={messageInput} onChangeText={setMessageInput} placeholder="Type a message" style={styles.messageInput} />
-          <Pressable onPress={sendMessage}>
-            <Text>Send</Text>
-          </Pressable>
-        </View>
       </ScrollView>
+
+      <View>
+        <TextInput value={messageInput} onChangeText={setMessageInput} placeholder="Type a message" style={styles.messageInput} />
+        <Pressable onPress={sendMessage}>
+          <Text>Send</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -76,7 +77,7 @@ const createStyles = colors => StyleSheet.create({
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: 16,
     flex: 2,
   },
@@ -128,5 +129,9 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginTop: 8,
+  },
+  messagesContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
   },
 });
