@@ -38,38 +38,51 @@ export function Message({message}) {
   const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
 
   return (
-    <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
+    <View style={[styles.chatWrapper, message.from_me && styles.from_me, message.reactions.length > 0 && {marginBottom: 20}]}>
+      <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
-      {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
-        <>
-          <Image
-            source={{uri: `${BASE_URL}/${message.media_url}`}}
-            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
-            onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
-          />
-        </>
-      )}
-
-      {message.kind === "videoMessage" && message.media_url && (
-        <MediaPlayer
-          kind="video"
-          uri={mediaUri}
-          style={[styles.media, {aspectRatio: mediaAspectRatio}]}
-          onAspectRatio={setMediaAspectRatio}
-        />
-      )}
-
-      {message.kind === "audioMessage" && message.media_url && (
-        <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
-      )}
-
-      <Text style={styles.content}>{message.body}</Text>
-      <View style={styles.meta}>
-        <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
-        {message.from_me && indicator && (
-          <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
+        {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
+          <>
+            <Image
+              source={{uri: `${BASE_URL}/${message.media_url}`}}
+              style={[styles.media, {aspectRatio: mediaAspectRatio}]}
+              onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
+            />
+          </>
         )}
+
+        {message.kind === "videoMessage" && message.media_url && (
+          <MediaPlayer
+            kind="video"
+            uri={mediaUri}
+            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
+            onAspectRatio={setMediaAspectRatio}
+          />
+        )}
+
+        {message.kind === "audioMessage" && message.media_url && (
+          <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
+        )}
+
+        <Text style={styles.content}>{message.body}</Text>
+        <View style={styles.meta}>
+          <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
+          {message.from_me && indicator && (
+            <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
+          )}
+        </View>
       </View>
+
+      {message.reactions.length > 0 && (
+        <View style={[styles.reactions, message.from_me && {right: 8, left: 'auto'}]}>
+          {message.reactions.map((reaction, index) => (
+            <Text key={index} style={styles.reaction}>
+              {reaction.emoji}
+            </Text>
+          ))}
+        </View>
+      )}
+
     </View>
   );
 }
@@ -155,5 +168,23 @@ const createStyles = colors => StyleSheet.create({
   audio: {
     width: 300,
     height: 54,
+  },
+  chatWrapper: {
+    position: 'relative',
+  },
+  reactions: {
+    flexDirection: 'row',
+    gap: 4,
+    marginTop: 4,
+
+    position: 'absolute',
+    bottom: -25,
+    left: 8,
+    backgroundColor: colors.surface,
+    padding: 8,
+    borderRadius: 16,
+  },
+  reaction: {
+    fontSize: 14,
   },
 });
