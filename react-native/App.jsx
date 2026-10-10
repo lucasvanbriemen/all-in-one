@@ -1,7 +1,7 @@
 import {AppProvider, useAppContext} from './context/AppContext';
+import {Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {Platform, StyleSheet, View} from 'react-native';
 
 import {CodePage} from './components/code/CodePage';
 import {EmailPage} from './components/email/EmailPage';
@@ -87,7 +87,7 @@ function AppShell() {
 
         {compact && (
           <>
-            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 24)}>
+            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
               <NowPlayingBar />
               <MobileNavigation />
             </View>
