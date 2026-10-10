@@ -19,6 +19,11 @@ module LoginRuby
     Rails.autoloaders.main.collapse("#{root}/app/models/configs")
     Rails.autoloaders.main.collapse("#{root}/app/models/email")
 
+    # The native app's WebSocket sends no Origin header. Sockets authenticate
+    # with a token param only (see ApplicationCable::Connection), so there is
+    # no ambient credential for a cross-site socket to ride on.
+    config.action_cable.disable_request_forgery_protection = true
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

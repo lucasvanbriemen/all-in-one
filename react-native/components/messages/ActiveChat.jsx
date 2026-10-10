@@ -5,6 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {Message} from './Message';
+import {useChannel} from '../cable';
 import {useAppContext} from '../../context/AppContext';
 
 export function ActiveChat() {
@@ -17,12 +18,20 @@ export function ActiveChat() {
   const [messageInput, setMessageInput] = useState('');
   const scrollViewRef = useRef(null);
 
-  useEffect(() => {
-    api.get('/whatsapp/chats/' + get("whatsapp.activeJid")).then(response => {
+  const activeJid = get("whatsapp.activeJid");
+
+  function loadChat() {
+    api.get('/whatsapp/chats/' + activeJid).then(response => {
       setChat(response);
       setMessages((response.messages ?? []).slice().reverse());
     });
-  }, [get]);
+  }
+
+  useEffect(loadChat, [activeJid]);
+
+  useChannel('WhatsappChannel', ({jid}) => {
+    if (jid === activeJid) loadChat();
+  });
 
   async function sendMessage() {
     const text = messageInput.trim();

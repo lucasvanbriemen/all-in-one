@@ -13,6 +13,13 @@ module Authentication
     helper_method :current_account
   end
 
+  def self.fetch_account(token)
+    response = Net::HTTP.get_response(URI("#{LOGIN_URL}/session/#{token}"))
+    return nil unless response.is_a?(Net::HTTPOK)
+
+    JSON.parse(response.body)
+  end
+
   private
 
   attr_reader :current_account
@@ -37,10 +44,7 @@ module Authentication
   end
 
   def fetch_account(token)
-    response = Net::HTTP.get_response(URI("#{LOGIN_URL}/session/#{token}"))
-    return nil unless response.is_a?(Net::HTTPOK)
-
-    JSON.parse(response.body)
+    Authentication.fetch_account(token)
   end
 
   def store_auth_cookie(token)

@@ -1,11 +1,21 @@
 module Whatsapp
   # Turns webhook events from the connector into database rows.
   class EventHandler
+    CHAT_KEYED_EVENTS = %w[message message_edited message_deleted message_status reaction chat_cleared].freeze
+    ID_KEYED_EVENTS = %w[chat chat_deleted group group_participants].freeze
+
     def self.handle(event, payload)
-      new.handle(event, payload)
+      handler = new
+      handler.handle(event, payload)
+      handler.broadcast_changes
+    end
+
+    def initialize
+      @changed_jids = Set.new
     end
 
     def handle(event, payload)
+      track_change(event, payload)
       case event
       when "batch" then payload["events"].each { |e| handle(e["event"], e["payload"]) }
       when "connection" then connection(payload)
@@ -27,7 +37,18 @@ module Whatsapp
       end
     end
 
+    # One signal per chat, so a batch of history does not flood the socket.
+    def broadcast_changes
+      @changed_jids.each { |jid| ActionCable.server.broadcast("whatsapp", { type: "chat_changed", jid: jid }) }
+    end
+
     private
+
+    def track_change(event, payload)
+      jid = payload["chat"] if CHAT_KEYED_EVENTS.include?(event)
+      jid = payload["id"] if ID_KEYED_EVENTS.include?(event)
+      @changed_jids << jid if jid
+    end
 
     def connection(payload)
       me = payload["me"] || {}

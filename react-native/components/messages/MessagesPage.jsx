@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {ActiveChat} from './ActiveChat';
+import {useChannel} from '../cable';
 import {useAppContext} from '../../context/AppContext';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
@@ -14,11 +15,14 @@ export function MessagesPage() {
   const [chats, setChats] = useState([]);
   const {set, get} = useAppContext();
 
-  useEffect(() => {
+  function loadChats() {
     api.get('/whatsapp/chats').then(response => {
       setChats(response);
     });
-  }, []);
+  }
+
+  useEffect(loadChats, []);
+  useChannel('WhatsappChannel', loadChats);
 
   return (
     <View style={styles.content}>
