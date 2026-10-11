@@ -29,8 +29,8 @@ module ServerData
         value: uptime_seconds
       },
       {
-        label: "WhatsApp connection status",
-        value: Whatsapp::Connection.current.status,
+        label: "WhatsApp unpaired",
+        value: Whatsapp::Connection.current.pairing_code,
         importance_level: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status) ? "high" : "low",
         should_show: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status)
       }
