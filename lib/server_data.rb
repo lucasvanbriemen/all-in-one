@@ -6,6 +6,8 @@ module ServerData
   DISK_THRESHOLD_MEDIUM = 75.freeze
   DISK_THRESHOLD_HIGH = 90.freeze
 
+  WHATSAPP_UNHAPPY_STATUS = [ "pairing" ]
+
   def all
     [
       {
@@ -25,6 +27,12 @@ module ServerData
       {
         label: "Uptime",
         value: uptime_seconds
+      },
+      {
+        label: "WhatsApp connection status",
+        value: Whatsapp::Connection.current.status,
+        importance_level: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status) ? "high" : "low",
+        should_show: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status)
       }
     ]
   end

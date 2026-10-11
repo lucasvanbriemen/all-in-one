@@ -6,8 +6,7 @@ class WhatsappController < ApplicationController
   end
 
   def status
-    connection = Whatsapp::Connection.current
-    render json: connection.as_json(only: [ :status, :me_jid, :me_name, :pairing_code, :last_error, :connected_at ])
+    render json: Whatsapp::Connection.current
   end
 
   def pair
