@@ -60,7 +60,7 @@ function PushBridge() {
       set('app.activeApp', kind);
       set('app.activeSidebarItem', mailbox);
       set('email.selectedEmailId', Number(emailId));
-      set('app.activeJid', emailId);
+      set('whatsapp.activeJid', emailId);
     });
     push.requestPermission();
     return unsubscribe;
