@@ -6,7 +6,7 @@ module ServerData
   DISK_THRESHOLD_MEDIUM = 75.freeze
   DISK_THRESHOLD_HIGH = 90.freeze
 
-  WHATSAPP_UNHAPPY_STATUS = [ "pairing" ]
+  WHATSAPP_UNHAPPY_STATUS = [ "pairing", "needs_relink" ]
 
   def all
     [
