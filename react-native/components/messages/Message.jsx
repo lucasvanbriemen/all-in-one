@@ -134,7 +134,6 @@ const createStyles = colors => StyleSheet.create({
     alignSelf: 'flex-start',
     maxWidth: '75%',
     flexWrap: 'wrap',
-    alignItems: 'flex-end',
     gap: 8,
   },
   avatar: {
