@@ -2,7 +2,7 @@ import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 
 import {Message} from './Message';
 import {useChannel} from '../cable';
@@ -11,6 +11,7 @@ import {useAppContext} from '../../context/AppContext';
 export function ActiveChat() {
   const compact = useCompactLayout();
   const bottomInset = useBottomInset();
+  const keyboardHeight = useKeyboardHeight();
   const styles = useThemedStyles(createStyles);
   const [chat, setChat] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -55,7 +56,8 @@ export function ActiveChat() {
   }
 
   return (
-    <View style={[styles.content, {paddingBottom: bottomInset}]}>
+    // The floating navigation sits behind the keyboard, so while it is open only the keyboard needs clearing.
+    <View style={[styles.content, {paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset}]}>
       {compact && (
         <View style={styles.chatListing}>
           <Pressable onPress={() => set("whatsapp.activeJid", null)}>
@@ -72,8 +74,8 @@ export function ActiveChat() {
         ))}
       </ScrollView>
 
-      <View>
-        <TextInput value={messageInput} onChangeText={setMessageInput} placeholder="Type a message" style={styles.messageInput} />
+      <View style={styles.composer}>
+        <TextInput value={messageInput} onChangeText={setMessageInput} onFocus={() => setTimeout(() => scrollViewRef.current?.scrollToEnd({animated: true}), 300)} placeholder="Type a message" style={styles.messageInput} />
         <Pressable onPress={sendMessage}>
           <Text>Send</Text>
         </Pressable>
@@ -143,7 +145,13 @@ const createStyles = colors => StyleSheet.create({
     flex: 2
   },
 
+  composer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   messageInput: {
+    flex: 1,
     borderWidth: 1,
     borderColor: colors.secondary,
     borderRadius: 8,
