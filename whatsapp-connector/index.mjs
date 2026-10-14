@@ -13,6 +13,13 @@ const WEBHOOK_URL = process.env.WEBHOOK_URL || null;
 const BRIDGE_SECRET = process.env.BRIDGE_SECRET;
 const PHONE_NUMBER = (process.env.PHONE_NUMBER || '').replace(/\D/g, '');
 
+// WhatsApp rate limits pairing-code requests per number (429 rate-overlimit), so pairing only starts on an explicit
+// POST /pair and is throttled by a guard stored outside AUTH_DIR, which a logout wipes, so restarts can't reset it.
+const PAIRING_GUARD_FILE = path.join(path.dirname(AUTH_DIR), 'pairing-guard.json');
+const PAIRING_INTERVAL = 3 * 60_000;
+const RATE_LIMIT_COOLDOWN = 60 * 60_000;
+const RATE_LIMIT_COOLDOWN_MAX = 24 * 60 * 60_000;
+
 const PROTOCOL_REVOKE = 0;
 const PROTOCOL_MESSAGE_EDIT = 14;
 
@@ -43,15 +50,27 @@ export const bridge = {
   lidToPhone: new Map(),
 
   sock: null,
+  creds: null,
+  pairPhone: null,
   pairingRequested: false,
+  pairingGuard: {lastRequestAt: 0, blockedUntil: 0, strikes: 0},
   reconnectDelay: 1000,
 
   async connect() {
     fs.mkdirSync(AUTH_DIR, {recursive: true});
     const {state: auth, saveCreds} = await useMultiFileAuthState(AUTH_DIR);
+    bridge.creds = auth.creds;
+
+    // Without a linked device there is nothing to keep alive; wait for POST /pair instead of cycling pairing sockets.
+    if (!bridge.paired() && !bridge.pairPhone) {
+      bridge.sock = null;
+      bridge.state.status = 'needs_relink';
+      return;
+    }
+
     const {version} = await fetchLatestBaileysVersion();
 
-    bridge.state.status = auth.creds.registered ? 'connecting' : 'pairing';
+    bridge.state.status = bridge.paired() ? 'connecting' : 'pairing';
     bridge.pairingRequested = false;
 
     const sock = bridge.sock = makeWASocket({
@@ -137,11 +156,9 @@ export const bridge = {
   async onConnectionUpdate({connection, lastDisconnect, qr}) {
     const {state, sock} = bridge;
 
-    if (qr && PHONE_NUMBER && !bridge.pairingRequested) {
+    if (qr && bridge.pairPhone && !bridge.pairingRequested) {
       bridge.pairingRequested = true;
-      await bridge.requestPairingCode(PHONE_NUMBER).catch(() => {});
-    } else if (qr && !PHONE_NUMBER) {
-      state.status = 'pairing';
+      await bridge.requestPairingCode(bridge.pairPhone).catch(() => {});
     }
 
     if (connection === 'open') {
@@ -150,6 +167,9 @@ export const bridge = {
       state.pairingCode = null;
       state.lastError = null;
       state.connectedAt = new Date().toISOString();
+      bridge.pairPhone = null;
+      bridge.pairingGuard.strikes = 0;
+      bridge.savePairingGuard();
       state.me = sock.user ? {id: jidNormalizedUser(sock.user.id), lid: sock.user.lid ? jidNormalizedUser(sock.user.lid) : null, name: sock.user.name || null} : null;
       if (state.me?.lid) bridge.rememberMapping(state.me.lid, state.me.id);
       await bridge.emit('connection', {status: 'open', me: state.me});
@@ -160,12 +180,17 @@ export const bridge = {
       const reason = DisconnectReason[code] || code;
       state.lastError = String(reason);
 
-      if (code === DisconnectReason.loggedOut) {
-        fs.rmSync(AUTH_DIR, {recursive: true, force: true});
+      // Logged out, or a pairing that expired or failed: stay down until someone asks to pair again.
+      // Reconnecting here would request a new pairing code every cycle and trip WhatsApp's rate limit.
+      // restartRequired is the normal close right after a successful pairing, so that one reconnects.
+      if (code === DisconnectReason.loggedOut || (!bridge.paired() && code !== DisconnectReason.restartRequired)) {
+        if (code === DisconnectReason.loggedOut) fs.rmSync(AUTH_DIR, {recursive: true, force: true});
         state.status = 'needs_relink';
         state.me = null;
+        state.pairingCode = null;
+        bridge.sock = null;
+        bridge.pairPhone = null;
         await bridge.emit('connection', {status: 'needs_relink', reason});
-        bridge.scheduleReconnect();
         return;
       }
 
@@ -181,6 +206,16 @@ export const bridge = {
   },
 
   async requestPairingCode(phone) {
+    const {pairingGuard: guard} = bridge;
+    const wait = bridge.pairingWait();
+    if (wait > 0) {
+      bridge.state.lastError = `pairing paused for ${Math.ceil(wait / 1000)}s to avoid WhatsApp rate limits`;
+      bridge.sock?.end(undefined);
+      throw new Error(bridge.state.lastError);
+    }
+
+    guard.lastRequestAt = Date.now();
+    bridge.savePairingGuard();
     try {
       const code = await bridge.sock.requestPairingCode(phone);
       bridge.state.status = 'pairing';
@@ -188,9 +223,37 @@ export const bridge = {
       await bridge.emit('pairing_code', {code});
       return code;
     } catch (error) {
+      if (error?.output?.statusCode === 429 || /rate-overlimit/.test(error?.message)) {
+        guard.blockedUntil = Date.now() + Math.min(RATE_LIMIT_COOLDOWN * 2 ** guard.strikes, RATE_LIMIT_COOLDOWN_MAX);
+        guard.strikes += 1;
+        bridge.savePairingGuard();
+      }
       bridge.state.lastError = error.message;
+      bridge.sock?.end(undefined);
       throw error;
     }
+  },
+
+  paired() {
+    return Boolean(bridge.creds?.account);
+  },
+
+  // Milliseconds until another pairing code may be requested.
+  pairingWait() {
+    const {lastRequestAt, blockedUntil} = bridge.pairingGuard;
+    const now = Date.now();
+    return Math.max(0, blockedUntil - now, lastRequestAt + PAIRING_INTERVAL - now);
+  },
+
+  loadPairingGuard() {
+    try {
+      Object.assign(bridge.pairingGuard, JSON.parse(fs.readFileSync(PAIRING_GUARD_FILE, 'utf8')));
+    } catch {}
+  },
+
+  savePairingGuard() {
+    fs.mkdirSync(path.dirname(PAIRING_GUARD_FILE), {recursive: true});
+    fs.writeFileSync(PAIRING_GUARD_FILE, JSON.stringify(bridge.pairingGuard));
   },
 
   normalize(jid) {
@@ -516,7 +579,7 @@ export const bridge = {
 
     switch (route) {
       case 'GET /state':
-        return reply(200, {...state, cached: {contacts: contacts.size, chats: chats.size, lid_mappings: lidToPhone.size}});
+        return reply(200, {...state, pairing_available_in: Math.ceil(bridge.pairingWait() / 1000), cached: {contacts: contacts.size, chats: chats.size, lid_mappings: lidToPhone.size}});
 
       case 'GET /chats':
         return reply(200, [...chats.values()]);
@@ -582,7 +645,13 @@ export const bridge = {
         const digits = String(phone || PHONE_NUMBER).replace(/\D/g, '');
         if (!digits) return reply(400, {error: 'phone is required'});
         if (state.status === 'open') return reply(409, {error: 'already linked', me: state.me});
-        return reply(200, {code: await bridge.requestPairingCode(digits)});
+        if (bridge.pairPhone) return reply(202, {status: state.status, code: state.pairingCode});
+        const wait = bridge.pairingWait();
+        if (wait > 0) return reply(429, {error: `pairing paused to avoid WhatsApp rate limits, retry in ${Math.ceil(wait / 1000)}s`, retry_after: Math.ceil(wait / 1000)});
+        // The code is requested once the fresh socket is ready; it shows up in GET /state and the pairing_code webhook.
+        bridge.pairPhone = digits;
+        bridge.connect();
+        return reply(202, {status: 'pairing', code: null});
       }
 
       case 'POST /send': {
@@ -626,9 +695,16 @@ export const bridge = {
   },
 
   start() {
-    http.createServer(bridge.handleRequest).listen(PORT, HOST);
+    // An unhandled rejection here used to crash the process, and systemd's restart re-ran pairing.
+    http.createServer((request, response) => bridge.handleRequest(request, response).catch(error => {
+      bridge.log.error({err: error}, 'request failed');
+      if (response.headersSent) return response.end();
+      response.writeHead(500, {'Content-Type': 'application/json'});
+      response.end(JSON.stringify({error: error.message}));
+    })).listen(PORT, HOST);
     process.on('SIGINT', () => process.exit(0));
     process.on('SIGTERM', () => process.exit(0));
+    bridge.loadPairingGuard();
     bridge.connect();
   },
 };
