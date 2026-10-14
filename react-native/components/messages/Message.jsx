@@ -119,6 +119,7 @@ const createStyles = colors => StyleSheet.create({
   },
   quotedSender: {
     fontWeight: 'bold',
+    color: colors.onSurface,
     marginBottom: 4,
   },
   quotedContent: {
