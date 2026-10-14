@@ -648,6 +648,8 @@ export const bridge = {
         if (bridge.pairPhone) return reply(202, {status: state.status, code: state.pairingCode});
         const wait = bridge.pairingWait();
         if (wait > 0) return reply(429, {error: `pairing paused to avoid WhatsApp rate limits, retry in ${Math.ceil(wait / 1000)}s`, retry_after: Math.ceil(wait / 1000)});
+        // Leftovers of an unfinished pairing make Baileys attempt a login, which WhatsApp rejects as loggedOut.
+        if (!bridge.paired()) fs.rmSync(AUTH_DIR, {recursive: true, force: true});
         // The code is requested once the fresh socket is ready; it shows up in GET /state and the pairing_code webhook.
         bridge.pairPhone = digits;
         bridge.connect();
