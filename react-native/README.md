@@ -152,13 +152,14 @@ is registered by many unrelated developers and provisioning against it is unreli
 
 ```sh
 cd react-native
-npm run ios -- --device "iPhone" --extra-params "-allowProvisioningUpdates"
+npm run ios -- --device "iPhone" --extra-params "-allowProvisioningUpdates -allowProvisioningDeviceRegistration"
 ```
 
 `--device` takes the device's name as it appears in `xcrun xctrace list devices`; pass
 the UDID instead if two devices share a name. `-allowProvisioningUpdates` lets
-`xcodebuild` register the device and create the provisioning profile without opening
-Xcode — omit it and a new device fails to sign.
+`xcodebuild` create and update the provisioning profile. Also pass
+`-allowProvisioningDeviceRegistration` to register a new device without opening Xcode.
+The release script includes both flags.
 
 List what's connected:
 

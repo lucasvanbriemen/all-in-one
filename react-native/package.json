@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ios": "react-native run-ios",
-    "ios:release": "react-native run-ios --device --mode Release --no-packager --extra-params \"-allowProvisioningUpdates\"",
+    "ios:release": "react-native run-ios --device --mode Release --no-packager --extra-params \"-allowProvisioningUpdates -allowProvisioningDeviceRegistration\"",
     "macos": "react-native run-macos",
     "web": "vite",
     "web:build": "vite build",
