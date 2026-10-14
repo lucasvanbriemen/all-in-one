@@ -41,6 +41,13 @@ export function Message({message}) {
     <View style={[styles.chatWrapper, message.reactions.length > 0 && {marginBottom: 20}]}>
       <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
+        {message.quoted && (
+          <View style={styles.quoted}>
+            <Text style={styles.quotedSender}>{message.quoted.sender_name}</Text>
+            <Text style={styles.quotedContent}>{message.quoted.body}</Text>
+          </View>
+        )}
+
         {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
           <>
             <Image
@@ -104,6 +111,19 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
   },
+  quoted: {
+    backgroundColor: colors.surfaceAt1,
+    padding: 8,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  quotedSender: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  quotedContent: {
+    color: colors.onSurfaceVariant,
+  },
   chatContainer: {
     marginTop: 8,
     ...glass(colors),
@@ -112,7 +132,6 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     alignSelf: 'flex-start',
     maxWidth: '75%',
-    flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-end',
     gap: 8,
