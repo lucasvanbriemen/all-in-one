@@ -71,12 +71,14 @@ export function Message({message}) {
           <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
         )}
 
-        <Text style={styles.content}>{message.body}</Text>
-        <View style={styles.meta}>
-          <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
-          {message.from_me && indicator && (
-            <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
-          )}
+        <View style={styles.body}>
+          <Text style={styles.content}>{message.body}</Text>
+          <View style={styles.meta}>
+            <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
+            {message.from_me && indicator && (
+              <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
+            )}
+          </View>
         </View>
       </View>
 
@@ -99,7 +101,6 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   content: {
-    flexDirection: 'row',
     gap: 16,
     flex: 2,
   },
@@ -133,7 +134,12 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     alignSelf: 'flex-start',
     maxWidth: '75%',
+    gap: 8,
+  },
+  body: {
+    flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'flex-end',
     gap: 8,
   },
   avatar: {
