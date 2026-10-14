@@ -24,10 +24,11 @@ class WhatsappController < ApplicationController
     page = params[:page].to_i.clamp(1, 10_000)
     messages = chat.messages.newest_first.includes(:sender, :reactions).limit(Whatsapp::Message::PER_PAGE).offset((page - 1) * Whatsapp::Message::PER_PAGE)
     mark_read
+    quoted = chat.messages.includes(:sender).where(wa_id: messages.filter_map(&:quoted_id).uniq).index_by(&:wa_id)
 
     render json: {
       chat: chat_json(chat),
-      messages: messages.map { |message| message_json(message) },
+      messages: messages.map { |message| message_json(message, quoted: quoted[message.quoted_id]) },
       page: page,
       has_more: messages.size == Whatsapp::Message::PER_PAGE
     }
@@ -104,7 +105,7 @@ class WhatsappController < ApplicationController
     }
   end
 
-  def message_json(message)
+  def message_json(message, quoted: nil)
     {
       id: message.wa_id,
       chat_jid: message.chat_jid,
@@ -116,12 +117,25 @@ class WhatsappController < ApplicationController
       media: message.public_media,
       media_url: (whatsapp_media_path(message.chat_jid, message.wa_id) if message.downloadable_media?),
       quoted_id: message.quoted_id,
+      quoted: quoted && quoted_json(quoted),
       mentions: message.mentions,
       status: message.status,
       sent_at: message.sent_at,
       edited_at: message.edited_at,
       deleted: message.deleted?,
       reactions: message.reactions.map { |r| { emoji: r.emoji, sender_jid: r.sender_jid } }
+    }
+  end
+
+  def quoted_json(message)
+    {
+      id: message.wa_id,
+      sender_jid: message.sender_jid,
+      sender_name: message.display_sender_name,
+      from_me: message.from_me,
+      kind: message.kind,
+      body: message.deleted? ? nil : message.body,
+      deleted: message.deleted?
     }
   end
 end
