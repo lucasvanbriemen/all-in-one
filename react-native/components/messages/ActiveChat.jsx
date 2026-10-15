@@ -21,6 +21,8 @@ export function ActiveChat() {
   const {get, set} = useAppContext();
   const [messageInput, setMessageInput] = useState('');
   const [attachment, setAttachment] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [replyTo, setReplyTo] = useState(null);
   const scrollViewRef = useRef(null);
 
   const activeJid = get("whatsapp.activeJid");
@@ -33,10 +35,39 @@ export function ActiveChat() {
   }
 
   useEffect(loadChat, [activeJid]);
+  useEffect(() => {
+    setSelectedId(null);
+    setReplyTo(null);
+  }, [activeJid]);
 
   useChannel('WhatsappChannel', ({jid}) => {
     if (jid === activeJid) loadChat();
   });
+
+  // An empty emoji removes our reaction. The webhook echo reloads the chat with the stored state.
+  async function react(message, emoji) {
+    setSelectedId(null);
+    setMessages(prev => prev.map(m => m.id !== message.id ? m : {
+      ...m,
+      reactions: [...m.reactions.filter(r => !r.from_me), ...(emoji ? [{emoji, from_me: true}] : [])],
+    }));
+    try {
+      await api.post('/whatsapp/chats/' + message.chat_jid + '/react', {message_id: message.id, emoji});
+    } catch (error) {
+      console.warn('Reacting failed', error);
+      loadChat();
+    }
+  }
+
+  function startReply(message) {
+    setSelectedId(null);
+    setReplyTo(message);
+  }
+
+  // Shaped like the `quoted` the show endpoint returns, so the bubble renders it before the reload.
+  function quotedFor(message) {
+    return message && {id: message.id, sender_name: message.sender_name ?? 'You', from_me: message.from_me, kind: message.kind, body: message.body};
+  }
 
   async function pickAttachment() {
     const picked = await mediaPicker.pick();
@@ -50,6 +81,7 @@ export function ActiveChat() {
     const caption = messageInput.trim();
     const jid = get("whatsapp.activeJid");
     const localId = 'local-' + Date.now();
+    const quoted = replyTo;
     setMessages(prev => [...prev, {
       id: localId,
       chat_jid: jid,
@@ -58,17 +90,20 @@ export function ActiveChat() {
       body: caption,
       media: {width: picked.width, height: picked.height},
       local_uri: picked.uri,
+      quoted_id: quoted?.id,
+      quoted: quotedFor(quoted),
       sent_at: new Date().toISOString(),
       status: 1,
       reactions: [],
     }]);
     setAttachment(null);
     setMessageInput('');
+    setReplyTo(null);
 
     let update;
     try {
       const file = picked.file ?? {uri: picked.uri, name: picked.name, type: picked.type};
-      const sent = await api.upload('/whatsapp/chats/' + jid + '/send_media', {file, caption: caption || null});
+      const sent = await api.upload('/whatsapp/chats/' + jid + '/send_media', {file, caption: caption || null, quote_id: quoted?.id ?? null});
       update = {id: sent.id, sent_at: sent.sent_at, status: 2};
     } catch (error) {
       console.warn('Sending media failed', error);
@@ -82,7 +117,8 @@ export function ActiveChat() {
     const text = messageInput.trim();
     if (text === '') return;
     const jid = get("whatsapp.activeJid");
-    const sent = await api.post('/whatsapp/chats/' + jid + '/send', {text});
+    const quoted = replyTo;
+    const sent = await api.post('/whatsapp/chats/' + jid + '/send', {text, quote_id: quoted?.id});
 
     // The send endpoint only returns {id, chat, sent_at}; build a message
     // in the same shape as the index endpoint so it renders like the rest.
@@ -92,11 +128,14 @@ export function ActiveChat() {
       from_me: true,
       kind: 'text',
       body: text,
+      quoted_id: quoted?.id,
+      quoted: quotedFor(quoted),
       sent_at: sent.sent_at,
       status: 'sent',
       reactions: [],
     }]);
     setMessageInput('');
+    setReplyTo(null);
   }
 
   return (
@@ -119,9 +158,29 @@ export function ActiveChat() {
 
       <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: false })} contentContainerStyle={styles.messagesContainer}>
         {messages.map((message, index) => (
-          <Message key={index} message={message} />
+          <Message
+            key={index}
+            message={message}
+            selected={selectedId === message.id}
+            onSelect={() => setSelectedId(message.id)}
+            onDeselect={() => setSelectedId(null)}
+            onReact={emoji => react(message, emoji)}
+            onReply={() => startReply(message)}
+          />
         ))}
       </ScrollView>
+
+      {replyTo && (
+        <View style={styles.attachment}>
+          <View style={styles.replyPreview}>
+            <Text style={styles.replySender}>Replying to {replyTo.from_me ? 'yourself' : replyTo.sender_name}</Text>
+            <Text style={styles.attachmentName} numberOfLines={1}>{replyTo.body || replyTo.kind}</Text>
+          </View>
+          <Pressable onPress={() => setReplyTo(null)}>
+            <Icon name="cross" size={16} color={styles.attachmentName.color} />
+          </Pressable>
+        </View>
+      )}
 
       {attachment && (
         <View style={styles.attachment}>
@@ -161,6 +220,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     padding: 8,
     borderRadius: 16,
+    overflow: 'hidden',
   },
   backButton: {
     padding: 8,
@@ -239,6 +299,17 @@ const createStyles = colors => StyleSheet.create({
   attachmentName: {
     flex: 1,
     color: colors.secondary,
+  },
+  replyPreview: {
+    flex: 1,
+    gap: 2,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.primary,
+    paddingLeft: 8,
+  },
+  replySender: {
+    fontWeight: 'bold',
+    color: colors.primary,
   },
   composer: {
     flexDirection: 'row',

@@ -27,7 +27,24 @@ const STATUS_ICONS = {
   read: {icon: 'check-double', color: 'primary'},
 };
 
-export function Message({message}) {
+export const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+
+// Same emoji from several people collapses into one chip with a count.
+function groupReactions(reactions) {
+  const groups = [];
+  for (const reaction of reactions) {
+    const group = groups.find(g => g.emoji === reaction.emoji);
+    if (group) {
+      group.count++;
+      group.mine ||= reaction.from_me;
+    } else {
+      groups.push({emoji: reaction.emoji, count: 1, mine: Boolean(reaction.from_me)});
+    }
+  }
+  return groups;
+}
+
+export function Message({message, selected, onSelect, onDeselect, onReact, onReply}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -36,10 +53,30 @@ export function Message({message}) {
   const [mediaAspectRatio, setMediaAspectRatio] = useState(width && height ? width / height : 3 / 2);
   const mediaUri = message.local_uri ?? (message.media_url && `${BASE_URL}/${message.media_url}`);
   const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
+  const reactions = groupReactions(message.reactions ?? []);
+  const myReaction = message.reactions?.find(reaction => reaction.from_me)?.emoji;
+  // Messages still uploading have no WhatsApp id to point at yet.
+  const actionable = !message.deleted && !String(message.id).startsWith('local-');
 
   return (
-    <View style={[styles.chatWrapper, message.reactions.length > 0 && {marginBottom: 20}]}>
-      <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
+    <View style={[styles.chatWrapper, reactions.length > 0 && {marginBottom: 20}]}>
+      {selected && (
+        <View style={[styles.actions, message.from_me && styles.actionsFromMe]}>
+          {QUICK_REACTIONS.map(emoji => (
+            <Pressable key={emoji} onPress={() => onReact(emoji === myReaction ? '' : emoji)} style={[styles.action, emoji === myReaction && styles.actionActive]}>
+              <Text style={styles.actionEmoji}>{emoji}</Text>
+            </Pressable>
+          ))}
+          <Pressable onPress={onReply} style={styles.action}>
+            <Text style={styles.actionLabel}>Reply</Text>
+          </Pressable>
+        </View>
+      )}
+
+      <Pressable
+        onLongPress={actionable ? onSelect : undefined}
+        onPress={selected ? onDeselect : undefined}
+        style={[styles.chatContainer, message.from_me && styles.from_me, selected && styles.selected]}>
 
         {message.quoted && (
           <View style={styles.quoted}>
@@ -78,14 +115,16 @@ export function Message({message}) {
             )}
           </View>
         </View>
-      </View>
+      </Pressable>
 
-      {message.reactions.length > 0 && (
+      {reactions.length > 0 && (
         <View style={[styles.reactions, message.from_me && {right: 8, left: 'auto'}]}>
-          {message.reactions.map((reaction, index) => (
-            <Text key={index} style={styles.reaction}>
-              {reaction.emoji}
-            </Text>
+          {reactions.map(reaction => (
+            <Pressable key={reaction.emoji} disabled={!reaction.mine} onPress={() => onReact('')}>
+              <Text style={[styles.reaction, reaction.mine && styles.reactionMine]}>
+                {reaction.emoji}{reaction.count > 1 ? ` ${reaction.count}` : ''}
+              </Text>
+            </Pressable>
           ))}
         </View>
       )}
@@ -209,5 +248,41 @@ const createStyles = colors => StyleSheet.create({
   },
   reaction: {
     fontSize: 14,
+    color: colors.onSurface,
+  },
+  reactionMine: {
+    fontWeight: 'bold',
+  },
+  selected: {
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+    marginTop: 8,
+    padding: 4,
+    borderRadius: 20,
+    ...glass(colors),
+  },
+  actionsFromMe: {
+    alignSelf: 'flex-end',
+  },
+  action: {
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderRadius: 16,
+  },
+  actionActive: {
+    backgroundColor: colors.primaryContainer,
+  },
+  actionEmoji: {
+    fontSize: 20,
+  },
+  actionLabel: {
+    color: colors.primary,
+    fontWeight: 'bold',
   },
 });
