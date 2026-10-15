@@ -32,7 +32,7 @@ export function EmailListing() {
       <ScrollView contentContainerStyle={{paddingBottom: bottomInset}} refreshControl={<RefreshControl refreshing={emailRefreshing} onRefresh={() => {setEmailRefreshing(true); getEmails().finally(() => setEmailRefreshing(false));}} />}>
         {emails.map((email, index) => (
           <React.Fragment key={email.id}>
-            {email[index - 1]?.date !== email.date && (
+            {emails[index - 1]?.date !== email.date && (
               <Text style={styles.title}>{email.date}</Text>
             )}
 
