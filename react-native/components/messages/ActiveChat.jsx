@@ -26,7 +26,7 @@ export function ActiveChat() {
 
   function loadChat() {
     api.get('/whatsapp/chats/' + activeJid).then(response => {
-      setChat(response);
+      setChat(response.chat);
       setMessages((response.messages ?? []).slice().reverse());
     });
   }
@@ -106,8 +106,10 @@ export function ActiveChat() {
           <Pressable onPress={() => set("whatsapp.activeJid", null)}>
             <Text style={styles.goBack}>Back</Text>
           </Pressable>
-          <Text style={styles.chatName}>{chat.name}</Text>
-          <Text style={styles.goBack}> </Text>
+          <View style={styles.contactDetails}>
+            <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.chatImage} />
+            <Text style={styles.chatName}>{chat.name}</Text>
+          </View>
         </View>
       )}
 
@@ -145,8 +147,14 @@ export function ActiveChat() {
 const createStyles = colors => StyleSheet.create({
   chatListing: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
+  },
+  contactDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
   },
 
   chatName: {
@@ -182,6 +190,11 @@ const createStyles = colors => StyleSheet.create({
     height: 45,
     borderRadius: 25,
     marginRight: 16,
+  },
+  chatImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
   },
   unreadChat: {
     ...glass(colors, {variant: 'primaryContainer'}),
