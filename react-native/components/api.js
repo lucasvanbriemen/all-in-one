@@ -34,6 +34,15 @@ export const api = {
     return this.makeRequest("PUT", url, data, headers);
   },
 
+  upload(url, fields) {
+    const body = new FormData();
+    Object.entries(fields).forEach(([key, value]) => {
+      if (value != null) body.append(key, value);
+    });
+    const {"Content-Type": _, ...headers} = this.defaultHeaders;
+    return this.send("POST", url, {method: "POST", headers, body});
+  },
+
   makeRequest(method, url, data = null, headers = {}) {
     const options = {
       method,
@@ -47,6 +56,10 @@ export const api = {
       options.body = JSON.stringify(data);
     }
 
+    return this.send(method, url, options);
+  },
+
+  send(method, url, options) {
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
         console.log(`${method} ${url} responded with status ${response.status}`);

@@ -4,9 +4,11 @@ import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 
+import {Icon} from '../icons';
 import {Message} from './Message';
-import {useChannel} from '../cable';
+import {mediaPicker} from '../mediaPicker';
 import {useAppContext} from '../../context/AppContext';
+import {useChannel} from '../cable';
 
 export function ActiveChat() {
   const compact = useCompactLayout();
@@ -17,6 +19,7 @@ export function ActiveChat() {
   const [messages, setMessages] = useState([]);
   const {get, set} = useAppContext();
   const [messageInput, setMessageInput] = useState('');
+  const [attachment, setAttachment] = useState(null);
   const scrollViewRef = useRef(null);
 
   const activeJid = get("whatsapp.activeJid");
@@ -34,7 +37,47 @@ export function ActiveChat() {
     if (jid === activeJid) loadChat();
   });
 
+  async function pickAttachment() {
+    const picked = await mediaPicker.pick();
+    if (picked) setAttachment(picked);
+  }
+
+  // The message text becomes the caption. The bubble shows the local file
+  // with a clock until the upload finishes.
+  async function sendAttachment() {
+    const picked = attachment;
+    const caption = messageInput.trim();
+    const jid = get("whatsapp.activeJid");
+    const localId = 'local-' + Date.now();
+    setMessages(prev => [...prev, {
+      id: localId,
+      chat_jid: jid,
+      from_me: true,
+      kind: picked.kind === 'video' ? 'videoMessage' : 'imageMessage',
+      body: caption,
+      media: {width: picked.width, height: picked.height},
+      local_uri: picked.uri,
+      sent_at: new Date().toISOString(),
+      status: 1,
+      reactions: [],
+    }]);
+    setAttachment(null);
+    setMessageInput('');
+
+    let update;
+    try {
+      const file = picked.file ?? {uri: picked.uri, name: picked.name, type: picked.type};
+      const sent = await api.upload('/whatsapp/chats/' + jid + '/send_media', {file, caption: caption || null});
+      update = {id: sent.id, sent_at: sent.sent_at, status: 2};
+    } catch (error) {
+      console.warn('Sending media failed', error);
+      update = {status: 0};
+    }
+    setMessages(prev => prev.map(message => message.id === localId ? {...message, ...update} : message));
+  }
+
   async function sendMessage() {
+    if (attachment) return sendAttachment();
     const text = messageInput.trim();
     if (text === '') return;
     const jid = get("whatsapp.activeJid");
@@ -74,8 +117,23 @@ export function ActiveChat() {
         ))}
       </ScrollView>
 
+      {attachment && (
+        <View style={styles.attachment}>
+          {attachment.kind === 'image'
+            ? <Image source={{uri: attachment.uri}} style={styles.attachmentPreview} />
+            : <Text>🎬</Text>}
+          <Text style={styles.attachmentName} numberOfLines={1}>{attachment.name}</Text>
+          <Pressable onPress={() => setAttachment(null)}>
+            <Icon name="cross" size={16} color={styles.attachmentName.color} />
+          </Pressable>
+        </View>
+      )}
+
       <View style={styles.composer}>
-        <TextInput value={messageInput} onChangeText={setMessageInput} onFocus={() => setTimeout(() => scrollViewRef.current?.scrollToEnd({animated: true}), 300)} placeholder="Type a message" style={styles.messageInput} />
+        <Pressable onPress={pickAttachment}>
+          <Text>Attach</Text>
+        </Pressable>
+        <TextInput value={messageInput} onChangeText={setMessageInput} onFocus={() => setTimeout(() => scrollViewRef.current?.scrollToEnd({animated: true}), 300)} placeholder={attachment ? "Add a caption" : "Type a message"} style={styles.messageInput} />
         <Pressable onPress={sendMessage}>
           <Text>Send</Text>
         </Pressable>
@@ -145,6 +203,23 @@ const createStyles = colors => StyleSheet.create({
     flex: 2
   },
 
+  attachment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 8,
+    borderRadius: 12,
+    ...glass(colors),
+  },
+  attachmentPreview: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+  },
+  attachmentName: {
+    flex: 1,
+    color: colors.secondary,
+  },
   composer: {
     flexDirection: 'row',
     alignItems: 'center',

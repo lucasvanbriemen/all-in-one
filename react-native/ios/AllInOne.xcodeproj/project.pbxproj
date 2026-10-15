@@ -14,7 +14,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A1C0000000000000000000A2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000A1 /* AppIcon.icon */; };
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
+		BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */; };
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
+		BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2003B0E20B0E20BB003 /* MediaPicker.m */; };
 		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
 		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
 		AA10D100CA0D10A0D10AA0C /* SiriIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */; };
@@ -36,7 +38,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AllInOne/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1C0000000000000000000A1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = "<group>"; };
 		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
+		BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MediaPicker.swift; path = ../native/MediaPicker/MediaPicker.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
+		BB20E2003B0E20B0E20BB003 /* MediaPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MediaPicker.m; path = ../native/MediaPicker/MediaPicker.m; sourceTree = SOURCE_ROOT; };
 		AA10D1005A0D10A0D10AA05 /* AllInOne-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AllInOne-Bridging-Header.h"; path = "AllInOne/AllInOne-Bridging-Header.h"; sourceTree = "<group>"; };
 		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
@@ -68,7 +72,9 @@
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				5CE1DE1E5CE1DE1E5CE1DE01 /* SceneDelegate.swift */,
 				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
+				BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */,
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
+				BB20E2003B0E20B0E20BB003 /* MediaPicker.m */,
 				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
 				AA10D1009A0D10A0D10AA09 /* PushNotifications.m */,
 				AA10D100BA0D10A0D10AA0B /* SiriIntents.swift */,
@@ -282,7 +288,9 @@
 				5CE1DE1E5CE1DE1E5CE1DE02 /* SceneDelegate.swift in Sources */,
 				AD1600000000000000000002 /* NavigationBlurManager.m in Sources */,
 				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
+				BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */,
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
+				BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */,
 				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,
 				AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */,
 				AA10D100CA0D10A0D10AA0C /* SiriIntents.swift in Sources */,

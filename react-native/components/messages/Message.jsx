@@ -34,7 +34,7 @@ export function Message({message}) {
   const {get} = useAppContext();
   const {width, height} = message.media || {};
   const [mediaAspectRatio, setMediaAspectRatio] = useState(width && height ? width / height : 3 / 2);
-  const mediaUri = `${BASE_URL}/${message.media_url}`;
+  const mediaUri = message.local_uri ?? (message.media_url && `${BASE_URL}/${message.media_url}`);
   const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
 
   return (
@@ -48,17 +48,15 @@ export function Message({message}) {
           </View>
         )}
 
-        {message.kind === "imageMessage" || message.kind === "stickerMessage" && (
-          <>
-            <Image
-              source={{uri: `${BASE_URL}/${message.media_url}`}}
-              style={[styles.media, {aspectRatio: mediaAspectRatio}]}
-              onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
-            />
-          </>
+        {(message.kind === "imageMessage" || message.kind === "stickerMessage") && mediaUri && (
+          <Image
+            source={{uri: mediaUri}}
+            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
+            onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
+          />
         )}
 
-        {message.kind === "videoMessage" && message.media_url && (
+        {message.kind === "videoMessage" && mediaUri && (
           <MediaPlayer
             kind="video"
             uri={mediaUri}
@@ -67,7 +65,7 @@ export function Message({message}) {
           />
         )}
 
-        {message.kind === "audioMessage" && message.media_url && (
+        {message.kind === "audioMessage" && mediaUri && (
           <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
         )}
 

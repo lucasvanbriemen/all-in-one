@@ -22,7 +22,9 @@
 		A1C0000000000000000000B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000B1 /* AppIcon.icon */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
+		BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */; };
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
+		BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2003B0E20B0E20BB003 /* MediaPicker.m */; };
 		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
 		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
@@ -50,7 +52,9 @@
 		A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ContextMenu.m; sourceTree = "<group>"; };
 		A1C0000000000000000000B1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = SOURCE_ROOT; };
 		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
+		BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MediaPicker.swift; path = ../native/MediaPicker/MediaPicker.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
+		BB20E2003B0E20B0E20BB003 /* MediaPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MediaPicker.m; path = ../native/MediaPicker/MediaPicker.m; sourceTree = SOURCE_ROOT; };
 		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
 		B1A6CF43F2BB8B941DB393C7 /* Sidecar.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = Sidecar.entitlements; sourceTree = "<group>"; };
@@ -106,7 +110,9 @@
 				A1B2C3D4000500FDA0DE0005 /* ContextMenu.swift */,
 				A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */,
 				AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */,
+				BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */,
 				AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */,
+				BB20E2003B0E20B0E20BB003 /* MediaPicker.m */,
 				AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */,
 				AA10D1009A0D10A0D10AA09 /* PushNotifications.m */,
 				71E70C37A4A60F7215DC7DD6 /* AllInOne-Bridging-Header.h */,
@@ -402,7 +408,9 @@
 				A1B2C3D4000700FDA0DE0007 /* ContextMenu.swift in Sources */,
 				A1B2C3D4000800FDA0DE0008 /* ContextMenu.m in Sources */,
 				AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */,
+				BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */,
 				AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */,
+				BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */,
 				AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */,
 				AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */,
 				5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */,
