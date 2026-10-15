@@ -63,18 +63,20 @@ class WhatsappController < ApplicationController
   end
 
   def send_message
-    sent = Whatsapp::Bridge.send_text(to: params[:jid], text: params[:text], quote_id: params[:quote_id], mentions: params[:mentions])
+    sent = Whatsapp::Bridge.send_text(to: params[:jid], text: params[:text], quote: quote_for(params[:quote_id]), mentions: params[:mentions])
     render json: sent
   end
 
   def send_media
     file = params.require(:file)
-    sent = Whatsapp::Bridge.send_media(to: params[:jid], data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: params[:caption].presence, quote_id: params[:quote_id].presence)
+    sent = Whatsapp::Bridge.send_media(to: params[:jid], data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: params[:caption].presence, quote: quote_for(params[:quote_id]))
     render json: sent
   end
 
+  # The key WhatsApp needs (who sent the target) comes from our copy of the message, not the client.
   def react
-    Whatsapp::Bridge.react(chat: params[:jid], message_id: params[:message_id], emoji: params[:emoji].to_s, from_me: params[:from_me] == true || params[:from_me] == "true", participant: params[:participant])
+    message = Whatsapp::Message.find_by!(chat_jid: params[:jid], wa_id: params[:message_id])
+    Whatsapp::Bridge.react(chat: message.chat_jid, message_id: message.wa_id, emoji: params[:emoji].to_s, from_me: message.from_me, participant: (message.sender_jid if group_jid?(message.chat_jid) && !message.from_me))
     head :ok
   end
 
@@ -94,6 +96,29 @@ class WhatsappController < ApplicationController
 
   def me_jid
     @me_jid ||= Whatsapp::Connection.current.me_jid
+  end
+
+  def my_jids
+    @my_jids ||= Whatsapp::Connection.current.slice(:me_jid, :me_lid).values.compact
+  end
+
+  def group_jid?(jid)
+    jid.to_s.end_with?("@g.us")
+  end
+
+  # Replies carry who wrote the quoted message and its text, so recipients see the right preview.
+  def quote_for(id)
+    return nil if id.blank?
+
+    quoted = Whatsapp::Message.find_by(chat_jid: params[:jid], wa_id: id)
+    return { id: id } unless quoted
+
+    {
+      id: quoted.wa_id,
+      from_me: quoted.from_me,
+      participant: (quoted.sender_jid if group_jid?(quoted.chat_jid) && !quoted.from_me),
+      body: quoted.deleted? ? nil : quoted.body
+    }
   end
 
   def chat_json(chat)
@@ -129,7 +154,7 @@ class WhatsappController < ApplicationController
       sent_at: message.sent_at,
       edited_at: message.edited_at,
       deleted: message.deleted?,
-      reactions: message.reactions.map { |r| { emoji: r.emoji, sender_jid: r.sender_jid } }
+      reactions: message.reactions.map { |r| { emoji: r.emoji, sender_jid: r.sender_jid, from_me: my_jids.include?(r.sender_jid) } }
     }
   end
 

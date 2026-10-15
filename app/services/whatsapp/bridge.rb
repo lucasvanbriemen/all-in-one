@@ -23,8 +23,8 @@ module Whatsapp
     def self.resolve_lid(lid) = get("/lid", jid: lid)
 
     def self.pair(phone = nil) = post("/pair", phone: phone)
-    def self.send_text(to:, text:, quote_id: nil, mentions: nil) = post("/send", to: to, text: text, quote_id: quote_id, mentions: mentions)
-    def self.send_media(to:, data:, mimetype:, filename: nil, caption: nil, quote_id: nil) = post("/send-media", to: to, data: Base64.strict_encode64(data), mimetype: mimetype, filename: filename, caption: caption, quote_id: quote_id)
+    def self.send_text(to:, text:, quote: nil, mentions: nil) = post("/send", to: to, text: text, quote: quote, mentions: mentions)
+    def self.send_media(to:, data:, mimetype:, filename: nil, caption: nil, quote: nil) = post("/send-media", to: to, data: Base64.strict_encode64(data), mimetype: mimetype, filename: filename, caption: caption, quote: quote)
     def self.react(chat:, message_id:, emoji:, from_me: false, participant: nil) = post("/react", chat: chat, message_id: message_id, emoji: emoji, from_me: from_me, participant: participant)
     def self.mark_read(chat:, messages:) = post("/read", chat: chat, messages: messages)
     def self.typing(chat:, typing: true) = post("/typing", chat: chat, typing: typing)

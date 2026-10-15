@@ -424,6 +424,15 @@ export const bridge = {
     }};
   },
 
+  // Baileys credits the quote to key.participant (or the chat), and the recipient's phone shows message.conversation as the preview.
+  quotedOf(chat, quote) {
+    if (!quote?.id) return undefined;
+    return {
+      key: {remoteJid: bridge.toJid(chat), id: quote.id, fromMe: Boolean(quote.from_me), participant: quote.participant ? bridge.toJid(quote.participant) : undefined},
+      message: {conversation: quote.body || ''},
+    };
+  },
+
   keyPayload(key) {
     return {
       id: key.id,
@@ -658,26 +667,23 @@ export const bridge = {
 
       case 'POST /send': {
         if (!requireOpen()) return;
-        const {to, text, quote_id, mentions} = await bridge.readJson(request);
+        const {to, text, quote, mentions} = await bridge.readJson(request);
         if (!to || !text) return reply(400, {error: 'to and text are required'});
-        const options = {};
-        if (quote_id) options.quoted = {key: {remoteJid: toJid(to), id: quote_id, fromMe: false}, message: {conversation: ''}};
+        const options = {quoted: bridge.quotedOf(to, quote)};
         const sent = await sock.sendMessage(toJid(to), {text, mentions: mentions?.map(toJid)}, options);
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
       }
 
       case 'POST /send-media': {
         if (!requireOpen()) return;
-        const {to, data, mimetype, filename, caption, quote_id} = await bridge.readJson(request);
+        const {to, data, mimetype, filename, caption, quote} = await bridge.readJson(request);
         if (!to || !data || !mimetype) return reply(400, {error: 'to, data and mimetype are required'});
         const buffer = Buffer.from(data, 'base64');
         // Only JPEG/PNG and MP4 show inline for every recipient; anything else goes as a file.
         const content = /^image\/(jpeg|png)$/.test(mimetype) ? {image: buffer, mimetype, caption}
           : mimetype === 'video/mp4' ? {video: buffer, mimetype, caption}
           : {document: buffer, mimetype, fileName: filename || 'file', caption};
-        const options = {};
-        if (quote_id) options.quoted = {key: {remoteJid: toJid(to), id: quote_id, fromMe: false}, message: {conversation: ''}};
-        const sent = await sock.sendMessage(toJid(to), content, options);
+        const sent = await sock.sendMessage(toJid(to), content, {quoted: bridge.quotedOf(to, quote)});
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
       }
 
