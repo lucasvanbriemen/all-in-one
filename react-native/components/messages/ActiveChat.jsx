@@ -105,7 +105,7 @@ export function ActiveChat() {
       {compact && (
         <View style={styles.chatListing}>
           <Pressable onPress={() => set("whatsapp.activeJid", null)}>
-            <Text style={styles.goBack}>Back</Text>
+            <Icon name="chevron-left" size={24} color={styles.chatName.color} />
           </Pressable>
 
           <View style={styles.contactDetails}>
@@ -158,12 +158,15 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     flex: 1,
+    padding: 8,
+    borderRadius: 12,
   },
 
   chatName: {
     fontSize: 16,
     flex: 1,
     textAlign: 'center',
+    color: colors.onSurface,
     fontWeight: 'bold',
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
