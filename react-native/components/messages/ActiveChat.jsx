@@ -6,6 +6,7 @@ import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompact
 
 import {Icon} from '../icons';
 import {Message} from './Message';
+import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {mediaPicker} from '../mediaPicker';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
@@ -106,7 +107,9 @@ export function ActiveChat() {
           <Pressable onPress={() => set("whatsapp.activeJid", null)}>
             <Text style={styles.goBack}>Back</Text>
           </Pressable>
+
           <View style={styles.contactDetails}>
+            {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Image source={{uri: BASE_URL + chat.avatar_url}} style={styles.chatImage} />
             <Text style={styles.chatName}>{chat.name}</Text>
           </View>
