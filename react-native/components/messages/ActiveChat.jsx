@@ -104,7 +104,8 @@ export function ActiveChat() {
     <View style={[styles.content, {paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset}]}>
       {compact && (
         <View style={styles.chatListing}>
-          <Pressable onPress={() => set("whatsapp.activeJid", null)}>
+          <Pressable onPress={() => set("whatsapp.activeJid", null)} style={styles.backButton}>
+            {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Icon name="chevron-left" size={24} color={styles.chatName.color} />
           </Pressable>
 
@@ -159,12 +160,15 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
     flex: 1,
     padding: 8,
-    borderRadius: 12,
+    borderRadius: 16,
+  },
+  backButton: {
+    padding: 8,
+    borderRadius: 16,
   },
 
   chatName: {
     fontSize: 16,
-    flex: 1,
     textAlign: 'center',
     color: colors.onSurface,
     fontWeight: 'bold',
@@ -174,9 +178,6 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'column',
     gap: 16,
     flex: 2,
-  },
-  chatName: {
-    fontSize: 16,
   },
   lastMessage: {
     color: colors.secondary,
