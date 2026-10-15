@@ -67,6 +67,12 @@ class WhatsappController < ApplicationController
     render json: sent
   end
 
+  def send_media
+    file = params.require(:file)
+    sent = Whatsapp::Bridge.send_media(to: params[:jid], data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: params[:caption].presence, quote_id: params[:quote_id].presence)
+    render json: sent
+  end
+
   def react
     Whatsapp::Bridge.react(chat: params[:jid], message_id: params[:message_id], emoji: params[:emoji].to_s, from_me: params[:from_me] == true || params[:from_me] == "true", participant: params[:participant])
     head :ok
