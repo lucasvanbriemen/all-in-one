@@ -320,6 +320,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: colors.secondary,
+    color: colors.onSurface,
     borderRadius: 8,
     padding: 16,
     marginTop: 8,
