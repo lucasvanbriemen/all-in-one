@@ -27,6 +27,17 @@ music_default: &music_default
   password: <%= ENV.fetch("MUSIC_DB_PASSWORD") { ENV.fetch("DB_PASSWORD", "") } %>
   migrations_paths: db/music_migrate
 
+# The GitHub GUI project's database (its own repo owns the schema and
+# migrations), read through Github::ApplicationRecord.
+github_default: &github_default
+  <<: *default
+  database_tasks: false
+  pool: <%= ENV.fetch("GITHUB_DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3).to_i + 2 } %>
+  host: <%= ENV.fetch("GITHUB_DB_HOST") { ENV.fetch("DB_HOST", "127.0.0.1") } %>
+  port: <%= ENV.fetch("GITHUB_DB_PORT") { ENV.fetch("DB_PORT", 3306) } %>
+  username: <%= ENV.fetch("GITHUB_DB_USERNAME") { ENV.fetch("DB_USERNAME", "root") } %>
+  password: <%= ENV.fetch("GITHUB_DB_PASSWORD") { ENV.fetch("DB_PASSWORD", "") } %>
+
 # Solid Cache/Queue/Cable keep their own local SQLite stores so they do not
 # add framework tables to the shared email database.
 sqlite_default: &sqlite_default
@@ -41,6 +52,9 @@ development:
   music:
     <<: *music_default
     database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
+  github:
+    <<: *github_default
+    database: <%= ENV.fetch("GITHUB_DB_DATABASE", "gitub_gui") %>
 
 # Warning: Rails erases and regenerates the "test" databases, so neither may
 # point at live data. The music one also has to stay clear of `music_test`,
@@ -52,6 +66,9 @@ test:
   music:
     <<: *music_default
     database: <%= ENV.fetch("MUSIC_DB_DATABASE_TEST", "all_in_one_music_test") %>
+  github:
+    <<: *github_default
+    database: <%= ENV.fetch("GITHUB_DB_DATABASE_TEST", "all_in_one_github_test") %>
 
 production:
   primary:
@@ -60,6 +77,9 @@ production:
   music:
     <<: *music_default
     database: <%= ENV.fetch("MUSIC_DB_DATABASE", "music") %>
+  github:
+    <<: *github_default
+    database: <%= ENV.fetch("GITHUB_DB_DATABASE", "gitub_gui") %>
   cache:
     <<: *sqlite_default
     database: storage/production_cache.sqlite3
