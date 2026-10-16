@@ -44,7 +44,7 @@ function groupReactions(reactions) {
   return groups;
 }
 
-export function Message({message, selected, onSelect, onDeselect, onReact, onReply}) {
+export function Message({message, selected, onSelect, onDeselect, onReact, onReply, showSender = false}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -77,6 +77,10 @@ export function Message({message, selected, onSelect, onDeselect, onReact, onRep
         onLongPress={actionable ? onSelect : undefined}
         onPress={selected ? onDeselect : undefined}
         style={[styles.chatContainer, message.from_me && styles.from_me, selected && styles.selected]}>
+
+        {showSender && !message.from_me && (
+          <Text style={styles.sender}>{message.sender_name}</Text>
+        )}
 
         {message.quoted && (
           <View style={styles.quoted}>
@@ -154,6 +158,11 @@ const createStyles = colors => StyleSheet.create({
     padding: 8,
     borderRadius: 12,
     marginBottom: 8,
+  },
+  sender: {
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginBottom: 4,
   },
   quotedSender: {
     fontWeight: 'bold',

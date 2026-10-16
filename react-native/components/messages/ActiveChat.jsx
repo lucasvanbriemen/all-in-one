@@ -166,6 +166,7 @@ export function ActiveChat() {
             onDeselect={() => setSelectedId(null)}
             onReact={emoji => react(message, emoji)}
             onReply={() => startReply(message)}
+            showSender={chat.is_group}
           />
         ))}
       </ScrollView>
