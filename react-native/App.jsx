@@ -16,7 +16,7 @@ import {Sidebar} from './components/sidebar/Sidebar';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
 import {player} from './components/music/player';
-import {push} from './components/push';
+import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from './components/theme';
 
@@ -54,14 +54,7 @@ function PushBridge() {
   const {set} = useAppContext();
 
   useEffect(() => {
-    const unsubscribe = push.subscribe(({source}) => {
-      const [kind, mailbox, emailId] = String(source || '').split('.');
-
-      set('app.activeApp', kind);
-      set('app.activeSidebarItem', mailbox);
-      set('email.selectedEmailId', Number(emailId));
-      set('whatsapp.activeJid', emailId);
-    });
+    const unsubscribe = push.subscribe(({source}) => openSource(set, source));
     push.requestPermission();
     return unsubscribe;
   }, [set]);

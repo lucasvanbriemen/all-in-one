@@ -140,6 +140,18 @@ final class PushNotifications: RCTEventEmitter {
         resolve(Self.lastToken)
     }
 
+    /// Removes delivered notifications (Notification Center / lock screen)
+    /// whose payload `source` matches, e.g. once that chat has been opened.
+    @objc func clearDelivered(_ source: String) {
+        let center = UNUserNotificationCenter.current()
+        center.getDeliveredNotifications { notifications in
+            let ids = notifications
+                .filter { $0.request.content.userInfo["source"] as? String == source }
+                .map { $0.request.identifier }
+            if !ids.isEmpty { center.removeDeliveredNotifications(withIdentifiers: ids) }
+        }
+    }
+
     private static func registerForRemote() {
         #if canImport(UIKit)
         UIApplication.shared.registerForRemoteNotifications()

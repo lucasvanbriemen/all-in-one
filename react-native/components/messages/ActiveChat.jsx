@@ -8,6 +8,7 @@ import {Icon} from '../icons';
 import {Message} from './Message';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {mediaPicker} from '../mediaPicker';
+import {push} from '../push';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -35,6 +36,7 @@ export function ActiveChat() {
   }
 
   useEffect(loadChat, [activeJid]);
+  useEffect(() => push.clearDelivered('messages.whatsapp.' + activeJid), [activeJid]);
   useEffect(() => {
     setSelectedId(null);
     setReplyTo(null);

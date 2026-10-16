@@ -4,11 +4,12 @@ import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
+import {openSource} from '../push';
 import {useAppContext} from '../../context/AppContext';
 
 export function Notification({notification}) {
   const styles = useThemedStyles(createStyles);
-  const { get, set } = useAppContext();
+  const { set } = useAppContext();
 
   const [isRead, setIsRead] = useState(notification.read);
 
@@ -17,12 +18,9 @@ export function Notification({notification}) {
     setIsRead(true);
   }
 
-  async function openNotification() {
-    const sourceAsArray = notification.source.split('.');
-
-    set('app.activeApp', sourceAsArray[0]);
-    set('app.activeSidebarItem', sourceAsArray[1]);
-    set('email.selectedEmailId', sourceAsArray[2]);
+  function openNotification() {
+    markAsRead();
+    openSource(set, notification.source);
   }
 
   if (isRead) return null;
