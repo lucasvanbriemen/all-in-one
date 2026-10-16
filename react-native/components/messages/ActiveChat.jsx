@@ -220,12 +220,13 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
     flex: 1,
     padding: 8,
-    borderRadius: 16,
+    borderRadius: 64,
     overflow: 'hidden',
   },
   backButton: {
     padding: 8,
-    borderRadius: 16,
+    borderRadius: 64,
+    overflow: 'hidden',
   },
 
   chatName: {
