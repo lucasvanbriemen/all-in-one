@@ -85,6 +85,7 @@ class WhatsappController < ApplicationController
     messages = chat.messages.active.where(from_me: false).newest_first.limit(20)
     Whatsapp::Bridge.mark_read(chat: chat.jid, messages: messages.map { |m| { id: m.wa_id, participant: (m.sender_jid if chat.is_group) }.compact }) if messages.any?
     chat.update!(unread_count: 0)
+    Notification.where(source: "messages.whatsapp.#{chat.jid}").update_all(read: true)
   end
 
   def typing
