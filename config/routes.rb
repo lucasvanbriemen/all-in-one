@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
+  post "/slack/webhook", to: "slack#create", as: :slack_webhook
+
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
   get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
