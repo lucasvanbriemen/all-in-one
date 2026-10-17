@@ -15,7 +15,7 @@ async function openConnection() {
 async function sendEventToServer(event) {
   const body = {type: event.type, payload: event.payload};
 
-  await fetch("https://aio.ltvb.nl/api/slack/webhook", {
+  await fetch("https://aio.ltvb.nl/slack/webhook", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
