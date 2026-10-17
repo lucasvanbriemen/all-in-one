@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_17_175745) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_17_184500) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -184,6 +184,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_17_175745) do
     t.index ["last_fetched_at"], name: "imap_credentials_last_fetched_at_index"
   end
 
+  create_table "messages", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "type", null: false
+    t.string "contact_id", null: false
+    t.string "channel_id", null: false
+    t.string "body"
+    t.index ["channel_id"], name: "index_messages_on_channel_id"
+    t.index ["contact_id"], name: "index_messages_on_contact_id"
+  end
+
   create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -298,4 +309,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_17_175745) do
   add_foreign_key "bank_accounts", "bank_connections"
   add_foreign_key "bank_transactions", "bank_accounts"
   add_foreign_key "emails", "senders", name: "emails_sender_id_foreign", on_delete: :nullify
+  add_foreign_key "messages", "channels"
+  add_foreign_key "messages", "contacts"
 end
