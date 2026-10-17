@@ -40,6 +40,15 @@ class SlackController < ApplicationController
       Slack::Channel.find_by(id: event["channel"])&.update(is_active: true)
     end
 
+    if [ "team_join", "user_change" ].include?(event&.dig("type"))
+      user = event["user"]
+      Slack::Contact.find_or_initialize_by(id: user["id"]).update!(
+        name: user.dig("profile", "display_name").presence || user["real_name"],
+        avatar_url: user.dig("profile", "image_72"),
+        is_active: !user["deleted"]
+      )
+    end
+
     head :ok
   end
 end
