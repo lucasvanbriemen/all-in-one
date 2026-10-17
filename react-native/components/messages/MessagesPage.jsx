@@ -2,11 +2,11 @@ import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
+import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ActiveChat} from './ActiveChat';
-import {useChannel} from '../cable';
 import {useAppContext} from '../../context/AppContext';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
+import {useChannel} from '../cable';
 
 export function MessagesPage() {
   const compact = useCompactLayout();
@@ -36,7 +36,7 @@ export function MessagesPage() {
                   
                   <View>
                     <Text style={[styles.chatName, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]}>{chat.name}</Text>
-                    <Text style={[styles.lastMessage, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]} lineBreakMode="tail" numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
+                    <Text style={[styles.lastMessage, get("whatsapp.activeJid") === chat.jid && styles.activeChatName]} numberOfLines={1}>{chat.last_message?.body ?? 'No messages'}</Text>
                   </View>
                 </Pressable>
               ))}
