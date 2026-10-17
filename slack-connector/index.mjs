@@ -1,4 +1,5 @@
 const APP_TOKEN = process.env.SLACK_APP_TOKEN;
+const SERVER_API_KEY = process.env.SERVER_API_KEY;
 
 // Socket Mode URLs are single-use, so every (re)connect asks Slack for a fresh one.
 async function openConnection() {
@@ -9,6 +10,19 @@ async function openConnection() {
   const body = await res.json();
   if (!body.ok) throw new Error(`apps.connections.open failed: ${body.error}`);
   return body.url;
+}
+
+async function sendEventToServer(event) {
+  const body = {type: event.type, payload: event.payload};
+
+  await fetch("https://aio.ltvb.nl/api/slack/webhook", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${SERVER_API_KEY}`,
+    },
+    body: JSON.stringify(body),
+  });
 }
 
 async function connect() {
@@ -35,7 +49,7 @@ async function connect() {
         ws.close();
         break;
       case 'events_api':
-        console.log(msg.payload.event);
+        sendEventToServer(msg).catch(console.error);
         break;
       default:
         console.log(`[${msg.type}]`, msg.payload);
