@@ -4,19 +4,14 @@ class AccountController < ApplicationController
   def show
     slack_response = Slack::Api.getConversations
 
-    # allSlackUsers = allSlackUsers["members"].map do |user|
-    #   Contact.find_or_create_by(id: user["id"]) do |contact|
-    #     display_name = user["profile"]["display_name"]
-    #     real_name = user["profile"]["real_name"]
-
-    #     preferd_name = display_name.presence || real_name.presence || user["name"]
-
-    #     contact.name = preferd_name
-    #     contact.avatar_url = user["profile"]["image_72"]
-    #     contact.type = "Slack::Contact"
-    #     contact.is_active = !user["deleted"]
-    #   end
-    # end
+    slack_response = slack_response.map do |item|
+      Channel.find_or_create_by(id: item["id"]) do |contact|
+        contact.name = item["name"]
+        contact.type = "Slack::Channel"
+        contact.is_active = !item["is_archived"]
+        contact.is_private = item["is_private"]
+      end
+    end
 
     render json: {
       config: Config::CONFIG,
