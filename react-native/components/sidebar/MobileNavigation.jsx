@@ -46,15 +46,17 @@ export function MobileNavigation() {
     <View style={styles.navigation}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
 
-      <View style={styles.sections}>
-        {appToRender.length > 1 && appToRender.map(row => (
-          <Pressable key={row.path} onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.tab, styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
-            <Text style={[ styles.sectionText, row.path === get('app.activeSidebarItem') && styles.selectedText, ]}>
-              {row.name}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+      {appToRender.length > 1 && (
+        <View style={styles.sections}>
+          {appToRender.map(row => (
+            <Pressable key={row.path} onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.tab, styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
+              <Text style={[ styles.sectionText, row.path === get('app.activeSidebarItem') && styles.selectedText, ]}>
+                {row.name}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
 
       <ScrollView style={styles.sections} horizontal={true} showsHorizontalScrollIndicator={false}>
         {config && Object.keys(config).map(app => (
