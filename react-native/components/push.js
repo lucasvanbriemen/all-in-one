@@ -23,7 +23,7 @@ export const push = {
   // Removes this source's notifications from Notification Center. Not
   // available on web.
   clearDelivered(source) {
-    NativeModules.PushNotifications?.clearDelivered(source);
+    NativeModules.PushNotifications?.clearDelivered?.(source);
   },
 
   // `onOpen` receives the tapped notification's payload ({notification_id,
