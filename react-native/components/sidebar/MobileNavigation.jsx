@@ -90,7 +90,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 48,
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
   },
   tabText: {
     color: colors.onSurfaceVariant,
