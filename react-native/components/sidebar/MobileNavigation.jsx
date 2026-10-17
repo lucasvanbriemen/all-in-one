@@ -47,7 +47,7 @@ export function MobileNavigation() {
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
 
       <View style={styles.sections}>
-        {appToRender.map(row => (
+        {appToRender.length > 1 && appToRender.map(row => (
           <Pressable key={row.path} onPress={() => set('app.activeSidebarItem', row.path)} style={[styles.tab, styles.section, row.path === get('app.activeSidebarItem') && styles.selected]}>
             <Text style={[ styles.sectionText, row.path === get('app.activeSidebarItem') && styles.selectedText, ]}>
               {row.name}
