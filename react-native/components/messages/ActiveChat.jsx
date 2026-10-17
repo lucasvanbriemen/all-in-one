@@ -330,7 +330,7 @@ const createStyles = colors => StyleSheet.create({
     marginTop: 8,
   },
   messagesContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-end',
   },
 });
