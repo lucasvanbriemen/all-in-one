@@ -43,7 +43,6 @@ async function connect() {
   };
 
   ws.onclose = () => {
-    console.log('closed, reconnecting');
     setTimeout(connect, 1000);
   };
 }
