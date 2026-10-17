@@ -4,19 +4,19 @@ class AccountController < ApplicationController
   def show
     slack_response = Slack::Api.getConversations
 
-    slack_response = slack_response.map do |item|
-      Channel.find_or_create_by(id: item["id"]) do |contact|
-        contact.name = item["name"]
-        contact.type = "Slack::Channel"
-        contact.is_active = !item["is_archived"]
-        contact.is_private = item["is_private"]
-      end
-    end
+    # slack_response = slack_response.map do |item|
+    #   Channel.find_or_create_by(id: item["id"]) do |contact|
+    #     contact.name = item["name"]
+    #     contact.type = "Slack::Channel"
+    #     contact.is_active = !item["is_archived"] || true
+    #     contact.is_private = item["is_private"] || true
+    #   end
+    # end
 
     render json: {
       config: Config::CONFIG,
       allowed_platforms: Config::ALLOWED_PLATFORMS,
-      conversations_list: slack_response
+      conversations_list: Slack::Channel.all
     }
   end
 
