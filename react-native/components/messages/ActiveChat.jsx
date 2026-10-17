@@ -215,6 +215,10 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
   },
   contactDetails: {
     flexDirection: 'row',
