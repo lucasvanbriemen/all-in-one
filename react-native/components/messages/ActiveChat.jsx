@@ -199,7 +199,7 @@ export function ActiveChat() {
 
       <View style={styles.composer}>
         <Pressable onPress={pickAttachment}>
-          <Text>Attach</Text>
+          <Icon name="plus" size={24} color={styles.attachmentName.color} />
         </Pressable>
         <TextInput value={messageInput} onChangeText={setMessageInput} onFocus={() => setTimeout(() => scrollViewRef.current?.scrollToEnd({animated: true}), 300)} placeholder={attachment ? "Add a caption" : "Type a message"} style={styles.messageInput} />
         <Pressable onPress={sendMessage}>

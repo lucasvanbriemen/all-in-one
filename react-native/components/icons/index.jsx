@@ -18,6 +18,7 @@ import {NextIcon} from './next';
 import {PatheIcon} from './pathe';
 import {PauseIcon} from './pause';
 import {PlayIcon} from './play';
+import {PlusIcon} from './plus';
 import React from 'react';
 import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
@@ -56,6 +57,7 @@ const ICONS = {
   'heart-outline': HeartOutlineIcon,
   check: CheckIcon,
   'check-double': CheckDoubleIcon,
+  'plus': PlusIcon,
   clock: ClockIcon,
   alert: AlertIcon,
   ...WEATHER_ICONS,
