@@ -1,10 +1,5 @@
 const APP_TOKEN = process.env.SLACK_APP_TOKEN;
 
-if (!APP_TOKEN?.startsWith('xapp-')) {
-  console.error('SLACK_APP_TOKEN missing or not an app-level (xapp-) token');
-  process.exit(1);
-}
-
 // Socket Mode URLs are single-use, so every (re)connect asks Slack for a fresh one.
 async function openConnection() {
   const res = await fetch('https://slack.com/api/apps.connections.open', {
