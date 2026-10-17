@@ -21,12 +21,16 @@ async function connect() {
     url = await openConnection();
   } catch (error) {
     console.error(error.message);
-    return setTimeout(connect, 5000);
+    return;
   }
 
   const ws = new WebSocket(url);
 
-  ws.addEventListener('message', ({data}) => {
+  ws.onopen = () => {
+    console.log('[socket] open');
+  }
+
+  ws.onmessage = ({data}) => {
     const msg = JSON.parse(data);
 
     // Slack redelivers anything not acknowledged within 3 seconds.
@@ -46,14 +50,12 @@ async function connect() {
       default:
         console.log(`[${msg.type}]`, msg.payload);
     }
-  });
+  };
 
-  ws.addEventListener('close', () => {
+  ws.onclose = () => {
     console.log('[socket] closed, reconnecting');
     setTimeout(connect, 1000);
-  });
-
-  ws.addEventListener('error', (event) => console.error('[socket] error', event.message ?? event));
+  };
 }
 
 connect();
