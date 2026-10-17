@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_04_191500) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_17_165702) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -84,6 +84,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_04_191500) do
     t.string "html_link"
     t.index ["calendar_id", "external_id"], name: "index_calendar_events_on_calendar_id_and_external_id", unique: true
     t.index ["starts_at"], name: "index_calendar_events_on_starts_at"
+  end
+
+  create_table "contacts", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "type", null: false
+    t.string "name"
+    t.string "avatar_url"
+    t.boolean "is_active", default: true, null: false
   end
 
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
