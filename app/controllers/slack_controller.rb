@@ -20,6 +20,26 @@ class SlackController < ApplicationController
       end
     end
 
+    if event&.dig("type") == "message" && event["subtype"] == "message_changed"
+      Slack::Message.find_by(id: "#{event["channel"]}-#{event["message"]["ts"]}")&.update!(body: event["message"]["text"])
+    end
+
+    if event&.dig("type") == "message" && event["subtype"] == "message_deleted"
+      Slack::Message.find_by(id: "#{event["channel"]}-#{event["deleted_ts"]}")&.destroy
+    end
+
+    if [ "channel_created", "channel_rename", "group_rename" ].include?(event&.dig("type"))
+      Slack::Channel.find_or_initialize_by(id: event["channel"]["id"]).update!(name: event["channel"]["name"])
+    end
+
+    if [ "channel_archive", "group_archive" ].include?(event&.dig("type"))
+      Slack::Channel.find_by(id: event["channel"])&.update(is_active: false)
+    end
+
+    if [ "channel_unarchive", "group_unarchive" ].include?(event&.dig("type"))
+      Slack::Channel.find_by(id: event["channel"])&.update(is_active: true)
+    end
+
     head :ok
   end
 end
