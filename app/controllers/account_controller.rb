@@ -1,5 +1,5 @@
 class AccountController < ApplicationController
-  skip_before_action :require_login, only: [:privacy]
+  skip_before_action :require_login, only: [ :privacy ]
 
   def show
     render json: {
