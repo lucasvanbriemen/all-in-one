@@ -11,10 +11,6 @@ async function openConnection() {
   return body.url;
 }
 
-function handleEvent(event) {
-  console.log(`[event] ${event.type}`, event);
-}
-
 async function connect() {
   let url;
   try {
@@ -26,10 +22,6 @@ async function connect() {
 
   const ws = new WebSocket(url);
 
-  ws.onopen = () => {
-    console.log('[socket] open');
-  }
-
   ws.onmessage = ({data}) => {
     const msg = JSON.parse(data);
 
@@ -38,14 +30,12 @@ async function connect() {
 
     switch (msg.type) {
       case 'hello':
-        console.log('[socket] connected');
         break;
       case 'disconnect':
-        console.log(`[socket] disconnect requested (${msg.reason})`);
         ws.close();
         break;
       case 'events_api':
-        handleEvent(msg.payload.event);
+        console.log(msg.payload.event);
         break;
       default:
         console.log(`[${msg.type}]`, msg.payload);
@@ -53,7 +43,7 @@ async function connect() {
   };
 
   ws.onclose = () => {
-    console.log('[socket] closed, reconnecting');
+    console.log('closed, reconnecting');
     setTimeout(connect, 1000);
   };
 }
