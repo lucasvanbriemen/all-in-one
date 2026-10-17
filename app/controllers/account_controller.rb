@@ -2,7 +2,7 @@ class AccountController < ApplicationController
   skip_before_action :require_login, only: [ :privacy ]
 
   def show
-    slack_response = Slack::Api.getConversations
+    # slack_response = Slack::Api.getConversations
 
     # slack_response = slack_response.map do |item|
     #   Channel.find_or_create_by(id: item["id"]) do |contact|
@@ -16,7 +16,7 @@ class AccountController < ApplicationController
     render json: {
       config: Config::CONFIG,
       allowed_platforms: Config::ALLOWED_PLATFORMS,
-      conversations_list: Slack::Channel.all
+      conversations_list: Slack::Channel.where(id: "C0A3H7UF3")
     }
   end
 
