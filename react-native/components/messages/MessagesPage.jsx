@@ -19,7 +19,12 @@ export function MessagesPage() {
     return <Whatsapp />;
   }
 
-  return <ChannelListing />;
+  return (
+    <>
+      <Text>{get("messages.openChannel")}</Text>
+      <ChannelListing />
+    </>
+  );
 }
 
 const createStyles = colors => StyleSheet.create({

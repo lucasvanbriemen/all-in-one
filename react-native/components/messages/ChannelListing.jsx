@@ -14,6 +14,10 @@ export function ChannelListing() {
   const [channels, setChannels] = useState([]);
   const {set, get} = useAppContext();
 
+  function openChannel(channel) {
+    set('messages.openChannel', channel.id);
+  }
+
   function loadChats() {
     api.get('/channels?type=slack').then(response => {
       let unsortedChannels = response;
@@ -38,7 +42,9 @@ export function ChannelListing() {
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
         {channels.map(channel => (
-          <Text>{channel.display_name}</Text>
+          <Pressable key={channel.id} onPress={() => openChannel(channel)}>
+            <Text>{channel.display_name}</Text>
+          </Pressable>
         ))}
       </ScrollView>
     </View>
