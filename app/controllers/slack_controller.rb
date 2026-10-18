@@ -11,7 +11,7 @@ class SlackController < ApplicationController
 
     event = json.dig("payload", "event")
     if event&.dig("type") == "message" && event["subtype"].blank?
-      Slack::Channel.find_or_create_by!(id: event["channel"])
+      Slack::Channel.sync(event["channel"]) unless Slack::Channel.where(id: event["channel"]).where.not(name: nil).exists?
       Slack::Contact.find_or_create_by!(id: event["user"])
       Slack::Message.find_or_create_by!(id: "#{event["channel"]}-#{event["ts"]}") do |message|
         message.channel_id = event["channel"]
