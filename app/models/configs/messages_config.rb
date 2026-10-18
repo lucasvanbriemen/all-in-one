@@ -5,7 +5,7 @@ module MessagesConfig
       name: "WhatsApp"
     },
     {
-      pathe: "slack",
+      path: "slack",
       name: "Slack"
     }
   ].freeze
