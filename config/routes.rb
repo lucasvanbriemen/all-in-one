@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
 
+  get "/", to: "account#privacy", as: :privacy
+
   get "/email/:path", to: "emails#index", as: :mailbox
   get "/emails/:id", to: "emails#show", as: :email
   post "/emails/:id/mark_as_read", to: "emails#mark_as_read", as: :mark_email_as_read
