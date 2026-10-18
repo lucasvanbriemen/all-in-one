@@ -24,7 +24,7 @@ export function ChannelListing() {
         if (!a.is_dm && b.is_dm) return 1;
         if (a.is_group_chat && !b.is_group_chat) return -1;
         if (!a.is_group_chat && b.is_group_chat) return 1;
-        return a.name.localeCompare(b.name);
+        return a.display_name.localeCompare(b.display_name);
       });
       console.log(unsortedChannels);
       setChannels(unsortedChannels);
@@ -38,7 +38,7 @@ export function ChannelListing() {
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
         {channels.map(channel => (
-          <Text>{channel.name}</Text>
+          <Text>{channel.display_name}</Text>
         ))}
       </ScrollView>
     </View>
