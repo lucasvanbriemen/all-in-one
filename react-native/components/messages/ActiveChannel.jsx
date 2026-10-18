@@ -13,37 +13,30 @@ export function ActiveChannel() {
   const [messages, setMessages] = useState([]);
   const {set, get} = useAppContext();
 
-  function openChannel(channel) {
-    set('messages.openChannel', channel.id);
-  }
+  const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
+
+  useEffect(() => {
+    setActiveChannel(get("messages.activeChannel") ?? "");
+  }, [get]);
 
   function loadChats() {
-    api.get('/channels?type=slack').then(response => {
-      let unsortedChannels = response;
+    if (!activeChannel) return;
 
-      // We want to sort them based on is_dm first, then is_group_chat, from a to z by name
-      unsortedChannels.sort((a, b) => {
-        if (a.is_dm && !b.is_dm) return -1;
-        if (!a.is_dm && b.is_dm) return 1;
-        if (a.is_group_chat && !b.is_group_chat) return -1;
-        if (!a.is_group_chat && b.is_group_chat) return 1;
-        return a.display_name.localeCompare(b.display_name);
-      });
-      console.log(unsortedChannels);
-      setMessages(unsortedChannels);
+    api.get(`/channels/${activeChannel}/messages`).then(response => {
+      setMessages(response);
+      console.log(response);
     });
   }
 
   useEffect(loadChats, []);
+  useEffect(loadChats, [activeChannel]);
   useChannel('WhatsappChannel', loadChats);
 
   return (
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
-        {messages.map(channel => (
-          <Pressable key={channel.id} onPress={() => openChannel(channel)}>
-            <Text>{channel.display_name}</Text>
-          </Pressable>
+        {messages.map(message => (
+          <Text>{message.body}</Text>
         ))}
       </ScrollView>
     </View>

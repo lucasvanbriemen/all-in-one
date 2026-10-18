@@ -15,7 +15,7 @@ export function ChannelListing() {
   const {set, get} = useAppContext();
 
   function openChannel(channel) {
-    set('messages.openChannel', channel.id);
+    set('messages.activeChannel', channel.id);
   }
 
   function loadChats() {
