@@ -7,12 +7,12 @@ import {Whatsapp} from './Whatsapp';
 import {useAppContext} from '../../context/AppContext';
 
 export function MessagesPage() {
-  const {get, set} = useAppContext();
+  const {get} = useAppContext();
   const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "whatsapp");
 
   useEffect(() => {
     setSidebarItem(get("app.activeSidebarItem") ?? "whatsapp");
-  }, [get, set]);
+  }, [get]);
 
 
   if (sidebarItem == "whatsapp") {
