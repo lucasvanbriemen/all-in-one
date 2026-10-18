@@ -1,8 +1,5 @@
-import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {useAppContext} from '../../context/AppContext';
 
@@ -25,8 +22,9 @@ export function ChannelListItem({channel}) {
 
 const createStyles = colors => StyleSheet.create({
   channelItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    padding: 16,
+    ...glass(colors),
+    borderRadius: 16,
+    marginTop: 8,
   },
 });
