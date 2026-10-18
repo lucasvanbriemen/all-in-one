@@ -9,6 +9,7 @@ import {useAppContext} from '../../context/AppContext';
 export function MessagesPage() {
   const {get} = useAppContext();
   const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "whatsapp");
+  const styles = useThemedStyles(createStyles);
 
   useEffect(() => {
     setSidebarItem(get("app.activeSidebarItem") ?? "whatsapp");
@@ -20,12 +21,17 @@ export function MessagesPage() {
   }
 
   return (
-    <>
-      <Text>{get("messages.openChannel")}</Text>
+    <View style={styles.content}>
       <ChannelListing />
-    </>
+      <Text>{get("messages.openChannel")}</Text>
+    </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 16,
+  },
 });
