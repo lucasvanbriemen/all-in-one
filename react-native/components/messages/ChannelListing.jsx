@@ -11,12 +11,12 @@ import {useChannel} from '../cable';
 export function ChannelListing() {
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
-  const [chats, setChats] = useState([]);
+  const [channels, setChannels] = useState([]);
   const {set, get} = useAppContext();
 
   function loadChats() {
     api.get('/channels?type=slack').then(response => {
-      setChats(response);
+      setChannels(response);
     });
   }
 
@@ -25,7 +25,11 @@ export function ChannelListing() {
 
   return (
     <View style={styles.content}>
-      <Text>Channel Listing</Text>
+      <ScrollView style={styles.chatListing}>
+        {channels.map(channel => (
+          <Text>{channel.name}</Text>
+        ))}
+      </ScrollView>
     </View>
   );
 }
