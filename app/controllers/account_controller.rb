@@ -2,21 +2,9 @@ class AccountController < ApplicationController
   skip_before_action :require_login, only: [ :privacy ]
 
   def show
-    # slack_response = Slack::Api.getConversations
-
-    # slack_response = slack_response.map do |item|
-    #   Channel.find_or_create_by(id: item["id"]) do |contact|
-    #     contact.name = item["name"]
-    #     contact.type = "Slack::Channel"
-    #     contact.is_active = !item["is_archived"] || true
-    #     contact.is_private = item["is_private"] || true
-    #   end
-    # end
-
     render json: {
       config: Config::CONFIG,
-      allowed_platforms: Config::ALLOWED_PLATFORMS,
-      conversations_list: Slack::Channel.where(id: "C0A3H7UF3")
+      allowed_platforms: Config::ALLOWED_PLATFORMS
     }
   end
 
@@ -29,5 +17,9 @@ class AccountController < ApplicationController
       third parties, and can be removed at any time by disconnecting the
       service in the app.
     TEXT
+  end
+
+  def up
+    render plain: "OK", status: :ok
   end
 end
