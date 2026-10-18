@@ -16,7 +16,18 @@ export function ChannelListing() {
 
   function loadChats() {
     api.get('/channels?type=slack').then(response => {
-      setChannels(response);
+      let unsortedChannels = response;
+
+      // We want to sort them based on is_dm first, then is_group_chat, from a to z by name
+      unsortedChannels.sort((a, b) => {
+        if (a.is_dm && !b.is_dm) return -1;
+        if (!a.is_dm && b.is_dm) return 1;
+        if (a.is_group_chat && !b.is_group_chat) return -1;
+        if (!a.is_group_chat && b.is_group_chat) return 1;
+        return a.name.localeCompare(b.name);
+      });
+      console.log(unsortedChannels);
+      setChannels(unsortedChannels);
     });
   }
 
