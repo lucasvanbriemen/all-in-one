@@ -2,6 +2,7 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
+import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
 import {Whatsapp} from './Whatsapp';
 import {useAppContext} from '../../context/AppContext';
@@ -23,7 +24,7 @@ export function MessagesPage() {
   return (
     <View style={styles.content}>
       <ChannelListing />
-      <Text>{get("messages.openChannel")}</Text>
+      <ActiveChannel />
     </View>
   );
 }
