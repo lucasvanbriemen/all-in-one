@@ -14,8 +14,8 @@ export function ChannelListItem({channel}) {
 
   return (
     <Pressable key={channel.id} onPress={() => openChannel(channel)} style={styles.channelItem}>
-      <Text>{channel.display_name}</Text>
-      <Text>{channel.last_message?.body}</Text>
+      <Text style={styles.channelItem.name}>{channel.display_name}</Text>
+      <Text style={styles.channelItem.lastMessage}>{channel.last_message?.body}</Text>
     </Pressable>
   );
 }
@@ -26,5 +26,14 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     borderRadius: 16,
     marginTop: 8,
+
+    name: {
+      fontSize: 16,
+    },
+
+    lastMessage: {
+      color: colors.secondary,
+      marginTop: 4,
+    },
   },
 });
