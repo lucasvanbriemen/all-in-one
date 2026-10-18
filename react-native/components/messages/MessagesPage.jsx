@@ -7,10 +7,10 @@ import {useAppContext} from '../../context/AppContext';
 
 export function MessagesPage() {
   const {get} = useAppContext();
-  const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "songs");
+  const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "whatsapp");
 
   useEffect(() => {
-    setSidebarItem(get("app.activeSidebarItem") ?? "songs");
+    setSidebarItem(get("app.activeSidebarItem") ?? "whatsapp");
   }, [get]);
 
 
