@@ -35,7 +35,7 @@ export function ChannelListing() {
   useChannel('WhatsappChannel', loadChats);
 
   return (
-    <View style={styles.content}>
+    <View style={[styles.content, {paddingBottom: bottomInset}]}>
       <ScrollView style={styles.channelListing}>
         {channels.map(channel => (
           <ChannelListItem key={channel.id} channel={channel} />
