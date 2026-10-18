@@ -35,18 +35,16 @@ export function ChannelListing() {
   useChannel('WhatsappChannel', loadChats);
 
   return (
-    <View style={[styles.content, {paddingBottom: bottomInset}]}>
-      <ScrollView style={styles.channelListing}>
-        {channels.map(channel => (
-          <ChannelListItem key={channel.id} channel={channel} />
-        ))}
-      </ScrollView>
-    </View>
+    <ScrollView contentContainerStyle={[styles.channelListing, {paddingBottom: bottomInset}]}>
+      {channels.map(channel => (
+        <ChannelListItem key={channel.id} channel={channel} />
+      ))}
+    </ScrollView>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
   channelListing: {
-    flex: 1,
+    flexGrow: 1,
   },
 });
