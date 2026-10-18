@@ -40,6 +40,14 @@ class SlackController < ApplicationController
       Slack::Channel.find_by(id: event["channel"])&.update(is_active: true)
     end
 
+    if [ "member_joined_channel", "member_left_channel" ].include?(event&.dig("type"))
+      Slack::Channel.sync(event["channel"])
+    end
+
+    if [ "channel_left", "group_left" ].include?(event&.dig("type"))
+      Slack::Channel.find_by(id: event["channel"])&.update(is_member: false)
+    end
+
     if [ "team_join", "user_change" ].include?(event&.dig("type"))
       user = event["user"]
       Slack::Contact.find_or_initialize_by(id: user["id"]).update!(
