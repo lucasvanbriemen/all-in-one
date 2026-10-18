@@ -5,6 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ActiveChat} from './ActiveChat';
+import {ChannelListItem} from './ChannelListItem';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -42,10 +43,7 @@ export function ChannelListing() {
     <View style={styles.content}>
       <ScrollView style={styles.channelListing}>
         {channels.map(channel => (
-          <Pressable key={channel.id} onPress={() => openChannel(channel)}>
-            <Text>{channel.display_name}</Text>
-            <Text>{channel.last_message?.body}</Text>
-          </Pressable>
+          <ChannelListItem key={channel.id} channel={channel} openChannel={openChannel} />
         ))}
       </ScrollView>
     </View>
