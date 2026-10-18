@@ -44,6 +44,7 @@ export function ChannelListing() {
         {channels.map(channel => (
           <Pressable key={channel.id} onPress={() => openChannel(channel)}>
             <Text>{channel.display_name}</Text>
+            <Text>{channel.last_message?.body}</Text>
           </Pressable>
         ))}
       </ScrollView>
