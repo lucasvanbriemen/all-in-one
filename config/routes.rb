@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
   post "/slack/webhook", to: "slack#create", as: :slack_webhook
+  get "/channels", to: "channels#index", as: :channels
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
