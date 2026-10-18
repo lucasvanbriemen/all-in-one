@@ -13,11 +13,6 @@ export function ChannelListing() {
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
   const [channels, setChannels] = useState([]);
-  const {set, get} = useAppContext();
-
-  function openChannel(channel) {
-    set('messages.activeChannel', channel.id);
-  }
 
   function loadChats() {
     api.get('/channels?type=slack').then(response => {
@@ -43,7 +38,7 @@ export function ChannelListing() {
     <View style={styles.content}>
       <ScrollView style={styles.channelListing}>
         {channels.map(channel => (
-          <ChannelListItem key={channel.id} channel={channel} openChannel={openChannel} />
+          <ChannelListItem key={channel.id} channel={channel} />
         ))}
       </ScrollView>
     </View>
