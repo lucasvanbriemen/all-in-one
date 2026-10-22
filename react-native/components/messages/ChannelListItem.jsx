@@ -6,16 +6,20 @@ import {useAppContext} from '../../context/AppContext';
 export function ChannelListItem({channel}) {
   const styles = useThemedStyles(createStyles);
 
-  const {set} = useAppContext();
+  const {get, set} = useAppContext();
 
   function openChannel(channel) {
     set('messages.activeChannel', channel.id);
   }
 
+  function isSelected() {
+    return get('messages.activeChannel') === channel.id;
+  }
+
   return (
-    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={styles.channelItem}>
-      <Text style={styles.channelItem.name}>{channel.display_name}</Text>
-      <Text style={styles.channelItem.lastMessage}>{channel.last_message?.body}</Text>
+    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected]}>
+      <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
+      <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]}>{channel.last_message?.body}</Text>
     </Pressable>
   );
 }
@@ -29,11 +33,17 @@ const createStyles = colors => StyleSheet.create({
 
     name: {
       fontSize: 16,
+      fontWeight: 500,
     },
 
     lastMessage: {
-      color: colors.secondary,
       marginTop: 4,
+      opacity: 0.7,
+    },
+
+    selected: {
+      backgroundColor: colors.primary,
+      color: colors.onPrimary,
     },
   },
 });

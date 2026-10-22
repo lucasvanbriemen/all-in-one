@@ -8,7 +8,7 @@ class Channel < ApplicationRecord
   FALL_BACK_NAME = "Unknown name"
 
   def last_message
-    messages.order(created_at: :desc).first
+    messages.top_level.order(created_at: :desc).first
   end
 
   def display_name

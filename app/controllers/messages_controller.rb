@@ -2,7 +2,7 @@ class MessagesController < ApplicationController
   def show
     type = params[:type]
     channel = Channel.find(params[:id])
-    render json: channel.messages
+    render json: channel.messages.top_level
   end
 
   def new

@@ -17,6 +17,7 @@ class SlackController < ApplicationController
         message.channel_id = event["channel"]
         message.contact_id = event["user"]
         message.body = event["text"]
+        message.thread_id = "#{event["channel"]}-#{event["thread_ts"]}" if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
       end
     end
 
