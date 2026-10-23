@@ -23,8 +23,12 @@ export function MessagesPage() {
 
   return (
     <View style={styles.content}>
-      <ChannelListing />
-      <ActiveChannel />
+      <View style={styles.channelListing}>
+        <ChannelListing />
+      </View>
+      <View style={styles.activeChannel}>
+        <ActiveChannel />
+      </View>
     </View>
   );
 }
@@ -34,5 +38,11 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 16,
+  },
+  channelListing: {
+    flex: 1,
+  },
+  activeChannel: {
+    flex: 2,
   },
 });
