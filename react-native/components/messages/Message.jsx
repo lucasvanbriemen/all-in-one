@@ -9,26 +9,6 @@ import {format} from '../money/format';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
-const STATUS_INDICATORS = {
-  0: 'failed',
-  1: 'not_sent',
-  2: 'sent_not_received',
-  3: 'received',
-  4: 'read',
-  5: 'read',
-};
-
-// `color` names a theme color; null falls back to the grey timestamp color.
-const STATUS_ICONS = {
-  failed: {icon: 'alert', color: 'error'},
-  not_sent: {icon: 'clock', color: null},
-  sent_not_received: {icon: 'check', color: null},
-  received: {icon: 'check-double', color: null},
-  read: {icon: 'check-double', color: 'primary'},
-};
-
-export const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
-
 // Same emoji from several people collapses into one chip with a count.
 function groupReactions(reactions) {
   const groups = [];
@@ -44,7 +24,7 @@ function groupReactions(reactions) {
   return groups;
 }
 
-export function Message({message, selected, onSelect, onDeselect, onReact, onReply, showSender = false}) {
+export function Message({message, selected, onSelect, onDeselect, showSender = false}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -52,87 +32,23 @@ export function Message({message, selected, onSelect, onDeselect, onReact, onRep
   const {width, height} = message.media || {};
   const [mediaAspectRatio, setMediaAspectRatio] = useState(width && height ? width / height : 3 / 2);
   const mediaUri = message.local_uri ?? (message.media_url && `${BASE_URL}/${message.media_url}`);
-  const indicator = STATUS_ICONS[STATUS_INDICATORS[message.status]];
   const reactions = groupReactions(message.reactions ?? []);
-  const myReaction = message.reactions?.find(reaction => reaction.from_me)?.emoji;
   // Messages still uploading have no WhatsApp id to point at yet.
   const actionable = !message.deleted && !String(message.id).startsWith('local-');
 
   return (
-    <View style={[styles.chatWrapper, reactions.length > 0 && {marginBottom: 20}]}>
-      {selected && (
-        <View style={[styles.actions, message.from_me && styles.actionsFromMe]}>
-          {QUICK_REACTIONS.map(emoji => (
-            <Pressable key={emoji} onPress={() => onReact(emoji === myReaction ? '' : emoji)} style={[styles.action, emoji === myReaction && styles.actionActive]}>
-              <Text style={styles.actionEmoji}>{emoji}</Text>
-            </Pressable>
-          ))}
-          <Pressable onPress={onReply} style={styles.action}>
-            <Text style={styles.actionLabel}>Reply</Text>
-          </Pressable>
-        </View>
+    <View style={[styles.chatContainer, message.from_me && styles.from_me, selected && styles.selected]}>
+
+      {showSender && !message.from_me && (
+        <Text style={styles.sender}>{message.sender_name}</Text>
       )}
 
-      <Pressable
-        onLongPress={actionable ? onSelect : undefined}
-        onPress={selected ? onDeselect : undefined}
-        style={[styles.chatContainer, message.from_me && styles.from_me, selected && styles.selected]}>
-
-        {showSender && !message.from_me && (
-          <Text style={styles.sender}>{message.sender_name}</Text>
-        )}
-
-        {message.quoted && (
-          <View style={styles.quoted}>
-            <Text style={styles.quotedSender}>{message.quoted.sender_name}</Text>
-            <Text style={styles.quotedContent}>{message.quoted.body}</Text>
-          </View>
-        )}
-
-        {(message.kind === "imageMessage" || message.kind === "stickerMessage") && mediaUri && (
-          <Image
-            source={{uri: mediaUri}}
-            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
-            onLoad={({nativeEvent: {source}}) => setMediaAspectRatio(source.width / source.height)}
-          />
-        )}
-
-        {message.kind === "videoMessage" && mediaUri && (
-          <MediaPlayer
-            kind="video"
-            uri={mediaUri}
-            style={[styles.media, {aspectRatio: mediaAspectRatio}]}
-            onAspectRatio={setMediaAspectRatio}
-          />
-        )}
-
-        {message.kind === "audioMessage" && mediaUri && (
-          <MediaPlayer kind="audio" uri={mediaUri} style={styles.audio} />
-        )}
-
-        <View style={styles.body}>
-          <Text style={styles.content}>{message.body}</Text>
-          <View style={styles.meta}>
-            <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
-            {message.from_me && indicator && (
-              <Icon name={indicator.icon} size={16} color={colors[indicator.color] || styles.timestamp.color} />
-            )}
-          </View>
+      <View style={styles.body}>
+        <Text style={styles.content}>{message.body}</Text>
+        <View style={styles.meta}>
+          <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
         </View>
-      </Pressable>
-
-      {reactions.length > 0 && (
-        <View style={[styles.reactions, message.from_me && {right: 8, left: 'auto'}]}>
-          {reactions.map(reaction => (
-            <Pressable key={reaction.emoji} disabled={!reaction.mine} onPress={() => onReact('')}>
-              <Text style={[styles.reaction, reaction.mine && styles.reactionMine]}>
-                {reaction.emoji}{reaction.count > 1 ? ` ${reaction.count}` : ''}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      )}
-
+      </View>
     </View>
   );
 }
@@ -239,9 +155,6 @@ const createStyles = colors => StyleSheet.create({
   audio: {
     width: 300,
     height: 54,
-  },
-  chatWrapper: {
-    position: 'relative',
   },
   reactions: {
     flexDirection: 'row',
