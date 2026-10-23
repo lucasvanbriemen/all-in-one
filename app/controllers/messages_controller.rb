@@ -1,8 +1,10 @@
 class MessagesController < ApplicationController
   def show
-    type = params[:type]
     channel = Channel.find(params[:id])
-    render json: channel.messages.top_level
+
+    messages = channel.messages.top_level.includes(:contact)
+
+    render json: messages
   end
 
   def new
