@@ -5,6 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ActiveChat} from './ActiveChat';
+import {Message} from './Message';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -36,7 +37,7 @@ export function ActiveChannel() {
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
         {messages.map(message => (
-          <Text>{message.body}</Text>
+          <Message key={message.id} message={message} />
         ))}
       </ScrollView>
     </View>
