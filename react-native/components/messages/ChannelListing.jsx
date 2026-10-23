@@ -26,7 +26,6 @@ export function ChannelListing() {
         if (!a.is_group_chat && b.is_group_chat) return 1;
         return a.display_name.localeCompare(b.display_name);
       });
-      console.log(unsortedChannels);
       setChannels(unsortedChannels);
     });
   }

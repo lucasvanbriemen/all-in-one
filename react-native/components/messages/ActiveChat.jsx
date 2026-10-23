@@ -5,7 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 
 import {Icon} from '../icons';
-import {Message} from './Message';
+import {Message} from './WhatsAppMessage';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {mediaPicker} from '../mediaPicker';
 import {push} from '../push';
