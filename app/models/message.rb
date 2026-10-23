@@ -5,4 +5,8 @@ class Message < ApplicationRecord
   has_many :replies, class_name: "Message", foreign_key: :thread_id
 
   scope :top_level, -> { where(thread_id: nil) }
+
+  def from_me?
+    contact.is_me?
+  end
 end
