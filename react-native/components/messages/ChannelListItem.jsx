@@ -19,7 +19,7 @@ export function ChannelListItem({channel}) {
   return (
     <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected]}>
       {channel.is_dm && (
-        <Image source={{uri: channel.contact.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
+        <Image source={{uri: channel.contact?.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
       )}
 
       <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
