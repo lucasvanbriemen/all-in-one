@@ -17,7 +17,7 @@ export function Message({message, showSender = false}) {
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
       {showSender && !message.from_me && (
-        <Text style={styles.sender}>{message.sender_name}</Text>
+        <Text style={styles.sender}>{message.contact.name}</Text>
       )}
 
       <View style={styles.body}>
