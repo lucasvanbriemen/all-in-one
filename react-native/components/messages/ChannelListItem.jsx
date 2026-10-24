@@ -22,8 +22,10 @@ export function ChannelListItem({channel}) {
         <Image source={{uri: channel.contact?.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
       )}
 
-      <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
-      <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]}>{channel.last_message?.body}</Text>
+      <View style={styles.channelItem.textContainer}>
+        <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
+        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]}>{channel.last_message?.body}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -34,6 +36,13 @@ const createStyles = colors => StyleSheet.create({
     ...glass(colors),
     borderRadius: 16,
     marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+
+    textContainer: {
+      flex: 1,
+    },
 
     name: {
       fontSize: 16,
