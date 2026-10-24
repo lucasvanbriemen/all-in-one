@@ -64,7 +64,8 @@ module Banking
         occurrences: group.size,
         last_seen: dates.last,
         next_expected: next_expected,
-        stopped: next_expected + STOPPED_GRACE_DAYS < Date.current
+        stopped: next_expected + STOPPED_GRACE_DAYS < Date.current,
+        transaction_ids: group.map(&:id)
       }
     end
 

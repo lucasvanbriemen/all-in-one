@@ -6,7 +6,7 @@ class Message < ApplicationRecord
 
   scope :top_level, -> { where(thread_id: nil) }
 
-  def from_me?
-    contact.is_me?
+  def from_me
+    contact.is_me
   end
 end

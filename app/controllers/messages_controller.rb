@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
 
     messages = channel.messages.top_level.includes(:contact)
 
-    render json: messages
+    render json: messages.as_json(include: :contact, methods: :from_me)
   end
 
   def new

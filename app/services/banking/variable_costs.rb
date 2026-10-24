@@ -12,7 +12,7 @@ module Banking
     end
 
     def initialize(recurring: [])
-      @recurring_keys = recurring.map { |r| normalize(r[:counterparty]) }.to_set
+      @recurring_ids = recurring.flat_map { |r| r[:transaction_ids] }.to_set
     end
 
     def call
@@ -23,8 +23,9 @@ module Banking
       @months_in_window = months_between(first_full_month(transactions), Date.current)
       return [] if @months_in_window < 2
 
-      transactions.group_by { |t| key_for(t) }
-        .reject { |key, _| key.blank? || @recurring_keys.include?(key) }
+      transactions.reject { |t| @recurring_ids.include?(t.id) }
+        .group_by { |t| key_for(t) }
+        .reject { |key, _| key.blank? }
         .filter_map { |key, group| analyze(key, group) }
         .sort_by { |r| -r[:monthly_amount] }
     end
