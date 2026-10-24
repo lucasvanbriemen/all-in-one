@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_23_154454) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_24_130000) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -96,6 +96,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_23_154454) do
     t.boolean "is_dm", default: false, null: false
     t.boolean "is_group_chat", default: false, null: false
     t.boolean "is_member", default: false, null: false
+    t.string "contact_id"
+    t.boolean "dismissed", default: false
+    t.index ["contact_id"], name: "index_channels_on_contact_id"
   end
 
   create_table "contacts", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -105,7 +108,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_23_154454) do
     t.string "name"
     t.string "avatar_url"
     t.boolean "is_active", default: true, null: false
-    t.boolean "dismissed", default: false
   end
 
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

@@ -14,7 +14,8 @@ class Slack::Channel < Channel
       is_private: conversation["is_private"] || conversation["is_im"] || conversation["is_mpim"] || false,
       is_dm: conversation["is_im"] || false,
       is_group_chat: conversation["is_mpim"] || false,
-      is_member: conversation["is_member"] || conversation["is_im"] || conversation["is_mpim"] || false
+      is_member: conversation["is_member"] || conversation["is_im"] || conversation["is_mpim"] || false,
+      contact_id: conversation["is_im"] ? conversation["user"] : nil
     )
     channel
   end

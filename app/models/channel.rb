@@ -1,5 +1,6 @@
 class Channel < ApplicationRecord
   has_many :messages
+  belongs_to :contact, optional: true
 
   scope :slack, -> { where(type: "Slack::Channel") }
   scope :joined, -> { where(is_member: true) }
