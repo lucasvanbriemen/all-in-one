@@ -23,7 +23,7 @@ export function Message({message, showSender = false}) {
       <View style={styles.body}>
         <Text style={styles.content}>{message.body}</Text>
         <View style={styles.meta}>
-          <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
+          <Text style={styles.timestamp}>{format.time(message.created_at)}</Text>
         </View>
       </View>
 
