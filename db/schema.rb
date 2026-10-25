@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_25_110526) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_25_123518) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -195,6 +195,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_25_110526) do
     t.text "last_fetch_error"
     t.integer "fetch_attempts", default: 0, null: false
     t.index ["last_fetched_at"], name: "imap_credentials_last_fetched_at_index"
+  end
+
+  create_table "message_reactions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "message_id", null: false
+    t.string "reaction"
   end
 
   create_table "messages", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
