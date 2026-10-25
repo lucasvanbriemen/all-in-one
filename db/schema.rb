@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_25_123518) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_25_123831) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -202,6 +202,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_25_123518) do
     t.datetime "updated_at", null: false
     t.string "message_id", null: false
     t.string "reaction"
+    t.string "contact_id"
+    t.index ["contact_id"], name: "fk_rails_83d3def53e"
   end
 
   create_table "messages", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -331,6 +333,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_25_123518) do
   add_foreign_key "bank_accounts", "bank_connections"
   add_foreign_key "bank_transactions", "bank_accounts"
   add_foreign_key "emails", "senders", name: "emails_sender_id_foreign", on_delete: :nullify
+  add_foreign_key "message_reactions", "contacts"
   add_foreign_key "messages", "channels"
   add_foreign_key "messages", "contacts"
 end
