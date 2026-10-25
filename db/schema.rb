@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_24_130000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_25_110526) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -158,6 +158,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_24_130000) do
     t.index ["subject", "html_body"], name: "ft_both", type: :fulltext
     t.index ["subject"], name: "emails_subject_index"
     t.index ["subject"], name: "ft_subject", type: :fulltext
+  end
+
+  create_table "file_uploads", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "path"
+    t.string "message_id"
   end
 
   create_table "google_calendar_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
