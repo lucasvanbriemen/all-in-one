@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   post "/slack/webhook", to: "slack#create", as: :slack_webhook
   get "/channels", to: "channels#index", as: :channels
   get "/channels/:id/messages", to: "messages#show", as: :channel_messages
+  get "/file/:id", to: "files#show", as: :file
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
