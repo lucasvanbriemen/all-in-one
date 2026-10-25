@@ -12,6 +12,7 @@ import {useChannel} from '../cable';
 export function ActiveChannel() {
   const styles = useThemedStyles(createStyles);
   const [messages, setMessages] = useState([]);
+  const [channel, setChannel] = useState({});
   const {set, get} = useAppContext();
 
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
@@ -26,6 +27,10 @@ export function ActiveChannel() {
     api.get(`/channels/${activeChannel}/messages`).then(response => {
       setMessages(response);
       console.log(response);
+    });
+
+    api.get(`/channels/${activeChannel}`).then(response => {
+      setChannel(response);
     });
   }
 
