@@ -26,5 +26,14 @@ module Slack
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
       JSON.parse(response.body)
     end
+
+    def self.download(url, limit = 3)
+      uri = URI(url)
+      request = Net::HTTP::Get.new(uri)
+      request["Authorization"] = "Bearer #{SECRET}"
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+      return download(response["location"], limit - 1) if response.is_a?(Net::HTTPRedirection) && limit > 0
+      response.body
+    end
   end
 end

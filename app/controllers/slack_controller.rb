@@ -10,15 +10,16 @@ class SlackController < ApplicationController
     json = JSON.parse(request.raw_post)
 
     event = json.dig("payload", "event")
-    if event&.dig("type") == "message" && event["subtype"].blank?
+    if event&.dig("type") == "message" && (event["subtype"].blank? || event["subtype"] == "file_share")
       Slack::Channel.sync(event["channel"]) unless Slack::Channel.where(id: event["channel"]).where.not(name: nil).exists?
       Slack::Contact.find_or_create_by!(id: event["user"])
-      Slack::Message.find_or_create_by!(id: "#{event["channel"]}-#{event["ts"]}") do |message|
+      message = Slack::Message.find_or_create_by!(id: "#{event["channel"]}-#{event["ts"]}") do |message|
         message.channel_id = event["channel"]
         message.contact_id = event["user"]
         message.body = event["text"]
         message.thread_id = "#{event["channel"]}-#{event["thread_ts"]}" if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
       end
+      DownloadSlackFilesJob.perform_later(message.id, event["files"]) if event["files"].present?
     end
 
     if event&.dig("type") == "message" && event["subtype"] == "message_changed"
