@@ -30,6 +30,19 @@ class SlackController < ApplicationController
       Slack::Message.find_by(id: "#{event["channel"]}-#{event["deleted_ts"]}")&.destroy
     end
 
+    if [ "reaction_added", "reaction_removed" ].include?(event&.dig("type")) && event.dig("item", "type") == "message"
+      message_id = "#{event["item"]["channel"]}-#{event["item"]["ts"]}"
+      if Slack::Message.exists?(id: message_id)
+        Slack::Contact.find_or_create_by!(id: event["user"])
+        attrs = { message_id: message_id, contact_id: event["user"], reaction: event["reaction"] }
+        if event["type"] == "reaction_added"
+          MessageReaction.find_or_create_by!(attrs)
+        else
+          MessageReaction.where(attrs).delete_all
+        end
+      end
+    end
+
     if [ "channel_created", "channel_rename", "group_rename" ].include?(event&.dig("type"))
       Slack::Channel.find_or_initialize_by(id: event["channel"]["id"]).update!(name: event["channel"]["name"])
     end
