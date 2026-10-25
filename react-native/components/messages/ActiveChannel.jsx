@@ -6,6 +6,7 @@ import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ActiveChat} from './ActiveChat';
 import {Message} from './Message';
+import {MessageInput} from './MessageInput';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -44,6 +45,10 @@ export function ActiveChannel() {
           <Message key={message.id} message={message} showSender={!channel?.is_dm} />
         ))}
       </ScrollView>
+
+      <View style={styles.additionalContent}>
+        <MessageInput />
+      </View>
     </View>
   );
 }
@@ -54,9 +59,9 @@ const createStyles = colors => StyleSheet.create({
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: 16,
-    flex: 2,
+    flex: 1,
   },
   chatName: {
     fontSize: 16,
@@ -108,9 +113,5 @@ const createStyles = colors => StyleSheet.create({
   },
   activeChatName: {
     color: colors.onPrimary,
-  },
-
-  additionalContent: {
-    flex: 2
   },
 });

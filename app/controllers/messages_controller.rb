@@ -8,7 +8,8 @@ class MessagesController < ApplicationController
   end
 
   def new
-    Slack::Api.send_message(params[:channel], params[:text])
+    channel = Channel.find(params[:id])
+    Slack::Api.send_message(channel.id, params[:text])
     render json: { success: true }
   end
 end

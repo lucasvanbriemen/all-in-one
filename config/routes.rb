@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   get "/channels", to: "channels#index", as: :channels
   get "/channels/:id", to: "channels#show", as: :channel
   get "/channels/:id/messages", to: "messages#show", as: :channel_messages
+  post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create
   get "/file/:id", to: "files#show", as: :file
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
