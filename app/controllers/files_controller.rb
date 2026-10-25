@@ -1,7 +1,8 @@
 class FilesController < ApplicationController
+  skip_before_action :require_login, only: :show
+
   def show
     file_upload = FileUpload.find(params[:id])
-    # send whatever is at file_upload.path
-    send_file file_upload.path, filename: file_upload.filename
+    send_file file_upload.path, filename: file_upload.filename, type: file_upload.mimetype || "application/octet-stream", disposition: "inline"
   end
 end

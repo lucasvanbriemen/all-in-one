@@ -8,11 +8,13 @@ class DownloadSlackFilesJob < ApplicationJob
     FileUtils.mkdir_p(FILES_DIR)
 
     files.each do |file|
-      path = FILES_DIR.join("#{file["id"]}-#{file["name"].to_s.gsub(/[^\w.\-]/, "_")}").to_s
-      next if message.file_uploads.exists?(path: path)
+      next if message.file_uploads.exists?(name: file["name"])
+
+      id = SecureRandom.uuid
+      path = FILES_DIR.join("#{id}#{File.extname(file["name"].to_s)}").to_s
 
       File.binwrite(path, Slack::Api.download(file["url_private"]))
-      message.file_uploads.create!(path: path)
+      message.file_uploads.create!(id: id, path: path, name: file["name"], mimetype: file["mimetype"])
     end
   end
 end
