@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_25_150000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_25_160000) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -167,6 +167,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_25_150000) do
     t.string "message_id"
     t.string "name"
     t.string "mimetype"
+    t.string "external_id"
+    t.index ["message_id", "external_id"], name: "index_file_uploads_on_message_id_and_external_id", unique: true
   end
 
   create_table "google_calendar_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
