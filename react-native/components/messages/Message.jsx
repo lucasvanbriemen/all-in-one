@@ -1,8 +1,9 @@
 import {BASE_URL, api} from '../api';
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, Linking, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useTheme, useThemedStyles} from '../theme';
 
+import FileUpload from './FileUpload';
 import {format} from '../money/format';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
@@ -20,6 +21,12 @@ export function Message({message, showSender = false}) {
         <View style={styles.senderContainer}>
           <Image source={{uri: message.contact.avatar_url}} style={styles.avatar} />
           <Text style={styles.sender}>{message.contact.name}</Text>
+        </View>
+      )}
+
+      {message.file_uploads?.length > 0 && (
+        <View style={styles.files}>
+          {message.file_uploads.map(file => <FileUpload key={file.id} file={file} />)}
         </View>
       )}
 
