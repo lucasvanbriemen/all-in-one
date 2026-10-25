@@ -26,6 +26,14 @@ export function Message({message, showSender = false}) {
           <Text style={styles.timestamp}>{format.time(message.sent_at)}</Text>
         </View>
       </View>
+
+      {message.reactions && message.reactions.length > 0 && (
+        <View style={styles.reactions}>
+          {message.reactions.map(reaction => (
+            <Text key={reaction.id}>{reaction.reaction}</Text>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -54,6 +62,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
     alignSelf: 'flex-start',
     maxWidth: '75%',
+    position: 'relative',
     gap: 8,
   },
   body: {
@@ -86,4 +95,13 @@ const createStyles = colors => StyleSheet.create({
     opacity: 0.75,
     color: colors.onSurfaceVariant
   },
+  reactions: {
+    position: 'absolute',
+    bottom: -16,
+    ...glass(colors),
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    right: 8,
+  }
 });
