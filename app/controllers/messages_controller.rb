@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
 
     messages = channel.messages.top_level.includes(:contact, :file_uploads).limit(50)
 
-    render json: messages.as_json(include: :contact, methods: :from_me)
+    render json: messages.as_json(include: [ :contact, :file_uploads ], methods: :from_me)
   end
 
   def new
