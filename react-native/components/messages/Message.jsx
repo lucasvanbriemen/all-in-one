@@ -17,7 +17,10 @@ export function Message({message, showSender = false}) {
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
       {showSender && !message.from_me && (
-        <Text style={styles.sender}>{message.contact.name}</Text>
+        <View style={styles.senderContainer}>
+          <Image source={{uri: message.contact.avatar_url}} style={styles.avatar} />
+          <Text style={styles.sender}>{message.contact.name}</Text>
+        </View>
       )}
 
       <View style={styles.body}>
@@ -51,8 +54,7 @@ const createStyles = colors => StyleSheet.create({
   },
   sender: {
     fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 4,
+    color: colors.primary
   },
   chatContainer: {
     marginTop: 8,
@@ -72,10 +74,9 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
   },
   avatar: {
-    width: 45,
-    height: 45,
+    width: 24,
+    height: 24,
     borderRadius: 25,
-    marginRight: 16,
   },
   from_me: {
     backgroundColor: colors.primaryContainer,
@@ -103,5 +104,10 @@ const createStyles = colors => StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 2,
     right: 8,
+  },
+  senderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   }
 });
