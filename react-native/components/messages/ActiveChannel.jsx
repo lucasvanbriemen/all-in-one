@@ -26,7 +26,6 @@ export function ActiveChannel() {
 
     api.get(`/channels/${activeChannel}/messages`).then(response => {
       setMessages(response);
-      console.log(response);
     });
 
     api.get(`/channels/${activeChannel}`).then(response => {
@@ -42,7 +41,7 @@ export function ActiveChannel() {
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
         {messages.map(message => (
-          <Message key={message.id} message={message} />
+          <Message key={message.id} message={message} showSender={!channel?.is_dm} />
         ))}
       </ScrollView>
     </View>
