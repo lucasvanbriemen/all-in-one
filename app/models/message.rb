@@ -7,8 +7,13 @@ class Message < ApplicationRecord
   has_many :reactions, class_name: "MessageReaction", dependent: :delete_all
 
   scope :top_level, -> { where(thread_id: nil) }
+  scope :replies, ->(message_id) { where(thread_id: message_id) }
 
   def from_me
     contact.is_me
+  end
+
+  def reply_count
+    replies.size
   end
 end
