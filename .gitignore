@@ -6,6 +6,9 @@
 
 # Ignore bundler config.
 /.bundle
+/profile
+
+.DS_Store
 
 # Ignore all environment files, except the documented example.
 /.env*
