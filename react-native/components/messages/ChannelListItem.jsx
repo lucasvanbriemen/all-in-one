@@ -24,7 +24,7 @@ export function ChannelListItem({channel}) {
 
       <View style={styles.channelItem.textContainer}>
         <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
-        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]}>{channel.last_message?.body}</Text>
+        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]} numberOfLines={1}>{channel.last_message?.body}</Text>
       </View>
     </Pressable>
   );
