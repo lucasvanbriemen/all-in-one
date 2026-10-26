@@ -18,7 +18,7 @@ export function MessageInput() {
 
   function sendMessage() {
     if (!text || !activeChannel) return;
-    api.post(`/channels/${activeChannel}/messages`, {content: text}).then(() => {
+    api.post(`/channels/${activeChannel}/messages`, {text}).then(() => {
       setText("");
     });
   }
