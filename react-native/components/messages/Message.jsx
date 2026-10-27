@@ -32,11 +32,11 @@ export function Message({message, showSender = false}) {
 
       <View style={styles.body}>
         <Text style={styles.content}>{message.body}</Text>
-      
-        {message.reply_count > 0 && (
-          <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
-        )}
       </View>
+
+      {message.reply_count > 0 && (
+        <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
+      )}
 
       <View style={styles.meta}>
         <Text style={styles.meta_item}>{format.time(message.created_at)}</Text>
@@ -82,6 +82,11 @@ const createStyles = colors => StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-end',
     gap: 8,
+  },
+  replyCount: {
+    color: colors.primary,
+    fontWeight: 'bold',
+    marginTop: 4,
   },
   avatar: {
     width: 24,
