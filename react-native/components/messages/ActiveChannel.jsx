@@ -102,7 +102,6 @@ const createStyles = colors => StyleSheet.create({
     borderTopColor: colors.primary,
     borderWidth: 2,
   },
-
   activeChat: {
     backgroundColor: colors.primary,
     borderWidth: 2,

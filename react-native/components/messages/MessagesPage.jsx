@@ -29,6 +29,10 @@ export function MessagesPage() {
       <View style={styles.activeChannel}>
         <ActiveChannel />
       </View>
+
+      <View style={styles.activeChannel}>
+        <ActiveChannel />
+      </View>
     </View>
   );
 }
