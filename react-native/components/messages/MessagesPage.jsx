@@ -30,9 +30,11 @@ export function MessagesPage() {
         <ActiveChannel />
       </View>
 
-      <View style={styles.activeChannel}>
-        <ActiveChannel />
-      </View>
+      {get("messages.activeThread") && (
+        <View style={styles.activeChannel}>
+          <ActiveChannel />
+        </View>
+      )}
     </View>
   );
 }
