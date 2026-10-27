@@ -35,6 +35,10 @@ export function Message({message, showSender = false}) {
         <View style={styles.meta}>
           <Text style={styles.timestamp}>{format.time(message.created_at)}</Text>
         </View>
+
+        {message.reply_count > 0 && (
+          <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
+        )}
       </View>
 
       {message.reactions && message.reactions.length > 0 && (
