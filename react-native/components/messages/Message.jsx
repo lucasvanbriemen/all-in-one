@@ -32,30 +32,29 @@ export function Message({message, showSender = false}) {
 
       <View style={styles.body}>
         <Text style={styles.content}>{message.body}</Text>
-        <View style={styles.meta}>
-          <Text style={styles.timestamp}>{format.time(message.created_at)}</Text>
-        </View>
-
+      
         {message.reply_count > 0 && (
           <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
         )}
       </View>
 
-      {message.reactions && message.reactions.length > 0 && (
-        <View style={styles.reactions}>
-          {message.reactions.map(reaction => (
-            <Text key={reaction.id}>{reaction.reaction}</Text>
-          ))}
-        </View>
-      )}
+      <View style={styles.meta}>
+        <Text style={styles.meta_item}>{format.time(message.created_at)}</Text>
+
+        {message.reactions && message.reactions.length > 0 && (
+          <View style={styles.meta_item}>
+            {message.reactions.map(reaction => (
+              <Text key={reaction.id}>{reaction.reaction}</Text>
+            ))}
+          </View>
+        )}
+      </View>
+
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  chatListing: {
-    flex: 1,
-  },
   content: {
     gap: 16,
     flex: 2,
@@ -68,7 +67,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.primary
   },
   chatContainer: {
-    marginTop: 8,
+    marginTop: 16,
     ...glass(colors),
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -97,24 +96,17 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurface,
   },
   meta: {
-    marginLeft: 'auto',
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
+    justifyContent: 'space-between',
   },
-  timestamp: {
-    fontSize: 11,
-    opacity: 0.75,
-    color: colors.onSurfaceVariant
-  },
-  reactions: {
-    position: 'absolute',
-    bottom: -16,
+  meta_item: {
+    flexDirection: 'row',
+    gap: 4,
     ...glass(colors),
     borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 2,
-    right: 8,
+    color: colors.onSurfaceVariant
   },
   senderContainer: {
     flexDirection: 'row',
