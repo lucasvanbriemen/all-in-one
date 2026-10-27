@@ -609,7 +609,8 @@ export const bridge = {
         // WhatsApp answers differently per spelling of the same person, so try the phone jid and the lid.
         let avatar = null;
         for (const candidate of bridge.jidVariants(toJid(jid))) {
-          avatar = await sock.profilePictureUrl(candidate, 'image').catch(() => null);
+          // Unanswered queries otherwise hang for Baileys' 60s timeout.
+          avatar = await sock.profilePictureUrl(candidate, 'image', 5000).catch(() => null);
           if (avatar) break;
         }
         return reply(200, {jid: normalize(toJid(jid)), url: avatar});

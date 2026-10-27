@@ -42,6 +42,8 @@ module Whatsapp
 
     def refresh_avatar!
       return avatar_url if avatar_checked_at && avatar_checked_at > AVATAR_TTL.ago
+      # WhatsApp never answers picture queries for channels, so asking only ties up a request until it times out.
+      return nil if jid.end_with?("@newsletter")
 
       url = Bridge.avatar(jid)["url"]
       update_columns(avatar_url: url, avatar_checked_at: Time.current)
@@ -58,7 +60,8 @@ module Whatsapp
 
       path = AVATAR_DIR.join("#{jid.parameterize}-#{Digest::SHA1.hexdigest(url)[0, 12]}.jpg")
       unless path.exist?
-        response = Net::HTTP.get_response(URI(url))
+        uri = URI(url)
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 5, read_timeout: 10) { |http| http.get(uri.request_uri) }
         return nil unless response.is_a?(Net::HTTPSuccess)
 
         FileUtils.mkdir_p(path.dirname)

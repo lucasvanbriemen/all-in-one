@@ -19,7 +19,7 @@ module Whatsapp
     def self.chats = get("/chats")
     def self.contacts = get("/contacts")
     def self.groups = get("/groups")
-    def self.avatar(jid) = get("/avatar", jid: jid)
+    def self.avatar(jid) = get("/avatar", { jid: jid }, read_timeout: 15)
     def self.resolve_lid(lid) = get("/lid", jid: lid)
 
     def self.pair(phone = nil) = post("/pair", phone: phone)
@@ -41,10 +41,10 @@ module Whatsapp
       [ response["Content-Type"], response.body ]
     end
 
-    def self.get(path, params = {})
+    def self.get(path, params = {}, read_timeout: 120)
       uri = URI("#{BASE_URL}#{path}")
       uri.query = params.compact.to_query if params.compact.any?
-      perform(Net::HTTP::Get.new(uri), uri)
+      perform(Net::HTTP::Get.new(uri), uri, read_timeout: read_timeout)
     end
 
     def self.post(path, body = {})
@@ -55,9 +55,9 @@ module Whatsapp
       perform(request, uri)
     end
 
-    def self.perform(request, uri, raw: false)
+    def self.perform(request, uri, raw: false, read_timeout: 120)
       request["X-Bridge-Secret"] = SECRET
-      response = Net::HTTP.start(uri.host, uri.port, read_timeout: 120) { |http| http.request(request) }
+      response = Net::HTTP.start(uri.host, uri.port, read_timeout: read_timeout) { |http| http.request(request) }
       unless response.is_a?(Net::HTTPSuccess)
         error = JSON.parse(response.body)["error"] rescue nil
         raise Error.new(response.code.to_i, error || response.message)
@@ -67,6 +67,8 @@ module Whatsapp
       response.body.present? ? JSON.parse(response.body) : nil
     rescue Errno::ECONNREFUSED, Net::OpenTimeout
       raise Error.new(503, "whatsapp connector is not running")
+    rescue Net::ReadTimeout
+      raise Error.new(504, "whatsapp connector timed out")
     end
   end
 end
