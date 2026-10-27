@@ -10,7 +10,7 @@ import {MessageInput} from './MessageInput';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
-export function ActiveChannel() {
+export function ActiveChannel({isThread = false}) {
   const styles = useThemedStyles(createStyles);
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState({});
@@ -25,7 +25,9 @@ export function ActiveChannel() {
   function loadChats() {
     if (!activeChannel) return;
 
-    api.get(`/channels/${activeChannel}/messages`).then(response => {
+    const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages`;
+
+    api.get(messageRoute).then(response => {
       setMessages(response);
     });
 
