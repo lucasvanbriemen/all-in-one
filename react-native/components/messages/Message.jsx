@@ -12,7 +12,7 @@ export function Message({message, showSender = false}) {
   const compact = useCompactLayout();
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
-  const {get} = useAppContext();
+  const {get, set} = useAppContext();
 
   return (
     <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
@@ -35,7 +35,9 @@ export function Message({message, showSender = false}) {
       </View>
 
       {message.reply_count > 0 && (
-        <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
+        <Pressable onPress={() => set("messages.activeThread", message.id)}>
+          <Text style={styles.replyCount}>{message.reply_count} {message.reply_count === 1 ? 'reply' : 'replies'}</Text>
+        </Pressable>
       )}
 
       <View style={styles.meta}>

@@ -10,6 +10,7 @@ export function ChannelListItem({channel}) {
 
   function openChannel(channel) {
     set('messages.activeChannel', channel.id);
+    set("messages.activeThread", null)
   }
 
   function isSelected() {
