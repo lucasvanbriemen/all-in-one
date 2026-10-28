@@ -18,6 +18,9 @@ class MessagesController < ApplicationController
 
     replies = message.replies.includes(:contact, :file_uploads, :reactions).order(created_at: :asc)
 
+    # Merge message itself with its replies
+    replies = [ message ] + replies
+
     render json: replies.as_json(include: [ :contact, :reactions, { file_uploads: { methods: :filename } } ], methods: :from_me)
   end
 end
