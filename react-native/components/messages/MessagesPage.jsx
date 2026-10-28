@@ -26,20 +26,26 @@ export function MessagesPage() {
       <View style={styles.channelListing}>
         <ChannelListing />
       </View>
-      <View style={styles.activeChannel}>
-        <ActiveChannel />
-      </View>
 
-      {get("messages.activeThread") && (
+      <View style={styles.activeChannelWrapper}>
         <View style={styles.activeChannel}>
-          <ActiveChannel isThread={true} />
+          <ActiveChannel />
         </View>
-      )}
+
+        {get("messages.activeThread") && (
+          <View style={[styles.activeChannel, styles.activeChannelThread]}>
+            <ActiveChannel isThread={true} />
+          </View>
+        )}
+      </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  activeChannelThread: {
+    ...glass(colors),
+  },
   content: {
     flex: 1,
     flexDirection: 'row',
@@ -49,6 +55,11 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   activeChannel: {
+    flex: 1,
+  },
+  activeChannelWrapper: {
     flex: 2,
+    flexDirection: 'row',
+    gap: 16,
   },
 });
