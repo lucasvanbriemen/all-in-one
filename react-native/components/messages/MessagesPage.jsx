@@ -45,6 +45,7 @@ export function MessagesPage() {
 const createStyles = colors => StyleSheet.create({
   activeChannelThread: {
     ...glass(colors),
+    flex: 3,
   },
   content: {
     flex: 1,
@@ -55,7 +56,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   activeChannel: {
-    flex: 1,
+    flex: 4,
     marginVertical: 16,
     borderRadius: 16,
     paddingHorizontal: 16,
