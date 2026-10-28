@@ -56,10 +56,12 @@ const createStyles = colors => StyleSheet.create({
   },
   activeChannel: {
     flex: 1,
+    marginVertical: 16,
+    borderRadius: 16,
+    paddingHorizontal: 16,
   },
   activeChannelWrapper: {
     flex: 2,
-    flexDirection: 'row',
-    gap: 16,
+    flexDirection: 'row'
   },
 });
