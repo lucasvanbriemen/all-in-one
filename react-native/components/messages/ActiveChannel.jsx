@@ -27,11 +27,17 @@ export function ActiveChannel({isThread = false}) {
 
     const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages?page=${messagePage}`;
 
-    let currentMessages = [...messages];
-
     api.get(messageRoute).then(response => {
-      currentMessages = [...response, ...currentMessages];
-      setMessages(currentMessages);
+      if (messagePage === 1) {
+        setMessages(response);
+        return;
+      }
+
+      // Older page goes on top; skip any that shifted into this page since the last load
+      setMessages(current => {
+        const loadedIds = new Set(current.map(message => message.id));
+        return [...response.filter(message => !loadedIds.has(message.id)), ...current];
+      });
     });
 
     api.get(`/channels/${activeChannel}`).then(response => {
@@ -46,7 +52,7 @@ export function ActiveChannel({isThread = false}) {
   return (
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
-        <Pressable onPress={() => loadChats(messages.length / 50 + 1)}>
+        <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
         </Pressable>
 

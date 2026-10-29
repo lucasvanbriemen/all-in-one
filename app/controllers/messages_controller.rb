@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
 
     page = [ params[:page].to_i, 1 ].max
 
-    messages = channel.messages.top_level.includes(:contact, :file_uploads, :reactions, :replies).limit(50).offset((page - 1) * 50).order(created_at: :asc)
+    messages = channel.messages.top_level.includes(:contact, :file_uploads, :reactions, :replies).limit(50).offset((page - 1) * 50).order(created_at: :desc).reverse
 
     render json: messages.as_json(include: [ :contact, :reactions, { file_uploads: { methods: :filename } } ], methods: [ :from_me, :reply_count ])
   end
