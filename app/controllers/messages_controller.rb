@@ -14,6 +14,14 @@ class MessagesController < ApplicationController
     render json: { success: true }
   end
 
+  def upload
+    channel = Channel.find(params[:id])
+    file = params.require(:file)
+    thread_ts = params[:thread_id].to_s.delete_prefix("#{channel.id}-").presence
+    Slack::Api.upload_file(channel.id, data: file.read, filename: file.original_filename, comment: params[:text].presence, thread_ts: thread_ts)
+    render json: { success: true }
+  end
+
   def replies
     message = Message.find(params[:message_id])
 

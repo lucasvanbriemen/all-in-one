@@ -9,6 +9,18 @@ module Slack
       post("chat.postMessage", { channel: channel, text: text, thread_ts: thread_ts })
     end
 
+    def self.upload_file(channel, data:, filename:, comment: nil, thread_ts: nil)
+      reserved = post("files.getUploadURLExternal", { filename: filename, length: data.bytesize })
+
+      uri = URI(reserved["upload_url"])
+      request = Net::HTTP::Post.new(uri)
+      request.body = data
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+
+      completed = post("files.completeUploadExternal", { files: [ { id: reserved["file_id"], title: filename } ].to_json, channel_id: channel, initial_comment: comment, thread_ts: thread_ts }.compact)
+      completed
+    end
+
     def self.get(path, params = {})
       uri = URI("#{BASE_URL}#{path}")
       uri.query = params.compact.to_query if params.compact.any?

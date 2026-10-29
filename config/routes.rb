@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   get "/channels/:id/messages", to: "messages#show", as: :channel_messages
   get "/channels/:id/messages/:message_id/replies", to: "messages#replies", as: :channel_message_replies, constraints: { message_id: /[^\/]+/ }
   post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create
+  post "/channels/:id/files", to: "messages#upload", as: :channel_files_create
   get "/file/:id", to: "files#show", as: :file
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
