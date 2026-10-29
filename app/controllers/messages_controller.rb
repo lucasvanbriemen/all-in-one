@@ -2,7 +2,7 @@ class MessagesController < ApplicationController
   def show
     channel = Channel.find(params[:id])
 
-    page = params[:page].to_i.presence || 1
+    page = [ params[:page].to_i, 1 ].max
 
     messages = channel.messages.top_level.includes(:contact, :file_uploads, :reactions, :replies).limit(50).offset((page - 1) * 50).order(created_at: :asc)
 
