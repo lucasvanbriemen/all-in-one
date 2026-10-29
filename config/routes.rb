@@ -37,22 +37,17 @@ Rails.application.routes.draw do
 
   post "/slack/webhook", to: "slack#create", as: :slack_webhook
   get "/channels", to: "channels#index", as: :channels
-  get "/channels/:id", to: "channels#show", as: :channel
-  get "/channels/:id/messages", to: "messages#show", as: :channel_messages
-  get "/channels/:id/messages/:message_id/replies", to: "messages#replies", as: :channel_message_replies, constraints: { message_id: /[^\/]+/ }
-  post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create
-  post "/channels/:id/files", to: "messages#upload", as: :channel_files_create
+  get "/channels/:id", to: "channels#show", as: :channel, constraints: { id: /[^\/]+/ }
+  get "/channels/:id/messages", to: "messages#show", as: :channel_messages, constraints: { id: /[^\/]+/ }
+  get "/channels/:id/messages/:message_id/replies", to: "messages#replies", as: :channel_message_replies, constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
+  post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create, constraints: { id: /[^\/]+/ }
+  post "/channels/:id/files", to: "messages#upload", as: :channel_files_create, constraints: { id: /[^\/]+/ }
   get "/file/:id", to: "files#show", as: :file
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
   get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
-  get "/whatsapp/chats", to: "whatsapp#index", as: :whatsapp_chats
-  get "/whatsapp/chats/:jid", to: "whatsapp#show", as: :whatsapp_chat, constraints: { jid: /[^\/]+/ }
   get "/whatsapp/chats/:jid/avatar", to: "whatsapp#avatar", as: :whatsapp_avatar, constraints: { jid: /[^\/]+/ }
-  get "/whatsapp/chats/:jid/messages/:id/media", to: "whatsapp#media", as: :whatsapp_media, constraints: { jid: /[^\/]+/ }
-  post "/whatsapp/chats/:jid/send", to: "whatsapp#send_message", as: :whatsapp_send, constraints: { jid: /[^\/]+/ }
-  post "/whatsapp/chats/:jid/send_media", to: "whatsapp#send_media", as: :whatsapp_send_media, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/react", to: "whatsapp#react", as: :whatsapp_react, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/read", to: "whatsapp#mark_read", as: :whatsapp_read, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/typing", to: "whatsapp#typing", as: :whatsapp_typing, constraints: { jid: /[^\/]+/ }

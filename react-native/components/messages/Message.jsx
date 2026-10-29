@@ -20,7 +20,7 @@ export function Message({message, showSender = false}) {
       {showSender && !message.from_me && (
         <View style={styles.senderContainer}>
           <Image source={{uri: message.contact.avatar_url}} style={styles.avatar} />
-          <Text style={styles.sender}>{message.contact.name}</Text>
+          <Text style={styles.sender}>{message.contact.display_name}</Text>
         </View>
       )}
 

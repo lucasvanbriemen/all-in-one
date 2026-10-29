@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_29_120200) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -98,6 +98,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
     t.boolean "is_member", default: false, null: false
     t.string "contact_id"
     t.boolean "dismissed", default: false
+    t.string "avatar_url"
     t.index ["contact_id"], name: "index_channels_on_contact_id"
   end
 
@@ -108,6 +109,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
     t.string "name"
     t.string "avatar_url"
     t.boolean "is_active", default: true, null: false
+    t.string "lid"
+    t.index ["lid"], name: "index_contacts_on_lid"
   end
 
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -218,6 +221,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
     t.string "channel_id", null: false
     t.text "body"
     t.string "thread_id"
+    t.string "quoted_message_id"
+    t.string "message_secret"
+    t.integer "status"
     t.index ["channel_id"], name: "index_messages_on_channel_id"
     t.index ["contact_id"], name: "index_messages_on_contact_id"
     t.index ["thread_id"], name: "index_messages_on_thread_id"
@@ -249,28 +255,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
     t.index ["email"], name: "sender_email_email_unique", unique: true
   end
 
-  create_table "whatsapp_chats", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "jid", null: false
-    t.string "name"
-    t.boolean "is_group", default: false, null: false
-    t.integer "unread_count", default: 0, null: false
-    t.boolean "archived", default: false, null: false
-    t.boolean "pinned", default: false, null: false
-    t.boolean "read_only", default: false, null: false
-    t.string "muted_until"
-    t.datetime "last_message_at"
-    t.text "description"
-    t.string "owner_jid"
-    t.text "participants", size: :long, collation: "utf8mb4_bin"
-    t.string "avatar_url"
-    t.datetime "avatar_checked_at"
-    t.index ["jid"], name: "index_whatsapp_chats_on_jid", unique: true
-    t.index ["last_message_at"], name: "index_whatsapp_chats_on_last_message_at"
-    t.check_constraint "json_valid(`participants`)", name: "participants"
-  end
-
   create_table "whatsapp_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -281,57 +265,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_180000) do
     t.string "pairing_code"
     t.string "last_error"
     t.datetime "connected_at"
-  end
-
-  create_table "whatsapp_contacts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "jid", null: false
-    t.string "lid"
-    t.string "name"
-    t.string "push_name"
-    t.string "verified_name"
-    t.string "avatar_url"
-    t.string "status"
-    t.index ["jid"], name: "index_whatsapp_contacts_on_jid", unique: true
-    t.index ["lid"], name: "index_whatsapp_contacts_on_lid"
-  end
-
-  create_table "whatsapp_messages", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "wa_id", null: false
-    t.string "chat_jid", null: false
-    t.string "sender_jid"
-    t.string "sender_name"
-    t.boolean "from_me", default: false, null: false
-    t.string "kind"
-    t.text "body"
-    t.text "media", size: :long, collation: "utf8mb4_bin"
-    t.string "quoted_id"
-    t.text "mentions", size: :long, collation: "utf8mb4_bin"
-    t.integer "status"
-    t.boolean "live", default: false, null: false
-    t.datetime "sent_at"
-    t.datetime "edited_at"
-    t.datetime "deleted_at"
-    t.string "deleted_by_jid"
-    t.string "message_secret"
-    t.index ["chat_jid", "sent_at"], name: "index_whatsapp_messages_on_chat_jid_and_sent_at"
-    t.index ["chat_jid", "wa_id"], name: "index_whatsapp_messages_on_chat_jid_and_wa_id", unique: true
-    t.check_constraint "json_valid(`media`)", name: "media"
-    t.check_constraint "json_valid(`mentions`)", name: "mentions"
-  end
-
-  create_table "whatsapp_reactions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "chat_jid", null: false
-    t.string "message_wa_id", null: false
-    t.string "sender_jid", null: false
-    t.string "emoji"
-    t.datetime "reacted_at"
-    t.index ["chat_jid", "message_wa_id", "sender_jid"], name: "whatsapp_reactions_unique", unique: true
   end
 
   add_foreign_key "bank_accounts", "bank_connections"

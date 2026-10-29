@@ -1,5 +1,5 @@
 class WhatsappController < ApplicationController
-  skip_before_action :require_login, only: [ :avatar, :media ]
+  skip_before_action :require_login, only: [ :avatar ]
 
   rescue_from Whatsapp::Bridge::Error do |error|
     render json: { error: error.message }, status: error.status
@@ -14,160 +14,28 @@ class WhatsappController < ApplicationController
     render json: Whatsapp::Bridge.pair(phone)
   end
 
-  def index
-    chats = Whatsapp::Chat.visible.recent.includes(:contact).limit(200)
-    render json: chats.map { |chat| chat_json(chat) }
-  end
-
-  def show
-    chat = Whatsapp::Chat.find_by!(jid: params[:jid])
-    page = params[:page].to_i.clamp(1, 10_000)
-    messages = chat.messages.newest_first.includes(:sender, :reactions).limit(Whatsapp::Message::PER_PAGE).offset((page - 1) * Whatsapp::Message::PER_PAGE)
-    mark_read
-    quoted = chat.messages.includes(:sender).where(wa_id: messages.filter_map(&:quoted_id).uniq).index_by(&:wa_id)
-
-    render json: {
-      chat: chat_json(chat),
-      messages: messages.map { |message| message_json(message, quoted: quoted[message.quoted_id]) },
-      page: page,
-      has_more: messages.size == Whatsapp::Message::PER_PAGE
-    }
-  end
-
   def avatar
-    chat = Whatsapp::Chat.find_by!(jid: params[:jid])
-    path = chat.avatar_file
+    channel = Whatsapp::Channel.find(params[:jid])
+    path = channel.avatar_file
     return head :not_found unless path
 
     expires_in 1.hour, public: false
     send_file path, type: "image/jpeg", disposition: "inline"
   end
 
-  def media
-    message = Whatsapp::Message.find_by!(chat_jid: params[:jid], wa_id: params[:id])
-    return head :not_found unless message.downloadable_media?
-
-    mimetype, bytes = message.media_file
-    expires_in 1.year, public: false
-    response.headers["Accept-Ranges"] = "bytes"
-
-    # WebKit only plays audio/video from servers that honour byte ranges.
-    ranges = Rack::Utils.get_byte_ranges(request.headers["Range"], bytes.bytesize)
-    if ranges&.one?
-      range = ranges.first
-      response.headers["Content-Range"] = "bytes #{range.begin}-#{range.end}/#{bytes.bytesize}"
-      send_data bytes.byteslice(range), type: mimetype, disposition: "inline", status: :partial_content
-    else
-      send_data bytes, type: mimetype, disposition: "inline", filename: message.media["filename"].presence
-    end
-  end
-
-  def send_message
-    sent = Whatsapp::Bridge.send_text(to: params[:jid], text: params[:text], quote: quote_for(params[:quote_id]), mentions: params[:mentions])
-    render json: sent
-  end
-
-  def send_media
-    file = params.require(:file)
-    sent = Whatsapp::Bridge.send_media(to: params[:jid], data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: params[:caption].presence, quote: quote_for(params[:quote_id]))
-    render json: sent
-  end
-
-  # The key WhatsApp needs (who sent the target) comes from our copy of the message, not the client.
   def react
-    message = Whatsapp::Message.find_by!(chat_jid: params[:jid], wa_id: params[:message_id])
-    Whatsapp::Bridge.react(chat: message.chat_jid, message_id: message.wa_id, emoji: params[:emoji].to_s, from_me: message.from_me, participant: (message.sender_jid if group_jid?(message.chat_jid) && !message.from_me))
+    message = Whatsapp::Message.find_by!(channel_id: params[:jid], id: params[:message_id])
+    message.react!(params[:emoji].to_s)
     head :ok
   end
 
   def mark_read
-    chat = Whatsapp::Chat.find_by!(jid: params[:jid])
-    messages = chat.messages.active.where(from_me: false).newest_first.limit(20)
-    Whatsapp::Bridge.mark_read(chat: chat.jid, messages: messages.map { |m| { id: m.wa_id, participant: (m.sender_jid if chat.is_group) }.compact }) if messages.any?
-    chat.update!(unread_count: 0)
-    Notification.where(source: "messages.whatsapp.#{chat.jid}").update_all(read: true)
+    Whatsapp::Channel.find(params[:jid]).mark_read!
+    head :ok
   end
 
   def typing
     Whatsapp::Bridge.typing(chat: params[:jid], typing: params[:typing] != false && params[:typing] != "false")
     head :ok
-  end
-
-  private
-
-  def me_jid
-    @me_jid ||= Whatsapp::Connection.current.me_jid
-  end
-
-  def my_jids
-    @my_jids ||= Whatsapp::Connection.current.slice(:me_jid, :me_lid).values.compact
-  end
-
-  def group_jid?(jid)
-    jid.to_s.end_with?("@g.us")
-  end
-
-  # Replies carry who wrote the quoted message and its text, so recipients see the right preview.
-  def quote_for(id)
-    return nil if id.blank?
-
-    quoted = Whatsapp::Message.find_by(chat_jid: params[:jid], wa_id: id)
-    return { id: id } unless quoted
-
-    {
-      id: quoted.wa_id,
-      from_me: quoted.from_me,
-      participant: (quoted.sender_jid if group_jid?(quoted.chat_jid) && !quoted.from_me),
-      body: quoted.deleted? ? nil : quoted.body
-    }
-  end
-
-  def chat_json(chat)
-    last = chat.last_message
-    {
-      jid: chat.jid,
-      name: chat.display_name(me_jid: me_jid),
-      avatar_url: whatsapp_avatar_path(chat.jid),
-      is_group: chat.is_group,
-      unread_count: chat.unread_count,
-      pinned: chat.pinned,
-      muted_until: chat.muted_until,
-      last_message_at: chat.last_message_at,
-      last_message: last && { body: last.body, kind: last.kind, from_me: last.from_me, sender_name: last.display_sender_name, deleted: last.deleted? }
-    }
-  end
-
-  def message_json(message, quoted: nil)
-    {
-      id: message.wa_id,
-      chat_jid: message.chat_jid,
-      sender_jid: message.sender_jid,
-      sender_name: message.display_sender_name,
-      from_me: message.from_me,
-      kind: message.kind,
-      body: message.deleted? ? nil : message.body,
-      media: message.public_media,
-      media_url: (whatsapp_media_path(message.chat_jid, message.wa_id) if message.downloadable_media?),
-      quoted_id: message.quoted_id,
-      quoted: quoted && quoted_json(quoted),
-      mentions: message.mentions,
-      status: message.status,
-      sent_at: message.sent_at,
-      edited_at: message.edited_at,
-      deleted: message.deleted?,
-      reactions: message.reactions.map { |r| { emoji: r.emoji, sender_jid: r.sender_jid, from_me: my_jids.include?(r.sender_jid) } }
-    }
-  end
-
-  def quoted_json(message)
-    {
-      id: message.wa_id,
-      sender_jid: message.sender_jid,
-      sender_name: message.display_sender_name,
-      from_me: message.from_me,
-      kind: message.kind,
-      body: message.deleted? ? nil : message.body,
-      deleted: message.deleted?
-    }
   end
 end

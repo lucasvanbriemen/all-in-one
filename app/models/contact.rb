@@ -4,4 +4,8 @@ class Contact < ApplicationRecord
   def is_me
     MY_CONTACT_IDS.include?(self.id)
   end
+
+  def display_name
+    name
+  end
 end

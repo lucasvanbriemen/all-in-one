@@ -12,7 +12,7 @@ export function openSource(set, source) {
   set('app.activeApp', kind);
   set('app.activeSidebarItem', section);
   if (kind === 'email') set('email.selectedEmailId', Number(id));
-  if (kind === 'messages') set('whatsapp.activeJid', id);
+  if (kind === 'messages') set('messages.activeChannel', id);
 }
 
 export const push = {

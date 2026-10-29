@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
-import {ActiveChat} from './ActiveChat';
 import {Message} from './Message';
 import {MessageInput} from './MessageInput';
 import {useAppContext} from '../../context/AppContext';

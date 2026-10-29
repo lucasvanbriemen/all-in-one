@@ -4,7 +4,6 @@ import {glass, useThemedStyles} from '../theme';
 
 import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
-import {Whatsapp} from './Whatsapp';
 import {useAppContext} from '../../context/AppContext';
 
 export function MessagesPage() {
@@ -17,14 +16,10 @@ export function MessagesPage() {
   }, [get]);
 
 
-  if (sidebarItem == "whatsapp") {
-    return <Whatsapp />;
-  }
-
   return (
     <View style={styles.content}>
       <View style={styles.channelListing}>
-        <ChannelListing />
+        <ChannelListing type={sidebarItem} />
       </View>
 
       <View style={styles.activeChannelWrapper}>

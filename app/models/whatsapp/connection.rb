@@ -9,5 +9,9 @@ module Whatsapp
     def open?
       status == "open"
     end
+
+    def my_jids
+      [ me_jid, me_lid ].compact
+    end
   end
 end

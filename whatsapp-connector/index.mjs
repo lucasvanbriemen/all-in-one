@@ -415,7 +415,7 @@ export const bridge = {
       sent_at: sentAt,
       live,
       kind,
-      body: bridge.textOf(inner),
+      body: bridge.textOf(inner) || bridge.placeholderOf(kind, inner),
       media: bridge.mediaOf(kind, inner),
       message_secret: bridge.b64((inner.messageContextInfo || content.messageContextInfo)?.messageSecret),
       quoted_id: context.stanzaId || null,
@@ -455,6 +455,16 @@ export const bridge = {
       || inner.documentMessage?.caption
       || inner.editedMessage?.message?.protocolMessage?.editedMessage?.conversation
       || null;
+  },
+
+  // Messages with neither text nor a file still need something to show in the chat.
+  placeholderOf(kind, inner) {
+    if (kind === 'locationMessage' || kind === 'liveLocationMessage') return '📍 Location';
+    if (kind === 'contactMessage') return `👤 ${inner.contactMessage.displayName || 'Contact'}`;
+    if (kind === 'contactsArrayMessage') return `👤 ${inner.contactsArrayMessage.displayName || 'Contacts'}`;
+    const poll = inner.pollCreationMessage || inner.pollCreationMessageV2 || inner.pollCreationMessageV3;
+    if (poll) return `📊 Poll: ${poll.name}`;
+    return null;
   },
 
   mediaOf(kind, inner) {

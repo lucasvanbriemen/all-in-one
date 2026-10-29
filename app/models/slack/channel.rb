@@ -29,4 +29,19 @@ class Slack::Channel < Channel
       conversation["name"]
     end
   end
+
+  def send_message(text, thread_id: nil, **)
+    Slack::Api.send_message(id, text, thread_ts: thread_ts_for(thread_id))
+  end
+
+  def upload(file, text: nil, thread_id: nil, **)
+    Slack::Api.upload_file(id, data: file.read, filename: file.original_filename, comment: text, thread_ts: thread_ts_for(thread_id))
+  end
+
+  private
+
+  # Message ids are "<channel>-<ts>"; Slack wants just the ts.
+  def thread_ts_for(thread_id)
+    thread_id.to_s.delete_prefix("#{id}-").presence
+  end
 end

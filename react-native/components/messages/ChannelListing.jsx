@@ -4,18 +4,17 @@ import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
-import {ActiveChat} from './ActiveChat';
 import {ChannelListItem} from './ChannelListItem';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
-export function ChannelListing() {
+export function ChannelListing({type}) {
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
   const [channels, setChannels] = useState([]);
 
   function loadChats() {
-    api.get('/channels?type=slack').then(response => {
+    api.get(`/channels?type=${type}`).then(response => {
       let unsortedChannels = response;
 
       // We want to sort them based on is_dm first, then is_group_chat, from a to z by name
@@ -30,7 +29,7 @@ export function ChannelListing() {
     });
   }
 
-  useEffect(loadChats, []);
+  useEffect(loadChats, [type]);
   useChannel('WhatsappChannel', loadChats);
 
   return (
