@@ -6,7 +6,7 @@ import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {useAppContext} from '../../context/AppContext';
 
-export function MessageInput() {
+export function MessageInput({threadId = null}) {
   const styles = useThemedStyles(createStyles);
   const [text, setText] = useState("");
   const {get} = useAppContext();

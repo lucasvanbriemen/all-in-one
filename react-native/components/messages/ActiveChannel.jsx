@@ -49,7 +49,7 @@ export function ActiveChannel({isThread = false}) {
       </ScrollView>
 
       <View style={styles.additionalContent}>
-        <MessageInput />
+        <MessageInput threadId={isThread ? get("messages.activeThread") : null} />
       </View>
     </View>
   );

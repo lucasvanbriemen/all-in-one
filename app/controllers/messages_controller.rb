@@ -9,7 +9,8 @@ class MessagesController < ApplicationController
 
   def new
     channel = Channel.find(params[:id])
-    Slack::Api.send_message(channel.id, params[:text])
+    thread_ts = params[:thread_id].to_s.delete_prefix("#{channel.id}-").presence
+    Slack::Api.send_message(channel.id, params[:text], thread_ts: thread_ts)
     render json: { success: true }
   end
 

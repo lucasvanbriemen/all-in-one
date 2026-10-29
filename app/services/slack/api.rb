@@ -5,8 +5,8 @@ module Slack
     BASE_URL = "https://slack.com/api/"
     SECRET = ENV["SLACK_USER_TOKEN"]
 
-    def self.send_message(channel, text)
-      post("chat.postMessage", { channel: channel, text: text })
+    def self.send_message(channel, text, thread_ts: nil)
+      post("chat.postMessage", { channel: channel, text: text, thread_ts: thread_ts })
     end
 
     def self.get(path, params = {})
