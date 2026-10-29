@@ -22,13 +22,16 @@ export function ActiveChannel({isThread = false}) {
     setActiveChannel(get("messages.activeChannel") ?? "");
   }, [get]);
 
-  function loadChats() {
+  function loadChats(messagePage = 1) {
     if (!activeChannel) return;
 
-    const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages`;
+    const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages?page=${messagePage}`;
+
+    let currentMessages = [...messages];
 
     api.get(messageRoute).then(response => {
-      setMessages(response);
+      currentMessages = [...response, ...currentMessages];
+      setMessages(currentMessages);
     });
 
     api.get(`/channels/${activeChannel}`).then(response => {
@@ -43,6 +46,10 @@ export function ActiveChannel({isThread = false}) {
   return (
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
+        <Pressable onPress={() => loadChats(messages.length / 50 + 1)}>
+          <Text style={styles.loadMore}>Load More</Text>
+        </Pressable>
+
         {messages.map(message => (
           <Message key={message.id} message={message} showSender={!channel?.is_dm} />
         ))}
@@ -114,5 +121,12 @@ const createStyles = colors => StyleSheet.create({
   },
   activeChatName: {
     color: colors.onPrimary,
+  },
+  loadMore: {
+    textAlign: 'center',
+    padding: 8,
+    color: colors.primary,
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
