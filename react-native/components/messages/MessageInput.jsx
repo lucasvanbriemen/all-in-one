@@ -12,7 +12,6 @@ export function MessageInput({threadId = null}) {
   const styles = useThemedStyles(createStyles);
   const [text, setText] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [sending, setSending] = useState(false);
   const {get} = useAppContext();
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
 
@@ -25,18 +24,15 @@ export function MessageInput({threadId = null}) {
     if (picked) setAttachment(picked);
   }
 
-  // With an attachment the text is sent along as the file's comment.
   function sendMessage() {
-    if ((!text && !attachment) || !activeChannel || sending) return;
     const request = attachment
       ? api.upload(`/channels/${activeChannel}/files`, {file: {uri: attachment.uri, name: attachment.name, type: attachment.type}, text: text || null, thread_id: threadId})
       : api.post(`/channels/${activeChannel}/messages`, {text, thread_id: threadId});
 
-    setSending(true);
     request.then(() => {
       setText("");
       setAttachment(null);
-    }).finally(() => setSending(false));
+    })
   }
 
   return (
@@ -61,7 +57,7 @@ export function MessageInput({threadId = null}) {
         <TextInput style={styles.input} placeholder={attachment ? "Add a comment..." : "Type a message..."} value={text} onChangeText={setText} />
 
         <Pressable onPress={sendMessage} style={styles.sendButton}>
-          <Text>{sending ? "Sending..." : "Send"}</Text>
+          <Text>Send</Text>
         </Pressable>
       </View>
     </View>
