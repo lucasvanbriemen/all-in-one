@@ -2,7 +2,9 @@ class MessagesController < ApplicationController
   def show
     channel = Channel.find(params[:id])
 
-    messages = channel.messages.top_level.includes(:contact, :file_uploads, :reactions, :replies).limit(50).order(created_at: :desc)
+    page = params[:page].to_i.presence || 1
+
+    messages = channel.messages.top_level.includes(:contact, :file_uploads, :reactions, :replies).limit(50).offset((page - 1) * 50).order(created_at: :asc)
 
     render json: messages.as_json(include: [ :contact, :reactions, { file_uploads: { methods: :filename } } ], methods: [ :from_me, :reply_count ])
   end
