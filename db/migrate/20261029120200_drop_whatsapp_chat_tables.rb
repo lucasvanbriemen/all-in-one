@@ -1,6 +1,6 @@
 class DropWhatsappChatTables < ActiveRecord::Migration[8.0]
   def change
-    drop_table :whatsapp_reactions do |t|
+    drop_table :whatsapp_reactions, if_exists: true do |t|
       t.timestamps
 
       t.string :chat_jid, null: false
@@ -12,7 +12,7 @@ class DropWhatsappChatTables < ActiveRecord::Migration[8.0]
       t.index [ :chat_jid, :message_wa_id, :sender_jid ], unique: true, name: "whatsapp_reactions_unique"
     end
 
-    drop_table :whatsapp_messages do |t|
+    drop_table :whatsapp_messages, if_exists: true do |t|
       t.timestamps
 
       t.string :wa_id, null: false
@@ -37,7 +37,7 @@ class DropWhatsappChatTables < ActiveRecord::Migration[8.0]
       t.index [ :chat_jid, :sent_at ]
     end
 
-    drop_table :whatsapp_chats do |t|
+    drop_table :whatsapp_chats, if_exists: true do |t|
       t.timestamps
 
       t.string :jid, null: false
@@ -59,7 +59,7 @@ class DropWhatsappChatTables < ActiveRecord::Migration[8.0]
       t.index :last_message_at
     end
 
-    drop_table :whatsapp_contacts do |t|
+    drop_table :whatsapp_contacts, if_exists: true do |t|
       t.timestamps
 
       t.string :jid, null: false
