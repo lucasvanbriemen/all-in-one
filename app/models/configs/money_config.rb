@@ -20,4 +20,19 @@ module MoneyConfig
     "Groceries" => %w[albert\ heijn jumbo lidl aldi plus dirk],
     "Cinema" => %w[pathe]
   }.freeze
+
+  BUDGETS = {
+    "Fuel" => 250,
+    "Groceries and food" => 100,
+    "Cinema" => 50,
+    "Entertainment" => 75
+  }.freeze
+
+  SAVINGS_GOALS_IN_PERCENT = {
+    "Emergency buffer" => 15,
+    "House" => 25,
+    "Car" => 7,
+    "Holidays" => 5,
+    "Yearly costs" => 3
+  }.freeze
 end
