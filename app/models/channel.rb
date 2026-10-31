@@ -20,6 +20,10 @@ class Channel < ApplicationRecord
     last_message&.preview
   end
 
+  def avatar_url
+    super || contact&.avatar_url
+  end
+
   def display_name
     name.presence || FALL_BACK_NAME
   end
