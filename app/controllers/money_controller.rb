@@ -86,11 +86,17 @@ class MoneyController < ApplicationController
   end
 
   def uncategorized_transactions
-    transactions = Bank::Transaction.uncategorized.order(booking_date: :desc, id: :desc)
+    transactions = Bank::Transaction.uncategorized.order(booking_date: :desc, id: :desc).to_a
+    suggestions = Bank::Transaction.last_categories_for(transactions.map(&:counterparty_name).compact.uniq)
+    budget_categories = MoneyConfig::BUDGETS.keys.flat_map { |name| MoneyConfig::BUDGET_CATEGORIES.fetch(name, [ name ]) }
 
     render json: {
-      categories: MoneyConfig::CATEGORIES,
-      transactions: transactions.as_json(only: %i[id booking_date amount counterparty_name description])
+      budget_categories: budget_categories & MoneyConfig::CATEGORIES,
+      other_categories: MoneyConfig::CATEGORIES - budget_categories,
+      transactions: transactions.map do |t|
+        t.as_json(only: %i[id booking_date amount counterparty_name description])
+          .merge(suggested_category: suggestions[t.counterparty_name])
+      end
     }
   end
 

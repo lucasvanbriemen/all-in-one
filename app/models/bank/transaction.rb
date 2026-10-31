@@ -53,6 +53,12 @@ module Bank
       }
     end
 
+    # The most recent category used for each of the given counterparties.
+    def self.last_categories_for(counterparty_names)
+      where(counterparty_name: counterparty_names).where.not(category: nil)
+        .order(:booking_date, :id).pluck(:counterparty_name, :category).to_h
+    end
+
     def self.from_api!(account, payload)
       reference = payload["entry_reference"]
       return nil if reference.blank? || payload["booking_date"].blank? || payload["status"] != "BOOK"
