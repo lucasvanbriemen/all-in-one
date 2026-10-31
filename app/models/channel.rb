@@ -20,9 +20,12 @@ class Channel < ApplicationRecord
     last_message&.preview
   end
 
+  # A DM shows the other person's picture; group chats and channels have no contact and carry their own.
   def avatar_url
-    super || contact&.avatar_url
+    avatar_contact&.avatar_url.presence || self[:avatar_url]
   end
+
+  def avatar_contact = contact
 
   def display_name
     name.presence || FALL_BACK_NAME

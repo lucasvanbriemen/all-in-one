@@ -1,0 +1,55 @@
+require "net/http"
+
+module Whatsapp
+  # A profile picture belongs to whoever owns the jid: a person (contact) or a group (channel).
+  module Avatar
+    extend ActiveSupport::Concern
+
+    AVATAR_TTL = 1.day
+    AVATAR_DIR = Rails.root.join("storage", "whatsapp", "avatars")
+
+    # Profile pictures are looked up at most once a day: WhatsApp's CDN links expire, and many people have none.
+    def refresh_avatar!
+      # WhatsApp never answers picture queries for channels, so asking only ties up a request until it times out.
+      return nil if id.end_with?("@newsletter")
+      return self[:avatar_url] if Rails.cache.exist?(avatar_cache_key)
+
+      url = Bridge.avatar(id)["url"]
+      update_columns(avatar_url: url)
+      Rails.cache.write(avatar_cache_key, true, expires_in: AVATAR_TTL)
+      url
+    rescue Bridge::Error => e
+      Rails.logger.warn("[whatsapp] avatar lookup failed for #{id}: #{e.message}")
+      self[:avatar_url]
+    end
+
+    # WhatsApp only says a picture changed, not what it is, so the next lookup has to ask again.
+    def forget_avatar_check!
+      Rails.cache.delete(avatar_cache_key)
+    end
+
+    # Downloads the picture once per URL and serves it from disk; the CDN forces downloads on direct navigation.
+    def avatar_file
+      url = refresh_avatar!
+      return nil if url.blank?
+
+      path = AVATAR_DIR.join("#{id.parameterize}-#{Digest::SHA1.hexdigest(url)[0, 12]}.jpg")
+      unless path.exist?
+        uri = URI(url)
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 5, read_timeout: 10) { |http| http.get(uri.request_uri) }
+        return nil unless response.is_a?(Net::HTTPSuccess)
+
+        FileUtils.mkdir_p(path.dirname)
+        Dir.glob(AVATAR_DIR.join("#{id.parameterize}-*.jpg")).each { |old| File.delete(old) }
+        File.binwrite(path, response.body)
+      end
+      path
+    end
+
+    private
+
+    def avatar_cache_key
+      "whatsapp/avatar_checked/#{id}"
+    end
+  end
+end

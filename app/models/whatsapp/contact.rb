@@ -1,5 +1,7 @@
 module Whatsapp
   class Contact < ::Contact
+    include Avatar
+
     def is_me
       Connection.current.my_jids.include?(id)
     end

@@ -1,7 +1,7 @@
-require "net/http"
-
 module Whatsapp
   class Channel < ::Channel
+    include Avatar
+
     attribute :is_private, default: true
     attribute :is_member, default: true
 
@@ -30,51 +30,14 @@ module Whatsapp
       Notification.where(source: "messages.whatsapp.#{id}").update_all(read: true)
     end
 
-    AVATAR_TTL = 1.day
-    AVATAR_DIR = Rails.root.join("storage", "whatsapp", "avatars")
+    # Groups have their own picture; a one-on-one chat shows the other person's, which lives on their contact.
+    def avatar_contact = resolved_contact
 
-    def avatar_url
-      self[:avatar_url].presence || resolved_contact&.avatar_url
-    end
-
-    # Profile pictures are looked up at most once a day: WhatsApp's CDN links expire, and many people have none.
-    def refresh_avatar!
-      # WhatsApp never answers picture queries for channels, so asking only ties up a request until it times out.
-      return nil if id.end_with?("@newsletter")
-      return avatar_url if Rails.cache.exist?(avatar_cache_key)
-
-      url = Bridge.avatar(id)["url"]
-      update_columns(avatar_url: url)
-      Rails.cache.write(avatar_cache_key, true, expires_in: AVATAR_TTL)
-      url
-    rescue Bridge::Error => e
-      Rails.logger.warn("[whatsapp] avatar lookup failed for #{id}: #{e.message}")
-      avatar_url
-    end
-
-    # Downloads the picture once per URL and serves it from disk; the CDN forces downloads on direct navigation.
     def avatar_file
-      url = refresh_avatar!
-      return nil if url.blank?
-
-      path = AVATAR_DIR.join("#{id.parameterize}-#{Digest::SHA1.hexdigest(url)[0, 12]}.jpg")
-      unless path.exist?
-        uri = URI(url)
-        response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 5, read_timeout: 10) { |http| http.get(uri.request_uri) }
-        return nil unless response.is_a?(Net::HTTPSuccess)
-
-        FileUtils.mkdir_p(path.dirname)
-        Dir.glob(AVATAR_DIR.join("#{id.parameterize}-*.jpg")).each { |old| File.delete(old) }
-        File.binwrite(path, response.body)
-      end
-      path
+      is_group_chat ? super : avatar_contact&.avatar_file
     end
 
     private
-
-    def avatar_cache_key
-      "whatsapp/avatar_checked/#{id}"
-    end
 
     # Replies carry who wrote the quoted message and its text, so recipients see the right preview.
     def quote_for(message_id)

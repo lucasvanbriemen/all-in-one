@@ -65,9 +65,11 @@ module Whatsapp
       record.assign_attributes(
         lid: payload["lid"] || record.lid,
         name: payload["name"].presence || payload["verified_name"].presence || payload["push_name"].presence || record.name,
-        avatar_url: payload["avatar_url"]
+        # Contact events rarely carry a picture, so a missing one means "unknown", not "removed".
+        avatar_url: payload["avatar_url"].presence || record.avatar_url
       )
       record.save!
+      record.forget_avatar_check! if payload["avatar_changed"]
     end
 
     def chat(payload)
