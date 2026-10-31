@@ -8,6 +8,7 @@ import {OverviewCard} from '../money/OverviewCard';
 import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
+import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
 import {WeatherCard} from './WeatherCard';
 import {api} from '../api';
 import {greeting} from './greeting';
@@ -72,7 +73,10 @@ export function HomePage() {
             setReminders(current => [...(current || []), created]);
           }} />
         </View>
-        <OverviewCard />
+        <View style={styles.moneyColumn}>
+          <OverviewCard />
+          <UncategorizedTransactions />
+        </View>
       </View>
     </View>
   );
@@ -108,6 +112,10 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   reminderList: {flex: 1},
+  moneyColumn: {
+    flex: 1,
+    gap: 16,
+  },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',

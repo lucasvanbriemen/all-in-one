@@ -79,7 +79,36 @@ class MoneyController < ApplicationController
       durration_to_next_payday: durration_to_next_payday,
       fixed_costs_till_next_payday: fixed_costs_till_next_payday,
       variable_costs_till_next_payday: variable_costs_till_next_payday,
-      money_per_day: money_per_day.round(2)
+      money_per_day: money_per_day.round(2),
+      budgets: Banking::Budgets.call,
+      uncategorized_count: Bank::Transaction.uncategorized.count
     }
+  end
+
+  def uncategorized_transactions
+    transactions = Bank::Transaction.uncategorized.order(booking_date: :desc, id: :desc)
+
+    render json: {
+      categories: MoneyConfig::CATEGORIES,
+      transactions: transactions.as_json(only: %i[id booking_date amount counterparty_name description])
+    }
+  end
+
+  # Sets the category of one transaction, or with apply_to_merchant of every
+  # uncategorized transaction from the same counterparty.
+  def categorize_transaction
+    transaction = Bank::Transaction.find(params[:id])
+    transactions = [ transaction ]
+    if ActiveModel::Type::Boolean.new.cast(params[:apply_to_merchant]) && transaction.counterparty_name.present?
+      transactions |= Bank::Transaction.uncategorized.where(counterparty_name: transaction.counterparty_name).to_a
+    end
+
+    Bank::Transaction.transaction do
+      transactions.each { |t| t.update!(category: params[:category]) }
+    end
+
+    render json: { updated_ids: transactions.map(&:id) }
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 end

@@ -23,6 +23,8 @@ Rails.application.routes.draw do
   get "/money/callback", to: "money#callback", as: :money_callback
   get "/money", to: "money#show", as: :money
   get "/money/overview", to: "money#list_overview", as: :money_overview
+  get "/money/transactions/uncategorized", to: "money#uncategorized_transactions", as: :money_uncategorized_transactions
+  post "/money/transactions/:id", to: "money#categorize_transaction", as: :money_categorize_transaction
 
   get "/music", to: "music#index", as: :music
   get "/music/stats", to: "plays#show", as: :plays_stats

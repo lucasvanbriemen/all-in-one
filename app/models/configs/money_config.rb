@@ -28,6 +28,19 @@ module MoneyConfig
     "Entertainment" => 75
   }.freeze
 
+  # Categories you can assign to a transaction by hand.
+  CATEGORIES = [
+    "Groceries", "Eating out", "Fuel", "Cinema", "Leisure", "Shopping", "Tolls & parking",
+    "Parents", "Insurance & health", "Hosting & domains", "Bank fees", "Tax",
+    "Transfers", "Salary", "Savings"
+  ].freeze
+
+  # Which categories count towards a budget; a budget not listed uses the category of the same name.
+  BUDGET_CATEGORIES = {
+    "Groceries and food" => [ "Groceries", "Eating out" ],
+    "Entertainment" => [ "Leisure" ]
+  }.freeze
+
   SAVINGS_GOALS_IN_PERCENT = {
     "Emergency buffer" => 15,
     "House" => 25,

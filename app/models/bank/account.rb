@@ -33,14 +33,22 @@ module Bank
       )
     end
 
-    def next_payday
-      today = Date.current
-      payday = MoneyConfig::PAYDAY
-      next_payday = Date.new(today.year, today.month, payday)
-      next_payday -= 1 while next_payday.saturday? || next_payday.sunday?
-      next_payday < today ? (next_payday = Date.new(today.year, today.month + 1, payday); next_payday -= 1 while next_payday.saturday? || next_payday.sunday?) : next_payday
+    def next_payday(today = Date.current)
+      payday = self.class.payday_in(today)
+      payday >= today ? payday : self.class.payday_in(today.next_month)
+    end
 
-      next_payday
+    def last_payday(today = Date.current)
+      payday = self.class.payday_in(today)
+      payday <= today ? payday : self.class.payday_in(today.prev_month)
+    end
+
+    # MoneyConfig::PAYDAY in the month of the given date, moved back to the
+    # Friday before when it falls on a weekend.
+    def self.payday_in(date)
+      payday = date.change(day: MoneyConfig::PAYDAY)
+      payday -= 1 while payday.on_weekend?
+      payday
     end
   end
 end

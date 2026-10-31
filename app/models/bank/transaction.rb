@@ -8,9 +8,18 @@ module Bank
     scope :salary, -> { income.where(counterparty_name: MoneyConfig::SALARY_COMES_FROM) }
     scope :excluding_savings, -> { where.not("counterparty_name LIKE ?", MoneyConfig::SAVING_ACCOUNT_NAME + "%") }
 
+    # Waiting for a category by hand. Salary and transfers to savings are left
+    # out: they are recognised from MoneyConfig and need no labelling.
+    scope :uncategorized, -> {
+      where(category: nil)
+        .where("counterparty_name IS NULL OR counterparty_name NOT LIKE ?", MoneyConfig::SAVING_ACCOUNT_NAME + "%")
+        .where("counterparty_name IS NULL OR counterparty_name <> ?", MoneyConfig::SALARY_COMES_FROM)
+    }
+
     attribute :raw, :json
 
     validates :entry_reference, :booking_date, :amount, :currency, :status, presence: true
+    validates :category, inclusion: { in: MoneyConfig::CATEGORIES }, allow_nil: true
 
     TAKE_AVERAGE_OVER_MONTHS = 2
     SALARY_DAY = 24
