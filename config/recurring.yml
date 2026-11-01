@@ -37,3 +37,9 @@ production:
     class: SyncAllBankConnectionsJob
     queue: default
     schedule: every 6 hours
+
+  # Opens the day's advent calendar door with a push, Dec 1–24.
+  advent_push:
+    class: AdventPushJob
+    queue: default
+    schedule: every day at 8am Europe/Amsterdam

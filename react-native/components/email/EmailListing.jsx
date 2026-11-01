@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {EmailListItem} from './EmailListItem';
+import {HiddenOrnament} from '../seasonal/Grinch';
+import {useNaughtySenders} from '../seasonal/NaughtyNice';
 import { RefreshControl } from 'react-native';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
@@ -14,6 +16,7 @@ export function EmailListing() {
   const { get, set } = useAppContext();
   const [emailRefreshing, setEmailRefreshing] = useState(false);
   const bottomInset = useBottomInset();
+  const naughty = useNaughtySenders();
 
   useEffect(() => {
     api.get('/email/' + get('app.activeSidebarItem')).then(data => {
@@ -36,9 +39,10 @@ export function EmailListing() {
               <Text style={styles.title}>{email.date}</Text>
             )}
 
-            <EmailListItem item={email} isSelected={get('email.selectedEmailId') == email.id} onPress={() => set('email.selectedEmailId', email.id)} />
+            <EmailListItem item={email} coal={naughty.has(email.sender_name)} isSelected={get('email.selectedEmailId') == email.id} onPress={() => set('email.selectedEmailId', email.id)} />
           </React.Fragment>
         ))}
+        <HiddenOrnament spot="email" style={{alignSelf: 'center', margin: 16}} />
       </ScrollView>
     </View>
   );

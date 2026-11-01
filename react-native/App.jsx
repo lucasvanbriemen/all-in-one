@@ -12,7 +12,10 @@ import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {NowPlayingDrawer} from './components/music/NowPlayingDrawer';
+import {SeasonalRoot} from './components/seasonal/SeasonalRoot';
 import {Sidebar} from './components/sidebar/Sidebar';
+import {SnowCap} from './components/seasonal/SnowCap';
+import {StringLights} from './components/seasonal/StringLights';
 import {TransparentWindow} from './components/TransparentWindow';
 import {glass} from './components/theme';
 import {player} from './components/music/player';
@@ -71,23 +74,27 @@ function AppShell() {
 
   return (
     <TransparentWindow>
-      <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
-        {!compact && <Sidebar />}
+      <SeasonalRoot>
+        <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
+          {!compact && <Sidebar />}
 
-        <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
-          <ActiveApplication />
-        </View>
+          <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
+            {!compact && <SnowCap maxHeight={14} inset={18} />}
+            <ActiveApplication />
+            <StringLights />
+          </View>
 
-        {compact && (
-          <>
-            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
-              <NowPlayingBar />
-              <MobileNavigation />
-            </View>
-            <NowPlayingDrawer />
-          </>
-        )}
-      </SafeAreaView>
+          {compact && (
+            <>
+              <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
+                <NowPlayingBar />
+                <MobileNavigation />
+              </View>
+              <NowPlayingDrawer />
+            </>
+          )}
+        </SafeAreaView>
+      </SeasonalRoot>
     </TransparentWindow>
   );
 }

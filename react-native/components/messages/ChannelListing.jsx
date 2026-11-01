@@ -5,6 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ChannelListItem} from './ChannelListItem';
+import {HiddenOrnament} from '../seasonal/Grinch';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -27,6 +28,7 @@ export function ChannelListing({type}) {
       {channels.map(channel => (
         <ChannelListItem key={channel.id} channel={channel} />
       ))}
+      <HiddenOrnament spot="messages" style={styles.ornament} />
     </ScrollView>
   );
 }
@@ -35,4 +37,5 @@ const createStyles = colors => StyleSheet.create({
   channelListing: {
     flexGrow: 1,
   },
+  ornament: {alignSelf: 'flex-end', margin: 12},
 });

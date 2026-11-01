@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
@@ -9,6 +9,15 @@ import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
 import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
+import {AdventCalendar} from '../seasonal/AdventCalendar';
+import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
+import {CountdownStat, NewYearCountdown} from '../seasonal/Countdowns';
+import {FireplaceScene} from '../seasonal/Fireplace';
+import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
+import {SnowCap} from '../seasonal/SnowCap';
+import {useAppContext} from '../../context/AppContext';
+import {useSeason} from '../seasonal/useSeason';
+import {useWeather} from '../seasonal/data';
 import {WeatherCard} from './WeatherCard';
 import {api} from '../api';
 import {greeting} from './greeting';
@@ -20,6 +29,18 @@ export function HomePage() {
   const [serverData, setServerData] = useState(null);
   const [notifications, setNotifications] = useState(null);
   const [reminders, setReminders] = useState(null);
+  const season = useSeason();
+  const weather = useWeather();
+  const {get} = useAppContext();
+
+  // Rolled once per hour (and when the weather or season changes) rather than
+  // on every render, so the minute tick of the countdown doesn't re-roll it.
+  const hour = season.date.getHours();
+  const greetingText = useMemo(
+    () => greeting.generateGreeting({...season, weather: weather.kind}),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [season.phase, season.decorated, weather.kind, hour],
+  );
 
   useEffect(() => {
     api.get('/server_data').then(response => {
@@ -35,15 +56,33 @@ export function HomePage() {
     });
   }, []);
 
+  // Christmas Eve to Boxing Day, Home is the fireplace (unless sent back).
+  if (season.decorated && season.phase === 'christmas' && !get('seasonal.normalHome')) {
+    return <FireplaceScene greeting={greetingText} />;
+  }
+
   return (
     <View style={styles.content}>
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData.map((data, index) => (
-          <Stat key={index} value={data.value} label={data.label} attentionLevel={data.importance_level}/>
+          <Stat key={index} value={data.value} label={grinchLabel(season, data)} attentionLevel={data.importance_level}/>
         ))}
+        <CountdownStat />
       </View>
 
-      <Text style={styles.greeting}>{greeting.generateGreeting()}</Text>
+      {season.decorated && season.phase === 'nye' ? (
+        <NewYearCountdown />
+      ) : (
+        <Text style={styles.greeting}>{greetingText}</Text>
+      )}
+
+      {season.decorated && (season.phase === 'advent' || season.phase === 'christmas') && (
+        <View style={[styles.seasonalRow, compact && styles.seasonalRowCompact]}>
+          <AdventCalendar />
+          <ChristmasTreeCard />
+          <NaughtyNiceCard />
+        </View>
+      )}
 
       <View style={[styles.mainContent, compact && styles.compactMain]}>
         <View style={compact ? undefined : styles.notificationsContainer}>
@@ -60,6 +99,7 @@ export function HomePage() {
         </View>
 
         <View style={styles.reminders}>
+          <SnowCap />
           <Text style={styles.cardTitle}>Reminders</Text>
           <ScrollView style={styles.reminderList}>
             {reminders && reminders.length === 0 && (
@@ -82,7 +122,20 @@ export function HomePage() {
   );
 }
 
+/** A server stat in trouble, during the season, is the Grinch's doing. */
+function grinchLabel(season, data) {
+  if (!season.decorated || data.importance_level !== 'high') return data.label;
+  return `🟢 The Grinch stole your ${String(data.label).toLowerCase()}`;
+}
+
 const createStyles = colors => StyleSheet.create({
+  seasonalRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 16,
+    height: 196,
+  },
+  seasonalRowCompact: {flexDirection: 'column', height: undefined},
   compactStats: { flexWrap: 'wrap', gap: 8 },
   compactMain: { flex: 0, flexDirection: 'column', gap: 16 },
   notificationsContainer: {

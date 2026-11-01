@@ -6,6 +6,7 @@ import { ChevronDown } from '../icons/chevronDown';
 import { ChevronTop } from '../icons/chevronTop';
 import { WeatherIcon } from '../icons';
 import { api } from '../api';
+import { SnowCap } from '../seasonal/SnowCap';
 
 export function WeatherCard() {
   const styles = useThemedStyles(createStyles);
@@ -19,6 +20,7 @@ export function WeatherCard() {
 
   return (
     <View style={styles.content}>
+      <SnowCap maxHeight={9} />
       <View style={styles.header}>
         <WeatherIcon condition={weather.condition} size={40} color={colors.primary} />
         <View>

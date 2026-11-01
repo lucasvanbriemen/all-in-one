@@ -2,7 +2,7 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
-export function EmailListItem({item, isSelected, onPress}) {
+export function EmailListItem({item, coal = false, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);
   const [hovered, setHovered] = useState(false);
 
@@ -17,7 +17,8 @@ export function EmailListItem({item, isSelected, onPress}) {
             </Text>
 
             <Text style={styles.subtitle}>
-              {item.sender_name}
+              {/* Coal for whoever made the Naughty list this December. */}
+              {coal ? '🪨 ' : ''}{item.sender_name}
             </Text>
           </View>
         </View>

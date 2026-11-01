@@ -7,6 +7,8 @@ import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 import {Icon} from '../icons';
 import {mediaPicker} from '../mediaPicker';
 import {useAppContext} from '../../context/AppContext';
+import {FESTIVE_PATTERN, isDecorated} from '../seasonal/season';
+import {playEffect, startBlizzard} from '../seasonal/store';
 
 export function MessageInput({threadId = null}) {
   const styles = useThemedStyles(createStyles);
@@ -28,6 +30,11 @@ export function MessageInput({threadId = null}) {
     const request = attachment
       ? api.upload(`/channels/${activeChannel}/files`, {file: {uri: attachment.uri, name: attachment.name, type: attachment.type}, text: text || null, thread_id: threadId})
       : api.post(`/channels/${activeChannel}/messages`, {text, thread_id: threadId});
+
+    // Wishing someone a merry Christmas gets the iMessage treatment.
+    if (isDecorated() && FESTIVE_PATTERN.test(text)) {
+      playEffect({type: 'burst', source: 'message', count: 120, power: 14, width: 400});
+    }
 
     request.then(() => {
       setText("");
@@ -54,7 +61,11 @@ export function MessageInput({threadId = null}) {
           <Icon name="plus" size={24} color={styles.attachmentName.color} />
         </Pressable>
 
-        <TextInput style={styles.input} placeholder={attachment ? "Add a comment..." : "Type a message..."} value={text} onChangeText={setText} />
+        <TextInput style={styles.input} placeholder={attachment ? "Add a comment..." : "Type a message..."} value={text} onChangeText={value => {
+          setText(value);
+          // Type "hohoho" for a blizzard (the web build also listens document-wide).
+          if (isDecorated() && /hohoho$/i.test(value)) startBlizzard(10);
+        }} />
 
         <Pressable onPress={sendMessage} style={styles.sendButton}>
           <Text>Send</Text>

@@ -3,6 +3,8 @@
  * platforms, so there is nothing to register here; the API is kept so
  * `App.jsx` can call it unconditionally.
  */
+export {openSource} from './openSource';
+
 export const push = {
   async requestPermission() {
     return false;

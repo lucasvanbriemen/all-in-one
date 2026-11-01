@@ -3,6 +3,7 @@ import { glass, useThemedStyles } from '../theme';
 
 import React from 'react';
 import { useCompactLayout } from '../useCompactLayout';
+import { SnowCap } from '../seasonal/SnowCap';
 
 export function Stat({value, label, attentionLevel = "low"}) {
   const compact = useCompactLayout();
@@ -16,6 +17,7 @@ export function Stat({value, label, attentionLevel = "low"}) {
 
   return (
     <View style={[styles.content, compact && styles.compact, attentionStyle[attentionLevel]]}>
+      <SnowCap maxHeight={10} />
       <Text style={[styles.value]}>{value}</Text>
       <Text style={[styles.label, compact && styles.compactLabel]}>{label}</Text>
     </View>

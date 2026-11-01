@@ -2,18 +2,8 @@ import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 
 import {api} from './api';
 
-// Navigates to what a notification's source points at: "email.<mailbox>.<id>"
-// or "messages.whatsapp.<jid>". Only the first two dots separate parts, since
-// JIDs contain dots themselves (31612345678@s.whatsapp.net).
-export function openSource(set, source) {
-  const [kind, section, ...rest] = String(source || '').split('.');
-  const id = rest.join('.');
-
-  set('app.activeApp', kind);
-  set('app.activeSidebarItem', section);
-  if (kind === 'email') set('email.selectedEmailId', Number(id));
-  if (kind === 'messages') set('messages.activeChannel', id);
-}
+// Shared with the web build (push.web.js), which has no native bridge.
+export {openSource} from './openSource';
 
 export const push = {
   async requestPermission() {

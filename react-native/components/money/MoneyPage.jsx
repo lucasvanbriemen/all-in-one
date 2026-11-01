@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import {GiftBudget} from '../seasonal/GiftBudget';
+import {HiddenOrnament} from '../seasonal/Grinch';
 import {Stat} from '../home/Stat';
 import {api} from '../api';
 import {format} from './format';
@@ -30,11 +32,13 @@ export function MoneyPage() {
       </View>
 
       <ScrollView contentContainerStyle={{paddingBottom: bottomInset}}>
+        <GiftBudget />
         {recurring && recurring?.map((data, index) => (
           <View>
             <Text>{data.counterparty}: {format.money(data.amount)}</Text>
           </View>
         ))}
+        <HiddenOrnament spot="money" style={{alignSelf: 'flex-start', margin: 16}} />
       </ScrollView>
     </View>
   );

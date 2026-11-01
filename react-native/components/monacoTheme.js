@@ -1,5 +1,7 @@
 import OneDark from './themes/OneDark.json';
 import OneLight from './themes/OneLight.json';
+import {festiveMonacoTheme} from './seasonal/festiveCode';
+import {isDecorated} from './seasonal/season';
 
 export const MONACO_VERSION = '0.52.2';
 export const MONACO_CDN = `https://cdn.jsdelivr.net/npm/monaco-editor@${MONACO_VERSION}/min`;
@@ -59,8 +61,18 @@ function vsCodeTheme(theme, type) {
 const ONE_DARK = vsCodeTheme(OneDark, 'dark');
 const ONE_LIGHT = vsCodeTheme(OneLight, 'light');
 
+// The season's re-coloured variants (seasonal/festiveCode.js), switched to
+// from December to the first week of January.
+const CHRISTMAS_DARK = festiveMonacoTheme(ONE_DARK, 'dark');
+const CHRISTMAS_LIGHT = festiveMonacoTheme(ONE_LIGHT, 'light');
+
 /** Keyed by the name Shiki and Monaco both know the theme by. */
-export const THEMES = {[ONE_DARK.name]: ONE_DARK, [ONE_LIGHT.name]: ONE_LIGHT};
+export const THEMES = {
+  [ONE_DARK.name]: ONE_DARK,
+  [ONE_LIGHT.name]: ONE_LIGHT,
+  [CHRISTMAS_DARK.name]: CHRISTMAS_DARK,
+  [CHRISTMAS_LIGHT.name]: CHRISTMAS_LIGHT,
+};
 
 /**
  * Shiki needs its grammars named up front, and `shikiToMonaco` only takes over
@@ -138,7 +150,8 @@ export function toHex(color) {
  */
 export function monacoTheme(colors, scheme) {
   const dark = scheme === 'dark';
-  const theme = dark ? ONE_DARK : ONE_LIGHT;
+  const festive = isDecorated();
+  const theme = dark ? (festive ? CHRISTMAS_DARK : ONE_DARK) : festive ? CHRISTMAS_LIGHT : ONE_LIGHT;
   const surface = toHex(colors.surface ?? (dark ? '#111318' : '#ffffff'));
   const muted = toHex(colors.outline ?? (dark ? '#8e9099' : '#74777f'));
 

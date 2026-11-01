@@ -4,6 +4,7 @@ import {glass, useThemedStyles} from '../theme';
 
 import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
+import {GreetingsChecklist} from '../seasonal/GreetingsChecklist';
 import {useCompactLayout} from '../useCompactLayout';
 import {useAppContext} from '../../context/AppContext';
 
@@ -22,6 +23,7 @@ export function MessagesPage() {
     <View style={styles.content}>
       {(compact && !get("messages.activeChannel") || !compact) && (
         <View style={styles.channelListing}>
+          {sidebarItem === 'whatsapp' && <GreetingsChecklist />}
           <ChannelListing type={sidebarItem} />
         </View>
       )}

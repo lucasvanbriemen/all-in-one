@@ -1,5 +1,7 @@
 import {toHex} from '../monacoTheme';
 import {withAlpha} from '../theme';
+import {festiveTerminalColors} from '../seasonal/festiveCode';
+import {isDecorated} from '../seasonal/season';
 
 /**
  * xterm.js, and what the shell's sixteen colours are.
@@ -104,5 +106,6 @@ export function terminalTheme(colors, scheme) {
     // instead of being covered over by the highlight.
     selectionBackground: withAlpha(accent, 0.3),
     selectionInactiveBackground: withAlpha(muted, 0.2),
+    ...(isDecorated() ? festiveTerminalColors(dark ? 'dark' : 'light') : {}),
   };
 }

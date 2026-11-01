@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import {LikedSongs} from './LikedSongs';
 import {SearchSongs} from './SearchSongs';
 import {Statistics} from './Statistics';
+import {HiddenOrnament} from '../seasonal/Grinch';
 import {useAppContext} from '../../context/AppContext';
 import {useThemedStyles} from '../theme';
 
@@ -28,6 +29,7 @@ export function MusicPage() {
   return (
     <View style={styles.content}>
       {pages[sidebarItem]}
+      <HiddenOrnament spot="music" style={{alignSelf: 'flex-end', margin: 8}} />
     </View>
   );
 }

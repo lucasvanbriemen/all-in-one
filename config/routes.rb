@@ -54,6 +54,15 @@ Rails.application.routes.draw do
   post "/whatsapp/chats/:jid/read", to: "whatsapp#mark_read", as: :whatsapp_read, constraints: { jid: /[^\/]+/ }
   post "/whatsapp/chats/:jid/typing", to: "whatsapp#typing", as: :whatsapp_typing, constraints: { jid: /[^\/]+/ }
 
+  get "/seasonal/advent", to: "seasonal#advent", as: :seasonal_advent
+  get "/seasonal/tree", to: "seasonal#tree", as: :seasonal_tree
+  get "/seasonal/naughty_nice", to: "seasonal#naughty_nice", as: :seasonal_naughty_nice
+  get "/seasonal/greetings", to: "seasonal#greetings", as: :seasonal_greetings
+  get "/seasonal/christmas_songs", to: "seasonal#christmas_songs", as: :seasonal_christmas_songs
+  get "/seasonal/gifts", to: "seasonal#gifts", as: :seasonal_gifts
+  get "/seasonal/state", to: "seasonal#state", as: :seasonal_state
+  post "/seasonal/state", to: "seasonal#update_state", as: :update_seasonal_state
+
   get "/privacy", to: "account#privacy", as: :privacy
 
   get "meta_data", to: "account#show"

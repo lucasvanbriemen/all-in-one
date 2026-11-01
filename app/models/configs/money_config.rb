@@ -32,8 +32,11 @@ module MoneyConfig
   CATEGORIES = [
     "Groceries", "Eating out", "Fuel", "Cinema", "Leisure", "Shopping", "Tolls & parking",
     "Parents", "Insurance & health", "Hosting & domains", "Bank fees", "Tax",
-    "Transfers", "Salary", "Savings"
+    "Transfers", "Salary", "Savings", "Gifts"
   ].freeze
+
+  # Christmas gift budget for the season, tracked through the "Gifts" category.
+  GIFT_BUDGET = 300
 
   # Which categories count towards a budget; a budget not listed uses the category of the same name.
   BUDGET_CATEGORIES = {

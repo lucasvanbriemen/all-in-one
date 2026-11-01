@@ -1,6 +1,7 @@
 import {NativeEventEmitter, NativeModules} from 'react-native';
 
 import {api} from '../api';
+import {mixChristmas} from '../seasonal/christmasMusic';
 import secrets from '../secerts.json';
 
 const BASE_URL = "https://aio.ltvb.nl/get-mp3/";
@@ -33,17 +34,26 @@ export const player = {
 
   async playPlaylist(songs, set, atIndex = null, get) {
     let songsToShuffle = [...songs];
-    if (atIndex == null) {
+    const pickedSong = atIndex != null;
+    if (!pickedSong) {
       songsToShuffle.sort(() => Math.random() - 0.5);
+      // In season, Christmas songs creep into the shuffle (seasonal/christmasMusic.js);
+      // on a plain shuffle that includes the very first song.
+      songsToShuffle = await mixChristmas(songsToShuffle);
       atIndex = 0;
     }
 
     const songToPlay = songsToShuffle[atIndex];
 
-    set('music.last-songs', songs.slice(0, atIndex));
+    set('music.last-songs', songs.slice(0, pickedSong ? atIndex : 0));
 
     songsToShuffle = songsToShuffle.slice(atIndex + 1);
-    songsToShuffle.sort(() => Math.random() - 0.5);
+
+    if (pickedSong) {
+      songsToShuffle.sort(() => Math.random() - 0.5);
+      // The song you picked plays first; the shuffle after it gets the mix.
+      songsToShuffle = await mixChristmas(songsToShuffle, {exclude: [songToPlay.id]});
+    }
 
     set('music.queue', songsToShuffle);
 

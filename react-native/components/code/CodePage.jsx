@@ -6,6 +6,8 @@ import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
 import {SearchSidebar} from './SearchSidebar';
 import {Terminal} from './Terminal';
+import {HiddenOrnament} from '../seasonal/Grinch';
+import {WorkaholicBadge} from '../seasonal/WorkaholicBadge';
 import {fileSystem} from '../fileSystem';
 import {useAppContext} from '../../context/AppContext';
 
@@ -177,6 +179,8 @@ export function CodePage() {
 
   return (
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
+      <WorkaholicBadge />
+      <HiddenOrnament spot="code" style={{position: 'absolute', left: 4, bottom: 8, zIndex: 10}} />
       {get("app.activeSidebarItem") == "files" && (
         <View style={styles.fileTree}>
           <FileTree currentFile={currentFile} onOpenFile={openFile} onSave={save} projectRoot={projectRoot} setProjectRoot={setProjectRoot} openedFiles={openedFiles} setOpenedFiles={setOpenedFiles} />
