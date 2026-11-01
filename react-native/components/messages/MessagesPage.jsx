@@ -4,12 +4,14 @@ import {glass, useThemedStyles} from '../theme';
 
 import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
+import {useCompactLayout} from '../useCompactLayout';
 import {useAppContext} from '../../context/AppContext';
 
 export function MessagesPage() {
   const {get} = useAppContext();
   const [sidebarItem, setSidebarItem] = useState(get("app.activeSidebarItem") ?? "whatsapp");
   const styles = useThemedStyles(createStyles);
+  const compact = useCompactLayout();
 
   useEffect(() => {
     setSidebarItem(get("app.activeSidebarItem") ?? "whatsapp");
@@ -22,17 +24,19 @@ export function MessagesPage() {
         <ChannelListing type={sidebarItem} />
       </View>
 
-      <View style={styles.activeChannelWrapper}>
-        <View style={styles.activeChannel}>
-          <ActiveChannel />
-        </View>
-
-        {get("messages.activeThread") && (
-          <View style={[styles.activeChannel, styles.activeChannelThread]}>
-            <ActiveChannel isThread={true} />
+      {(compact && get("messages.activeChannel") || !compact) && (
+        <View style={styles.activeChannelWrapper}>
+          <View style={styles.activeChannel}>
+            <ActiveChannel />
           </View>
-        )}
-      </View>
+
+          {get("messages.activeThread") && (
+            <View style={[styles.activeChannel, styles.activeChannelThread]}>
+              <ActiveChannel isThread={true} />
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }
