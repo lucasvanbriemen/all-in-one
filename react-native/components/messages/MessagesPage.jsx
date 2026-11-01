@@ -20,9 +20,11 @@ export function MessagesPage() {
 
   return (
     <View style={styles.content}>
-      <View style={styles.channelListing}>
-        <ChannelListing type={sidebarItem} />
-      </View>
+      {(compact && !get("messages.activeChannel") || !compact) && (
+        <View style={styles.channelListing}>
+          <ChannelListing type={sidebarItem} />
+        </View>
+      )}
 
       {(compact && get("messages.activeChannel") || !compact) && (
         <View style={styles.activeChannelWrapper}>
