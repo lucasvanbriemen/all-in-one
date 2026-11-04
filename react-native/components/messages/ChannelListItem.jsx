@@ -46,11 +46,13 @@ const createStyles = colors => StyleSheet.create({
     name: {
       fontSize: 16,
       fontWeight: 500,
+      color: colors.onSurface,
     },
 
     lastMessage: {
       marginTop: 4,
       opacity: 0.7,
+      color: colors.onSurface,
     },
 
     selected: {
