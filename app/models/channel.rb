@@ -6,6 +6,8 @@ class Channel < ApplicationRecord
   scope :whatsapp, -> { where(type: "Whatsapp::Channel") }
   scope :joined, -> { where(is_member: true) }
   scope :active, -> { where(is_active: true) }
+  # An archived Slack channel is dead, but an archived WhatsApp chat is just tucked away and still in use.
+  scope :listed, -> { active.or(whatsapp) }
   scope :recently_active, -> { order(Arel.sql("(SELECT MAX(messages.created_at) FROM messages WHERE messages.channel_id = channels.id) DESC")) }
 
   FALL_BACK_NAME = "Unknown name"
