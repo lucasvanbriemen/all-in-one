@@ -1,4 +1,4 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View, ScrollView} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
@@ -13,7 +13,7 @@ export function NowPlayingCard() {
   const {get, set} = useAppContext();
 
   return (
-    <View style={styles.content}>
+    <ScrollView>
       <SnowCap />
 
       {get('music.now-playing.title') && (
@@ -70,9 +70,9 @@ export function NowPlayingCard() {
       )}
 
       {!get('music.now-playing.title') && (
-        <LikedSongs compact={true} />
+        <LikedSongs compact={true} limit={5} />
       )}
-    </View>
+    </ScrollView>
   );
 }
 
