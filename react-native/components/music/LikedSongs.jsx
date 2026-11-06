@@ -8,9 +8,9 @@ import {useAppContext} from '../../context/AppContext';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
-export function LikedSongs() {
+export function LikedSongs({compact}) {
   const styles = useThemedStyles(createStyles);
-  const isCompact = useCompactLayout();
+  const isCompact = useCompactLayout() || compact;
   const bottomInset = useBottomInset();
 
   const {set, get} = useAppContext();
@@ -34,7 +34,7 @@ export function LikedSongs() {
       </View>
 
       {likedSongs.map((song, index) => (
-        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index, get)} />
+        <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.playPlaylist(likedSongs, set, index, get)} compact={isCompact} />
       ))}
     </ScrollView>
   );

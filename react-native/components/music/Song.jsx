@@ -6,8 +6,7 @@ import {api} from '../api';
 import {useCompactLayout} from '../useCompactLayout';
 import {useState} from 'react';
 
-export function Song({song, isEven, onClick, rightLabel = null}) {
-  const compact = useCompactLayout();
+export function Song({song, isEven, onClick, rightLabel = null, compact}) {
   const colors = useTheme();
   const styles = useThemedStyles(createStyles);
   const [isLiked, setIsLiked] = useState(song.is_liked);

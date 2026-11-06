@@ -6,6 +6,7 @@ import {player} from './player';
 import {ChristmasMeter} from '../seasonal/ChristmasMeter';
 import {SnowCap} from '../seasonal/SnowCap';
 import {useAppContext} from '../../context/AppContext';
+import {LikedSongs} from './LikedSongs';
 
 export function NowPlayingCard() {
   const styles = useThemedStyles(createStyles);
@@ -66,6 +67,10 @@ export function NowPlayingCard() {
           
           <ChristmasMeter />
         </>
+      )}
+
+      {!get('music.now-playing.title') && (
+        <LikedSongs compact={true} />
       )}
     </View>
   );
