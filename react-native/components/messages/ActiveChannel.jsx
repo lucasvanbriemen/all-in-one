@@ -72,7 +72,7 @@ export function ActiveChannel({isThread = false}) {
           <View style={styles.channelInfo}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Image source={{uri: channel?.avatar_url}} style={styles.avatar} />
-            <Text style={styles.compactStats}>{channel?.name}</Text>
+            <Text style={styles.compactStats}>{channel?.display_name}</Text>
           </View>
         </View>
       )}
