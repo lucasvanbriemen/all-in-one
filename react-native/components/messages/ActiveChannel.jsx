@@ -54,14 +54,13 @@ export function ActiveChannel({isThread = false}) {
 
   return (
     <View style={styles.content}>
-      <ScrollView style={styles.chatListing}>
-        {isCompact && (
+       {isCompact && (
           <View style={styles.channelDetails}>
             <Text>Compact Stats Here</Text>
           </View>
         )}
-
-        <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
+      <ScrollView style={styles.chatListing}>
+               <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
         </Pressable>
 
@@ -83,6 +82,12 @@ const createStyles = colors => StyleSheet.create({
   },
   additionalContent: {
     marginBottom: 16,
+  },
+  channelDetails: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
