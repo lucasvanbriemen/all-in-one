@@ -85,7 +85,7 @@ class SlackController < ApplicationController
 
   def notify(event)
     contact = Slack::Contact.find_by(id: event["user"])
-    return if contact.nil? # || contact.is_me
+    return if contact.nil? || contact.is_me
     return unless Slack::Channel.joined.exists?(id: event["channel"])
 
     if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
