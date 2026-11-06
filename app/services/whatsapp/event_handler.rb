@@ -14,7 +14,14 @@ module Whatsapp
       @changed_jids = Set.new
     end
 
+    def self.unsupported?(jid)
+      jid.to_s.end_with?("@newsletter", "@broadcast")
+    end
+
     def handle(event, payload)
+      # Followed channels and status updates are feeds, not chats; the connector filters them too.
+      return if self.class.unsupported?(payload["chat"]) || self.class.unsupported?(payload["id"])
+
       track_change(event, payload)
       case event
       when "batch" then payload["events"].each { |e| handle(e["event"], e["payload"]) }

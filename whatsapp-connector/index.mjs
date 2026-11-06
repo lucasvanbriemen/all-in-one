@@ -542,11 +542,22 @@ export const bridge = {
     return Buffer.concat(chunks);
   },
 
+  // Followed channels and status updates are feeds, not conversations; the app has nothing to show for them.
+  isUnsupported(jid) {
+    return typeof jid === 'string' && (jid.endsWith('@newsletter') || jid.endsWith('@broadcast'));
+  },
+
+  supported({payload}) {
+    return !bridge.isUnsupported(payload?.chat) && !bridge.isUnsupported(payload?.id);
+  },
+
   async emit(event, payload) {
+    if (!bridge.supported({payload})) return;
     return bridge.deliver({event, payload});
   },
 
   async emitBatch(events) {
+    events = events.filter(bridge.supported);
     if (events.length === 0) return;
     if (events.length === 1) return bridge.deliver(events[0]);
     for (let i = 0; i < events.length; i += bridge.BATCH_SIZE) {
