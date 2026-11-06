@@ -24,6 +24,23 @@ module Whatsapp
       Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id))
     end
 
+    # WhatsApp keeps one reaction per person, so a new emoji replaces the old one and nil takes it back.
+    # The echo from the connector lands on the same row, so storing it here just skips the wait.
+    def react(message, emoji)
+      Bridge.react(chat: id, id: message.id, from_me: message.from_me, participant: (message.contact_id if is_group_chat && !message.from_me), emoji: emoji)
+
+      me = Connection.current.me_jid
+      mine = message.reactions.where(contact_id: me)
+      return mine.delete_all if emoji.blank?
+
+      Contact.find_or_create_by!(id: me)
+      mine.first_or_initialize.update!(reaction: emoji)
+    end
+
+    def unreact(message, _emoji)
+      react(message, nil)
+    end
+
     # WhatsApp marks a chat read through receipts for its incoming messages; the latest few cover everything before them.
     def marked_as_read
       incoming = messages.where.not(contact_id: Connection.current.me_jid).order(created_at: :desc).limit(20)

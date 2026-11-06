@@ -27,6 +27,8 @@ module Whatsapp
     def self.send_text(to:, text:, quote: nil, mentions: nil) = post("/send", to: to, text: text, quote: quote, mentions: mentions)
     def self.send_media(to:, data:, mimetype:, filename: nil, caption: nil, quote: nil) = post("/send-media", to: to, data: Base64.strict_encode64(data), mimetype: mimetype, filename: filename, caption: caption, quote: quote)
 
+    def self.react(chat:, id:, from_me:, participant: nil, emoji: nil) = post("/react", chat: chat, id: id, from_me: from_me, participant: participant, emoji: emoji.to_s)
+
     def self.decrypt_edit(**args) = post("/decrypt-edit", **args)
 
     # Returns [mimetype, bytes] for a message's media, fetched and decrypted by the connector.

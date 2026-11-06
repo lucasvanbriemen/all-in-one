@@ -5,8 +5,26 @@ module Slack
     BASE_URL = "https://slack.com/api/"
     SECRET = ENV["SLACK_USER_TOKEN"]
 
+    class Error < StandardError; end
+
     def self.send_message(channel, text, thread_ts: nil)
       post("chat.postMessage", { channel: channel, text: text, thread_ts: thread_ts })
+    end
+
+    # Reacting twice or removing a reaction that is gone already ends up where we wanted.
+    def self.add_reaction(channel, ts, name)
+      reaction_call("reactions.add", channel, ts, name, ok_if: "already_reacted")
+    end
+
+    def self.remove_reaction(channel, ts, name)
+      reaction_call("reactions.remove", channel, ts, name, ok_if: "no_reaction")
+    end
+
+    def self.reaction_call(path, channel, ts, name, ok_if:)
+      response = post(path, { channel: channel, timestamp: ts, name: name })
+      return response if response["ok"] || response["error"] == ok_if
+
+      raise Error, "slack #{path} failed: #{response["error"]}"
     end
 
     def self.upload_file(channel, data:, filename:, comment: nil, thread_ts: nil)
