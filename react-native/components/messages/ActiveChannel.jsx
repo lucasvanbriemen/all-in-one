@@ -2,7 +2,7 @@ import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
+import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 
 import {Message} from './Message';
 import {MessageInput} from './MessageInput';
@@ -16,6 +16,8 @@ export function ActiveChannel({isThread = false}) {
   const {set, get} = useAppContext();
   const isCompact = useCompactLayout();
   const bottomInset = useBottomInset();
+  const keyboardHeight = useKeyboardHeight();
+  const inputOffset = keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset;
 
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
 
@@ -68,7 +70,7 @@ export function ActiveChannel({isThread = false}) {
         ))}
       </ScrollView>
 
-      <View style={[styles.additionalContent, { marginBottom: bottomInset }]}>
+      <View style={[styles.additionalContent, { marginBottom: inputOffset }]}>
         <MessageInput threadId={isThread ? get("messages.activeThread") : null} />
       </View>
     </View>
