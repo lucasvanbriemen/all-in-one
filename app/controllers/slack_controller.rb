@@ -72,6 +72,32 @@ class SlackController < ApplicationController
       )
     end
 
+    notify(event) if new_message?(event)
+
     head :ok
+  end
+
+  private
+
+  def new_message?(event)
+    event&.dig("type") == "message" && (event["subtype"].blank? || event["subtype"] == "file_share")
+  end
+
+  def notify(event)
+    contact = Slack::Contact.find_by(id: event["user"])
+    return if contact.nil? # || contact.is_me
+    return unless Slack::Channel.joined.exists?(id: event["channel"])
+
+    if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
+      thread_id = "#{event["channel"]}-#{event["thread_ts"]}"
+      in_thread = Slack::Message.where(id: thread_id).or(Slack::Message.where(thread_id: thread_id))
+      return unless in_thread.where(contact_id: Contact::MY_CONTACT_IDS).exists?
+    end
+
+    Notification.create!(
+      title: contact.name,
+      body: event["text"],
+      source: "messages.slack.#{event["channel"]}"
+    )
   end
 end
