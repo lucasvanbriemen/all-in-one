@@ -72,13 +72,13 @@ export function ActiveChannel({isThread = false}) {
           <View style={styles.channelInfo}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Image source={{uri: channel?.avatar_url}} style={styles.avatar} />
-            <Text style={styles.compactStats}>{channel?.display_name}</Text>
+            <Text style={styles.channelInfo.name}>{channel?.display_name}</Text>
           </View>
         </View>
       )}
 
       <ScrollView style={styles.chatListing}>
-               <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
+        <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
         </Pressable>
 
@@ -98,15 +98,27 @@ const createStyles = colors => StyleSheet.create({
   backButton: {
     padding: 8,
     overflow: 'hidden',
-    borderRadius: 8,
+    borderRadius: 100,
+    height: 53,
+    width: 53,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   channelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     padding: 8,
-    borderRadius: 8,
+    borderRadius: 100,
     overflow: 'hidden',
+    flex: 1,
+
+    name: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.onSurface,
+    }
   },
   chatListing: {
     flex: 1,
