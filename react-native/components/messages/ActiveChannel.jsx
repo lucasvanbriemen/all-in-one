@@ -64,13 +64,12 @@ export function ActiveChannel({isThread = false}) {
     <View style={styles.content}>
       {isCompact && (
         <View style={styles.channelDetails}>
-          <Pressable onPress={() => closeChannel()}>
-            <Text style={styles.loadMore}>Load More</Text>
-      <Icon name={"chevronDown"} size={16} color={colors?.onPrimary ? colors.onPrimary : colors.onSurface} />
-
+          <Pressable onPress={() => closeChannel()} style={styles.backButton}>
+            {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
+            <Icon name={"chevron-left"} size={16} color={colors.onSurface} />
           </Pressable>
 
-          <View>
+          <View style={styles.channelInfo}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Image source={{uri: channel?.avatar_url}} style={styles.avatar} />
             <Text style={styles.compactStats}>{channel?.name}</Text>
@@ -96,6 +95,19 @@ export function ActiveChannel({isThread = false}) {
 }
 
 const createStyles = colors => StyleSheet.create({
+  backButton: {
+    padding: 8,
+    overflow: 'hidden',
+    borderRadius: 8,
+  },
+  channelInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
   chatListing: {
     flex: 1,
   },
@@ -108,7 +120,10 @@ const createStyles = colors => StyleSheet.create({
     left: 0,
     right: 0,
     display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
+    zIndex: 1,
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
