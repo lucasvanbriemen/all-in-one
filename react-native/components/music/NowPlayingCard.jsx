@@ -17,55 +17,55 @@ export function NowPlayingCard() {
 
       {get('music.now-playing.title') && (
         <>
-        <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
+          <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
-          <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
-        </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
+            <Text style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
+          </View>
 
-        <View style={styles.controlsContainer}>
-          <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-            <Icon name="last" size={24} color={styles.controlText.color} />
-          </Pressable>
-
-          {get('music.now-playing.is-playing') && (
-            <Pressable
-              onPress={() => player.pause()}
-              style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-              <Icon name="pause" size={24} color={styles.controlText.color} />
+          <View style={styles.controlsContainer}>
+            <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+              <Icon name="last" size={24} color={styles.controlText.color} />
             </Pressable>
-          )}
 
-          {get('music.now-playing.is-playing') === false && (
-            <Pressable
-              onPress={() => player.resume()}
-              style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-              <Icon name="play" size={24} color={styles.controlText.color} />
+            {get('music.now-playing.is-playing') && (
+              <Pressable
+                onPress={() => player.pause()}
+                style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+                <Icon name="pause" size={24} color={styles.controlText.color} />
+              </Pressable>
+            )}
+
+            {get('music.now-playing.is-playing') === false && (
+              <Pressable
+                onPress={() => player.resume()}
+                style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+                <Icon name="play" size={24} color={styles.controlText.color} />
+              </Pressable>
+            )}
+
+            <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+              <Icon name="next" size={24} color={styles.controlText.color} />
             </Pressable>
-          )}
 
-          <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-            <Icon name="next" size={24} color={styles.controlText.color} />
-          </Pressable>
-
-          <Pressable
-            onPress={() => player.toggleRepeat(set, get)}
-            style={({pressed}) => [
-              styles.control,
-              !get('music.repeat') && styles.controlInactive,
-              pressed && styles.controlPressed,
-            ]}>
-            <Icon
-              name="repeat"
-              size={24}
-              color={get('music.repeat') ? styles.controlText.color : styles.controlInactiveText.color}
-            />
-          </Pressable>
-        </View>
-        
-        <ChristmasMeter />
-      </>
+            <Pressable
+              onPress={() => player.toggleRepeat(set, get)}
+              style={({pressed}) => [
+                styles.control,
+                !get('music.repeat') && styles.controlInactive,
+                pressed && styles.controlPressed,
+              ]}>
+              <Icon
+                name="repeat"
+                size={24}
+                color={get('music.repeat') ? styles.controlText.color : styles.controlInactiveText.color}
+              />
+            </Pressable>
+          </View>
+          
+          <ChristmasMeter />
+        </>
       )}
     </View>
   );
