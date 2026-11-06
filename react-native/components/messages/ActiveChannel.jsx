@@ -3,6 +3,8 @@ import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native
 import React, {useEffect, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
+import {Icon} from '../icons';
+import {NavigationBlur} from '../sidebar/NavigationBlur';
 
 import {Message} from './Message';
 import {MessageInput} from './MessageInput';
@@ -17,6 +19,7 @@ export function ActiveChannel({isThread = false}) {
   const isCompact = useCompactLayout();
   const bottomInset = useBottomInset();
   const keyboardHeight = useKeyboardHeight();
+  const colors = useThemedStyles(c => c);
   const inputOffset = keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset;
 
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
@@ -48,17 +51,33 @@ export function ActiveChannel({isThread = false}) {
     });
   }
 
+  function closeChannel() {
+    setActiveChannel("");
+    set("messages.activeChannel", "");
+  }
+
   useEffect(loadChats, []);
   useEffect(loadChats, [activeChannel]);
   useChannel('WhatsappChannel', loadChats);
 
   return (
     <View style={styles.content}>
-       {isCompact && (
-          <View style={styles.channelDetails}>
-            <Text>Compact Stats Here</Text>
+      {isCompact && (
+        <View style={styles.channelDetails}>
+          <Pressable onPress={() => closeChannel()}>
+            <Text style={styles.loadMore}>Load More</Text>
+      <Icon name={"chevronDown"} size={16} color={colors?.onPrimary ? colors.onPrimary : colors.onSurface} />
+
+          </Pressable>
+
+          <View>
+            {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
+            <Image source={{uri: channel?.avatar_url}} style={styles.avatar} />
+            <Text style={styles.compactStats}>{channel?.name}</Text>
           </View>
-        )}
+        </View>
+      )}
+
       <ScrollView style={styles.chatListing}>
                <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
@@ -84,10 +103,12 @@ const createStyles = colors => StyleSheet.create({
     marginBottom: 16,
   },
   channelDetails: {
-    position: 'fixed',
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+    display: 'flex',
+    gap: 8,
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
