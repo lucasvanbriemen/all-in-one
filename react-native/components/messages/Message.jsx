@@ -15,7 +15,7 @@ export function Message({message, showSender = false}) {
   const {get, set} = useAppContext();
 
   return (
-    <View style={[styles.chatContainer, message.from_me && styles.from_me]}>
+    <View style={[compact && styles.chatContainerSmall, styles.chatContainer, message.from_me && styles.from_me]}>
 
       {showSender && !message.from_me && (
         <View style={styles.senderContainer}>
@@ -78,6 +78,9 @@ const createStyles = colors => StyleSheet.create({
     maxWidth: '75%',
     position: 'relative',
     gap: 8,
+  },
+  chatContainerSmall: {
+    width: '80%',
   },
   body: {
     flexDirection: 'row',
