@@ -24,6 +24,10 @@ module Whatsapp
       Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id))
     end
 
+    def marked_as_read
+      Bridge.read(to: id)
+    end
+
     # Groups have their own picture; a one-on-one chat shows the other person's, which lives on their contact.
     def avatar_contact = resolved_contact
 

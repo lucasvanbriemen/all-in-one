@@ -17,6 +17,8 @@ class MessagesController < ApplicationController
 
     messages = channel.messages.top_level.includes(:contact, :file_uploads, :replies, reactions: :contact, quoted_message: :contact).limit(50).offset((page - 1) * 50).order(created_at: :desc).reverse
 
+    channel.marked_as_read
+
     render json: messages.as_json(include: MESSAGE_INCLUDES, methods: [ :from_me, :reply_count ])
   end
 

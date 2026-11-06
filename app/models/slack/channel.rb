@@ -34,6 +34,9 @@ class Slack::Channel < Channel
     Slack::Api.send_message(id, text, thread_ts: thread_ts_for(thread_id))
   end
 
+  def marked_as_read
+  end
+
   def upload(file, text: nil, thread_id: nil, **)
     Slack::Api.upload_file(id, data: file.read, filename: file.original_filename, comment: text, thread_ts: thread_ts_for(thread_id))
   end
