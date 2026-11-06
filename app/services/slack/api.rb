@@ -9,6 +9,19 @@ module Slack
       post("chat.postMessage", { channel: channel, text: text, thread_ts: thread_ts })
     end
 
+    # Reacting twice or removing a reaction that is gone already ends up where we wanted.
+    def self.add_reaction(channel, ts, name)
+      reaction_call("reactions.add", channel, ts, name, ok_if: "already_reacted")
+    end
+
+    def self.remove_reaction(channel, ts, name)
+      reaction_call("reactions.remove", channel, ts, name, ok_if: "no_reaction")
+    end
+
+    def self.reaction_call(path, channel, ts, name, ok_if:)
+      post(path, { channel: channel, timestamp: ts, name: name })
+    end
+
     def self.upload_file(channel, data:, filename:, comment: nil, thread_ts: nil)
       reserved = post("files.getUploadURLExternal", { filename: filename, length: data.bytesize })
 

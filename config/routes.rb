@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get "/channels/:id/messages", to: "messages#show", as: :channel_messages, constraints: { id: /[^\/]+/ }
   get "/channels/:id/messages/:message_id/replies", to: "messages#replies", as: :channel_message_replies, constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
   post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create, constraints: { id: /[^\/]+/ }
+  post "/channels/:id/messages/:message_id/reactions", to: "messages#react", as: :channel_message_reactions, constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
+  delete "/channels/:id/messages/:message_id/reactions", to: "messages#react", constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
   post "/channels/:id/files", to: "messages#upload", as: :channel_files_create, constraints: { id: /[^\/]+/ }
   get "/file/:id", to: "files#show", as: :file
 

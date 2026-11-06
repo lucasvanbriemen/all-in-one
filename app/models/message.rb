@@ -5,13 +5,18 @@ class Message < ApplicationRecord
   belongs_to :quoted_message, class_name: "Message", optional: true
   has_many :replies, class_name: "Message", foreign_key: :thread_id
   has_many :file_uploads, dependent: :destroy
-  has_many :reactions, class_name: "MessageReaction", dependent: :delete_all
+  has_many :reactions, class_name: "MessageReaction", inverse_of: :message, dependent: :delete_all
 
   scope :top_level, -> { where(thread_id: nil) }
   scope :replies, ->(message_id) { where(thread_id: message_id) }
 
   def from_me
     contact.is_me
+  end
+
+  # The app needs this to choose quoting (WhatsApp) or threads (Slack); as_json leaves out the STI type.
+  def platform
+    is_a?(Slack::Message) ? "slack" : "whatsapp"
   end
 
   def reply_count

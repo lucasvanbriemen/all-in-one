@@ -709,6 +709,16 @@ export const bridge = {
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
       }
 
+      // An empty emoji takes the reaction back; WhatsApp keeps one reaction per person per message.
+      case 'POST /react': {
+        if (!requireOpen()) return;
+        const {chat, id, from_me, participant, emoji} = await bridge.readJson(request);
+        if (!chat || !id) return reply(400, {error: 'chat and id are required'});
+        const key = {remoteJid: toJid(chat), id, fromMe: Boolean(from_me), participant: participant ? toJid(participant) : undefined};
+        await sock.sendMessage(toJid(chat), {react: {text: emoji || '', key}});
+        return reply(200, {ok: true});
+      }
+
       case 'POST /read': {
         if (!requireOpen()) return;
         const {chat, messages} = await bridge.readJson(request);
