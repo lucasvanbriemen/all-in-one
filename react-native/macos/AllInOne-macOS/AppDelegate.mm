@@ -38,6 +38,21 @@
   // blur. Clearing it lets `.behindWindow` reach the desktop.
   window.contentView.wantsLayer = YES;
   window.contentView.layer.backgroundColor = [NSColor clearColor].CGColor;
+
+  // Closing the window (red button / ⌘W) only hides it, so the React tree, the
+  // loaded data and the audio player stay alive and reopening is instant.
+  window.releasedWhenClosed = NO;
+}
+
+// Clicking the Dock icon (or launching the app again from Spotlight/Raycast)
+// while the window is closed brings the existing window back. Without this
+// AppKit does nothing for a non-document app and the app looks dead.
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)hasVisibleWindows
+{
+  if (!hasVisibleWindows) {
+    [self.window makeKeyAndOrderFront:nil];
+  }
+  return YES;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
