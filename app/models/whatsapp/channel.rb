@@ -24,18 +24,8 @@ module Whatsapp
       Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id))
     end
 
-    def mark_read!
-      unread = messages.where.not(contact_id: Connection.current.my_jids).order(created_at: :desc).limit(20)
-      Bridge.mark_read(chat: id, messages: unread.map { |m| { id: m.id, participant: (m.contact_id if is_group_chat) }.compact }) if unread.any?
-      Notification.where(source: "messages.whatsapp.#{id}").update_all(read: true)
-    end
-
     # Groups have their own picture; a one-on-one chat shows the other person's, which lives on their contact.
     def avatar_contact = resolved_contact
-
-    def avatar_file
-      is_group_chat ? super : avatar_contact&.avatar_file
-    end
 
     private
 

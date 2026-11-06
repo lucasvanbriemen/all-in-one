@@ -49,10 +49,6 @@ Rails.application.routes.draw do
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
   get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
-  get "/whatsapp/chats/:jid/avatar", to: "whatsapp#avatar", as: :whatsapp_avatar, constraints: { jid: /[^\/]+/ }
-  post "/whatsapp/chats/:jid/react", to: "whatsapp#react", as: :whatsapp_react, constraints: { jid: /[^\/]+/ }
-  post "/whatsapp/chats/:jid/read", to: "whatsapp#mark_read", as: :whatsapp_read, constraints: { jid: /[^\/]+/ }
-  post "/whatsapp/chats/:jid/typing", to: "whatsapp#typing", as: :whatsapp_typing, constraints: { jid: /[^\/]+/ }
 
   get "/seasonal/advent", to: "seasonal#advent", as: :seasonal_advent
   get "/seasonal/tree", to: "seasonal#tree", as: :seasonal_tree

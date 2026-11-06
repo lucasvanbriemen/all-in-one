@@ -709,28 +709,11 @@ export const bridge = {
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});
       }
 
-      case 'POST /react': {
-        if (!requireOpen()) return;
-        const {chat, message_id, from_me, participant, emoji} = await bridge.readJson(request);
-        if (!chat || !message_id) return reply(400, {error: 'chat and message_id are required'});
-        const key = {remoteJid: toJid(chat), id: message_id, fromMe: Boolean(from_me), participant: participant ? toJid(participant) : undefined};
-        await sock.sendMessage(toJid(chat), {react: {text: emoji || '', key}});
-        return reply(200, {ok: true});
-      }
-
       case 'POST /read': {
         if (!requireOpen()) return;
         const {chat, messages} = await bridge.readJson(request);
         if (!chat || !Array.isArray(messages) || messages.length === 0) return reply(400, {error: 'chat and messages[] are required'});
         await sock.readMessages(messages.map(m => ({remoteJid: toJid(chat), id: m.id, fromMe: false, participant: m.participant ? toJid(m.participant) : undefined})));
-        return reply(200, {ok: true});
-      }
-
-      case 'POST /typing': {
-        if (!requireOpen()) return;
-        const {chat, typing} = await bridge.readJson(request);
-        if (!chat) return reply(400, {error: 'chat is required'});
-        await sock.sendPresenceUpdate(typing === false ? 'paused' : 'composing', toJid(chat));
         return reply(200, {ok: true});
       }
 
