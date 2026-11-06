@@ -108,7 +108,7 @@ const createStyles = colors => StyleSheet.create({
   channelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
     padding: 8,
     borderRadius: 100,
     overflow: 'hidden',
