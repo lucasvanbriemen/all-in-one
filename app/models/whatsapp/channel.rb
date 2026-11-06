@@ -24,8 +24,12 @@ module Whatsapp
       Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id))
     end
 
+    # WhatsApp marks a chat read through receipts for its incoming messages; the latest few cover everything before them.
     def marked_as_read
-      Bridge.read(to: id)
+      incoming = messages.where.not(contact_id: Connection.current.me_jid).order(created_at: :desc).limit(20)
+      return if incoming.empty?
+
+      Bridge.read(chat: id, messages: incoming.map { |message| { id: message.id, participant: (message.contact_id if is_group_chat) } })
     end
 
     # Groups have their own picture; a one-on-one chat shows the other person's, which lives on their contact.

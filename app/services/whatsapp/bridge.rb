@@ -18,9 +18,7 @@ module Whatsapp
     def self.state = get("/state")
     def self.chats = get("/chats")
     def self.contacts = get("/contacts")
-    def self.read(to:)
-      post("/read", to: to)
-    end
+    def self.read(chat:, messages:) = post("/read", chat: chat, messages: messages)
     def self.groups = get("/groups")
     def self.avatar(jid) = get("/avatar", { jid: jid }, read_timeout: 15)
     def self.resolve_lid(lid) = get("/lid", jid: lid)
