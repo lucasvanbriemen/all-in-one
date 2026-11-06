@@ -5,8 +5,6 @@ module Slack
     BASE_URL = "https://slack.com/api/"
     SECRET = ENV["SLACK_USER_TOKEN"]
 
-    class Error < StandardError; end
-
     def self.send_message(channel, text, thread_ts: nil)
       post("chat.postMessage", { channel: channel, text: text, thread_ts: thread_ts })
     end
@@ -21,10 +19,7 @@ module Slack
     end
 
     def self.reaction_call(path, channel, ts, name, ok_if:)
-      response = post(path, { channel: channel, timestamp: ts, name: name })
-      return response if response["ok"] || response["error"] == ok_if
-
-      raise Error, "slack #{path} failed: #{response["error"]}"
+      post(path, { channel: channel, timestamp: ts, name: name })
     end
 
     def self.upload_file(channel, data:, filename:, comment: nil, thread_ts: nil)

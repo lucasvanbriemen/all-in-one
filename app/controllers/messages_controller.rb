@@ -10,10 +10,6 @@ class MessagesController < ApplicationController
     render json: { error: error.message }, status: error.status
   end
 
-  rescue_from Slack::Api::Error do |error|
-    render json: { error: error.message }, status: :bad_gateway
-  end
-
   def show
     channel = Channel.find(params[:id])
 
