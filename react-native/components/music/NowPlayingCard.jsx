@@ -13,7 +13,7 @@ export function NowPlayingCard() {
   const {get, set} = useAppContext();
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={[styles.content, get('music.now-playing.is-playing') && styles.content.isPlaying]}>
       <SnowCap />
 
       {get('music.now-playing.title') && (
@@ -82,11 +82,15 @@ const createStyles = colors => StyleSheet.create({
     gap: 16,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
     ...glass(colors),
     borderRadius: 16,
-    alignItems: 'center',
     gap: 16,
+
+    isPlaying: {
+      padding: 16,
+      alignItems: 'center',
+    }
   },
   title: {
     fontSize: 32,
