@@ -14,6 +14,8 @@ export function ActiveChannel({isThread = false}) {
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState({});
   const {set, get} = useAppContext();
+  const isCompact = useCompactLayout();
+  const bottomInset = useBottomInset();
 
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
 
@@ -51,6 +53,12 @@ export function ActiveChannel({isThread = false}) {
   return (
     <View style={styles.content}>
       <ScrollView style={styles.chatListing}>
+        {isCompact && (
+          <View style={styles.channelDetails}>
+            <Text>Compact Stats Here</Text>
+          </View>
+        )}
+
         <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
         </Pressable>
@@ -60,7 +68,7 @@ export function ActiveChannel({isThread = false}) {
         ))}
       </ScrollView>
 
-      <View style={styles.additionalContent}>
+      <View style={[styles.additionalContent, { marginBottom: bottomInset }]}>
         <MessageInput threadId={isThread ? get("messages.activeThread") : null} />
       </View>
     </View>
@@ -70,6 +78,9 @@ export function ActiveChannel({isThread = false}) {
 const createStyles = colors => StyleSheet.create({
   chatListing: {
     flex: 1,
+  },
+  additionalContent: {
+    marginBottom: 16,
   },
   compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {

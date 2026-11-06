@@ -77,7 +77,6 @@ export function MessageInput({threadId = null}) {
 
 const createStyles = colors => StyleSheet.create({
   container: {
-    padding: 8,
     gap: 8,
   },
   content: {
