@@ -2,10 +2,14 @@ import { api } from './api';
 
 const cache = new Map();
 
-export function fetchCached(url, maxAge = 30 * 1000) {
+const DEFAULT_CACHE_AGE_MINUTES = 30; // default cache age in minutes
+
+export function fetchCached(url, maxAge = DEFAULT_CACHE_AGE_MINUTES) {
   const entry = cache.get(url);
 
-  if (entry && Date.now() - entry.fetchedAt < maxAge) {
+  const maxAgeMs = maxAge * 60 * 1000;
+
+  if (entry && Date.now() - entry.fetchedAt < maxAgeMs) {
     return entry.data;
   }
 
