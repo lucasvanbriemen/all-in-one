@@ -41,18 +41,18 @@ export function HomePage() {
 
   return (
     <View style={styles.content}>
+      {season.decorated && season.phase === 'nye' ? (
+        <NewYearCountdown />
+      ) : (
+        <Text style={styles.greeting}>{greetingText}</Text>
+      )}
+
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData.map((data, index) => (
           <Stat key={index} value={data.value} label={grinchLabel(season, data)} attentionLevel={data.importance_level}/>
         ))}
         <CountdownStat />
       </View>
-
-      {season.decorated && season.phase === 'nye' ? (
-        <NewYearCountdown />
-      ) : (
-        <Text style={styles.greeting}>{greetingText}</Text>
-      )}
 
       {season.decorated && (season.phase === 'advent' || season.phase === 'christmas') && (
         <View style={[styles.seasonalRow, compact && styles.seasonalRowCompact]}>
