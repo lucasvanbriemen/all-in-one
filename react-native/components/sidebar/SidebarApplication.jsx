@@ -1,8 +1,6 @@
-import {Animated, Easing} from 'react-native';
-import {AppProvider, useAppContext} from '../../context/AppContext';
+import {useAppContext} from '../../context/AppContext';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
-import {useEffect, useRef, useState} from 'react';
 
 import {SidebarRow} from './SidebarRow';
 
@@ -10,18 +8,6 @@ export function SidebarApplication({item, app}) {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
   const isExpanded = true
-
-  const height = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(height, {
-      toValue: isExpanded ? 1 : 0,
-      duration: 200,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: false,
-    }).start();
-  }, [isExpanded, height]);
-  
 
   return (
     <View style={styles.appWrapper}>
