@@ -16,5 +16,7 @@ class DownloadSlackFilesJob < ApplicationJob
       File.binwrite(path, Slack::Api.download(file["url_private"]))
       message.file_uploads.create!(id: id, path: path, external_id: file["id"], name: file["name"], mimetype: file["mimetype"])
     end
+
+    MessagesChannel.chat_changed(message.channel_id, platform: "slack")
   end
 end

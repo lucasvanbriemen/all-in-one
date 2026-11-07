@@ -74,10 +74,23 @@ class SlackController < ApplicationController
 
     notify(event) if new_message?(event)
 
+    channel_id = changed_channel_id(event)
+    MessagesChannel.chat_changed(channel_id, platform: "slack") if channel_id.present?
+
     head :ok
   end
 
   private
+
+  def changed_channel_id(event)
+    case event&.dig("type")
+    when "message", "channel_archive", "group_archive", "channel_unarchive", "group_unarchive",
+         "member_joined_channel", "member_left_channel", "channel_left", "group_left"
+      event["channel"]
+    when "reaction_added", "reaction_removed" then event.dig("item", "channel")
+    when "channel_created", "channel_rename", "group_rename" then event.dig("channel", "id")
+    end
+  end
 
   def new_message?(event)
     event&.dig("type") == "message" && (event["subtype"].blank? || event["subtype"] == "file_share")

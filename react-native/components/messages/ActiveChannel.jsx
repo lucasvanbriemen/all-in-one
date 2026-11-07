@@ -58,7 +58,25 @@ export function ActiveChannel({isThread = false}) {
 
   useEffect(loadChats, []);
   useEffect(loadChats, [activeChannel]);
-  useChannel('WhatsappChannel', loadChats);
+
+  // Something in the open chat changed: refetch the newest page (or the whole thread)
+  // and swap it in, keeping any older pages already loaded above it.
+  function refreshChat() {
+    const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages`;
+
+    api.get(messageRoute).then(response => {
+      setMessages(current => {
+        if (isThread || response.length === 0) return response;
+
+        const oldest = Date.parse(response[0].created_at);
+        return [...current.filter(message => Date.parse(message.created_at) < oldest), ...response];
+      });
+    });
+  }
+
+  useChannel('MessagesChannel', event => {
+    if (activeChannel && event.channel_id === activeChannel) refreshChat();
+  });
 
   return (
     <View style={styles.content}>

@@ -46,7 +46,7 @@ module Whatsapp
 
     # One signal per chat, so a batch of history does not flood the socket.
     def broadcast_changes
-      @changed_jids.each { |jid| ActionCable.server.broadcast("whatsapp", { type: "chat_changed", jid: jid }) }
+      @changed_jids.each { |jid| MessagesChannel.chat_changed(jid, platform: "whatsapp") }
     end
 
     private
