@@ -34,6 +34,10 @@ export const api = {
     return this.makeRequest("PUT", url, data, headers);
   },
 
+  delete(url, data = null, headers = {}) {
+    return this.makeRequest("DELETE", url, data, headers);
+  },
+
   upload(url, fields) {
     const body = new FormData();
     Object.entries(fields).forEach(([key, value]) => {
