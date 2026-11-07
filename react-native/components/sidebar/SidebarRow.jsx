@@ -1,17 +1,28 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
 import {useTheme, useThemedStyles} from '../theme';
+import {useAppContext} from '../../context/AppContext';
 
 import {Icon} from '../icons';
 
-export function SidebarRow({icon, title, isSelected, onPress}) {
+function isSelected(row, get, app) {
+  return get("app.activeSidebarItem") === row.path && get("app.activeApp") === app;
+}
+
+function onPress(row, set, app) {
+  set('app.activeSidebarItem', row.path);
+  set('app.activeApp', app);
+}
+
+export function SidebarRow({row, app}) {
   const styles = useThemedStyles(createStyles);
   const {onPrimary, onSurface} = useTheme();
+  const {get, set} = useAppContext();
 
   return (
-    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow]}>
-      <Icon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
-      <Text numberOfLines={1} style={[styles.label, isSelected && styles.labelSelected]}>
-        {title}
+    <Pressable onPress={() => onPress(row, set, app)} style={[styles.row, isSelected(row, get, app) && styles.selectedRow]}>
+      <Icon name={row.path} size={16} color={isSelected(row, get, app) ? onPrimary : onSurface} />
+      <Text numberOfLines={1} style={[styles.label, isSelected(row, get, app) && styles.labelSelected]}>
+        {row.name}
       </Text>
     </Pressable>
   );

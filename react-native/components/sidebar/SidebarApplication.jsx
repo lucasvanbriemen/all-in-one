@@ -1,4 +1,3 @@
-import {useAppContext} from '../../context/AppContext';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
@@ -6,20 +5,13 @@ import {SidebarRow} from './SidebarRow';
 
 export function SidebarApplication({item, app}) {
   const styles = useThemedStyles(createStyles);
-  const { get, set } = useAppContext();
-  const isExpanded = true
 
   return (
     <View style={styles.appWrapper}>
-      <View>
-        <Pressable
-          onPress={() => set('app.activeApp', app)}>
-          <Text style={styles.title} numberOfLines={1}>{getAppTitle(app)}</Text>
-        </Pressable>
-      </View>
+      <Text style={styles.title} numberOfLines={1}>{getAppTitle(app)}</Text>
       <View>
         {item.map(row => (
-          <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} />
+          <SidebarRow key={row.path} row={row} app={app} />
         ))}
       </View>
     </View>
