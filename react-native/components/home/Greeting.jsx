@@ -18,25 +18,31 @@ export function Greeting() {
   const greetingText = greeting.generateGreeting({...season, weather: describeWeather(currentWeather).kind});
 
   return (
-    <View style={styles.content}>
+    <View>
       {season.decorated && season.phase === 'nye' ? (
         <NewYearCountdown />
       ) : (
-        <>
-          <Text>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
-          <Text>{currentWeather?.feels_like} {currentWeather?.condition}</Text>
+        <View style={styles.content}>
+          <Text style={styles.date}>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })} · {currentWeather?.feels_like} {currentWeather?.condition}</Text>
           <Text style={styles.greeting}>{greetingText}</Text>
-        </>
+        </View>
       )}
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  content: {
+    paddingTop: 16,
+    gap: 8,
+  },
   greeting: {
     fontSize: 32,
     fontWeight: 'bold',
-    marginTop: 16,
     color: colors.onSurface
   },
+  date: {
+    fontSize: 14,
+    color: colors.outline
+  }
 });
