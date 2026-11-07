@@ -5,6 +5,8 @@ module ServerData
   MEMORY_THRESHOLD_HIGH = 90.freeze
   DISK_THRESHOLD_MEDIUM = 75.freeze
   DISK_THRESHOLD_HIGH = 90.freeze
+  CPU_LOAD_THRESHOLD_MEDIUM = 70.freeze
+  CPU_LOAD_THRESHOLD_HIGH = 100.freeze
 
   WHATSAPP_UNHAPPY_STATUS = [ "pairing", "needs_relink" ]
 
@@ -24,11 +26,13 @@ module ServerData
     workers_alive = self.workers_alive
     failing_mailboxes = self.failing_mailboxes
     busy_senders = self.busy_senders
+    cpu_load = self.cpu_load
 
     [
       {
-        label: "CPU count",
-        value: cpu_count
+        label: "CPU load",
+        value: cpu_load,
+        importance_level: get_importance_level(cpu_load, CPU_LOAD_THRESHOLD_MEDIUM, CPU_LOAD_THRESHOLD_HIGH)
       },
       {
         label: "Memory usage",
@@ -72,19 +76,19 @@ module ServerData
         label: "Failed jobs",
         value: failed_jobs,
         importance_level: failed_jobs.to_i.positive? ? "high" : "low",
-        should_show: failed_jobs > QUEUE_BACKLOG_THRESHOLD_MEDIUM
+        should_show: failed_jobs.to_i > QUEUE_BACKLOG_THRESHOLD_MEDIUM
       },
       {
         label: "Queue backlog",
         value: queue_backlog,
         importance_level: get_importance_level(queue_backlog, QUEUE_BACKLOG_THRESHOLD_MEDIUM, QUEUE_BACKLOG_THRESHOLD_HIGH),
-        should_show: queue_backlog > QUEUE_BACKLOG_THRESHOLD_MEDIUM
+        should_show: queue_backlog.to_i > QUEUE_BACKLOG_THRESHOLD_MEDIUM
       },
       {
         label: "Job workers alive",
         value: workers_alive,
         importance_level: workers_alive.to_i.zero? ? "high" : "low",
-        should_show: workers_alive.nil?
+        should_show: workers_alive&.zero?
       }
     ]
   end
@@ -107,6 +111,20 @@ module ServerData
     elsif macos?
       sh("sysctl -n hw.ncpu")&.to_i
     end
+  end
+
+  # 5-minute load average divided by the core count: 100% means every core
+  # had work queued on average. It can go above 100% (more runnable work than
+  # cores), and on Linux it also counts processes stuck waiting on disk I/O.
+  # The 1-minute average reacts faster but flaps; 15 minutes lags too much.
+  def cpu_load
+    load = if linux?
+      File.read("/proc/loadavg").split[1]
+    elsif macos?
+      sh("sysctl -n vm.loadavg").to_s.delete("{}").split[1]
+    end
+
+    get_percentage(load&.to_f, cpu_count)
   end
 
   def memory
