@@ -5,17 +5,19 @@ class PlaysController < ApplicationController
     song_id = params.require(:song_id)
     seconds_played = params.require(:seconds_played).to_i
 
+    # Continue the recent play this report extends. Picking the furthest one at or below the reported
+    # position (instead of the latest updated) keeps two players on the same song from fragmenting each other.
     play = Music::Play
       .where(song_id: song_id)
       .where("updated_at > ?", PLAY_TIMEOUT.ago)
-      .order(updated_at: :desc)
-      .first
-
-    if play.nil? || seconds_played < play.seconds_played
-      play = Music::Play.new(song_id: song_id)
-    end
+      .where("seconds_played <= ?", seconds_played)
+      .order(seconds_played: :desc)
+      .first || Music::Play.new(song_id: song_id)
 
     play.seconds_played = seconds_played
+    # Always bump updated_at: Rails skips the write when nothing changed, and a paused/ended
+    # player keeps reporting the same seconds_played, which would otherwise spawn a new play every PLAY_TIMEOUT.
+    play.updated_at = Time.current
     play.save!
 
     render json: { success: true }
