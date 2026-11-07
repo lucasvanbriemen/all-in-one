@@ -33,6 +33,12 @@ module ServerData
         value: Whatsapp::Connection.current.pairing_code,
         importance_level: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status) ? "high" : "low",
         should_show: WHATSAPP_UNHAPPY_STATUS.include?(Whatsapp::Connection.current.status)
+      },
+      {
+        label: "Bank unpaired",
+        value: "Bank needs to be resynced",
+        importance_level: "high",
+        should_show: Bank::Connection.active.none?
       }
     ]
   end

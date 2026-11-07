@@ -25,7 +25,7 @@ class DownloadWhatsappMediaJob < ApplicationJob
     File.binwrite(path, bytes)
     message.file_uploads.create!(id: id, path: path, external_id: message_id, name: media["filename"], mimetype: mimetype.presence || media["mimetype"])
 
-    ActionCable.server.broadcast("whatsapp", { type: "chat_changed", jid: message.channel_id })
+    MessagesChannel.chat_changed(message.channel_id, platform: "whatsapp")
   rescue Whatsapp::Bridge::Error => e
     # Only an unreachable connector is worth retrying; anything else (usually media WhatsApp no longer has) stays that way.
     raise if e.status >= 503

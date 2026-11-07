@@ -21,7 +21,9 @@ export function ChannelListing({type}) {
   }
 
   useEffect(loadChats, [type]);
-  useChannel('WhatsappChannel', loadChats);
+  useChannel('MessagesChannel', event => {
+    if (event.platform === type) loadChats();
+  });
 
   return (
     <ScrollView contentContainerStyle={[styles.channelListing, {paddingBottom: bottomInset}]}>
