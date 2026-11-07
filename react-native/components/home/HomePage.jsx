@@ -29,6 +29,7 @@ export function HomePage() {
   const reminders = useApi('/reminders').data;
   const season = useSeason();
   const weather = useWeather();
+  const currentWeather = useApi('/weather').data;
 
   // Rolled once per hour (and when the weather or season changes) rather than
   // on every render, so the minute tick of the countdown doesn't re-roll it.
@@ -44,7 +45,11 @@ export function HomePage() {
       {season.decorated && season.phase === 'nye' ? (
         <NewYearCountdown />
       ) : (
-        <Text style={styles.greeting}>{greetingText}</Text>
+        <>
+          <Text>{season.date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
+          <Text>{currentWeather?.feels_like} {currentWeather?.condition}</Text>
+          <Text style={styles.greeting}>{greetingText}</Text>
+        </>
       )}
 
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
@@ -132,7 +137,7 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginTop: 16,
-    color: colors.outline
+    color: colors.onSurface
   },
   reminders: {
     flex: 1,
