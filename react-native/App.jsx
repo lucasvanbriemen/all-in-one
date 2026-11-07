@@ -125,6 +125,6 @@ const createStyles = colors => StyleSheet.create({
     paddingBottom: 0,
     paddingTop: 0,
     borderRadius: 16,
-    ...glass(colors, { variant: 'subtle' }),
+    ...glass(colors, { variant: 'panel' }),
   },
 });

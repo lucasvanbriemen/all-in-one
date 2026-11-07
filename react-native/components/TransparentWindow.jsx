@@ -51,7 +51,7 @@ export function TransparentWindow({children}) {
           style={[
             StyleSheet.absoluteFill,
             {
-              backgroundColor: glass(colors, {tone: 'surface'}).backgroundColor,
+              backgroundColor: glass(colors, {variant: 'panel'}).backgroundColor,
             },
           ]}
           pointerEvents="none"

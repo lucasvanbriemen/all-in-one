@@ -77,7 +77,7 @@ export function Sidebar() {
 const createStyles = colors => StyleSheet.create({
   sidebar: {
     paddingTop: 16,
-    ...glass(colors, {variant: 'subtle'}),
+    ...glass(colors, {variant: 'panel'}),
     borderRadius: 16,
   },
   row: {

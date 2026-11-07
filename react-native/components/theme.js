@@ -106,12 +106,31 @@ export function withAlpha(color, alpha) {
   return `rgba(${red}, ${green}, ${blue}, ${alpha * existing})`;
 }
 
+/**
+ * Only `panel` is actually see-through: it is the window layer (sidebar and
+ * content area) sitting on the window's blur. Everything placed on a panel —
+ * `surface` cards and `subtle` nested rows — is a flat, faint lift of the
+ * foreground colour, not a second layer of glass. Stacking glass on glass is
+ * what made the wallpaper bleed into every card and flattened the hierarchy.
+ *
+ * `highlight: null` drops the bright top edge; the border is one even hairline.
+ * `iosTone` is the solid fill used on iOS, which has no backdrop.
+ */
 const GLASS_VARIANTS = {
-  subtle: {
-    tone: 'surfaceAt1', tint: 0.25, border: 0.18, highlight: 0.12,
+  panel: {
+    tone: 'surface', tint: 0.7,
+    borderTone: 'onSurface', border: 0.08, highlight: null,
+    iosTone: 'surface',
   },
   surface: {
-    tone: 'surfaceAt1', tint: 0.5, border: 0.25, highlight: 0.18,
+    tone: 'onSurface', tint: 0.045,
+    borderTone: 'onSurface', border: 0.07, highlight: null,
+    iosTone: 'surfaceAt2',
+  },
+  subtle: {
+    tone: 'onSurface', tint: 0.03,
+    borderTone: 'onSurface', border: 0.05, highlight: null,
+    iosTone: 'surfaceAt1',
   },
   tinted: {
     tone: 'surfaceAt1',
@@ -151,8 +170,7 @@ export function glass(colors, options = {}) {
   // iOS has no AppKit backdrop. Separate regions with solid surface levels
   // instead of translucent fills and a simulated reflection along the top.
   if (Platform.OS === 'ios') {
-    const tone = options.tone
-      ?? (variant === 'surface' ? 'surfaceAt2' : recipe.tone);
+    const tone = options.tone ?? recipe.iosTone ?? recipe.tone;
     const backgroundColor = colors[tone] ?? colors.surface;
     return {
       backgroundColor,
@@ -167,6 +185,7 @@ export function glass(colors, options = {}) {
   const border = options.border ?? recipe.border;
   const highlight = options.highlight ?? recipe.highlight;
   const borderTone = options.borderTone
+    ?? recipe.borderTone
     ?? (recipe.useToneForBorder ? tone : 'outline');
 
   // A specular reflection stays light in both colour schemes. Callers can
@@ -175,11 +194,13 @@ export function glass(colors, options = {}) {
     ? colors[options.highlightTone]
     : 'rgb(255 255 255)';
 
+  const borderColor = withAlpha(colors[borderTone], border);
+
   const style = {
     backgroundColor: withAlpha(colors[tone], tint),
     borderWidth: 1,
-    borderColor: withAlpha(colors[borderTone], border),
-    borderTopColor: withAlpha(highlightColor, highlight),
+    borderColor,
+    borderTopColor: highlight == null ? borderColor : withAlpha(highlightColor, highlight),
   };
 
   return style;
