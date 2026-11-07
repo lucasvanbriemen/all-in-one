@@ -25,16 +25,16 @@ export function SidebarApplication({item, app}) {
 
   return (
     <View style={styles.appWrapper}>
-      <View style={{opacity: 1, overflow: 'hidden'}}>
+      <View>
         <Pressable
           onPress={() => set('app.activeApp', app)}>
           <Text style={styles.title} numberOfLines={1}>{getAppTitle(app)}</Text>
         </Pressable>
       </View>
-      <View style={{overflow: 'hidden'}}>
-          {item.map(row => (
-            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} />
-          ))}
+      <View>
+        {item.map(row => (
+          <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} />
+        ))}
       </View>
     </View>
   );
