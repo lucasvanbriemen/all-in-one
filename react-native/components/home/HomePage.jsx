@@ -104,11 +104,11 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     flex: 1,
+    gap: 16,
   },
   statsContainer: {
     flexDirection: 'row',
     gap: 16,
-    paddingTop: 16,
   },
   greeting: {
     fontSize: 32,
