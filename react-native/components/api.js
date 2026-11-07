@@ -66,9 +66,8 @@ export const api = {
   send(method, url, options) {
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
-        console.log(`${method} ${url} responded with status ${response.status}`);
         if (!response.ok) {
-          throw new Error(`${method} ${url} failed with ${response.status}`);
+          console.warn(`${method} ${url} failed with ${response.status}`);
         }
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();
