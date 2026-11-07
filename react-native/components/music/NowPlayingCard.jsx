@@ -28,14 +28,14 @@ export function NowPlayingCard() {
           </View>
 
           <View style={styles.controlsContainer}>
-            <Pressable onPress={() => player.previous(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-              <Icon name="last" size={24} color={styles.controlText.color} />
+            <Pressable onPress={() => player.previous(set, get)} style={[styles.control, styles.controlInactive]}>
+              <Icon name="last" size={24} color={styles.controlInactiveText.color} />
             </Pressable>
 
             {get('music.now-playing.is-playing') && (
               <Pressable
                 onPress={() => player.pause()}
-                style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+                style={[styles.control]}>
                 <Icon name="pause" size={24} color={styles.controlText.color} />
               </Pressable>
             )}
@@ -43,22 +43,18 @@ export function NowPlayingCard() {
             {get('music.now-playing.is-playing') === false && (
               <Pressable
                 onPress={() => player.resume()}
-                style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
+                style={[styles.control]}>
                 <Icon name="play" size={24} color={styles.controlText.color} />
               </Pressable>
             )}
 
-            <Pressable onPress={() => player.next(set, get)} style={({pressed}) => [styles.control, pressed && styles.controlPressed]}>
-              <Icon name="next" size={24} color={styles.controlText.color} />
+            <Pressable onPress={() => player.next(set, get)} style={[styles.control, styles.controlInactive]}>
+              <Icon name="next" size={24} color={styles.controlInactiveText.color} />
             </Pressable>
 
             <Pressable
               onPress={() => player.toggleRepeat(set, get)}
-              style={({pressed}) => [
-                styles.control,
-                !get('music.repeat') && styles.controlInactive,
-                pressed && styles.controlPressed,
-              ]}>
+              style={[styles.control, !get('music.repeat') && styles.controlInactive]}>
               <Icon
                 name="repeat"
                 size={24}
@@ -128,10 +124,6 @@ const createStyles = colors => StyleSheet.create({
   },
   controlInactiveText: {
     color: colors.onSurfaceVariant,
-  },
-  controlPressed: {
-    opacity: 0.82,
-    transform: [{scale: 0.96}],
   },
   controlText: {
     color: colors.onPrimary,
