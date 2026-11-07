@@ -4,6 +4,7 @@ module Authentication
   extend ActiveSupport::Concern
 
   LOGIN_URL = "https://login.ltvb.nl"
+  CACHE_DURATION = 30.minutes
 
   # Matches Token::TOKEN_DURATION in the login app.
   AUTH_COOKIE_DURATION = 1.week
@@ -14,10 +15,15 @@ module Authentication
   end
 
   def self.fetch_account(token)
+    cached = Rails.cache.read("account:#{token}")
+    return cached if cached.present?
+
     response = Net::HTTP.get_response(URI("#{LOGIN_URL}/session/#{token}"))
     return nil unless response.is_a?(Net::HTTPOK)
 
-    JSON.parse(response.body)
+    account = JSON.parse(response.body)
+    Rails.cache.write("account:#{token}", account, expires_in: CACHE_DURATION)
+    account
   end
 
   private
