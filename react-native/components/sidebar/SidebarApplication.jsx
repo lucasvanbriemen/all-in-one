@@ -9,7 +9,7 @@ import {SidebarRow} from './SidebarRow';
 export function SidebarApplication({item, app}) {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
-  const isExpanded = get('app.activeApp') === app;
+  const isExpanded = true
 
   const [contentHeight, setContentHeight] = useState(0);
   const [titleHeight, setTitleHeight] = useState(0);
