@@ -5,29 +5,22 @@ import {EmailListItem} from './EmailListItem';
 import {HiddenOrnament} from '../seasonal/Grinch';
 import {useNaughtySenders} from '../seasonal/NaughtyNice';
 import { RefreshControl } from 'react-native';
-import {api} from '../api';
+import {useApi} from '../useApi';
 import {useAppContext} from '../../context/AppContext';
 import {useBottomInset} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
 
 export function EmailListing() {
-  const [emails, setEmails] = useState([]);
-  const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
+  const {data, refresh} = useApi(`/email/` + get('app.activeSidebarItem'));
+  const emails = data?.emails || [];
+  const styles = useThemedStyles(createStyles);
   const [emailRefreshing, setEmailRefreshing] = useState(false);
   const bottomInset = useBottomInset();
   const naughty = useNaughtySenders();
 
-  useEffect(() => {
-    api.get('/email/' + get('app.activeSidebarItem')).then(data => {
-      setEmails(data?.emails ?? []);
-    });
-  }, [get]);
-
   function getEmails() {
-    return api.get('/email/' + get('app.activeSidebarItem')).then(data => {
-      setEmails(data?.emails ?? []);
-    });
+    return refresh();
   }
 
   return (
