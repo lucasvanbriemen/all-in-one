@@ -24,8 +24,24 @@
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
+require "dotenv"
+
+# dotenv-rails only reads .env once Rails boots, which is after Puma has read
+# this file, so settings Puma itself needs (WEB_CONCURRENCY) are loaded here.
+Dotenv.load(File.expand_path("../.env", __dir__))
+
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
+
+# Separate processes, each with the threads above. Threads share one GVL, so
+# only workers let Ruby work (like rendering JSON) run on several cores at once.
+# Production sets WEB_CONCURRENCY=2 in .env; development stays single-process.
+worker_count = Integer(ENV.fetch("WEB_CONCURRENCY", 0))
+if worker_count > 1
+  workers worker_count
+  # Boot the app once and fork it, so workers start fast and share memory.
+  preload_app!
+end
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
