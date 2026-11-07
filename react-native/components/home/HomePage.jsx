@@ -12,10 +12,8 @@ import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
 import {AdventCalendar} from '../seasonal/AdventCalendar';
 import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
 import {CountdownStat, NewYearCountdown} from '../seasonal/Countdowns';
-import {FireplaceScene} from '../seasonal/Fireplace';
 import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
 import {SnowCap} from '../seasonal/SnowCap';
-import {useAppContext} from '../../context/AppContext';
 import {useSeason} from '../seasonal/useSeason';
 import {useWeather} from '../seasonal/data';
 import {WeatherCard} from './WeatherCard';
@@ -31,7 +29,6 @@ export function HomePage() {
   const [reminders, setReminders] = useState(null);
   const season = useSeason();
   const weather = useWeather();
-  const {get} = useAppContext();
 
   // Rolled once per hour (and when the weather or season changes) rather than
   // on every render, so the minute tick of the countdown doesn't re-roll it.
@@ -55,11 +52,6 @@ export function HomePage() {
       setReminders(response);
     });
   }, []);
-
-  // Christmas Eve to Boxing Day, Home is the fireplace (unless sent back).
-  if (season.decorated && season.phase === 'christmas' && !get('seasonal.normalHome')) {
-    return <FireplaceScene greeting={greetingText} />;
-  }
 
   return (
     <View style={styles.content}>

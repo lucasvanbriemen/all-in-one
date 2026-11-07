@@ -4,6 +4,7 @@ import Svg, {Defs, RadialGradient, Rect, Stop} from 'react-native-svg';
 import {dismissToast, startBlizzard, useSeasonalState} from './store';
 import {glass, useThemedStyles} from '../theme';
 
+import {FireplaceBackdrop} from './Fireplace';
 import {Fireworks} from './Fireworks';
 import {YearInReview} from './AdventCalendar';
 import {Frost} from './Frost';
@@ -61,6 +62,7 @@ export function SeasonalRoot({children}) {
       {...(active ? pointerHandlers : {})}
       {...responder}
       onLayout={event => setSize({width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height})}>
+      {season.decorated && season.phase === 'christmas' && <FireplaceBackdrop width={size.width} height={size.height} />}
       {season.cozy && <CozyGlow size={size} />}
       {children}
       {active && <SeasonalOverlay season={season} size={size} balls={balls} removeBall={removeBall} fireworks={fireworks} />}
