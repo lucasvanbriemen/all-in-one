@@ -72,7 +72,7 @@ module ServerData
         label: "Failed jobs",
         value: failed_jobs,
         importance_level: failed_jobs.to_i.positive? ? "high" : "low",
-        should_show: !failed_jobs.nil?
+        should_show: failed_jobs > QUEUE_BACKLOG_THRESHOLD_MEDIUM
       },
       {
         label: "Queue backlog",
