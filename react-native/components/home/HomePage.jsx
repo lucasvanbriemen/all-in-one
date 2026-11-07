@@ -17,16 +17,16 @@ import {SnowCap} from '../seasonal/SnowCap';
 import {useSeason} from '../seasonal/useSeason';
 import {useWeather} from '../seasonal/data';
 import {WeatherCard} from './WeatherCard';
-import {api} from '../api';
+import { useApi } from "../useApi";
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
 
 export function HomePage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const [serverData, setServerData] = useState(null);
-  const [notifications, setNotifications] = useState(null);
-  const [reminders, setReminders] = useState(null);
+  const serverData = useApi('/server_data').data;
+  const notifications = useApi('/notifications').data;
+  const reminders = useApi('/reminders').data;
   const season = useSeason();
   const weather = useWeather();
 
@@ -38,20 +38,6 @@ export function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [season.phase, season.decorated, weather.kind, hour],
   );
-
-  useEffect(() => {
-    api.get('/server_data').then(response => {
-      setServerData(response);
-    });
-
-    api.get('/notifications').then(response => {
-      setNotifications(response);
-    });
-
-    api.get('/reminders').then(response => {
-      setReminders(response);
-    });
-  }, []);
 
   return (
     <View style={styles.content}>
@@ -98,12 +84,10 @@ export function HomePage() {
               <Text style={styles.empty}>Nothing to remind you of right now.</Text>
             )}
             {reminders && reminders.map(reminder => (
-              <Reminder key={reminder.id} reminder={reminder} onComplete={done => setReminders(current => current.filter(r => r.id !== done.id))}/>
+              <Reminder key={reminder.id} reminder={reminder} onComplete={done => {}}/>
             ))}
           </ScrollView>
-          <ReminderForm onCreate={created => {
-            setReminders(current => [...(current || []), created]);
-          }} />
+          <ReminderForm onCreate={created => {}} />
         </View>
         <View style={styles.moneyColumn}>
           <OverviewCard />
