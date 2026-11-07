@@ -15,7 +15,6 @@ import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
 import {SnowCap} from '../seasonal/SnowCap';
 import {useSeason} from '../seasonal/useSeason';
 import {Greeting} from './Greeting';
-import {WeatherCard} from './WeatherCard';
 import { useApi } from "../useApi";
 import {useCompactLayout} from '../useCompactLayout';
 
@@ -57,7 +56,6 @@ export function HomePage() {
 
         <View style={styles.itemRow}>
           <NowPlayingCard />
-          <WeatherCard />
         </View>
 
         <View style={styles.reminders}>
