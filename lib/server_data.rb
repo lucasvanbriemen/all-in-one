@@ -78,13 +78,13 @@ module ServerData
         label: "Queue backlog",
         value: queue_backlog,
         importance_level: get_importance_level(queue_backlog, QUEUE_BACKLOG_THRESHOLD_MEDIUM, QUEUE_BACKLOG_THRESHOLD_HIGH),
-        should_show: !queue_backlog.nil?
+        should_show: queue_backlog > QUEUE_BACKLOG_THRESHOLD_MEDIUM
       },
       {
-        label: "Workers alive",
+        label: "Job workers alive",
         value: workers_alive,
         importance_level: workers_alive.to_i.zero? ? "high" : "low",
-        should_show: !workers_alive.nil?
+        should_show: workers_alive.nil?
       }
     ]
   end
