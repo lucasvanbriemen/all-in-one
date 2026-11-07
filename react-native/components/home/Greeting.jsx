@@ -14,14 +14,9 @@ export function Greeting() {
   const weatherForGreeting = useWeather();
   const currentWeather = useApi('/weather').data;
 
-  // Rolled once per hour (and when the weather or season changes) rather than
-  // on every render, so the minute tick of the countdown doesn't re-roll it.
-  const hour = season.date.getHours();
-  const greetingText = useMemo(
-    () => greeting.generateGreeting({...season, weather: weatherForGreeting.kind}),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [season.phase, season.decorated, weatherForGreeting.kind, hour],
-  );
+  const date = new Date();
+
+  const greetingText = greeting.generateGreeting({...season, weather: weatherForGreeting.kind});
 
   return (
     <View style={styles.content}>
@@ -29,7 +24,7 @@ export function Greeting() {
         <NewYearCountdown />
       ) : (
         <>
-          <Text>{season.date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
+          <Text>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
           <Text>{currentWeather?.feels_like} {currentWeather?.condition}</Text>
           <Text style={styles.greeting}>{greetingText}</Text>
         </>
