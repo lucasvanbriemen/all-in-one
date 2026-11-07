@@ -19,5 +19,10 @@ export const format = {
 
     // Return 14:30
     return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  },
+
+  number(value) {
+    value = Number(value);
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   }
 };

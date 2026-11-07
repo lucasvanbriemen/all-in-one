@@ -7,6 +7,7 @@ import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
+import {format} from '../money/format';
 
 export function Statistics() {
   const styles = useThemedStyles(createStyles);
@@ -19,8 +20,8 @@ export function Statistics() {
   return (
     <View style={styles.content}>
       <View style={[styles.details, isCompact && styles.detailsCompact]}>
-        <Stat label="Total plays" value={statistics?.total_plays ?? 0} />
-        <Stat label="Unique songs played" value={statistics?.different_plays ?? 0} />
+        <Stat label="Total plays" value={format.number(statistics?.total_plays ?? 0)} />
+        <Stat label="Unique songs played" value={format.number(statistics?.different_plays ?? 0)} />
         <Stat label="Time played" value={statistics?.time_played ?? 0} />
       </View>
 
