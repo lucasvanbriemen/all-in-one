@@ -15,12 +15,12 @@ function onPress(row, set, app) {
 
 export function SidebarRow({row, app}) {
   const styles = useThemedStyles(createStyles);
-  const {onPrimary, onSurface} = useTheme();
+  const {onPrimaryContainer, onSurface} = useTheme();
   const {get, set} = useAppContext();
 
   return (
     <Pressable onPress={() => onPress(row, set, app)} style={[styles.row, isSelected(row, get, app) && styles.selectedRow]}>
-      <Icon name={row.path} size={16} color={isSelected(row, get, app) ? onPrimary : onSurface} />
+      <Icon name={row.path} size={16} color={isSelected(row, get, app) ? onPrimaryContainer : onSurface} />
       <Text numberOfLines={1} style={[styles.label, isSelected(row, get, app) && styles.labelSelected]}>
         {row.name}
       </Text>
