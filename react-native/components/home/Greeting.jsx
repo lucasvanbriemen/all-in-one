@@ -20,7 +20,7 @@ export function Greeting() {
   }
 
   return (
-    <View style={styles.content}>
+    <View style={[styles.content, season.decorated && styles.decorated]}>
       <Text style={styles.date}>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })} · {currentWeather?.feels_like} {currentWeather?.condition}</Text>
       <Text style={styles.greeting}>{greetingText}</Text>
     </View>
@@ -40,5 +40,8 @@ const createStyles = colors => StyleSheet.create({
   date: {
     fontSize: 14,
     color: colors.outline
+  },
+  decorated: {
+    marginTop: 16,
   }
 });
