@@ -1,4 +1,3 @@
-import React, {useEffect, useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
@@ -11,15 +10,13 @@ import {Stat} from './Stat';
 import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
 import {AdventCalendar} from '../seasonal/AdventCalendar';
 import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
-import {CountdownStat, NewYearCountdown} from '../seasonal/Countdowns';
+import {CountdownStat} from '../seasonal/Countdowns';
 import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
 import {SnowCap} from '../seasonal/SnowCap';
 import {useSeason} from '../seasonal/useSeason';
-import {useWeather} from '../seasonal/data';
 import {Greeting} from './Greeting';
 import {WeatherCard} from './WeatherCard';
 import { useApi } from "../useApi";
-import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
 
 export function HomePage() {
@@ -29,17 +26,6 @@ export function HomePage() {
   const notifications = useApi('/notifications').data;
   const reminders = useApi('/reminders').data;
   const season = useSeason();
-  const weather = useWeather();
-  const currentWeather = useApi('/weather').data;
-
-  // Rolled once per hour (and when the weather or season changes) rather than
-  // on every render, so the minute tick of the countdown doesn't re-roll it.
-  const hour = season.date.getHours();
-  const greetingText = useMemo(
-    () => greeting.generateGreeting({...season, weather: weather.kind}),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [season.phase, season.decorated, weather.kind, hour],
-  );
 
   return (
     <View style={styles.content}>
