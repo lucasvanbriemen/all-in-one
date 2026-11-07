@@ -8,7 +8,19 @@ module ServerData
 
   WHATSAPP_UNHAPPY_STATUS = [ "pairing", "needs_relink" ]
 
+  QUEUE_BACKLOG_THRESHOLD_MEDIUM = 50.freeze
+  QUEUE_BACKLOG_THRESHOLD_HIGH = 200.freeze
+
+  # Mailboxes are polled every IMAP_FETCH_INTERVAL_SECONDS (15s), so a few
+  # minutes without a successful fetch already means something is wrong.
+  IMAP_STALE_AFTER = 5.minutes.freeze
+
   def all
+    failed_jobs = self.failed_jobs
+    queue_backlog = self.queue_backlog
+    workers_alive = self.workers_alive
+    failing_mailboxes = self.failing_mailboxes
+
     [
       {
         label: "CPU count",
@@ -39,6 +51,30 @@ module ServerData
         value: "Bank needs to be resynced",
         importance_level: "high",
         should_show: Bank::Connection.active.none?
+      },
+      {
+        label: "Mailbox failing",
+        value: failing_mailboxes.join(", "),
+        importance_level: "high",
+        should_show: failing_mailboxes.any?
+      },
+      {
+        label: "Failed jobs",
+        value: failed_jobs,
+        importance_level: failed_jobs.to_i.positive? ? "high" : "low",
+        should_show: !failed_jobs.nil?
+      },
+      {
+        label: "Queue backlog",
+        value: queue_backlog,
+        importance_level: get_importance_level(queue_backlog, QUEUE_BACKLOG_THRESHOLD_MEDIUM, QUEUE_BACKLOG_THRESHOLD_HIGH),
+        should_show: !queue_backlog.nil?
+      },
+      {
+        label: "Workers alive",
+        value: workers_alive,
+        importance_level: workers_alive.to_i.zero? ? "high" : "low",
+        should_show: !workers_alive.nil?
       }
     ]
   end
@@ -100,7 +136,49 @@ module ServerData
     TimeConversion.seconds_to_human_readable(time)
   end
 
+  # A failed fetch records the error but leaves last_fetched_at alone, so a
+  # stale timestamp catches both erroring mailboxes and ones nothing is
+  # fetching at all (dead worker, broken recurring job).
+  def failing_mailboxes
+    ImapCredential.where(last_fetched_at: nil)
+      .or(ImapCredential.where(last_fetched_at: ...IMAP_STALE_AFTER.ago))
+      .or(ImapCredential.where.not(last_fetch_error: nil))
+      .map do |credential|
+        reason = credential.last_fetch_error&.truncate(80) ||
+          "no fetch for #{credential.last_fetched_at ? TimeConversion.seconds_to_human_readable(Time.current - credential.last_fetched_at) : "ever"}"
+        "#{credential.username} (#{reason})"
+      end
+  end
+
+  def failed_jobs
+    solid_queue { SolidQueue::FailedExecution.count }
+  end
+
+  def queue_backlog
+    solid_queue { SolidQueue::ReadyExecution.count }
+  end
+
+  # Solid Queue workers heartbeat every minute, and Solid Queue itself only
+  # considers a process dead after process_alive_threshold (5 min by default),
+  # so a 1-minute cutoff would flap between heartbeats.
+  def workers_alive
+    solid_queue do
+      SolidQueue::Process
+        .where(kind: "Worker")
+        .where("last_heartbeat_at > ?", SolidQueue.process_alive_threshold.ago)
+        .count
+    end
+  end
+
   private
+    # Solid Queue only runs in production; elsewhere its tables don't exist,
+    # so return nil and let the entry hide itself.
+    def solid_queue
+      yield
+    rescue ActiveRecord::ActiveRecordError
+      nil
+    end
+
     def sh(command)
       output = `#{command} 2>/dev/null`
       $?.success? ? output.strip : nil
