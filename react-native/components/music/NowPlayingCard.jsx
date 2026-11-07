@@ -89,7 +89,6 @@ const createStyles = colors => StyleSheet.create({
 
     isPlaying: {
       padding: 16,
-      alignItems: 'center',
     }
   },
   title: {
@@ -106,7 +105,6 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 100,
   },
   textContainer: {
-    alignItems: 'center',
     gap: 8,
   },
   control: {
