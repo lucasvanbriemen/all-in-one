@@ -6,7 +6,7 @@ import {useEffect, useRef, useState} from 'react';
 
 import {SidebarRow} from './SidebarRow';
 
-export function SidebarApplication({item, progress, app}) {
+export function SidebarApplication({item, app}) {
   const styles = useThemedStyles(createStyles);
   const { get, set } = useAppContext();
   const isExpanded = get('app.activeApp') === app;
@@ -29,20 +29,10 @@ export function SidebarApplication({item, progress, app}) {
     outputRange: [0, contentHeight],
   });
 
-  // Collapse the title instead of unmounting it, so it shrinks away with the sidebar.
-  const animatedTitleHeight = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, titleHeight],
-  });
-
-  const titleOpacity = progress.interpolate({
-    inputRange: [0, 0.6, 1],
-    outputRange: [0, 0, 1],
-  });
 
   return (
     <View style={styles.appWrapper}>
-      <Animated.View style={{height: animatedTitleHeight, opacity: titleOpacity, overflow: 'hidden'}}>
+      <Animated.View style={{height: titleHeight, opacity: 1, overflow: 'hidden'}}>
         <Pressable
           onPress={() => set('app.activeApp', app)}
           onLayout={e => setTitleHeight(e.nativeEvent.layout.height)}
@@ -55,7 +45,7 @@ export function SidebarApplication({item, progress, app}) {
           onLayout={e => setContentHeight(e.nativeEvent.layout.height)}
           style={styles.measure}>
           {item.map(row => (
-            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} progress={progress} />
+            <SidebarRow key={row.path} icon={row.path} title={row.name} isSelected={isExpanded && get("app.activeSidebarItem") === row.path} onPress={() => { set('app.activeSidebarItem', row.path); set('app.activeApp', app); }} />
           ))}
         </View>
       </Animated.View>

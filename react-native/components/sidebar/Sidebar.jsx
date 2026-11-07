@@ -12,29 +12,17 @@ import {api} from '../api';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Sidebar() {
-  const [isMinimized, setIsMinimized] = useState(false);
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
   const {primary} = useTheme();
 
   // 0 = minimized, 1 = expanded. Everything that animates is derived from this
   // one value, so it all moves on the exact same curve.
-  const progress = useRef(new Animated.Value(isMinimized ? 0 : 1)).current;
-  const between = (min, max) => progress.interpolate({inputRange: [0, 1], outputRange: [min, max]});
 
-  const width = between(60, 240);
-  const sidebarPaddingHorizontal = between(8, 16);
-  const sidebarPaddingBottom = between(16, 0);
-  const rowPaddingHorizontal = between(8, 16);
-
-  useEffect(() => {
-    Animated.timing(progress, {
-      toValue: isMinimized ? 0 : 1,
-      duration: 300,
-      easing: Easing.ease,
-      useNativeDriver: false,
-    }).start();
-  }, [isMinimized, progress]);
+  const width = 240;
+  const sidebarPaddingHorizontal = 16;
+  const sidebarPaddingBottom = 0;
+  const rowPaddingHorizontal = 16;
 
   useEffect(() => {
     api.get('/meta_data').then(data => {
@@ -59,7 +47,7 @@ export function Sidebar() {
     <Animated.View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
       <Animated.View style={[styles.sidebar, {paddingHorizontal: sidebarPaddingHorizontal, paddingBottom: sidebarPaddingBottom}]}>
         <SnowCap maxHeight={11} inset={8} />
-        <AnimatedPressable onPress={() => setIsMinimized(!isMinimized)} style={[styles.row, {paddingHorizontal: rowPaddingHorizontal}]}>
+        <AnimatedPressable style={[styles.row, {paddingHorizontal: rowPaddingHorizontal}]}>
           <View>
             <LogoIcon size={24} color={primary} />
             <SantaHat size={24} />
@@ -67,7 +55,7 @@ export function Sidebar() {
         </AnimatedPressable>
 
         {Object.entries(items).map(([key, item]) => (
-          <SidebarApplication key={key + item.app} item={item} progress={progress} app={key} />
+          <SidebarApplication key={key + item.app} item={item} app={key} />
         ))}
       </Animated.View>
     </Animated.View>
