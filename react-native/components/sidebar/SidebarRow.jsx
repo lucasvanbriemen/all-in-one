@@ -1,21 +1,19 @@
-import {Animated, Pressable, StyleSheet} from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 import {useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function SidebarRow({icon, title, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);
   const {onPrimary, onSurface} = useTheme();
 
   return (
-    <AnimatedPressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow]}>
+    <Pressable onPress={onPress} style={[styles.row, isSelected && styles.selectedRow]}>
       <Icon name={icon} size={16} color={isSelected ? onPrimary : onSurface} />
-      <Animated.Text numberOfLines={1} style={[styles.label, isSelected && styles.labelSelected]}>
+      <Text numberOfLines={1} style={[styles.label, isSelected && styles.labelSelected]}>
         {title}
-      </Animated.Text>
-    </AnimatedPressable>
+      </Text>
+    </Pressable>
   );
 }
 
