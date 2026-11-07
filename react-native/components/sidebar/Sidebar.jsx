@@ -62,6 +62,8 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     ...glass(colors, {variant: 'panel'}),
     borderRadius: 16,
+    flexDirection: 'column',
+    gap: 16,
   },
   row: {
     paddingVertical: 16,
