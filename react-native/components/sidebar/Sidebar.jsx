@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
@@ -47,9 +47,11 @@ export function Sidebar() {
           <Text style={styles.name}>All in One</Text>
         </View>
 
-        {Object.entries(items).map(([key, item]) => (
-          <SidebarApplication key={key + item.app} item={item} app={key} />
-        ))}
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {Object.entries(items).map(([key, item]) => (
+            <SidebarApplication key={key + item.app} item={item} app={key} />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -75,5 +77,8 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 600,
     color: colors.onSurface,
     marginLeft: 8,
+  },
+  scrollView: {
+    gap: 16,
   },
 });
