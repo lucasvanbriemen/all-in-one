@@ -2,7 +2,7 @@ import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {Song} from './Song';
-import {api} from '../api';
+import { useApi } from '../useApi';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
@@ -15,13 +15,7 @@ export function LikedSongs({compact, limit}) {
 
   const {set, get} = useAppContext();
 
-  const [likedSongs, setLikedSongs] = useState([]);
-
-  useEffect(() => {
-    api.get('/music').then(response => {
-      setLikedSongs(response);
-    });
-  }, []);
+  const likedSongs = useApi('/music').data || []
 
   return (
     <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: bottomInset}}>
