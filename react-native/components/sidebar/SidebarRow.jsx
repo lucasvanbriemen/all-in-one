@@ -35,9 +35,12 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   selectedRow: {
-    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   label: {
     fontSize: 14,
@@ -45,6 +48,6 @@ const createStyles = colors => StyleSheet.create({
     flexShrink: 0,
   },
   labelSelected: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer
   },
 });

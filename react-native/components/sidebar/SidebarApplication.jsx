@@ -24,7 +24,7 @@ function getAppTitle(app) {
 
 const createStyles = colors => StyleSheet.create({
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.onSurface,
     marginVertical: 8,
