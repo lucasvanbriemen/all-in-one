@@ -1,8 +1,7 @@
 import {useApi} from '../useApi';
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {glass, useThemedStyles} from '../theme';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
+import {ScrollView, StyleSheet} from 'react-native';
+import {useThemedStyles} from '../theme';
+import {useBottomInset} from '../useCompactLayout';
 
 import {ChannelListItem} from './ChannelListItem';
 import {HiddenOrnament} from '../seasonal/Grinch';
