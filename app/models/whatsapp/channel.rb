@@ -5,13 +5,24 @@ module Whatsapp
     attribute :is_private, default: true
     attribute :is_member, default: true
 
+    attr_writer :resolved_contact
+
+    # Batch version of #resolved_contact for a list of chats: one query for all lid lookups.
+    def self.preload_resolved_contacts(channels)
+      by_lid = channels.select { |channel| channel.contact.nil? && channel.id.end_with?("@lid") }
+      found = Contact.where(lid: by_lid.map(&:id)).index_by(&:lid)
+      by_lid.each { |channel| channel.resolved_contact = found[channel.id] }
+    end
+
     # Contacts are keyed by phone jid; a chat still stored under a privacy id finds its contact through the lid column.
     def resolved_contact
-      contact || (Contact.find_by(lid: id) if id.end_with?("@lid"))
+      return @resolved_contact if defined?(@resolved_contact)
+
+      @resolved_contact = contact || (Contact.find_by(lid: id) if id.end_with?("@lid"))
     end
 
     def display_name
-      return "You" if id == Connection.current.me_jid
+      return "You" if id == Connection.me_jid
 
       name.presence || resolved_contact&.display_name.presence || (id.end_with?("@lid") ? "Unknown contact" : "+#{id.split("@").first}")
     end
