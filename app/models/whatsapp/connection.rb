@@ -12,6 +12,11 @@ module Whatsapp
       Current.whatsapp_me_jid ||= current.me_jid
     end
 
+    # Same idea for #is_me, which a chat asks of every message, quote and reaction.
+    def self.my_jids
+      Current.whatsapp_my_jids ||= current.my_jids
+    end
+
     def open?
       status == "open"
     end

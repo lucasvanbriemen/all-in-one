@@ -3,7 +3,7 @@ module Whatsapp
     include Avatar
 
     def is_me
-      Connection.current.my_jids.include?(id)
+      Connection.my_jids.include?(id)
     end
 
     def display_name
