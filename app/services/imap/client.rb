@@ -22,6 +22,9 @@ module Imap
     # mailbox renamed on the server heals without a deploy.
     ARCHIVE_MAILBOX_TTL = 1.day
 
+    # Fallback names for the sent mailbox on servers without SPECIAL-USE.
+    SENT_MAILBOX_NAMES = [ "Sent", "Sent Items", "Sent Messages", "Sent Mail" ].freeze
+
     IDLE_CAPABILITY = "IDLE".freeze
 
     # Untagged responses that mean the mailbox changed underneath us and an
@@ -139,7 +142,41 @@ module Imap
       raise
     end
 
+    # How many messages landed in the sent mailbox after `time`. SEARCH SINCE
+    # only has day granularity, so it narrows to whole days and INTERNALDATE
+    # trims the rest. EXAMINE keeps it read-only. Leaves the connection on the
+    # sent mailbox, so call it last. Returns nil if there is no sent mailbox.
+    def sent_count_since(time)
+      mailbox = sent_mailbox
+      return nil if mailbox.nil?
+
+      @imap.examine(mailbox)
+      uids = @imap.uid_search([ "SINCE", time.to_date.strftime("%d-%b-%Y") ])
+      return 0 if uids.empty?
+
+      dates = each_batch(uids, ENVELOPE_BATCH, [ "UID", "INTERNALDATE" ]) do |data, result|
+        result[data.uid] = Time.parse(data.attr["INTERNALDATE"])
+      end
+      dates.values.count { |date| date > time }
+    rescue Net::IMAP::NoResponseError
+      Rails.cache.delete(sent_mailbox_cache_key)
+      raise
+    end
+
     private
+
+    def sent_mailbox
+      Rails.cache.fetch(sent_mailbox_cache_key, expires_in: ARCHIVE_MAILBOX_TTL, skip_nil: true) do
+        mailboxes = @imap.list("", "*") || []
+
+        mailboxes.find { |mb| mb.attr.include?(:Sent) }&.name ||
+          mailboxes.find { |mb| SENT_MAILBOX_NAMES.any? { |name| mb.name.split(%r{[/.]}).last.casecmp?(name) } }&.name
+      end
+    end
+
+    def sent_mailbox_cache_key
+      "imap:sent_mailbox:#{@credential.id}"
+    end
 
     # An IMAP ENVELOPE carries the Message-ID exactly as it appears in the
     # header, angle brackets included ("<abc@host>"). Mail::Message#message_id

@@ -43,3 +43,9 @@ production:
     class: AdventPushJob
     queue: default
     schedule: every day at 8am Europe/Amsterdam
+
+  # Feeds the "Sending lots of mail" entry on the server page (ServerData).
+  count_sent_imap_emails:
+    class: CountSentImapEmailsJob
+    queue: default
+    schedule: every 30 minutes

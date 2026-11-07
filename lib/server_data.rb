@@ -15,11 +15,15 @@ module ServerData
   # minutes without a successful fetch already means something is wrong.
   IMAP_STALE_AFTER = 5.minutes.freeze
 
+  # Sent messages per mailbox in the last 24h before it counts as suspicious.
+  SENT_EMAILS_THRESHOLD = 10.freeze
+
   def all
     failed_jobs = self.failed_jobs
     queue_backlog = self.queue_backlog
     workers_alive = self.workers_alive
     failing_mailboxes = self.failing_mailboxes
+    busy_senders = self.busy_senders
 
     [
       {
@@ -57,6 +61,12 @@ module ServerData
         value: failing_mailboxes.join(", "),
         importance_level: "high",
         should_show: failing_mailboxes.any?
+      },
+      {
+        label: "Sending lots of mail",
+        value: busy_senders.join(", "),
+        importance_level: "high",
+        should_show: busy_senders.any?
       },
       {
         label: "Failed jobs",
@@ -148,6 +158,15 @@ module ServerData
           "no fetch for #{credential.last_fetched_at ? TimeConversion.seconds_to_human_readable(Time.current - credential.last_fetched_at) : "ever"}"
         "#{credential.username} (#{reason})"
       end
+  end
+
+  # Counts come from CountSentImapEmailsJob; a mailbox it hasn't counted (yet)
+  # simply isn't listed.
+  def busy_senders
+    ImapCredential.all.filter_map do |credential|
+      count = Rails.cache.read(CountSentImapEmailsJob.cache_key(credential.id))
+      "#{credential.username} (#{count} in 24h)" if count.to_i >= SENT_EMAILS_THRESHOLD
+    end
   end
 
   def failed_jobs
