@@ -48,6 +48,8 @@ const createStyles = colors =>
     meter: {
       paddingVertical: 6,
       paddingHorizontal: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
       borderRadius: 100,
       ...glass(colors, {variant: 'subtle'}),
     },

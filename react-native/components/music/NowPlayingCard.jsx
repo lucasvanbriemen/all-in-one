@@ -21,7 +21,7 @@ export function NowPlayingCard() {
           <View style={styles.nowPlayingContainer}>
             <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
 
-            <View style={styles.textContainer}>
+            <View>
               <Text numberOfLines={1} style={styles.title}>{get('music.now-playing.title') ?? 'Playing nothing'}</Text>
               <Text numberOfLines={1} style={styles.artist}>{get('music.now-playing.artist') ?? 'Unknown artist'}</Text>
             </View>
@@ -61,9 +61,9 @@ export function NowPlayingCard() {
                 color={get('music.repeat') ? styles.controlText.color : styles.controlInactiveText.color}
               />
             </Pressable>
+
+            <ChristmasMeter />
           </View>
-          
-          <ChristmasMeter />
         </>
       )}
 
@@ -101,9 +101,6 @@ const createStyles = colors => StyleSheet.create({
     width: 75,
     height: 75,
     borderRadius: 100,
-  },
-  textContainer: {
-    gap: 8,
   },
   nowPlayingContainer: {
     flexDirection: 'row',
