@@ -17,16 +17,14 @@ export function Greeting() {
 
   const greetingText = greeting.generateGreeting({...season, weather: describeWeather(currentWeather).kind});
 
+  if (season.decorated && season.phase === 'nye') {
+    return <NewYearCountdown />;
+  }
+
   return (
-    <View>
-      {season.decorated && season.phase === 'nye' ? (
-        <NewYearCountdown />
-      ) : (
-        <View style={styles.content}>
-          <Text style={styles.date}>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })} · {currentWeather?.feels_like} {currentWeather?.condition}</Text>
-          <Text style={styles.greeting}>{greetingText}</Text>
-        </View>
-      )}
+    <View style={styles.content}>
+      <Text style={styles.date}>{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })} · {currentWeather?.feels_like} {currentWeather?.condition}</Text>
+      <Text style={styles.greeting}>{greetingText}</Text>
     </View>
   );
 }
