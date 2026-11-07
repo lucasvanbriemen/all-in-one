@@ -2,31 +2,15 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
-import {Notification} from './Notification';
-import {NowPlayingCard} from '../music/NowPlayingCard';
-import {OverviewCard} from '../money/OverviewCard';
-import {Reminder} from './Reminder';
-import {ReminderForm} from './ReminderForm';
-import {Stat} from './Stat';
-import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
-import {AdventCalendar} from '../seasonal/AdventCalendar';
-import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
-import {CountdownStat, NewYearCountdown} from '../seasonal/Countdowns';
-import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
-import {SnowCap} from '../seasonal/SnowCap';
+import {NewYearCountdown} from '../seasonal/Countdowns';
 import {useSeason} from '../seasonal/useSeason';
 import {useWeather} from '../seasonal/data';
-import {WeatherCard} from './WeatherCard';
 import { useApi } from "../useApi";
 import {greeting} from './greeting';
 import {useCompactLayout} from '../useCompactLayout';
 
 export function Greeting() {
-  const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
-  const serverData = useApi('/server_data').data;
-  const notifications = useApi('/notifications').data;
-  const reminders = useApi('/reminders').data;
   const season = useSeason();
   const weather = useWeather();
   const currentWeather = useApi('/weather').data;
