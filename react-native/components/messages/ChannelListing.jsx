@@ -1,28 +1,21 @@
-import {BASE_URL, api} from '../api';
+import {useApi} from '../useApi';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 
 import {ChannelListItem} from './ChannelListItem';
 import {HiddenOrnament} from '../seasonal/Grinch';
-import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
 export function ChannelListing({type}) {
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
-  const [channels, setChannels] = useState([]);
+  const {data, refresh} = useApi(`/channels?type=${type}`);
+  const channels = data || [];
 
-  function loadChats() {
-    api.get(`/channels?type=${type}`).then(response => {
-      setChannels(response);
-    });
-  }
-
-  useEffect(loadChats, [type]);
   useChannel('MessagesChannel', event => {
-    if (event.platform === type) loadChats();
+    if (event.platform === type) refresh();
   });
 
   return (
