@@ -1,6 +1,6 @@
-import {Animated, Easing, Pressable, StyleSheet, View, Text} from 'react-native';
+import {Animated, Pressable, StyleSheet, View, Text} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {LogoIcon} from '../icons';
 import {Platform} from 'react-native';
@@ -17,9 +17,6 @@ export function Sidebar() {
   const {primary} = useTheme();
 
   const width = 240;
-  const sidebarPaddingHorizontal = 16;
-  const sidebarPaddingBottom = 0;
-  const rowPaddingHorizontal = 16;
 
   useEffect(() => {
     api.get('/meta_data').then(data => {
@@ -41,10 +38,10 @@ export function Sidebar() {
   return (
     // The negative margin plus padding leaves room above the panel for the
     // seasonal snow drift, which the clipping would otherwise cut off.
-    <Animated.View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
-      <Animated.View style={[styles.sidebar, {paddingHorizontal: sidebarPaddingHorizontal, paddingBottom: sidebarPaddingBottom}]}>
+    <View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
+      <View style={[styles.sidebar]}>
         <SnowCap maxHeight={11} inset={8} />
-        <AnimatedPressable style={[styles.row, {paddingHorizontal: rowPaddingHorizontal}]}>
+        <AnimatedPressable style={[styles.row]}>
           <View>
             <LogoIcon size={24} color={primary} />
             <SantaHat size={24} />
@@ -55,14 +52,14 @@ export function Sidebar() {
         {Object.entries(items).map(([key, item]) => (
           <SidebarApplication key={key + item.app} item={item} app={key} />
         ))}
-      </Animated.View>
-    </Animated.View>
+      </View>
+    </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
   sidebar: {
-    paddingTop: 16,
+    padding: 16,
     ...glass(colors, {variant: 'panel'}),
     borderRadius: 16,
   },
