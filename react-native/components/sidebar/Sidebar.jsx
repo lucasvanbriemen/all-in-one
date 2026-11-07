@@ -1,4 +1,4 @@
-import {Animated, Pressable, StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
@@ -8,8 +8,6 @@ import {SidebarApplication} from './SidebarApplication';
 import {SantaHat} from '../seasonal/SantaHat';
 import {SnowCap} from '../seasonal/SnowCap';
 import {api} from '../api';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Sidebar() {
   const [items, setItems] = useState([]);
@@ -41,13 +39,13 @@ export function Sidebar() {
     <View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
       <View style={[styles.sidebar]}>
         <SnowCap maxHeight={11} inset={8} />
-        <AnimatedPressable style={[styles.row]}>
+        <View style={[styles.row]}>
           <View>
             <LogoIcon size={24} color={primary} />
             <SantaHat size={24} />
           </View>
           <Text style={styles.name}>All in One</Text>
-        </AnimatedPressable>
+        </View>
 
         {Object.entries(items).map(([key, item]) => (
           <SidebarApplication key={key + item.app} item={item} app={key} />

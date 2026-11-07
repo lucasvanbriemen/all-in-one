@@ -30,7 +30,7 @@ export function SidebarRow({row, app}) {
 
 const createStyles = colors => StyleSheet.create({
   row: {
-    paddingVertical: 16,
+    padding: 16,
     borderRadius: 100,
     flexDirection: 'row',
     alignItems: 'center',

@@ -9,7 +9,7 @@ export function SidebarApplication({item, app}) {
   return (
     <View style={styles.appWrapper}>
       <Text style={styles.title} numberOfLines={1}>{getAppTitle(app)}</Text>
-      <View>
+      <View style={styles.rowsWrapper}>
         {item.map(row => (
           <SidebarRow key={row.path} row={row} app={app} />
         ))}
