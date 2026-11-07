@@ -16,6 +16,7 @@ import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
 import {SnowCap} from '../seasonal/SnowCap';
 import {useSeason} from '../seasonal/useSeason';
 import {useWeather} from '../seasonal/data';
+import {Greeting} from './Greeting';
 import {WeatherCard} from './WeatherCard';
 import { useApi } from "../useApi";
 import {greeting} from './greeting';
@@ -42,15 +43,7 @@ export function HomePage() {
 
   return (
     <View style={styles.content}>
-      {season.decorated && season.phase === 'nye' ? (
-        <NewYearCountdown />
-      ) : (
-        <>
-          <Text>{season.date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
-          <Text>{currentWeather?.feels_like} {currentWeather?.condition}</Text>
-          <Text style={styles.greeting}>{greetingText}</Text>
-        </>
-      )}
+      <Greeting />
 
       <View style={[styles.statsContainer, compact && styles.compactStats]}>
         {serverData && serverData.map((data, index) => (
