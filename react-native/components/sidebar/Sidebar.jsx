@@ -1,4 +1,4 @@
-import {Animated, Easing, Pressable, StyleSheet, View} from 'react-native';
+import {Animated, Easing, Pressable, StyleSheet, View, Text} from 'react-native';
 import {glass, useTheme, useThemedStyles} from '../theme';
 import {useEffect, useRef, useState} from 'react';
 
@@ -15,9 +15,6 @@ export function Sidebar() {
   const [items, setItems] = useState([]);
   const styles = useThemedStyles(createStyles);
   const {primary} = useTheme();
-
-  // 0 = minimized, 1 = expanded. Everything that animates is derived from this
-  // one value, so it all moves on the exact same curve.
 
   const width = 240;
   const sidebarPaddingHorizontal = 16;
@@ -52,6 +49,7 @@ export function Sidebar() {
             <LogoIcon size={24} color={primary} />
             <SantaHat size={24} />
           </View>
+          <Text style={styles.name}>All in One</Text>
         </AnimatedPressable>
 
         {Object.entries(items).map(([key, item]) => (
@@ -74,5 +72,11 @@ const createStyles = colors => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 600,
+    color: colors.onSurface,
+    marginLeft: 8,
   },
 });
