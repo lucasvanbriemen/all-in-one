@@ -56,8 +56,9 @@ export function HomePage() {
 
         <View style={styles.itemRow}>
           <NowPlayingCard />
+        </View>
 
-           <View style={styles.reminders}>
+        <View style={styles.reminders}>
           <SnowCap />
           <Text style={styles.cardTitle}>Reminders</Text>
           <ScrollView style={styles.reminderList}>
@@ -70,9 +71,6 @@ export function HomePage() {
           </ScrollView>
           <ReminderForm onCreate={created => {}} />
         </View>
-        </View>
-
-       
         <View style={styles.moneyColumn}>
           <OverviewCard />
           <UncategorizedTransactions />

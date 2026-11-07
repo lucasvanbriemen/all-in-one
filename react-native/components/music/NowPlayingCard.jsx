@@ -13,7 +13,7 @@ export function NowPlayingCard() {
   const {get, set} = useAppContext();
 
   return (
-    <ScrollView contentContainerStyle={[styles.content, get('music.now-playing.is-playing') && styles.content.isPlaying]}>
+    <View style={[styles.content, get('music.now-playing.title') && styles.content.isPlaying]}>
       <SnowCap />
 
       {get('music.now-playing.title') && (
@@ -72,7 +72,7 @@ export function NowPlayingCard() {
       {!get('music.now-playing.title') && (
         <LikedSongs compact={true} limit={5} />
       )}
-    </ScrollView>
+    </View>
   );
 }
 
