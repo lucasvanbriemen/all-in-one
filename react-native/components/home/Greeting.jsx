@@ -4,19 +4,18 @@ import { useThemedStyles} from '../theme';
 
 import {NewYearCountdown} from '../seasonal/Countdowns';
 import {useSeason} from '../seasonal/useSeason';
-import {useWeather} from '../seasonal/data';
+import {describeWeather} from '../seasonal/data';
 import { useApi } from "../useApi";
 import {greeting} from './greeting';
 
 export function Greeting() {
   const styles = useThemedStyles(createStyles);
   const season = useSeason();
-  const weatherForGreeting = useWeather();
   const currentWeather = useApi('/weather').data;
 
   const date = new Date();
 
-  const greetingText = greeting.generateGreeting({...season, weather: weatherForGreeting.kind});
+  const greetingText = greeting.generateGreeting({...season, weather: describeWeather(currentWeather).kind});
 
   return (
     <View style={styles.content}>
