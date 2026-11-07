@@ -22,11 +22,11 @@
 		A1C0000000000000000000B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A1C0000000000000000000B1 /* AppIcon.icon */; };
 		A2D3CC7B5795A9A08615F348 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 		AA10D1002A0D10A0D10AA02 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */; };
-		BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */; };
 		AA10D1004A0D10A0D10AA04 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */; };
-		BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2003B0E20B0E20BB003 /* MediaPicker.m */; };
 		AA10D1006A0D10A0D10AA06 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */; };
 		AA10D1008A0D10A0D10AA08 /* PushNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AA10D1009A0D10A0D10AA09 /* PushNotifications.m */; };
+		BB20E2002B0E20B0E20BB002 /* MediaPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */; };
+		BB20E2004B0E20B0E20BB004 /* MediaPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = BB20E2003B0E20B0E20BB003 /* MediaPicker.m */; };
 		DFCA6E5640BC03B37BC6DC91 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -52,12 +52,12 @@
 		A1B2C3D4000600FDA0DE0006 /* ContextMenu.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ContextMenu.m; sourceTree = "<group>"; };
 		A1C0000000000000000000B1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = ../AppIcon.icon; sourceTree = SOURCE_ROOT; };
 		AA10D1001A0D10A0D10AA01 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioPlayer.swift; path = ../native/AudioPlayer/AudioPlayer.swift; sourceTree = SOURCE_ROOT; };
-		BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MediaPicker.swift; path = ../native/MediaPicker/MediaPicker.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1003A0D10A0D10AA03 /* AudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AudioPlayer.m; path = ../native/AudioPlayer/AudioPlayer.m; sourceTree = SOURCE_ROOT; };
-		BB20E2003B0E20B0E20BB003 /* MediaPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MediaPicker.m; path = ../native/MediaPicker/MediaPicker.m; sourceTree = SOURCE_ROOT; };
 		AA10D1007A0D10A0D10AA07 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = ../native/PushNotifications/PushNotifications.swift; sourceTree = SOURCE_ROOT; };
 		AA10D1009A0D10A0D10AA09 /* PushNotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushNotifications.m; path = ../native/PushNotifications/PushNotifications.m; sourceTree = SOURCE_ROOT; };
 		B1A6CF43F2BB8B941DB393C7 /* Sidecar.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = Sidecar.entitlements; sourceTree = "<group>"; };
+		BB20E2001B0E20B0E20BB001 /* MediaPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MediaPicker.swift; path = ../native/MediaPicker/MediaPicker.swift; sourceTree = SOURCE_ROOT; };
+		BB20E2003B0E20B0E20BB003 /* MediaPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MediaPicker.m; path = ../native/MediaPicker/MediaPicker.m; sourceTree = SOURCE_ROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SidecarServer.m; sourceTree = "<group>"; };
 		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -364,6 +364,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/AsyncStorage/AsyncStorage_resources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
@@ -373,6 +374,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AsyncStorage_resources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCT-Folly_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNSVGFilters.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",

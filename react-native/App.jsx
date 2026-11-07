@@ -22,7 +22,6 @@ import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useThemedStyles} from './components/theme';
-import {fetchCached} from './components/useApi';
 
 const APPLICATIONS = {
   email: EmailPage,
@@ -68,11 +67,6 @@ function PushBridge() {
 
 function AppShell() {
   const {get, set} = useAppContext();
-
-  useEffect(() => {
-    console.log(fetchCached('/weather'));
-    console.log(fetchCached('/weather'));
-  }, []);
 
 
   const styles = useThemedStyles(createStyles);

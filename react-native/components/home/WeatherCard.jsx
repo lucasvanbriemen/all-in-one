@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { glass, useTheme, useThemedStyles } from '../theme';
 
 import { ChevronDown } from '../icons/chevronDown';
 import { ChevronTop } from '../icons/chevronTop';
 import { WeatherIcon } from '../icons';
-import { api } from '../api';
+import { useApi } from '../useApi';
 import { SnowCap } from '../seasonal/SnowCap';
 
 export function WeatherCard() {
   const styles = useThemedStyles(createStyles);
   const colors = useTheme();
 
-  const [weather, setWeather] = useState({});
-
-  useEffect(() => {
-    api.get('/weather').then(response => setWeather(response));
-  }, []);
+  const weather = useApi('/weather').data ?? {};
 
   return (
     <View style={styles.content}>
