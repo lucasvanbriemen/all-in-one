@@ -12,9 +12,7 @@ export function Greeting() {
   const styles = useThemedStyles(createStyles);
   const season = useSeason();
   const currentWeather = useApi('/weather').data;
-
   const date = new Date();
-
   const greetingText = greeting.generateGreeting({...season, weather: describeWeather(currentWeather).kind});
 
   if (season.decorated && season.phase === 'nye') {
