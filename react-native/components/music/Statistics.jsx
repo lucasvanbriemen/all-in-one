@@ -1,9 +1,8 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {Song} from './Song';
 import {Stat} from '../home/Stat';
-import {api} from '../api';
+import {useApi} from '../useApi';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
@@ -15,13 +14,7 @@ export function Statistics() {
 
   const {get, set} = useAppContext();
 
-  const [statistics, setStatistics] = useState([]);
-
-  useEffect(() => {
-    api.get('/music/stats').then(response => {
-      setStatistics(response);
-    });
-  }, []);
+  const statistics = useApi('/music/stats').data || [];
 
   return (
     <View style={styles.content}>
