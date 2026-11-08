@@ -1,18 +1,15 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {useThemedStyles} from '../theme';
 
 import {Notification} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
 import {OverviewCard} from '../money/OverviewCard';
-import {Reminder} from './Reminder';
-import {ReminderForm} from './ReminderForm';
 import {Stat} from './Stat';
 import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
 import {AdventCalendar} from '../seasonal/AdventCalendar';
 import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
 import {CountdownStat} from '../seasonal/Countdowns';
 import {NaughtyNiceCard} from '../seasonal/NaughtyNice';
-import {SnowCap} from '../seasonal/SnowCap';
 import {useSeason} from '../seasonal/useSeason';
 import {Greeting} from './Greeting';
 import {ReminderCard} from './ReminderCard';
@@ -24,7 +21,6 @@ export function HomePage() {
   const styles = useThemedStyles(createStyles);
   const serverData = useApi('/server_data').data;
   const notifications = useApi('/notifications').data;
-  const reminders = useApi('/reminders').data;
   const season = useSeason();
 
   return (
@@ -58,20 +54,6 @@ export function HomePage() {
         <View style={styles.itemRow}>
           <NowPlayingCard />
           <ReminderCard />
-
-          <View style={styles.reminders}>
-            <SnowCap />
-            <Text style={styles.cardTitle}>Reminders</Text>
-            <ScrollView style={styles.reminderList}>
-              {reminders && reminders.length === 0 && (
-                <Text style={styles.empty}>Nothing to remind you of right now.</Text>
-              )}
-              {reminders && reminders.map(reminder => (
-                <Reminder key={reminder.id} reminder={reminder} onComplete={done => {}}/>
-              ))}
-            </ScrollView>
-            <ReminderForm onCreate={created => {}} />
-          </View>
         </View>
 
         <View style={styles.moneyColumn}>
@@ -118,13 +100,6 @@ const createStyles = colors => StyleSheet.create({
     marginTop: 16,
     color: colors.onSurface
   },
-  reminders: {
-    flex: 1,
-    ...glass(colors),
-    padding: 16,
-    borderRadius: 16,
-  },
-  reminderList: {flex: 1},
   moneyColumn: {
     flex: 1,
     gap: 16,
