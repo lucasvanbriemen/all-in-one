@@ -18,11 +18,7 @@ class ChannelsController < ApplicationController
   def mark_as_read
     channel = Channel.find(params[:id])
 
-    begin
-      channel.marked_as_read
-    rescue Whatsapp::Bridge::Error => error
-      Rails.logger.warn("marking #{channel.id} as read failed: #{error.message}")
-    end
+    channel.marked_as_read
 
     Notification.unread.where("source LIKE ?", "messages.%.#{channel.id}").update_all(read: true)
     render json: { success: true }
