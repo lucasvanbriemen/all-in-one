@@ -90,7 +90,6 @@ const createStyles = colors => StyleSheet.create({
   seasonalRow: {
     flexDirection: 'row',
     gap: 16,
-    marginTop: 16
   },
   seasonalRowCompact: {flexDirection: 'column'},
   compactStats: { flexWrap: 'wrap', gap: 8 },
