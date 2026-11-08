@@ -29,10 +29,7 @@ export function ReminderCard() {
 
 const createStyles = colors => StyleSheet.create({
   reminders: {
-    flex: 1,
+    flex: 0,
     ...glass(colors),
-    padding: 16,
-    borderRadius: 16,
   },
-  reminderList: {flex: 1},
 });
