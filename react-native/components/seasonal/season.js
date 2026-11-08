@@ -13,7 +13,7 @@ import {useEffect, useState} from 'react';
  *
  * Only honoured in development builds.
  */
-export const PREVIEW_DATE = null //'2026-12-21T09:00';
+export const PREVIEW_DATE = '2026-12-21T09:00';
 
 const launchedAt = Date.now();
 const previewStart = PREVIEW_DATE ? new Date(PREVIEW_DATE).getTime() : null;
