@@ -2,7 +2,6 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
-import React from 'react';
 import {api} from '../api';
 import {format} from "../money/format";
 
