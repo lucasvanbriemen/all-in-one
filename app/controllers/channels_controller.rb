@@ -13,4 +13,12 @@ class ChannelsController < ApplicationController
     channel = Channel.find(params[:id])
     render json: channel, methods: [ :display_name, :last_message ], include: :contact
   end
+
+  def mark_as_read
+    channel = Channel.find(params[:id])
+    channel.marked_as_read
+
+    Notification.unread.where("source LIKE ?", "messages.%.#{channel.id}").update_all(read: true)
+    render json: { success: true }
+  end
 end
