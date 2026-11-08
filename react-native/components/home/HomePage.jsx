@@ -45,8 +45,8 @@ export function HomePage() {
       <View style={[styles.mainContent, compact && styles.compactMain]}>
         <View style={compact ? undefined : styles.notificationsContainer}>
           <ScrollView>
-            {notifications && notifications.map(notification => (
-              <Notification key={notification.id} notification={notification} />
+            {notifications && notifications.map((notification, index) => (
+              <Notification key={index} notification={notification} />
             ))}
           </ScrollView>
         </View>
