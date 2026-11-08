@@ -40,7 +40,7 @@ const createStyles = colors => StyleSheet.create({
   },
   text: {flex: 1},
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: colors.onSurface,
   },

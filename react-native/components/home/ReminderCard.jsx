@@ -13,10 +13,10 @@ export function ReminderCard() {
   return (
     <View style={styles.reminders}>
       <SnowCap />
-      <Text style={styles.cardTitle}>Reminders</Text>
+      <Text style={styles.title}>Reminders</Text>
       <ScrollView style={styles.reminderList}>
         {reminders && reminders.length === 0 && (
-          <Text style={styles.empty}>Nothing to remind you of right now.</Text>
+          <Text style={styles.noReminders}>Nothing to remind you of right now.</Text>
         )}
         {reminders && reminders.map(reminder => (
           <Reminder key={reminder.id} reminder={reminder} onComplete={done => {}}/>
@@ -34,4 +34,14 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
   },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: colors.onSurface,
+  },
+  noReminders: {
+    fontStyle: 'italic',
+    color: colors.onSurfaceVariant,
+  }
 });
