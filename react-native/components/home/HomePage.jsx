@@ -40,8 +40,8 @@ export function HomePage() {
       {season.decorated && (season.phase === 'advent' || season.phase === 'christmas') && (
         <View style={[styles.seasonalRow, compact && styles.seasonalRowCompact]}>
           <AdventCalendar />
-          <ChristmasTreeCard />
-          <NaughtyNiceCard />
+          {!compact && <ChristmasTreeCard />}
+          {!compact && <NaughtyNiceCard />}
         </View>
       )}
 

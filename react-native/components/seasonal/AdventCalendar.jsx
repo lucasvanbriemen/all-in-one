@@ -193,6 +193,7 @@ const createStyles = colors =>
       padding: 12,
       flex: 2,
       gap: 8,
+      height: 196,
     },
     cardCompact: {flex: 0},
     header: {flexDirection: 'row', alignItems: 'baseline', gap: 8},
