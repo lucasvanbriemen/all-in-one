@@ -40,12 +40,18 @@ function loadColors() {
 }
 
 function resolve(colors, scheme) {
-  return Object.fromEntries(
+  const resolved = Object.fromEntries(
     Object.entries(colors).map(([name, value]) => [
       camelize(name),
       value[scheme],
     ]),
   );
+
+  // Not a colour: lets `glass()` and the window pick light/dark recipes
+  // without every caller threading `useColorScheme()` through.
+  resolved.scheme = scheme;
+
+  return resolved;
 }
 
 export function useTheme() {
@@ -115,22 +121,34 @@ export function withAlpha(color, alpha) {
  *
  * `highlight: null` drops the bright top edge; the border is one even hairline.
  * `iosTone` is the solid fill used on iOS, which has no backdrop.
+ *
+ * `light` overrides a recipe in light mode. The base numbers were tuned in
+ * dark mode, where a lift of `onSurface` (near-white) reads as elevation.
+ * In light mode `onSurface` is near-black, so the same lift makes cards
+ * *darker* than the panel — sunken smudges. Light UIs show elevation the
+ * other way round: a whiter card plus a soft shadow.
  */
 const GLASS_VARIANTS = {
   panel: {
     tone: 'surface', tint: 0.7,
     borderTone: 'onSurface', border: 0.08, highlight: null,
     iosTone: 'surface',
+    light: {tint: 0.4, border: 0.06},
   },
   surface: {
     tone: 'onSurface', tint: 0.045,
     borderTone: 'onSurface', border: 0.07, highlight: null,
     iosTone: 'surfaceAt2',
+    light: {
+      tone: 'surfaceAt1', tint: 0.4, border: 0.09,
+      shadow: {opacity: 0.05, radius: 6, offsetY: 1},
+    },
   },
   subtle: {
     tone: 'onSurface', tint: 0.03,
     borderTone: 'onSurface', border: 0.05, highlight: null,
     iosTone: 'surfaceAt1',
+    light: {tint: 0.04},
   },
   tinted: {
     tone: 'surfaceAt1',
@@ -165,7 +183,10 @@ const GLASS_VARIANTS = {
  */
 export function glass(colors, options = {}) {
   const {variant = 'surface'} = options;
-  const recipe = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
+  const base = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
+  const recipe = colors.scheme === 'light' && base.light
+    ? {...base, ...base.light}
+    : base;
 
   // iOS has no AppKit backdrop. Separate regions with solid surface levels
   // instead of translucent fills and a simulated reflection along the top.
@@ -202,6 +223,13 @@ export function glass(colors, options = {}) {
     borderColor,
     borderTopColor: highlight == null ? borderColor : withAlpha(highlightColor, highlight),
   };
+
+  if (recipe.shadow) {
+    style.shadowColor = 'rgb(0 0 0)';
+    style.shadowOpacity = recipe.shadow.opacity;
+    style.shadowRadius = recipe.shadow.radius;
+    style.shadowOffset = {width: 0, height: recipe.shadow.offsetY};
+  }
 
   return style;
 }

@@ -30,10 +30,14 @@ const NativeVisualEffect = hasNativeBlur
   : null;
 
 /**
- * Material used for the window itself. Changing this only needs a Metro
- * reload — the native side reads it as a prop.
+ * Material used for the window itself, per appearance. Changing this only
+ * needs a Metro reload — the native side reads it as a prop.
+ *
+ * Light mode uses `hudWindow` too: the lighter vibrancy materials
+ * (`sidebar`, `popover`, …) already add a lot of white themselves, so a
+ * panel tint stacked on them made the window read as nearly opaque.
  */
-const WINDOW_MATERIAL = 'hudWindow';
+const WINDOW_MATERIAL = {dark: 'hudWindow', light: 'hudWindow'};
 
 export function TransparentWindow({children}) {
   const colors = useTheme();
@@ -42,7 +46,7 @@ export function TransparentWindow({children}) {
     <View style={styles.root}>
       {NativeVisualEffect ? (
         <NativeVisualEffect
-          materialName={WINDOW_MATERIAL}
+          materialName={WINDOW_MATERIAL[colors.scheme] ?? WINDOW_MATERIAL.dark}
           blendsBehindWindow
           style={StyleSheet.absoluteFill}
         />
