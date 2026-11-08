@@ -14,7 +14,6 @@ class ChannelsController < ApplicationController
     render json: channel, methods: [ :display_name, :last_message ], include: :contact
   end
 
-  # Read receipt for the chat (WhatsApp only, Slack has none) and clears its notifications.
   def mark_as_read
     channel = Channel.find(params[:id])
 
