@@ -186,6 +186,7 @@ const createStyles = colors => StyleSheet.create({
   notificationExpanded: {
     borderWidth: 1,
     borderColor: colors.primary,
+    borderTopColor: colors.primary,
   },
   row: {
     flexDirection: 'row',
