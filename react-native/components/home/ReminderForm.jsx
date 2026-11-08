@@ -22,7 +22,6 @@ export function ReminderForm({onCreate}) {
   return (
     <View style={styles.form}>
       <TextInput style={styles.input} placeholder="Remind me to..." placeholderTextColor={styles.placeholder.color} enableFocusRing={false} value={title} onChangeText={setTitle}/>
-      <TextInput style={styles.input} placeholder="Details (optional)" placeholderTextColor={styles.placeholder.color} enableFocusRing={false} value={description} onChangeText={setDescription}/>
       <Pressable style={[styles.button]} onPress={submit}>
         <Text style={styles.buttonText}>Add</Text>
       </Pressable>
