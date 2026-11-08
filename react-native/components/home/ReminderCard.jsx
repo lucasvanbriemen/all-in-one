@@ -31,5 +31,7 @@ const createStyles = colors => StyleSheet.create({
   reminders: {
     flex: 0,
     ...glass(colors),
+    padding: 16,
+    borderRadius: 16,
   },
 });
