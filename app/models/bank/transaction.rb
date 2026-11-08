@@ -65,6 +65,9 @@ module Bank
 
       transaction = account.transactions.find_or_initialize_by(entry_reference: reference)
       transaction.update!(attributes_from_api(payload))
+
+      Notification.create!(source: "transactions.#{account.id}.#{transaction.id}", title: "New transaction", body: "Amount: #{transaction.amount} #{transaction.currency} to #{transaction.counterparty_name}")
+
       transaction
     end
 
