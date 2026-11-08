@@ -64,11 +64,22 @@ module Bank
       return nil if reference.blank? || payload["booking_date"].blank? || payload["status"] != "BOOK"
 
       transaction = account.transactions.find_or_initialize_by(entry_reference: reference)
+      is_new = transaction.new_record?
       transaction.update!(attributes_from_api(payload))
 
-      Notification.create!(source: "transactions.#{account.id}.#{transaction.id}", title: "New transaction", body: "Amount: #{transaction.amount} #{transaction.currency} to #{transaction.counterparty_name}")
+      transaction.notify! if is_new
 
       transaction
+    end
+
+    def notify!
+      direction = amount.negative? ? "to" : "from"
+
+      Notification.create!(
+        source: "transactions.#{account.id}.#{id}",
+        title: "New transaction",
+        body: "Amount: #{format('%.2f', amount.abs)} #{currency} #{direction} #{counterparty_name}"
+      )
     end
 
     def self.attributes_from_api(payload)
