@@ -30,9 +30,14 @@ export function ReminderForm({onCreate}) {
 }
 
 const createStyles = colors => StyleSheet.create({
-  form: {gap: 8, marginTop: 8},
+  form: {
+    gap: 8,
+    marginTop: 8,
+    flexDirection: 'row',
+  },
   input: {
     padding: 8,
+    flex: 1,
     borderRadius: 8,
     color: colors.onSurface,
     ...glass(colors, {variant: 'subtle'}),
