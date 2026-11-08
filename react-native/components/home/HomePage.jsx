@@ -56,21 +56,22 @@ export function HomePage() {
 
         <View style={styles.itemRow}>
           <NowPlayingCard />
+
+          <View style={styles.reminders}>
+            <SnowCap />
+            <Text style={styles.cardTitle}>Reminders</Text>
+            <ScrollView style={styles.reminderList}>
+              {reminders && reminders.length === 0 && (
+                <Text style={styles.empty}>Nothing to remind you of right now.</Text>
+              )}
+              {reminders && reminders.map(reminder => (
+                <Reminder key={reminder.id} reminder={reminder} onComplete={done => {}}/>
+              ))}
+            </ScrollView>
+            <ReminderForm onCreate={created => {}} />
+          </View>
         </View>
 
-        <View style={styles.reminders}>
-          <SnowCap />
-          <Text style={styles.cardTitle}>Reminders</Text>
-          <ScrollView style={styles.reminderList}>
-            {reminders && reminders.length === 0 && (
-              <Text style={styles.empty}>Nothing to remind you of right now.</Text>
-            )}
-            {reminders && reminders.map(reminder => (
-              <Reminder key={reminder.id} reminder={reminder} onComplete={done => {}}/>
-            ))}
-          </ScrollView>
-          <ReminderForm onCreate={created => {}} />
-        </View>
         <View style={styles.moneyColumn}>
           <OverviewCard />
           <UncategorizedTransactions />
@@ -99,6 +100,7 @@ const createStyles = colors => StyleSheet.create({
   },
   itemRow: {
     flex: 1,
+    gap: 16,
   },
   content: {
     flex: 1,
