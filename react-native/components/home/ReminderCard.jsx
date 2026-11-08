@@ -23,7 +23,7 @@ export function ReminderCard() {
           <Reminder key={reminder.id} reminder={reminder} onComplete={refresh()}/>
         ))}
       </ScrollView>
-      <ReminderForm onCreate={created => {}} />
+      <ReminderForm onCreate={refresh()} />
     </View>
   );
 }
