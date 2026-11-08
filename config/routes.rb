@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   post "/slack/webhook", to: "slack#create", as: :slack_webhook
   get "/channels", to: "channels#index", as: :channels
   get "/channels/:id", to: "channels#show", as: :channel, constraints: { id: /[^\/]+/ }
+  post "/channels/:id/mark_as_read", to: "channels#mark_as_read", as: :mark_channel_as_read, constraints: { id: /[^\/]+/ }
   get "/channels/:id/messages", to: "messages#show", as: :channel_messages, constraints: { id: /[^\/]+/ }
   get "/channels/:id/messages/:message_id/replies", to: "messages#replies", as: :channel_message_replies, constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
   post "/channels/:id/messages", to: "messages#new", as: :channel_messages_create, constraints: { id: /[^\/]+/ }

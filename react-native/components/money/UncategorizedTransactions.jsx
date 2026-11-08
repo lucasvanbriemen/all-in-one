@@ -131,7 +131,7 @@ function TransactionRow({transaction, categories, sameMerchantCount, expanded, o
   );
 }
 
-function CategoryGroup({title, categories, suggestion, onPick, styles}) {
+export function CategoryGroup({title, categories, suggestion, onPick, styles}) {
   return (
     <View style={styles.group}>
       <Text style={styles.groupTitle}>{title}</Text>
@@ -153,7 +153,7 @@ function newestFirst(a, b) {
   return b.booking_date.localeCompare(a.booking_date) || b.id - a.id;
 }
 
-const createStyles = colors => StyleSheet.create({
+export const createStyles = colors => StyleSheet.create({
   card: {
     flex: 1,
     ...glass(colors),
