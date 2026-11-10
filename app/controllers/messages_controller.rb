@@ -60,7 +60,7 @@ class MessagesController < ApplicationController
 
   # A failed read receipt must not stop the chat from loading.
   def mark_as_read(channel)
-    channel.marked_as_read
+    channel.mark_read!
   rescue Whatsapp::Bridge::Error => error
     Rails.logger.warn("marking #{channel.id} as read failed: #{error.message}")
   end

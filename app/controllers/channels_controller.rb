@@ -16,9 +16,7 @@ class ChannelsController < ApplicationController
 
   def mark_as_read
     channel = Channel.find(params[:id])
-    channel.marked_as_read
-
-    Notification.unread.where("source LIKE ?", "messages.%.#{channel.id}").update_all(read: true)
+    channel.mark_read!
     render json: { success: true }
   end
 end

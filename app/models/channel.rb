@@ -52,6 +52,13 @@ class Channel < ApplicationRecord
 
   def avatar_contact = contact
 
+  # Reading a chat also dismisses the notifications it raised. They're cleared
+  # before the platform read receipt so a failing bridge doesn't leave them behind.
+  def mark_read!
+    Notification.unread.where("source LIKE ?", "messages.%.#{id}").update_all(read: true)
+    marked_as_read
+  end
+
   def display_name
     name.presence || FALL_BACK_NAME
   end
