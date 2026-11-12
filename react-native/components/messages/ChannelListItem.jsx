@@ -19,12 +19,12 @@ export function ChannelListItem({channel}) {
   }
 
   return (
-    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]}>
+    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected, isSelected() && styles.channelItem.selectedParrent, channel.unread_count > 0 && styles.channelItem.unread]}>
       <Image source={{uri: channel.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
 
       <View style={styles.channelItem.textContainer}>
-        <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected]}>{channel.display_name}</Text>
-        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected]} numberOfLines={1}>{channel.last_message?.body}</Text>
+        <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]}>{channel.display_name}</Text>
+        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]} numberOfLines={1}>{channel.last_message?.body}</Text>
       </View>
     </Pressable>
   );
@@ -57,12 +57,18 @@ const createStyles = colors => StyleSheet.create({
     },
 
     selected: {
-      backgroundColor: colors.primary,
-      color: colors.onPrimary,
+      backgroundColor: colors.primaryContainer,
+      color: colors.onPrimaryContainer,
+    },
+
+    selectedParrent: {
+      borderWidth: 2,
+      padding: 15,
     },
 
     unread: {
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.secondaryContainer,
+      color: colors.onSecondaryContainer,
     }
   },
 });
