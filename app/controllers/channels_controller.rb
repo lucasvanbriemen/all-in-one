@@ -6,7 +6,7 @@ class ChannelsController < ApplicationController
     Channel.preload_for_listing(channels)
     channels = channels.sort_by { |channel| channel.last_message&.created_at || Time.at(0) }.reverse
 
-    render json: channels, methods: [ :display_name, :last_message, :last_message_preview ], include: :contact
+    render json: channels, methods: [ :display_name, :last_message, :last_message_preview, :unread_count ], include: :contact
   end
 
   def show

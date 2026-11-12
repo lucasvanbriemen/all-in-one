@@ -45,6 +45,10 @@ class Channel < ApplicationRecord
     last_message&.preview
   end
 
+  def unread_count
+    Notification.unread.where("source LIKE ?", "messages.%.#{id}").count
+  end
+
   # A DM shows the other person's picture; group chats and channels have no contact and carry their own.
   def avatar_url
     avatar_contact&.avatar_url.presence || self[:avatar_url]

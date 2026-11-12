@@ -11,6 +11,7 @@ export function ChannelListItem({channel}) {
   function openChannel(channel) {
     set('messages.activeChannel', channel.id);
     set("messages.activeThread", null)
+    channel.unread_count = 0;
   }
 
   function isSelected() {
@@ -18,7 +19,7 @@ export function ChannelListItem({channel}) {
   }
 
   return (
-    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected]}>
+    <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]}>
       <Image source={{uri: channel.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
 
       <View style={styles.channelItem.textContainer}>
@@ -59,5 +60,9 @@ const createStyles = colors => StyleSheet.create({
       backgroundColor: colors.primary,
       color: colors.onPrimary,
     },
+
+    unread: {
+      backgroundColor: colors.secondary,
+    }
   },
 });
