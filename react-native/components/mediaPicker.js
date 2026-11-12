@@ -6,4 +6,7 @@ export const mediaPicker = {
   pick() {
     return NativeModules.MediaPicker.pick();
   },
+  preparePastedImage(file) {
+    return NativeModules.MediaPicker.preparePastedImage(file.uri);
+  },
 };

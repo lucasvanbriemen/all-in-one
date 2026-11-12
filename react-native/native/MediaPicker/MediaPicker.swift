@@ -46,6 +46,34 @@ final class MediaPicker: NSObject {
 
   // MARK: - Presenting
 
+  /// Paste events supply either a file path or an inline PNG/TIFF from the clipboard.
+  @objc func preparePastedImage(_ uri: String,
+                                resolver resolve: @escaping RCTPromiseResolveBlock,
+                                rejecter reject: @escaping RCTPromiseRejectBlock) {
+    Task {
+      do {
+        let source: URL
+        if uri.hasPrefix("data:") {
+          guard let comma = uri.firstIndex(of: ","),
+                let data = Data(base64Encoded: String(uri[uri.index(after: comma)...])),
+                let image = CGImageSourceCreateWithData(data as CFData, nil),
+                let identifier = CGImageSourceGetType(image),
+                let type = UTType(identifier as String) else { throw PickerError.unreadable }
+          source = Self.temporaryURL(for: URL(fileURLWithPath: "pasted-image"), extension: type.preferredFilenameExtension ?? "png")
+          try data.write(to: source, options: .atomic)
+        } else {
+          source = uri.hasPrefix("file:") ? (URL(string: uri) ?? URL(fileURLWithPath: uri)) : URL(fileURLWithPath: uri)
+          guard source.isFileURL,
+                let type = UTType(filenameExtension: source.pathExtension),
+                type.conforms(to: .image) else { throw PickerError.unreadable }
+        }
+        resolve(try await Self.prepare(source))
+      } catch {
+        reject("media_paste", error.localizedDescription, error)
+      }
+    }
+  }
+
   #if os(iOS)
   private func present(_ completion: @escaping (URL?) -> Void) {
     guard let presenter = Self.topViewController() else { return completion(nil) }
