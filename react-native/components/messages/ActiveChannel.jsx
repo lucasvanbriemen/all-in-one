@@ -1,6 +1,6 @@
 import {BASE_URL, api} from '../api';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 import {Icon} from '../icons';
@@ -22,6 +22,20 @@ export function ActiveChannel({isThread = false}) {
   const colors = useThemedStyles(c => c);
   const inputOffset = keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset;
 
+  // Keep the chat pinned to the newest message while the user is at the bottom
+  // (opening a channel, new messages, images loading). Scrolling up releases it.
+  const scrollRef = useRef(null);
+  const stickToBottom = useRef(true);
+
+  function handleScroll({nativeEvent}) {
+    const {contentOffset, contentSize, layoutMeasurement} = nativeEvent;
+    stickToBottom.current = contentOffset.y + layoutMeasurement.height >= contentSize.height - 40;
+  }
+
+  function handleContentSizeChange() {
+    if (stickToBottom.current) scrollRef.current?.scrollToEnd({animated: false});
+  }
+
   const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
 
   useEffect(() => {
@@ -30,6 +44,7 @@ export function ActiveChannel({isThread = false}) {
 
   function loadChats(messagePage = 1) {
     if (!activeChannel) return;
+    if (messagePage === 1) stickToBottom.current = true;
 
     const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages?page=${messagePage}`;
 
@@ -95,7 +110,13 @@ export function ActiveChannel({isThread = false}) {
         </View>
       )}
 
-      <ScrollView style={styles.chatListing}>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.chatListing}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        onContentSizeChange={handleContentSizeChange}
+      >
         <Pressable onPress={() => loadChats(Math.floor(messages.length / 50) + 1)}>
           <Text style={styles.loadMore}>Load More</Text>
         </Pressable>
