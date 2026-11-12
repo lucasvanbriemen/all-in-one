@@ -66,5 +66,5 @@ Rails.application.routes.draw do
 
   get "meta_data", to: "account#show"
 
-  get "/seach", to: "seach#index"
+  get "/search", to: "search#index"
 end
