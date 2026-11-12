@@ -31,10 +31,21 @@ function camelize(name) {
  */
 let palettePromise;
 
+/**
+ * The palette once it has landed. Components mounted after that start from
+ * it, instead of rendering colourless first and re-rendering when the
+ * (already resolved) promise calls back.
+ */
+let loadedColors = null;
+
 function loadColors() {
   palettePromise ??= fetch(THEME_URL)
     .then(response => response.json())
-    .catch(() => ({}));
+    .catch(() => ({}))
+    .then(fetched => {
+      loadedColors = {...fetched, ...customColors};
+      return loadedColors;
+    });
 
   return palettePromise;
 }
@@ -56,14 +67,18 @@ function resolve(colors, scheme) {
 
 export function useTheme() {
   const scheme = useColorScheme() ?? 'light';
-  const [colors, setColors] = useState([]);
+  const [colors, setColors] = useState(() => loadedColors ?? {});
 
   useEffect(() => {
+    if (loadedColors) {
+      return;
+    }
+
     let cancelled = false;
 
     loadColors().then(fetched => {
       if (!cancelled) {
-        setColors({...fetched, ...customColors});
+        setColors(fetched);
       }
     });
 

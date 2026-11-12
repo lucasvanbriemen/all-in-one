@@ -11,11 +11,17 @@ import {MessageInput} from './MessageInput';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
+// Newest page per channel/thread and channel details, kept across mounts so
+// reopening a chat shows it immediately while the fresh copy loads.
+const chatCache = new Map();
+const channelCache = new Map();
+const chatKey = (get, isThread, channel) => (isThread ? `${channel}/thread/${get("messages.activeThread")}` : channel);
+
 export function ActiveChannel({isThread = false}) {
   const styles = useThemedStyles(createStyles);
-  const [messages, setMessages] = useState([]);
-  const [channel, setChannel] = useState({});
   const {set, get} = useAppContext();
+  const [messages, setMessages] = useState(() => chatCache.get(chatKey(get, isThread, get("messages.activeChannel") ?? "")) ?? []);
+  const [channel, setChannel] = useState(() => channelCache.get(get("messages.activeChannel") ?? "") ?? {});
   const isCompact = useCompactLayout();
   const bottomInset = useBottomInset();
   const keyboardHeight = useKeyboardHeight();
@@ -36,20 +42,31 @@ export function ActiveChannel({isThread = false}) {
     if (stickToBottom.current) scrollRef.current?.scrollToEnd({animated: false});
   }
 
-  const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
+  const storedChannel = get("messages.activeChannel") ?? "";
+  const [activeChannel, setActiveChannel] = useState(storedChannel);
 
+  // Only follow the store when the channel itself changes, not on every
+  // unrelated update to the app state.
   useEffect(() => {
-    setActiveChannel(get("messages.activeChannel") ?? "");
-  }, [get]);
+    setActiveChannel(storedChannel);
+  }, [storedChannel]);
+
+  const cacheKey = chatKey(get, isThread, activeChannel);
 
   function loadChats(messagePage = 1) {
     if (!activeChannel) return;
-    if (messagePage === 1) stickToBottom.current = true;
+    if (messagePage === 1) {
+      stickToBottom.current = true;
+      // Show what we had last time straight away; the fetch below replaces it.
+      setMessages(chatCache.get(cacheKey) ?? []);
+      setChannel(channelCache.get(activeChannel) ?? {});
+    }
 
     const messageRoute = isThread ? `/channels/${activeChannel}/messages/${get("messages.activeThread")}/replies` : `/channels/${activeChannel}/messages?page=${messagePage}`;
 
     api.get(messageRoute).then(response => {
       if (messagePage === 1) {
+        chatCache.set(cacheKey, response);
         setMessages(response);
         return;
       }
@@ -61,9 +78,12 @@ export function ActiveChannel({isThread = false}) {
       });
     });
 
-    api.get(`/channels/${activeChannel}`).then(response => {
-      setChannel(response);
-    });
+    if (messagePage === 1) {
+      api.get(`/channels/${activeChannel}`).then(response => {
+        channelCache.set(activeChannel, response);
+        setChannel(response);
+      });
+    }
   }
 
   function closeChannel() {
@@ -71,8 +91,7 @@ export function ActiveChannel({isThread = false}) {
     set("messages.activeChannel", "");
   }
 
-  useEffect(loadChats, []);
-  useEffect(loadChats, [activeChannel]);
+  useEffect(() => loadChats(), [activeChannel]);
 
   // Something in the open chat changed: refetch the newest page (or the whole thread)
   // and swap it in, keeping any older pages already loaded above it.
@@ -81,7 +100,10 @@ export function ActiveChannel({isThread = false}) {
 
     api.get(messageRoute).then(response => {
       setMessages(current => {
-        if (isThread || response.length === 0) return response;
+        if (isThread || response.length === 0) {
+          chatCache.set(cacheKey, response);
+          return response;
+        }
 
         const oldest = Date.parse(response[0].created_at);
         return [...current.filter(message => Date.parse(message.created_at) < oldest), ...response];
