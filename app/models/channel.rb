@@ -21,6 +21,14 @@ class Channel < ApplicationRecord
     channels
   end
 
+  def channel_type
+    if is_a?(Slack::Channel)
+      "slack"
+    else
+      "whatsapp"
+    end
+  end
+
   # Each channel's newest top-level message (with its files, for the preview)
   # in one query: the newest timestamp per channel, joined back to its row.
   def self.preload_last_messages(channels)
