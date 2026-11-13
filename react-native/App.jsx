@@ -57,13 +57,15 @@ function PlayerBridge() {
 
 // ⌘K opens search.
 function SearchShortcut() {
-  const {set} = useAppContext();
-  useKeyCommand(['meta', 'k'], () => openSearch(set));
+  const {set, get} = useAppContext();
+  useKeyCommand(['meta', 'k'], () => openSearch(set, get));
   return null;
 }
 
-function openSearch(set) {
-  set('app.showSearch', true);
+function openSearch(set, get) {
+  let isOpen = get('app.showSearch') || false;
+
+  set('app.showSearch', !isOpen);
 }
 
 // Registers for notifications and requests permission on app launch
