@@ -55,7 +55,6 @@ function PlayerBridge() {
   return null;
 }
 
-// ⌘K opens search.
 function SearchShortcut() {
   const {set, get} = useAppContext();
   useKeyCommand(['meta', 'k'], () => openSearch(set, get));
