@@ -13,6 +13,8 @@ export function SearchModal() {
 
   const results = searchQuery.length > 0 && Array.isArray(data) ? data : [];
 
+  let focusedResultIndex = 0;
+
   if (!open) return null;
 
   return (
@@ -22,9 +24,9 @@ export function SearchModal() {
 
         <ScrollView> 
           {results.map((result, index) => (
-            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
-              <Text style={styles.resultTitle}>{result.title}</Text>
-              <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
+            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
+              <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
+              <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
             </View>
           ))}
         </ScrollView>
@@ -60,9 +62,16 @@ const createStyles = colors => StyleSheet.create({
   result: {
     padding: 16,
     borderRadius: 16,
+    marginLeft: 16,
+    marginRight: 16,
+    marginTop: 16,
   },
   resultEven: {
     backgroundColor: colors.surfaceAt2,
+  },
+  resultFocused: {
+    backgroundColor: colors.primaryContainer,
+    color: colors.onPrimaryContainer,
   },
   resultTitle: {
     fontWeight: 'bold',
