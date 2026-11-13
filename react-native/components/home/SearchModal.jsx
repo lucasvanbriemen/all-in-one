@@ -34,12 +34,12 @@ export function SearchModal() {
 const createStyles = colors => StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAt3,
+    boxShadow: '0 0 100px 160px rgba(0,0,0,0.5)',
     margin: 20,
     padding: 20,
     borderRadius: 10,
