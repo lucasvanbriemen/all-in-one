@@ -1,6 +1,5 @@
 import {StyleSheet, View, Text, TextInput} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
-import {useEffect} from 'react';
 import {useApi} from '../useApi';
 
 import {useAppContext} from '../../context/AppContext';
@@ -10,19 +9,11 @@ export function SearchModal() {
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';
-  const {data, refresh} = useApi(`/search?query=${searchQuery}`);
+  // useApi refetches by itself whenever the URL (and so the query) changes.
+  const {data} = useApi(`/search?query=${encodeURIComponent(searchQuery)}`);
 
-  const results = data || [];
-
-  useEffect(() => {
-    if (searchQuery.length > 0) {
-      refresh();
-    }
-  }, [get('app.searchQuery')]);
-
-  useEffect(() => {
-    console.log(results);
-  }, [results]);
+  // Anything other than a list (an error body, a stale cache entry) shows nothing.
+  const results = searchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   if (!open) return null;
 
@@ -30,6 +21,13 @@ export function SearchModal() {
     <View style={styles.backdrop}>
       <View style={styles.modal}>
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} />
+
+          {results.map((result, index) => (
+            <View key={index} style={{marginBottom: 10}}>
+              <Text>{result.title}</Text>
+              <Text>{result.subtitle}</Text>
+            </View>
+          ))}
       </View>
     </View>
   );

@@ -4,7 +4,9 @@ class SearchController < ApplicationController
 
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = matching_channels(@query)
-    @emails = Email.where("subject LIKE ?", "%#{@query}%")
+    @emails = Email.select(:id, :subject, :sender_name, :sender_id)
+               .where("subject LIKE ?", "%#{Email.sanitize_sql_like(@query.to_s)}%")
+               .order(created_at: :desc).limit(20)
 
     @results = []
 
@@ -31,7 +33,7 @@ class SearchController < ApplicationController
         type: "email",
         source: "emails.#{email.id}",
         title: email.subject,
-        subtitle: email.sender
+        subtitle: email.sender_name
       }
     }
 
