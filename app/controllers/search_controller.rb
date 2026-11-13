@@ -22,7 +22,7 @@ class SearchController < ApplicationController
     @channels.each { |channel|
       @results << {
         type: "channel",
-        source: "channels.#{channel.id}",
+        source: "channels.#{channel.channel_type}.#{channel.id}",
         title: channel.display_name,
         subtitle: channel.channel_type
       }

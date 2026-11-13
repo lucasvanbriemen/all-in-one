@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TextInput, ScrollView} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
+import {openSource} from '../push';
 
 import {useAppContext} from '../../context/AppContext';
 
@@ -24,6 +25,9 @@ export function SearchModal() {
       setFocusedResultIndex(i => Math.max(0, Math.min(i + 1, results.length - 1)));
     } else if (key === 'ArrowUp') {
       setFocusedResultIndex(i => Math.max(i - 1, 0));
+    } else if (key === 'Enter') {
+      console.log('Opening source for result:', results[focusedResultIndex]);
+      openSource(set, results[focusedResultIndex].source);
     }
   };
 
@@ -32,7 +36,7 @@ export function SearchModal() {
   return (
     <View style={styles.backdrop}>
       <View style={styles.modal}>
-        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}]} />
+        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}, {key: 'Enter'}]} />
 
         <ScrollView> 
           {results.map((result, index) => (
