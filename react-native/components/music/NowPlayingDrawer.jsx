@@ -1,6 +1,5 @@
 import {Animated, Easing, Pressable, StyleSheet, useWindowDimensions} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
-// components/music/NowPlayingDrawer.jsx
 import {useEffect, useRef} from 'react';
 
 import {NowPlayingCard} from './NowPlayingCard';
