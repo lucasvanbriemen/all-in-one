@@ -5,9 +5,14 @@ class SearchController < ApplicationController
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = Channel.where("name LIKE ?", "%#{@query}%")
 
+    @results = []
+
+    @liked_songs.each { |song|
+      @results << { type: "liked_song", data: song }
+    }
+
     render json: {
-      "liked_songs" => @liked_songs,
-      "channels" => @channels
+      "results" => @results
     }
   end
 end
