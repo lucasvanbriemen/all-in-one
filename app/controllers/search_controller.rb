@@ -8,7 +8,12 @@ class SearchController < ApplicationController
     @results = []
 
     @liked_songs.each { |song|
-      @results << { type: "liked_song", data: song }
+      @results << {
+        type: "liked_song",
+        source: "music.songs.#{song.id}",
+        title: song.title,
+        subtitle: song.artist
+      }
     }
 
     render json: {
