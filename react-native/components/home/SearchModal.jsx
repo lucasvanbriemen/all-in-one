@@ -25,12 +25,16 @@ export function SearchModal() {
       setFocusedResultIndex(i => Math.max(0, Math.min(i + 1, results.length - 1)));
     } else if (key === 'ArrowUp') {
       setFocusedResultIndex(i => Math.max(i - 1, 0));
-    } else if (key === 'Enter') {
-      const result = results[focusedResultIndex];
-      if (!result) return;
-      set('app.showSearch', false);
-      openSource(set, result.source);
     }
+  };
+
+  // Return submits a single-line TextInput natively, so it arrives here rather
+  // than through onKeyDown.
+  const openFocusedResult = () => {
+    const result = results[focusedResultIndex];
+    if (!result) return;
+    set('app.showSearch', false);
+    openSource(set, result.source);
   };
 
   if (!open) return null;
@@ -38,7 +42,7 @@ export function SearchModal() {
   return (
     <View style={styles.backdrop}>
       <View style={styles.modal}>
-        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}, {key: 'Enter'}]} />
+        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}]} onSubmitEditing={openFocusedResult} />
 
         <ScrollView> 
           {results.map((result, index) => (
