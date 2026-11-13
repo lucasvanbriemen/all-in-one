@@ -35,9 +35,7 @@ class SearchController < ApplicationController
       }
     }
 
-    render json: {
-      "results" => @results
-    }
+    render json: @results
   end
 
   private

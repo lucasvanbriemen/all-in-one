@@ -10,7 +10,7 @@ export function SearchModal() {
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';
-  const {data, refresh} = useApi(`/search?q=${searchQuery}`);
+  const {data, refresh} = useApi(`/search?query=${searchQuery}`);
 
   const results = data || [];
 
