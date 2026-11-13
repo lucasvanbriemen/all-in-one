@@ -22,8 +22,8 @@ export function SearchModal() {
 
           {results.map((result, index) => (
             <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
-              <Text>{result.title}</Text>
-              <Text>{result.subtitle}</Text>
+              <Text style={styles.resultTitle}>{result.title}</Text>
+              <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
             </View>
           ))}
       </View>
@@ -60,4 +60,10 @@ const createStyles = colors => StyleSheet.create({
   resultEven: {
     backgroundColor: colors.surfaceAt2,
   },
+  resultTitle: {
+    fontWeight: 'bold',
+  },
+  resultSubtitle: {
+    color: colors.outline,
+  }
 });
