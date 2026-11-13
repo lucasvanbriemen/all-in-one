@@ -9,10 +9,8 @@ export function SearchModal() {
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';
-  // useApi refetches by itself whenever the URL (and so the query) changes.
   const {data} = useApi(`/search?query=${encodeURIComponent(searchQuery)}`);
 
-  // Anything other than a list (an error body, a stale cache entry) shows nothing.
   const results = searchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   if (!open) return null;
