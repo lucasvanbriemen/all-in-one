@@ -4,6 +4,7 @@ class SearchController < ApplicationController
 
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = matching_channels(@query)
+    @emails = Email.where("subject LIKE ?", "%#{@query}%")
 
     @results = []
 
@@ -22,6 +23,15 @@ class SearchController < ApplicationController
         source: "channels.#{channel.id}",
         title: channel.display_name,
         subtitle: channel.channel_type
+      }
+    }
+
+    @emails.each { |email|
+      @results << {
+        type: "email",
+        source: "emails.#{email.id}",
+        title: email.subject,
+        subtitle: email.sender
       }
     }
 
