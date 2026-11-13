@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, TextInput} from 'react-native';
+import {StyleSheet, View, Text, TextInput, ScrollView} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 
@@ -20,12 +20,14 @@ export function SearchModal() {
       <View style={styles.modal}>
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} />
 
-        {results.map((result, index) => (
-          <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
-            <Text style={styles.resultTitle}>{result.title}</Text>
-            <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
-          </View>
-        ))}
+        <ScrollView> 
+          {results.map((result, index) => (
+            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
+              <Text style={styles.resultTitle}>{result.title}</Text>
+              <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -44,6 +46,7 @@ const createStyles = colors => StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: '50%',
+    maxHeight: '80%'
   },
 
   input: {
