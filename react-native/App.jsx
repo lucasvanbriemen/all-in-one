@@ -21,6 +21,7 @@ import {glass} from './components/theme';
 import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
+import {useKeyCommand} from './components/useKeyCommand';
 import {useThemedStyles} from './components/theme';
 
 const APPLICATIONS = {
@@ -38,6 +39,7 @@ export default function App() {
       <AppProvider>
         <PlayerBridge />
         <PushBridge />
+        <SearchShortcut />
         <AppShell />
       </AppProvider>
     </SafeAreaProvider>
@@ -50,6 +52,17 @@ function PlayerBridge() {
   const {set, get} = useAppContext();
   useEffect(() => player.subscribe(set, get), [set, get]);
   return null;
+}
+
+// ⌘K opens search.
+function SearchShortcut() {
+  const {set} = useAppContext();
+  useKeyCommand(['meta', 'k'], () => openSearch(set));
+  return null;
+}
+
+function openSearch(set) {
+  set('app.showSearch', true);
 }
 
 // Registers for notifications and requests permission on app launch
