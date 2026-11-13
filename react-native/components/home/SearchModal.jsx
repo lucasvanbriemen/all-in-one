@@ -21,7 +21,7 @@ export function SearchModal() {
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} />
 
           {results.map((result, index) => (
-            <View key={index} style={{marginBottom: 10}}>
+            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
               <Text>{result.title}</Text>
               <Text>{result.subtitle}</Text>
             </View>
@@ -52,5 +52,12 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-  }
+  },
+  result: {
+    padding: 16,
+    borderRadius: 16,
+  },
+  resultEven: {
+    backgroundColor: colors.surfaceAt2,
+  },
 });
