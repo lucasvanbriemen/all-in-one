@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect} from 'react';
 
@@ -12,12 +12,26 @@ export function SearchModal() {
   if (!open) return null;
 
   return (
-    <>
-      
-    </>
+    <View style={styles.backdrop}>
+      <View style={styles.modal}>
+        <Text>Hello</Text>
+      </View>
+    </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  backdrop: {...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)'},
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal: {
+    backgroundColor: colors.surface,
+    margin: 20,
+    padding: 20,
+    borderRadius: 10,
+    width: '50%',
+  },
 });
