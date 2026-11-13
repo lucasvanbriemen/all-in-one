@@ -16,6 +16,15 @@ class SearchController < ApplicationController
       }
     }
 
+    @channels.each { |channel|
+      @results << {
+        type: "channel",
+        source: "channels.#{channel.id}",
+        title: channel.name,
+        subtitle: channel.name
+      }
+    }
+
     render json: {
       "results" => @results
     }
