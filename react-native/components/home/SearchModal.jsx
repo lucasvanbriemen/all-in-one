@@ -43,18 +43,19 @@ const createStyles = colors => StyleSheet.create({
     backgroundColor: colors.surfaceAt3,
     boxShadow: '0 0 100px 160px rgba(0,0,0,0.5)',
     margin: 20,
-    padding: 20,
-    borderRadius: 10,
     width: '50%',
-    maxHeight: '80%'
+    height: '50%',
+    borderRadius: 16,
   },
 
   input: {
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+    borderColor: colors.outlineVariant,
+    color: colors.onSurface,
+    borderRadius: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    padding: 16,
   },
   result: {
     padding: 16,
