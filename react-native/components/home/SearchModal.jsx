@@ -26,8 +26,10 @@ export function SearchModal() {
     } else if (key === 'ArrowUp') {
       setFocusedResultIndex(i => Math.max(i - 1, 0));
     } else if (key === 'Enter') {
-      console.log('Opening source for result:', results[focusedResultIndex]);
-      openSource(set, results[focusedResultIndex].source);
+      const result = results[focusedResultIndex];
+      if (!result) return;
+      set('app.showSearch', false);
+      openSource(set, result.source);
     }
   };
 

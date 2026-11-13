@@ -31,6 +31,22 @@ class Email < ApplicationRecord
     scope.where.not(MailboxConfig::IGNORED_EMAIL_SUBJECTS.map { |s| "subject LIKE ?" }.join(" OR "), *MailboxConfig::IGNORED_EMAIL_SUBJECTS.map { |s| "%#{s}%" })
   end
 
+  # Mailbox group path for each of the given emails, keyed by email id.
+  # Specific groups are checked before catch-all groups (those using
+  # exclude_from), since the latter match anything the others don't.
+  # Emails in no group (e.g. ignored subjects) are left out.
+  def self.group_paths(emails)
+    ids = emails.map(&:id)
+    groups = MailboxConfig::GROUPS.sort_by { |g| g[:rules][:exclude_from] ? 1 : 0 }
+
+    groups.each_with_object({}) do |group, paths|
+      remaining = ids - paths.keys
+      break paths if remaining.empty?
+
+      in_group(group[:path]).where(id: remaining).pluck(:id).each { |id| paths[id] = group[:path] }
+    end
+  end
+
   # Emails matching a rule set. The from/to/sender_name clauses are OR-ed,
   # so an email is included if it matches any of them.
   def self.matching(rules)

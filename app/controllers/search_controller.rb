@@ -22,16 +22,17 @@ class SearchController < ApplicationController
     @channels.each { |channel|
       @results << {
         type: "channel",
-        source: "channels.#{channel.channel_type}.#{channel.id}",
+        source: "messages.#{channel.channel_type}.#{channel.id}",
         title: channel.display_name,
         subtitle: channel.channel_type
       }
     }
 
+    group_paths = Email.group_paths(@emails)
     @emails.each { |email|
       @results << {
         type: "email",
-        source: "emails.#{email.id}",
+        source: "email.#{group_paths[email.id] || MailboxConfig::DEFAULT_GROUP}.#{email.id}",
         title: email.subject,
         subtitle: email.sender_name
       }

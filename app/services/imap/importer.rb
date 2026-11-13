@@ -130,12 +130,9 @@ module Imap
     end
 
     # Create a notification for a newly imported email when its mailbox group
-    # has notifications enabled. Specific groups are checked before catch-all
-    # groups (those using exclude_from), since the latter match anything the
-    # others don't.
+    # has notifications enabled.
     def notify(email)
-      groups = MailboxConfig::GROUPS.sort_by { |g| g[:rules][:exclude_from] ? 1 : 0 }
-      group = groups.find { |g| Email.in_group(g[:path]).exists?(id: email.id) }
+      group = MailboxConfig.find(Email.group_paths([email])[email.id])
       return unless group && group[:send_notifications]
 
       return if MailboxConfig::IGNORED_EMAIL_SUBJECTS_FOR_NOTIFICATIONS.any? { |subject| email.subject.include?(subject) }
