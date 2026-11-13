@@ -9,7 +9,7 @@ import { useApi } from "../useApi";
 export function ReminderCard() {
   const styles = useThemedStyles(createStyles);
   const {data, refresh} = useApi('/reminders');
-  const reminders = data || [];
+  const reminders = Array.isArray(data) ? data : [];
 
   return (
     <View style={styles.reminders}>
@@ -20,10 +20,10 @@ export function ReminderCard() {
           <Text style={styles.noReminders}>Nothing to remind you of right now.</Text>
         )}
         {reminders && reminders.map(reminder => (
-          <Reminder key={reminder.id} reminder={reminder} onComplete={refresh()}/>
+          <Reminder key={reminder.id} reminder={reminder} onComplete={refresh}/>
         ))}
       </ScrollView>
-      <ReminderForm onCreate={refresh()} />
+      <ReminderForm onCreate={refresh} />
     </View>
   );
 }

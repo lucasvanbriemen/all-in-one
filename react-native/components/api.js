@@ -22,6 +22,12 @@ export const api = {
     return this.makeRequest("GET", url, null, headers);
   },
 
+  // Like get(), but a failed response (e.g. a 502 HTML page from the proxy)
+  // rejects instead of resolving with the error body.
+  getOrThrow(url, headers = {}) {
+    return this.makeRequest("GET", url, null, headers, {throwOnError: true});
+  },
+
   patch(url, data, headers = {}) {
     return this.makeRequest("PATCH", url, data, headers);
   },
@@ -47,7 +53,7 @@ export const api = {
     return this.send("POST", url, {method: "POST", headers, body});
   },
 
-  makeRequest(method, url, data = null, headers = {}) {
+  makeRequest(method, url, data = null, headers = {}, {throwOnError = false} = {}) {
     const options = {
       method,
       headers: {
@@ -60,14 +66,15 @@ export const api = {
       options.body = JSON.stringify(data);
     }
 
-    return this.send(method, url, options);
+    return this.send(method, url, options, {throwOnError});
   },
 
-  send(method, url, options) {
+  send(method, url, options, {throwOnError = false} = {}) {
     return fetch(BASE_URL + url, options)
       .then(async (response) => {
         if (!response.ok) {
           console.warn(`${method} ${url} failed with ${response.status}`);
+          if (throwOnError) throw new Error(`${method} ${url} failed with ${response.status}`);
         }
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();
