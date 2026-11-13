@@ -22,6 +22,7 @@ import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
+import {SearchModal} from './components/home/SearchModal';
 import {useThemedStyles} from './components/theme';
 
 const APPLICATIONS = {
@@ -109,6 +110,7 @@ function AppShell() {
           )}
         </SafeAreaView>
       </SeasonalRoot>
+      <SearchModal />
     </TransparentWindow>
   );
 }
