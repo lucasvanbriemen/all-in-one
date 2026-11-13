@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, TextInput} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useEffect} from 'react';
 
@@ -14,6 +14,7 @@ export function SearchModal() {
   return (
     <View style={styles.backdrop}>
       <View style={styles.modal}>
+        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." />
         <Text>Hello</Text>
       </View>
     </View>
