@@ -20,12 +20,12 @@ export function SearchModal() {
       <View style={styles.modal}>
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} />
 
-          {results.map((result, index) => (
-            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
-              <Text style={styles.resultTitle}>{result.title}</Text>
-              <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
-            </View>
-          ))}
+        {results.map((result, index) => (
+          <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd]}>
+            <Text style={styles.resultTitle}>{result.title}</Text>
+            <Text style={styles.resultSubtitle}>{result.subtitle}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );
