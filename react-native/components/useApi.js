@@ -8,7 +8,16 @@ const cache = new Map(); // url -> data
 const listeners = new Map(); // url -> Set of setState functions
 
 // Bump the version when a response's shape changes, so old saved data is ignored.
-const STORAGE_KEY = 'api-cache-v1';
+// Old versions are deleted on launch: v1 had grown to 13 MB of search results.
+const STORAGE_KEY = 'api-cache-v3';
+const OLD_STORAGE_KEYS = ['api-cache-v1', 'api-cache-v2'];
+
+// The whole cache is serialized on every save, on the JS thread, so keep it to
+// what's worth showing at launch: no search results, and only the most recent URLs.
+const MAX_SAVED_URLS = 30;
+const shouldSave = url => !url.startsWith('/search');
+
+AsyncStorage.removeMany(OLD_STORAGE_KEYS).catch(() => {});
 
 function notify(url, data) {
   listeners.get(url)?.forEach(listener => listener(data));
@@ -31,16 +40,19 @@ let saveTimer = null;
 function save() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(cache))).catch(() => {});
+    // A Map keeps insertion order and refresh() re-inserts, so the tail is the most recent.
+    const saved = [...cache].filter(([url]) => shouldSave(url)).slice(-MAX_SAVED_URLS);
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(saved))).catch(() => {});
   }, 1000);
 }
 
 // Fetches a URL, remembers the answer, and hands it to everyone showing that URL.
 function refresh(url) {
   return api.get(url).then(data => {
+    cache.delete(url); // re-insert, so it counts as most recent
     cache.set(url, data);
     notify(url, data);
-    save();
+    if (shouldSave(url)) save();
     return data;
   });
 }

@@ -14,7 +14,7 @@ export function MessageInput({threadId = null}) {
   const [text, setText] = useState("");
   const [attachment, setAttachment] = useState(null);
   const {get, set} = useAppContext();
-  const [activeChannel, setActiveChannel] = useState(get("messages.activeChannel") ?? "");
+  const activeChannel = get("messages.activeChannel") ?? "";
   const inputRef = useRef(null);
   const [attachmentError, setAttachmentError] = useState(null);
 
@@ -49,10 +49,6 @@ export function MessageInput({threadId = null}) {
   useEffect(() => {
     if (quote) inputRef.current?.focus();
   }, [quote?.id]);
-
-  useEffect(() => {
-    setActiveChannel(get("messages.activeChannel") ?? "");
-  }, [get]);
 
   async function pickAttachment() {
     const picked = await mediaPicker.pick();

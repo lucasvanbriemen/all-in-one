@@ -1,6 +1,14 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-const AppContext = createContext();
+/**
+ * App-wide state, kept outside React.
+ *
+ * It used to live in a context `useState`, which re-rendered every consumer —
+ * and through AppShell, the whole tree — on every `set`. Now each component
+ * that calls `useAppContext()` only re-renders when a key it read during its
+ * last render changes. `setIn` copies just the path it writes, so an unchanged
+ * key keeps its identity and a `!==` check is enough to tell.
+ */
 
 const toPath = key => (Array.isArray(key) ? key : String(key).split('.'));
 
@@ -26,29 +34,78 @@ function removeIn(obj, path) {
   return { ...obj, [head]: removeIn(obj[head], rest) };
 }
 
-export function AppProvider({ children, initialData = {} }) {
-  const [data, setData] = useState(initialData);
+let state = {};
+const listeners = new Set();
 
-  const get = useCallback(key => getIn(data, toPath(key)), [data]);
-
-  const set = useCallback((key, value) => {
-    const path = toPath(key);
-    setData(prev =>
-      setIn(prev, path, typeof value === 'function' ? value(getIn(prev, path)) : value),
-    );
-  }, []);
-
-  const remove = useCallback(key => {
-    setData(prev => removeIn(prev, toPath(key)));
-  }, []);
-
-  const value = useMemo(() => ({ data, get, set, remove }), [data, get, set, remove]);
-
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+function update(next) {
+  if (next === state) return;
+  state = next;
+  listeners.forEach(listener => listener());
 }
 
+export const store = {
+  get: key => getIn(state, toPath(key)),
+
+  set(key, value) {
+    const path = toPath(key);
+    update(setIn(state, path, typeof value === 'function' ? value(getIn(state, path)) : value));
+  },
+
+  remove(key) {
+    update(removeIn(state, toPath(key)));
+  },
+
+  subscribe(listener) {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  },
+};
+
+/** Kept so App.jsx and tests can seed state; it no longer holds any itself. */
+export function AppProvider({ children, initialData }) {
+  const seeded = useRef(false);
+  if (!seeded.current) {
+    seeded.current = true;
+    if (initialData) state = initialData;
+  }
+  return children;
+}
+
+/**
+ * `get`, `set` and `remove` are stable across renders, and `get` always reads
+ * the latest state — also inside callbacks and effects. Don't use `get` as an
+ * effect dependency to mean "something changed"; read the value in render and
+ * depend on that instead.
+ */
 export function useAppContext() {
-  const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useAppContext must be used inside AppProvider');
-  return ctx;
+  const [, rerender] = useReducer(n => n + 1, 0);
+
+  // Keys this component read, and what it saw. Re-recorded on every render.
+  const seen = useRef(null);
+  if (seen.current === null) seen.current = new Map();
+  seen.current.clear();
+
+  const get = useCallback(key => {
+    const value = store.get(key);
+    seen.current.set(Array.isArray(key) ? key.join('.') : String(key), value);
+    return value;
+  }, []);
+
+  useEffect(() => {
+    const check = () => {
+      for (const [key, value] of seen.current) {
+        if (store.get(key) !== value) {
+          rerender();
+          return;
+        }
+      }
+    };
+
+    const unsubscribe = store.subscribe(check);
+    // Children's effects run before ours; catch anything they set in between.
+    check();
+    return unsubscribe;
+  }, []);
+
+  return { get, set: store.set, remove: store.remove };
 }

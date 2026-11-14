@@ -11,7 +11,8 @@ import {useCompactLayout} from '../useCompactLayout';
 
 const CAN_HOVER = Platform.OS === 'web' || Platform.OS === 'macos';
 
-export function Message({message, showSender = false}) {
+// Memoized: a chat refresh keeps the older message objects, so only new ones re-render.
+export const Message = React.memo(function Message({message, showSender = false}) {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
@@ -138,7 +139,7 @@ export function Message({message, showSender = false}) {
 
     </Pressable>
   );
-}
+});
 
 // What a quote shows: the text, or what kind of file it was.
 export function quotePreview(message) {

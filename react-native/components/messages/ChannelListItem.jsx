@@ -1,9 +1,10 @@
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {useAppContext} from '../../context/AppContext';
 
-export function ChannelListItem({channel}) {
+export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
   const styles = useThemedStyles(createStyles);
 
   const {get, set} = useAppContext();
@@ -28,7 +29,7 @@ export function ChannelListItem({channel}) {
       </View>
     </Pressable>
   );
-}
+});
 
 const createStyles = colors => StyleSheet.create({
   channelItem: {

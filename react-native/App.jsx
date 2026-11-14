@@ -1,4 +1,4 @@
-import {AppProvider, useAppContext} from './context/AppContext';
+import {AppProvider, store, useAppContext} from './context/AppContext';
 import {Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
@@ -50,8 +50,7 @@ export default function App() {
 // Keeps the native audio player's state in the app store for as long as the
 // app is mounted, independent of which page is showing.
 function PlayerBridge() {
-  const {set, get} = useAppContext();
-  useEffect(() => player.subscribe(set, get), [set, get]);
+  useEffect(() => player.subscribe(store.set, store.get), []);
   return null;
 }
 
