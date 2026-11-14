@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook
   get "/whatsapp/status", to: "whatsapp#status", as: :whatsapp_status
   get "/whatsapp/pair", to: "whatsapp#pair", as: :whatsapp_pair
+  get "/whatsapp/avatars/:jid", to: "whatsapp#avatar", as: :whatsapp_avatar, constraints: { jid: /[^\/]+/ }, format: false
 
   get "/seasonal/advent", to: "seasonal#advent", as: :seasonal_advent
   get "/seasonal/tree", to: "seasonal#tree", as: :seasonal_tree

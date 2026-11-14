@@ -63,6 +63,14 @@ module Whatsapp
     # Groups have their own picture; a one-on-one chat shows the other person's, which lives on their contact.
     def avatar_contact = resolved_contact
 
+    def avatar_url
+      is_group_chat ? super : (avatar_contact&.avatar_url || super)
+    end
+
+    def avatar_file
+      is_group_chat || avatar_contact.nil? ? super : avatar_contact.avatar_file
+    end
+
     private
 
     # Replies carry who wrote the quoted message and its text, so recipients see the right preview.

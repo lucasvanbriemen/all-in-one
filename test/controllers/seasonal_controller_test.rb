@@ -74,7 +74,7 @@ class SeasonalControllerTest < ActionDispatch::IntegrationTest
     before = get_json("/seasonal/greetings", date: "2026-12-20")["contacts"]
     after = get_json("/seasonal/greetings", date: "2026-12-26")["contacts"]
 
-    assert_equal [ { "channel_id" => MAM, "name" => "Mam", "avatar_url" => nil, "greeted" => false } ], before
+    assert_equal [ { "channel_id" => MAM, "name" => "Mam", "avatar_url" => "https://aio.ltvb.nl/whatsapp/avatars/#{MAM}", "greeted" => false } ], before
     assert_equal true, after.first["greeted"]
   end
 

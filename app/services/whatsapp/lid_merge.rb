@@ -35,7 +35,7 @@ module Whatsapp
 
       phone_contact.lid = @lid
       phone_contact.name = lid_contact.name if phone_contact.name.blank? && lid_contact
-      phone_contact.avatar_url = lid_contact.avatar_url if phone_contact.avatar_url.blank? && lid_contact
+      phone_contact[:avatar_url] = lid_contact[:avatar_url] if phone_contact[:avatar_url].blank? && lid_contact
       phone_contact.save!
       return unless lid_contact
 
