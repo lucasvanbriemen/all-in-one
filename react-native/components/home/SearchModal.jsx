@@ -5,6 +5,8 @@ import {useApi} from '../useApi';
 import {openSource} from '../push';
 import {useDebouncedValue} from './debouncedValue';
 import {player} from "../music/player";
+import {api} from '../api';
+import {EmailBody} from '../email/EmailBody';
 
 import {useAppContext} from '../../context/AppContext';
 
@@ -67,17 +69,18 @@ export function SearchModal() {
             ))}
           </ScrollView>
 
+          {focusedResult && focusedResult.type === 'email' ? (
+            <EmailPreview email={focusedResult.full_object} />
+          ) : (
           <ScrollView>
             {focusedResult && focusedResult.type === 'liked_song' && (
               <SongPreview song={focusedResult.full_object} />
-            )}
-            {focusedResult && focusedResult.type === 'email' && (
-              <EmailPreview email={focusedResult.full_object} />
             )}
             {focusedResult && focusedResult.type === 'channel' && (
               <ChannelPreview channel={focusedResult.full_object} />
             )}
           </ScrollView>
+          )}
         </View>
       </View>
     </View>
@@ -96,12 +99,24 @@ function SongPreview({ song }) {
   );
 }
 
+// Search results carry no body (it made search slow), so the focused email's
+// full body is fetched here. Plain api.get rather than useApi: bodies are big
+// and shouldn't end up in the saved cache.
 function EmailPreview({ email }) {
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    let current = true;
+    setDetail(null);
+    api.get('/emails/' + email.id).then(data => current && setDetail(data)).catch(() => {});
+    return () => { current = false; }; // arrowing past an email drops its late response
+  }, [email.id]);
+
   return (
-    <View>
+    <View style={{flex: 1}}>
       <Text>{email.subject}</Text>
       <Text>{email.sender_name}</Text>
-      <Text>{email.html_body}</Text>
+      {detail && <EmailBody detail={detail} />}
     </View>
   );
 }
