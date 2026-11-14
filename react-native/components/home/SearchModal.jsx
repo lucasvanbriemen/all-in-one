@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, TextInput, ScrollView} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
+import {useDebouncedValue} from './debouncedValue';
 
 import {useAppContext} from '../../context/AppContext';
 
@@ -11,13 +12,14 @@ export function SearchModal() {
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';
-  const {data} = useApi(`/search?query=${encodeURIComponent(searchQuery)}`);
+  const debouncedSearchQuery = useDebouncedValue(searchQuery);
+  const {data} = useApi(`/search?query=${encodeURIComponent(debouncedSearchQuery)}`);
 
-  const results = searchQuery.length > 0 && Array.isArray(data) ? data : [];
+  const results = debouncedSearchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   const [focusedResultIndex, setFocusedResultIndex] = useState(0);
 
-  useEffect(() => setFocusedResultIndex(0), [searchQuery]);
+  useEffect(() => setFocusedResultIndex(0), [debouncedSearchQuery]);
 
   const handleKeyDown = e => {
     const key = e.nativeEvent.key;
