@@ -38,7 +38,7 @@ class SearchController < ApplicationController
         source: "email.#{group_paths[email.id] || MailboxConfig::DEFAULT_GROUP}.#{email.id}",
         title: email.subject,
         subtitle: email.sender_name,
-        image_url: email.image_url,
+        image_url: email.sender_image_url,
         full_object: email
       }
     }
