@@ -72,9 +72,9 @@ export function SearchModal() {
           </View>
 
           <View style={styles.previewContainer}>
-            {focusedResult && focusedResult.type === 'email' && (
+            {focusedResult && focusedResult.type === 'email' ? (
               <EmailPreview email={focusedResult.full_object} />
-            )}
+            ) : (
             <ScrollView>
               {focusedResult && focusedResult.type === 'liked_song' && (
                 <SongPreview song={focusedResult.full_object} />
@@ -83,6 +83,7 @@ export function SearchModal() {
                 <ChannelPreview channel={focusedResult.full_object} />
               )}
             </ScrollView>
+            )}
           </View>
         </View>
       </View>
@@ -115,8 +116,9 @@ function EmailPreview({ email }) {
     return () => { current = false; }; // arrowing past an email drops its late response
   }, [email.id]);
 
+  // flex: 1 gives the web view below its height; without it the body collapses to nothing.
   return (
-    <View>
+    <View style={{flex: 1}}>
       <Text>{email.subject}</Text>
       <Text>{email.sender_name}</Text>
       {detail && <EmailBody detail={detail} />}
@@ -142,11 +144,18 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Each pane takes exactly half the modal. With flex alone they sized to their
+  // content (a long subject, a wide email) and pushed the preview off the modal.
   results: {
-    flex: 1,
+    width: '50%',
+    minWidth: 0,
+    overflow: 'hidden',
   },
   previewContainer: {
-    flex: 1,
+    width: '50%',
+    minWidth: 0,
+    overflow: 'hidden',
+    borderBottomRightRadius: 16,
   },
   modal: {
     backgroundColor: colors.surfaceAt3,
