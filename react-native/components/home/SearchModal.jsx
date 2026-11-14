@@ -111,6 +111,9 @@ function ChannelPreview({ channel }) {
     <View>
       <Text>{channel.name}</Text>
       <Text>{channel.is_dm ? 'Direct Message' : 'Channel'}</Text>
+      {channel.last_message_preview && (
+        <Text numberOfLines={3}>{channel.last_message_preview}</Text>
+      )}
     </View>
   );
 }

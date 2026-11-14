@@ -26,7 +26,7 @@ class SearchController < ApplicationController
         source: "messages.#{channel.channel_type}.#{channel.id}",
         title: channel.display_name,
         subtitle: channel.channel_type,
-        full_object: channel
+        full_object: channel.as_json(methods: [ :display_name, :last_message, :last_message_preview ])
       }
     }
 
@@ -57,7 +57,6 @@ class SearchController < ApplicationController
       .distinct
       .to_a
 
-    Whatsapp::Channel.preload_resolved_contacts(channels.grep(Whatsapp::Channel))
-    channels
+    Channel.preload_for_listing(channels)
   end
 end
