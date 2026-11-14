@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TextInput, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, TextInput, ScrollView, Image} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
@@ -68,15 +68,24 @@ export function SearchModal() {
           </ScrollView>
 
           <ScrollView>
-            {focusedResult && (
-              <View style={[styles.result, styles.resultFocused]}>
-                <Text style={[styles.resultTitle, styles.resultFocused]}>{focusedResult.title}</Text>
-                <Text style={[styles.resultSubtitle, styles.resultFocused]}>{focusedResult.subtitle}</Text>
-              </View>
+            {focusedResult && focusedResult.type === 'liked_song' && (
+              <SongPreview song={focusedResult.full_object} />
             )}
           </ScrollView>
         </View>
       </View>
+    </View>
+  );
+}
+
+function SongPreview({ song }) {
+  return (
+    <View>
+      <Image source={{ uri: song.image_url }} style={{ width: 50, height: 50 }} />
+      <Text>{song.title}</Text>
+      <Text>{song.artist}</Text>
+      <Text>{song.album}</Text>
+      <Text>{song.duration}</Text>
     </View>
   );
 }
