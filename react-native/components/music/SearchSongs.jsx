@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {Song} from './Song';
@@ -30,7 +30,7 @@ export function SearchSongs() {
   }
 
   return (
-    <View style={styles.content}>
+    <ScrollView style={styles.content}>
       <TextInput
         style={[styles.searchInput, isCompact && styles.searchInputCompact]}
         placeholder="Search songs..."
@@ -40,7 +40,7 @@ export function SearchSongs() {
       {searchResults.map((song, index) => (
         <Song key={song.id} song={song} isEven={index % 2 === 0} onClick={() => player.play(song, set, get)} />
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
