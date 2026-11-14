@@ -7,6 +7,12 @@ import {useDebouncedValue} from './debouncedValue';
 
 import {useAppContext} from '../../context/AppContext';
 
+function openResult(set, result) {
+  if (!result) return;
+  set('app.showSearch', false);
+  openSource(set, result.source);
+}
+
 export function SearchModal() {
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
@@ -30,13 +36,9 @@ export function SearchModal() {
     }
   };
 
-  // Return submits a single-line TextInput natively, so it arrives here rather
-  // than through onKeyDown.
   const openFocusedResult = () => {
     const result = results[focusedResultIndex];
-    if (!result) return;
-    set('app.showSearch', false);
-    openSource(set, result.source);
+    openResult(set, result);
   };
 
   if (!open) return null;
