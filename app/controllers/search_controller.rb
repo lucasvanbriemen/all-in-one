@@ -15,6 +15,7 @@ class SearchController < ApplicationController
         source: "music.songs.#{song.id}",
         title: song.title,
         subtitle: song.artist,
+        image_url: song.image_url,
         full_object: song
       }
     }
@@ -25,6 +26,7 @@ class SearchController < ApplicationController
         source: "messages.#{channel.channel_type}.#{channel.id}",
         title: channel.display_name,
         subtitle: channel.channel_type,
+        image_url: channel.avatar_url,
         full_object: channel.as_json(methods: [ :display_name, :last_message, :last_message_preview ])
       }
     }
