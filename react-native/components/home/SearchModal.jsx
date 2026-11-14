@@ -31,8 +31,10 @@ export function SearchModal() {
   const results = debouncedSearchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   const [focusedResultIndex, setFocusedResultIndex] = useState(0);
+  const [focusedResult, setFocusedResult] = useState(null);
 
   useEffect(() => setFocusedResultIndex(0), [debouncedSearchQuery]);
+  useEffect(() => setFocusedResult(results[focusedResultIndex] || null), [focusedResultIndex, results]);
 
   const handleKeyDown = e => {
     const key = e.nativeEvent.key;
@@ -65,13 +67,13 @@ export function SearchModal() {
             ))}
           </ScrollView>
 
-          <ScrollView> 
-            {results.map((result, index) => (
-              <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-                <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
-                <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+          <ScrollView>
+            {focusedResult && (
+              <View style={[styles.result, styles.resultFocused]}>
+                <Text style={[styles.resultTitle, styles.resultFocused]}>{focusedResult.title}</Text>
+                <Text style={[styles.resultSubtitle, styles.resultFocused]}>{focusedResult.subtitle}</Text>
               </View>
-            ))}
+            )}
           </ScrollView>
         </View>
       </View>
