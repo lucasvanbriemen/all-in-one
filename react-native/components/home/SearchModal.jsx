@@ -64,8 +64,11 @@ export function SearchModal() {
             <ScrollView> 
               {results.map((result, index) => (
                 <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-                  <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
-                  <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+                  <Image source={{ uri: result.image_url }} style={{ width: 50, height: 50 }} />
+                  <View style={styles.textWrapper}>
+                    <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
+                    <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+                  </View>
                 </View>
               ))}
             </ScrollView>
@@ -151,6 +154,9 @@ const createStyles = colors => StyleSheet.create({
     minWidth: 0,
     overflow: 'hidden',
   },
+  textWrapper: {
+    flex: 1,
+  },
   previewContainer: {
     width: '50%',
     minWidth: 0,
@@ -181,6 +187,9 @@ const createStyles = colors => StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     marginTop: 16,
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
   },
   resultEven: {
     backgroundColor: colors.surfaceAt2,
