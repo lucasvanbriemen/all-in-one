@@ -67,7 +67,7 @@ const createStyles = colors => StyleSheet.create({
   },
   modal: {
     backgroundColor: colors.surfaceAt3,
-    boxShadow: '0 0 100px 160px rgba(0,0,0,0.5)',
+    boxShadow: '0 0 190px 160px rgba(0,0,0,0.5)',
     margin: 20,
     width: '50%',
     height: '50%',
