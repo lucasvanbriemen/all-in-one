@@ -71,6 +71,12 @@ export function SearchModal() {
             {focusedResult && focusedResult.type === 'liked_song' && (
               <SongPreview song={focusedResult.full_object} />
             )}
+            {focusedResult && focusedResult.type === 'email' && (
+              <EmailPreview email={focusedResult.full_object} />
+            )}
+            {focusedResult && focusedResult.type === 'channel' && (
+              <ChannelPreview channel={focusedResult.full_object} />
+            )}
           </ScrollView>
         </View>
       </View>
@@ -86,6 +92,25 @@ function SongPreview({ song }) {
       <Text>{song.artist}</Text>
       <Text>{song.album}</Text>
       <Text>{song.duration}</Text>
+    </View>
+  );
+}
+
+function EmailPreview({ email }) {
+  return (
+    <View>
+      <Text>{email.subject}</Text>
+      <Text>{email.sender_name}</Text>
+      <Text>{email.html_body}</Text>
+    </View>
+  );
+}
+
+function ChannelPreview({ channel }) {
+  return (
+    <View>
+      <Text>{channel.display_name}</Text>
+      <Text>{channel.is_dm ? 'Direct Message' : 'Channel'}</Text>
     </View>
   );
 }
