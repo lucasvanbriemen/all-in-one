@@ -4,12 +4,19 @@ import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
 import {useDebouncedValue} from './debouncedValue';
+import {player} from "../music/player";
 
 import {useAppContext} from '../../context/AppContext';
 
-function openResult(set, result) {
+function openResult(set, get, result) {
   if (!result) return;
   set('app.showSearch', false);
+
+  if (result.type === 'liked_song') {
+    player.play(result.full_object, set, get);
+    return;
+  }
+
   openSource(set, result.source);
 }
 
@@ -38,7 +45,7 @@ export function SearchModal() {
 
   const openFocusedResult = () => {
     const result = results[focusedResultIndex];
-    openResult(set, result);
+    openResult(set, get, result);
   };
 
   if (!open) return null;
