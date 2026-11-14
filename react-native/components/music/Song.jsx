@@ -11,6 +11,8 @@ export function Song({song, isEven, onClick, rightLabel = null, compact}) {
   const styles = useThemedStyles(createStyles);
   const [isLiked, setIsLiked] = useState(song.is_liked);
 
+  const isCompact = useCompactLayout() || compact;
+
   function toggleLike() {
     setIsLiked(liked => !liked);
 
@@ -18,7 +20,7 @@ export function Song({song, isEven, onClick, rightLabel = null, compact}) {
   }
 
   return (
-    <View style={[styles.container, compact && styles.compact, isEven && styles.evenBackground]}>
+    <View style={[styles.container, isCompact && styles.compact, isEven && styles.evenBackground]}>
       <Pressable style={styles.pressable} onPress={() => onClick()}>
         <Image source={{uri: song.image_url}} style={styles.image} />
 
