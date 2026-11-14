@@ -60,27 +60,30 @@ export function SearchModal() {
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}]} onSubmitEditing={openFocusedResult} />
 
         <View style={styles.resultsContainer}>
-          <ScrollView> 
-            {results.map((result, index) => (
-              <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-                <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
-                <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
-              </View>
-            ))}
-          </ScrollView>
+          <View style={styles.results}>
+            <ScrollView> 
+              {results.map((result, index) => (
+                <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
+                  <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
+                  <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
 
-          {focusedResult && focusedResult.type === 'email' ? (
-            <EmailPreview email={focusedResult.full_object} />
-          ) : (
-          <ScrollView>
-            {focusedResult && focusedResult.type === 'liked_song' && (
-              <SongPreview song={focusedResult.full_object} />
+          <View style={styles.previewContainer}>
+            {focusedResult && focusedResult.type === 'email' && (
+              <EmailPreview email={focusedResult.full_object} />
             )}
-            {focusedResult && focusedResult.type === 'channel' && (
-              <ChannelPreview channel={focusedResult.full_object} />
-            )}
-          </ScrollView>
-          )}
+            <ScrollView>
+              {focusedResult && focusedResult.type === 'liked_song' && (
+                <SongPreview song={focusedResult.full_object} />
+              )}
+              {focusedResult && focusedResult.type === 'channel' && (
+                <ChannelPreview channel={focusedResult.full_object} />
+              )}
+            </ScrollView>
+          </View>
         </View>
       </View>
     </View>
@@ -113,7 +116,7 @@ function EmailPreview({ email }) {
   }, [email.id]);
 
   return (
-    <View style={{flex: 1}}>
+    <View>
       <Text>{email.subject}</Text>
       <Text>{email.sender_name}</Text>
       {detail && <EmailBody detail={detail} />}
@@ -138,6 +141,12 @@ const createStyles = colors => StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  results: {
+    flex: 1,
+  },
+  previewContainer: {
+    flex: 1,
   },
   modal: {
     backgroundColor: colors.surfaceAt3,
