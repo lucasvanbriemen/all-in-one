@@ -64,7 +64,7 @@ export function SearchModal() {
             <ScrollView> 
               {results.map((result, index) => (
                 <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-                  <Image source={{ uri: result.image_url }} style={{ width: 50, height: 50 }} />
+                  <Image source={{ uri: result.image_url }} style={styles.resultImage} />
                   <View style={styles.textWrapper}>
                     <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
                     <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
@@ -153,6 +153,7 @@ const createStyles = colors => StyleSheet.create({
     width: '50%',
     minWidth: 0,
     overflow: 'hidden',
+    margin: 16,
   },
   textWrapper: {
     flex: 1,
@@ -169,14 +170,14 @@ const createStyles = colors => StyleSheet.create({
     margin: 20,
     width: '50%',
     height: '50%',
-    borderRadius: 16,
+    borderRadius: 32,
   },
 
   input: {
     borderWidth: 1,
     borderColor: colors.outlineVariant,
     color: colors.onSurface,
-    borderRadius: 16,
+    borderRadius: 32,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     padding: 16,
@@ -184,12 +185,14 @@ const createStyles = colors => StyleSheet.create({
   result: {
     padding: 16,
     borderRadius: 16,
-    marginLeft: 16,
-    marginRight: 16,
-    marginTop: 16,
     flexDirection: 'row',
     gap: 16,
     alignItems: 'center',
+  },
+  resultImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 16,
   },
   resultEven: {
     backgroundColor: colors.surfaceAt2,
