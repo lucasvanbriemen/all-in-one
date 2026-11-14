@@ -55,14 +55,25 @@ export function SearchModal() {
       <View style={styles.modal}>
         <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}]} onSubmitEditing={openFocusedResult} />
 
-        <ScrollView> 
-          {results.map((result, index) => (
-            <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-              <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
-              <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        <View style={styles.resultsContainer}>
+          <ScrollView> 
+            {results.map((result, index) => (
+              <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
+                <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
+                <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+              </View>
+            ))}
+          </ScrollView>
+
+          <ScrollView> 
+            {results.map((result, index) => (
+              <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
+                <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
+                <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </View>
   );
@@ -111,5 +122,9 @@ const createStyles = colors => StyleSheet.create({
   },
   resultSubtitle: {
     color: colors.outline,
+  },
+  resultsContainer: {
+    flex: 1,
+    flexDirection: 'row',
   }
 });
