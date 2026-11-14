@@ -1,8 +1,9 @@
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import {useAppContext} from '../../context/AppContext';
+import {Avatar} from './Avatar';
 
 export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
   const styles = useThemedStyles(createStyles);
@@ -21,7 +22,7 @@ export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
 
   return (
     <Pressable key={channel.id} onPress={() => openChannel(channel)} style={[styles.channelItem, isSelected() && styles.channelItem.selected, isSelected() && styles.channelItem.selectedParrent, channel.unread_count > 0 && styles.channelItem.unread]}>
-      <Image source={{uri: channel.avatar_url}} style={{width: 32, height: 32, borderRadius: 16, marginRight: 8}} />
+      <Avatar uri={channel.avatar_url} name={channel.display_name} size={32} style={{marginRight: 8}} />
 
       <View style={styles.channelItem.textContainer}>
         <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]}>{channel.display_name}</Text>

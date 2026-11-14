@@ -1,5 +1,5 @@
 import {BASE_URL, api} from '../api';
-import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
@@ -8,6 +8,7 @@ import {NavigationBlur} from '../sidebar/NavigationBlur';
 
 import {Message} from './Message';
 import {MessageInput} from './MessageInput';
+import {Avatar} from './Avatar';
 import {useAppContext} from '../../context/AppContext';
 import {useChannel} from '../cable';
 
@@ -126,7 +127,7 @@ export function ActiveChannel({isThread = false}) {
 
           <View style={styles.channelInfo}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
-            <Image source={{uri: channel?.avatar_url}} style={styles.avatar} />
+            <Avatar uri={channel?.avatar_url} name={channel?.display_name} size={45} style={styles.avatar} />
             <Text style={styles.channelInfo.name}>{channel?.display_name}</Text>
           </View>
         </View>
@@ -225,16 +226,6 @@ const createStyles = colors => StyleSheet.create({
     height: 45,
     borderRadius: 25,
     marginRight: 16,
-  },
-  avatarFallback: {
-    backgroundColor: colors.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarInitials: {
-    color: colors.onSecondary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   unreadChat: {
     ...glass(colors, {variant: 'primaryContainer'}),
