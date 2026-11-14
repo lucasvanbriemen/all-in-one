@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   get "/server_data", to: "server#index", as: :server_data
   get "/notifications", to: "notification#index", as: :notifications
+  get "/notifications/stacks", to: "notification#stacks", as: :notification_stacks
+  post "/notifications/mark_as_read", to: "notification#mark_source_as_read", as: :mark_notification_source_as_read
 
   get "/money/connect", to: "money#connect", as: :money_connect
   get "/money/callback", to: "money#callback", as: :money_callback

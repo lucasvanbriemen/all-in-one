@@ -1,7 +1,7 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useThemedStyles} from '../theme';
 
-import {Notification} from './Notification';
+import {NotificationStack} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
 import {OverviewCard} from '../money/OverviewCard';
 import {Stat} from './Stat';
@@ -20,7 +20,7 @@ export function HomePage() {
   const compact = useCompactLayout();
   const styles = useThemedStyles(createStyles);
   const serverData = useApi('/server_data').data;
-  const notifications = useApi('/notifications').data;
+  const notificationStacks = useApi('/notifications/stacks').data;
   const season = useSeason();
 
   return (
@@ -45,8 +45,8 @@ export function HomePage() {
       <View style={[styles.mainContent, compact && styles.compactMain]}>
         <View style={compact ? undefined : styles.notificationsContainer}>
           <ScrollView>
-            {notifications && notifications.map((notification, index) => (
-              <Notification key={index} notification={notification} />
+            {Array.isArray(notificationStacks) && notificationStacks.map(stack => (
+              <NotificationStack key={stack.source} stack={stack} />
             ))}
           </ScrollView>
         </View>

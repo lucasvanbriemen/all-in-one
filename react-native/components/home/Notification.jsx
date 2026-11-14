@@ -18,59 +18,99 @@ function parseSource(source) {
 // Kinds that get follow-up actions when tapped; anything else opens directly.
 const EXPANDABLE = ['transactions', 'messages', 'email'];
 
-export function Notification({notification}) {
+// All unread notifications of one source (a chat, an email, a transaction) as
+// a single card: the newest on top, a few more when expanded.
+export function NotificationStack({stack}) {
   const styles = useThemedStyles(createStyles);
   const {set} = useAppContext();
 
-  const [isRead, setIsRead] = useState(notification.read);
+  const [dismissed, setDismissed] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const source = parseSource(notification.source);
-  const expandable = EXPANDABLE.includes(source.kind);
+  const source = parseSource(stack.source);
+  const expandable = EXPANDABLE.includes(source.kind) || stack.count > 1;
+  const [latest, ...earlier] = stack.previews;
+  const hidden = stack.count - stack.previews.length;
 
-  async function markAsRead() {
-    await api.post(`/notifications/${notification.id}/mark_as_read`);
-    setIsRead(true);
+  // A dismissed chat comes back as the same stack when a new message arrives.
+  useEffect(() => setDismissed(false), [latest?.id]);
+
+  // Clears the stack without a read receipt; "Mark as read" sends one.
+  async function dismiss() {
+    setDismissed(true);
+    await api.post('/notifications/mark_as_read', {source: stack.source});
   }
 
-  function openNotification() {
-    markAsRead();
-    openSource(set, notification.source);
+  function openStack() {
+    dismiss();
+    openSource(set, stack.source);
   }
 
-  if (isRead) return null;
+  if (dismissed || !latest) return null;
 
   return (
     <View style={[styles.notification, expanded && styles.notificationExpanded]}>
       <View style={styles.row}>
-        <Pressable style={styles.text} onPress={expandable ? () => setExpanded(!expanded) : openNotification}>
-          <Text style={styles.title}>{notification.title}</Text>
-          <Text style={styles.body} numberOfLines={expanded ? undefined : 2}>{notification.body}</Text>
+        <Pressable style={styles.text} onPress={expandable ? () => setExpanded(!expanded) : openStack}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title} numberOfLines={1}>{stack.title}</Text>
+            {stack.count > 1 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{stack.count}</Text>
+              </View>
+            )}
+          </View>
+          {!expanded && stack.senders.length > 1 && (
+            <Text style={styles.hint} numberOfLines={1}>{senderSummary(stack.senders)}</Text>
+          )}
+          <Preview preview={latest} stack={stack} expanded={expanded} styles={styles} />
         </Pressable>
 
-        <Pressable onPress={markAsRead} hitSlop={8}>
+        <Pressable onPress={dismiss} hitSlop={8}>
           <Icon name="cross" size={24} color={styles.accent.color} />
         </Pressable>
       </View>
 
       {expanded && (
         <View style={styles.actions}>
+          {earlier.map(preview => (
+            <Preview key={preview.id} preview={preview} stack={stack} expanded styles={styles} />
+          ))}
+          {hidden > 0 && <Text style={styles.hint}>+{hidden} earlier</Text>}
+
           {source.kind === 'transactions' && (
-            <TransactionActions transactionId={Number(source.id)} onDone={markAsRead} styles={styles} />
+            <TransactionActions transactionId={Number(source.id)} onDone={dismiss} styles={styles} />
           )}
           {source.kind === 'messages' && (
-            <MessageActions channelId={source.id} onDone={() => setIsRead(true)} styles={styles} />
+            <MessageActions channelId={source.id} onDone={() => setDismissed(true)} styles={styles} />
           )}
           {source.kind === 'email' && (
-            <EmailActions emailId={Number(source.id)} onDone={() => setIsRead(true)} styles={styles} />
+            <EmailActions emailId={Number(source.id)} onDone={() => setDismissed(true)} styles={styles} />
           )}
 
-          <Pressable style={styles.button} onPress={openNotification}>
+          <Pressable style={styles.button} onPress={openStack}>
             <Text style={styles.buttonText}>Open</Text>
           </Pressable>
         </View>
       )}
     </View>
   );
+}
+
+// In a channel or group the card is titled with the chat, so each line names
+// its sender; in a DM, or for an email, the title already says it.
+function Preview({preview, stack, expanded, styles}) {
+  const sender = preview.title && preview.title !== stack.title ? `${preview.title}: ` : '';
+  return (
+    <Text style={styles.body} numberOfLines={expanded ? undefined : 2}>
+      {sender ? <Text style={styles.sender}>{sender}</Text> : null}
+      {preview.body}
+    </Text>
+  );
+}
+
+function senderSummary(senders) {
+  const shown = senders.slice(0, 2).join(', ');
+  return senders.length > 2 ? `${shown} +${senders.length - 2}` : shown;
 }
 
 // The same category chips as the Uncategorized card. Categorizing dismisses the notification.
@@ -195,9 +235,32 @@ const createStyles = colors => StyleSheet.create({
   text: {
     flex: 1,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   title: {
+    flexShrink: 1,
     fontSize: 16,
     fontWeight: 'bold',
+    color: colors.onSurface,
+  },
+  badge: {
+    minWidth: 22,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 11,
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: colors.onPrimary,
+  },
+  sender: {
+    fontWeight: '600',
     color: colors.onSurface,
   },
   body: {
