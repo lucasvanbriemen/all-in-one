@@ -4,7 +4,7 @@ class SearchController < ApplicationController
 
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = matching_channels(@query)
-    @emails = Email.select(:id, :subject, :sender_name, :sender_id)
+    @emails = Email.select(:id, :subject, :sender_name, :sender_id, :html_body)
                .where("subject LIKE ?", "%#{Email.sanitize_sql_like(@query.to_s)}%")
                .order(created_at: :desc).limit(20)
 
@@ -15,7 +15,8 @@ class SearchController < ApplicationController
         type: "liked_song",
         source: "music.songs.#{song.id}",
         title: song.title,
-        subtitle: song.artist
+        subtitle: song.artist,
+        full_object: song
       }
     }
 
@@ -24,7 +25,8 @@ class SearchController < ApplicationController
         type: "channel",
         source: "messages.#{channel.channel_type}.#{channel.id}",
         title: channel.display_name,
-        subtitle: channel.channel_type
+        subtitle: channel.channel_type,
+        full_object: channel
       }
     }
 
@@ -34,7 +36,8 @@ class SearchController < ApplicationController
         type: "email",
         source: "email.#{group_paths[email.id] || MailboxConfig::DEFAULT_GROUP}.#{email.id}",
         title: email.subject,
-        subtitle: email.sender_name
+        subtitle: email.sender_name,
+        full_object: email
       }
     }
 
