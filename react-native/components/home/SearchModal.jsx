@@ -109,7 +109,7 @@ function EmailPreview({ email }) {
 function ChannelPreview({ channel }) {
   return (
     <View>
-      <Text>{channel.display_name}</Text>
+      <Text>{channel.name}</Text>
       <Text>{channel.is_dm ? 'Direct Message' : 'Channel'}</Text>
     </View>
   );
