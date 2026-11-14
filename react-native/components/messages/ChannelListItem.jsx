@@ -65,6 +65,8 @@ const createStyles = colors => StyleSheet.create({
     selectedParrent: {
       borderWidth: 2,
       padding: 15,
+      borderColor: colors.primary,
+      borderTopColor: colors.primary,
     },
 
     unread: {
