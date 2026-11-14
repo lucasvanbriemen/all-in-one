@@ -3,9 +3,11 @@ require "did_you_mean"
 module Music
   # Gets the closest matching liked songs for a given query.
   class LikedSongMatcher
-    # Strip anything in brackets and dash-separated edition suffixes:
-    # "Title (2018 Remaster)", "Title [Live]", "Title - Single Version".
-    EDITION_SUFFIX = /\s*[(\[].*?[)\]]|\s+-\s+.*$/
+    # Bracketed edition notes: "Title (2018 Remaster)", "Title [Live]".
+    BRACKETED = /\s*[(\[].*?[)\]]/
+    # " - " separates either "Title - Single Version" or, on YouTube,
+    # "Artist - Title", so either side may be the actual title.
+    DASH = /\s+-\s+/
     FILLER_WORDS = %w[the a an feat ft featuring].freeze
     WORD_SIMILARITY_THRESHOLD = 0.9
     MIN_SCORE = 0.6
@@ -24,9 +26,17 @@ module Music
     private
 
     def score(query, song)
-      title = words(song.title)
-      title_and_artist = title + words(song.artist)
+      segments = song.title.to_s.gsub(BRACKETED, "").split(DASH).map { |segment| words(segment) }.reject(&:empty?)
+      segments = [ [] ] if segments.empty?
+      artist = words(song.artist)
 
+      segments.each_with_index.map { |title, index|
+        others = segments.reject.with_index { |_, i| i == index }.flatten
+        score_as_title(query, title, title + others + artist)
+      }.max
+    end
+
+    def score_as_title(query, title, title_and_artist)
       title_hits = matched_count(query, title)
       full_hits = matched_count(query, title_and_artist)
 
@@ -51,8 +61,9 @@ module Music
 
     def words(text)
       text.to_s
-        .sub(EDITION_SUFFIX, "")
+        .gsub(BRACKETED, "")
         .downcase
+        .delete("'’")
         .gsub(/[^\p{Alnum}\s]/, " ")
         .split
         .reject { |word| FILLER_WORDS.include?(word) }
