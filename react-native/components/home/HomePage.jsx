@@ -5,7 +5,6 @@ import {NotificationStack} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
 import {OverviewCard} from '../money/OverviewCard';
 import {Stat} from './Stat';
-import {UncategorizedTransactions} from '../money/UncategorizedTransactions';
 import {AdventCalendar} from '../seasonal/AdventCalendar';
 import {ChristmasTreeCard} from '../seasonal/ChristmasTree';
 import {CountdownStat} from '../seasonal/Countdowns';
@@ -58,7 +57,6 @@ export function HomePage() {
 
         <View style={styles.moneyColumn}>
           <OverviewCard />
-          <UncategorizedTransactions />
         </View>
       </View>
     </View>
