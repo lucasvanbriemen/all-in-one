@@ -4,6 +4,7 @@ import { glass, useThemedStyles } from '../theme';
 
 import {NavigationBlur} from './NavigationBlur';
 import { api } from '../api';
+import { Icon } from '../icons';
 import { useAppContext } from '../../context/AppContext';
 
 const title = name => name.charAt(0).toUpperCase() + name.slice(1);
@@ -58,13 +59,18 @@ export function MobileNavigation() {
         </View>
       )}
 
-      <ScrollView style={styles.sections} horizontal={true} showsHorizontalScrollIndicator={false}>
+      <View style={styles.appRow}>
+      <ScrollView style={[styles.sections, {flex: 1}]} horizontal={true} showsHorizontalScrollIndicator={false}>
         {config && Object.keys(config).map(app => (
           <Pressable key={app} onPress={() => {set('app.activeSidebarItem', config[app]?.[0]?.path ?? null); set('app.activeApp', app);}} style={[styles.tab, app === get('app.activeApp') && styles.selected]}>
             <Text style={[styles.tabText, app === get('app.activeApp') && styles.selectedText]}> {title(app)}</Text>
           </Pressable>
         ))}
       </ScrollView>
+        <Pressable onPress={() => set('app.showSearch', true)} style={styles.searchButton} accessibilityLabel="Search">
+          <Icon name="search" size={22} color={styles.tabText.color} />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -84,6 +90,14 @@ const createStyles = colors => StyleSheet.create({
   section: {
     paddingHorizontal: 16,
     flex: 0
+  },
+  appRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  searchButton: {
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 48,
   },
   sectionText: { color: colors.onSurfaceVariant, fontSize: 14 },
   tab: {

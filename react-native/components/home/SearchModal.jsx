@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TextInput, ScrollView, Image} from 'react-native';
+import {StyleSheet, View, Text, TextInput, ScrollView, Image, Pressable} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {glass, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
@@ -7,6 +8,7 @@ import {useDebouncedValue} from './debouncedValue';
 import {player} from "../music/player";
 import {api} from '../api';
 import {EmailBody} from '../email/EmailBody';
+import {useCompactLayout} from '../useCompactLayout';
 
 import {useAppContext} from '../../context/AppContext';
 
@@ -30,6 +32,8 @@ export function SearchModal() {
   const debouncedSearchQuery = useDebouncedValue(searchQuery);
   const {data} = useApi(`/search?query=${encodeURIComponent(debouncedSearchQuery)}`);
 
+  const compact = useCompactLayout();
+  const insets = useSafeAreaInsets();
   const results = debouncedSearchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   const [focusedResultIndex, setFocusedResultIndex] = useState(0);
@@ -53,6 +57,33 @@ export function SearchModal() {
   };
 
   if (!open) return null;
+
+  // Phones get a full-screen, results-only sheet: no room for the preview pane,
+  // and no arrow keys, so a result opens on tap.
+  if (compact) {
+    return (
+      <View style={[styles.mobileSheet, {paddingTop: insets.top + 12, paddingBottom: insets.bottom}]}>
+        <View style={styles.mobileHeader}>
+          <TextInput style={styles.mobileInput} autoFocus={true} placeholder="Search..." placeholderTextColor={styles.resultSubtitle.color} value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onSubmitEditing={openFocusedResult} returnKeyType="search" autoCorrect={false} autoCapitalize="none" clearButtonMode="while-editing" />
+          <Pressable onPress={() => set('app.showSearch', false)} hitSlop={8}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        </View>
+
+        <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.mobileResults}>
+          {results.map((result, index) => (
+            <Pressable key={index} onPress={() => openResult(set, get, result)} style={({pressed}) => [styles.result, index % 2 === 0 && styles.resultEven, pressed && styles.resultFocused]}>
+              <Image source={{ uri: result.image_url }} style={styles.resultImage} />
+              <View style={styles.textWrapper}>
+                <Text style={styles.resultTitle} numberOfLines={1}>{result.title}</Text>
+                <Text style={styles.resultSubtitle} numberOfLines={2}>{result.subtitle}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.backdrop}>
@@ -203,9 +234,39 @@ const createStyles = colors => StyleSheet.create({
   },
   resultTitle: {
     fontWeight: 'bold',
+    color: colors.onSurface,
   },
   resultSubtitle: {
     color: colors.outline,
+  },
+  mobileSheet: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.surfaceAt3,
+    paddingHorizontal: 12,
+  },
+  mobileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 12,
+  },
+  mobileInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    color: colors.onSurface,
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  cancel: {
+    color: colors.primary,
+    fontSize: 16,
+  },
+  mobileResults: {
+    gap: 4,
+    paddingBottom: 24,
   },
   resultsContainer: {
     flex: 1,
