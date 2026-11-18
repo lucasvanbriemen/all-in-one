@@ -31,6 +31,12 @@ export const Message = React.memo(function Message({message, showSender = false}
 
   const grouped = groupReactions(reactions);
 
+  // Slack highlights messages that ping me; @here/@channel/@everyone count too.
+  const mentionsMe = !message.from_me && (
+    Object.values(message.mentions || {}).some(mention => mention.me)
+    || /<!(here|channel|everyone)\b/.test(message.body || '')
+  );
+
   // WhatsApp replies quote the message; Slack has no quotes, so a reply there goes into the thread.
   const canQuote = message.platform === 'whatsapp';
   const canReply = canQuote || !message.thread_id;
@@ -110,7 +116,7 @@ export const Message = React.memo(function Message({message, showSender = false}
       onLongPress={() => setPickerOpen(open => !open)}
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
-      style={[styles.chatContainer, message.from_me && styles.from_me]}>
+      style={[styles.chatContainer, message.from_me && styles.from_me, mentionsMe && styles.mentionsMe]}>
 
       {showSender && !message.from_me && (
         <View style={styles.senderContainer}>
@@ -135,7 +141,7 @@ export const Message = React.memo(function Message({message, showSender = false}
       )}
 
       <View style={styles.body}>
-        <RichText text={message.body} platform={message.platform} style={styles.content} />
+        <RichText text={message.body} platform={message.platform} mentions={message.mentions} emoji={message.emoji} style={styles.content} />
       </View>
 
       {message.reply_count > 0 && (
@@ -150,7 +156,10 @@ export const Message = React.memo(function Message({message, showSender = false}
         <View style={styles.reactions}>
           {grouped.map(group => (
             <Pressable key={group.emoji} onPress={() => toggleReaction(group.emoji)} style={[styles.reaction, group.mine && styles.reactionMine]}>
-              <Text style={styles.reactionText}>{group.emoji}{group.count > 1 ? ` ${group.count}` : ''}</Text>
+              <Text style={styles.reactionText}>
+                {group.url ? <Image source={{uri: group.url}} style={styles.reactionImage} /> : group.emoji}
+                {group.count > 1 ? ` ${group.count}` : ''}
+              </Text>
             </Pressable>
           ))}
 
@@ -262,6 +271,10 @@ const createStyles = colors => StyleSheet.create({
   from_me: {
     backgroundColor: colors.primaryContainer,
   },
+  mentionsMe: {
+    borderWidth: 1,
+    borderColor: colors.warning,
+  },
   content: {
     color: colors.onSurface,
   },
@@ -298,6 +311,10 @@ const createStyles = colors => StyleSheet.create({
   },
   reactionText: {
     color: colors.onSurfaceVariant,
+  },
+  reactionImage: {
+    width: 16,
+    height: 16,
   },
   addReaction: {
     opacity: 0.8,

@@ -1,4 +1,4 @@
-import {Linking, Platform, StyleSheet, Text, View} from 'react-native';
+import {Image, Linking, Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useThemedStyles, withAlpha} from '../theme';
 
@@ -8,6 +8,12 @@ const MONO = Platform.select({ios: 'Menlo', macos: 'Menlo', default: 'monospace'
 // Emphasis needs non-space edges, so a correction like "Ver*" stays plain text.
 const INLINE = new RegExp([
   '`(?<code>[^`\\n]+)`',
+  // Slack: <@U123> user, <#C123|name> channel, <!here>, <!subteam^S123|@team>.
+  '<(?<mentionKind>[@#])(?<mentionId>\\w+)(?:\\|(?<mentionLabel>[^>]+))?>',
+  '<!(?<special>here|channel|everyone)(?:\\|[^>]*)?>',
+  // Slack :shortcodes:, resolved by the server; unknown ones (and times like 10:30:00) stay text.
+  ':(?<emojiName>[a-z0-9_+\'\\-]+):',
+  '<!subteam\\^(?<team>\\w+)(?:\\|(?<teamLabel>[^>]+))?>',
   '<(?<href>(?:https?|mailto):[^|>\\s]+)(?:\\|(?<label>[^>]+))?>',
   '(?<url>https?:\\/\\/[^\\s<>]*[^\\s<>.,!?;:)\'"])',
   '\\*\\*(?<bold2>\\S(?:.*?\\S)?)\\*\\*',
@@ -41,7 +47,8 @@ function inline(text, ctx, keyPrefix = '') {
     const end = start + match[0].length;
     const emphasis = EMPHASIS.find(name => groups[name] != null);
 
-    if (emphasis && !atWordEdges(text, start, end)) {
+    const emoji = groups.emojiName != null ? ctx.emoji?.[groups.emojiName] : null;
+    if ((emphasis && !atWordEdges(text, start, end)) || (groups.emojiName != null && !emoji)) {
       INLINE.lastIndex = start + 1;
       continue;
     }
@@ -50,7 +57,19 @@ function inline(text, ctx, keyPrefix = '') {
     const key = `${keyPrefix}${start}`;
     const {styles} = ctx;
 
-    if (groups.code != null) {
+    if (emoji) {
+      nodes.push(emoji.startsWith('http')
+        ? <Image key={key} source={{uri: emoji}} style={ctx.jumbo ? styles.customEmojiJumbo : styles.customEmoji} />
+        : emoji);
+    } else if (groups.mentionId != null) {
+      const known = ctx.mentions?.[groups.mentionId];
+      const name = known?.name ?? groups.mentionLabel?.replace(/^[@#]/, '') ?? groups.mentionId;
+      nodes.push(<Text key={key} style={[styles.mention, known?.me && styles.mentionMe]}>{groups.mentionKind}{name}</Text>);
+    } else if (groups.special != null || groups.team != null) {
+      // @here/@channel/@everyone reach me too, so they get the same highlight Slack gives them.
+      const label = groups.special ? `@${groups.special}` : (groups.teamLabel ?? '@team');
+      nodes.push(<Text key={key} style={[styles.mention, groups.special && styles.mentionMe]}>{label}</Text>);
+    } else if (groups.code != null) {
       nodes.push(<Text key={key} style={styles.inlineCode}>{decode(groups.code, ctx.slack)}</Text>);
     } else if (groups.href != null || groups.url != null) {
       const href = groups.href ?? groups.url;
@@ -109,16 +128,19 @@ function blocks(text) {
     .filter(block => block.type !== 'text' || block.text);
 }
 
-export function RichText({text, platform, style}) {
+export function RichText({text, platform, mentions, emoji, style}) {
   const styles = useThemedStyles(createStyles);
   if (!text) return null;
 
-  const ctx = {styles, slack: platform === 'slack'};
+  // Like Slack, a message of just one to three emoji shows them large.
+  const jumbo = Boolean(emoji) && /^\s*(:[a-z0-9_+'\-]+:\s*){1,3}$/.test(text)
+    && (text.match(/:[a-z0-9_+'\-]+:/g) || []).every(code => emoji[code.slice(1, -1)]);
+  const ctx = {styles, mentions, emoji, jumbo, slack: platform === 'slack'};
   const parts = blocks(text);
 
   // Plain messages stay a single Text so selection and layout match what was there before.
   if (parts.length === 1 && parts[0].type === 'text') {
-    return <Text style={style}>{inline(parts[0].text, ctx)}</Text>;
+    return <Text style={[style, jumbo && styles.jumbo]}>{inline(parts[0].text, ctx)}</Text>;
   }
 
   return (
@@ -149,6 +171,18 @@ const createStyles = colors => StyleSheet.create({
     gap: 6,
     flexShrink: 1,
   },
+  jumbo: {
+    fontSize: 32,
+    lineHeight: 40,
+  },
+  customEmoji: {
+    width: 18,
+    height: 18,
+  },
+  customEmojiJumbo: {
+    width: 36,
+    height: 36,
+  },
   bold: {
     fontWeight: '700',
   },
@@ -157,6 +191,16 @@ const createStyles = colors => StyleSheet.create({
   },
   strike: {
     textDecorationLine: 'line-through',
+  },
+  mention: {
+    color: colors.primary,
+    fontWeight: '600',
+    backgroundColor: withAlpha(colors.primary, 0.12),
+  },
+  // Slack marks mentions of you in yellow; the warning tone is the theme's yellow.
+  mentionMe: {
+    color: colors.onWarningContainer,
+    backgroundColor: colors.warningContainer,
   },
   link: {
     color: colors.primary,

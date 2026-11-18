@@ -6,7 +6,7 @@ export function groupReactions(reactions = []) {
   reactions.forEach(reaction => {
     const emoji = reaction.emoji || reaction.reaction;
     if (!emoji) return;
-    const group = groups.get(emoji) || {emoji, count: 0, mine: false};
+    const group = groups.get(emoji) || {emoji, url: reaction.emoji_url, count: 0, mine: false};
     group.count += 1;
     group.mine = group.mine || Boolean(reaction.from_me);
     groups.set(emoji, group);

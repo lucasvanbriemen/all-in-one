@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
   MESSAGE_INCLUDES = [
     { contact: { methods: :display_name } },
-    { reactions: { methods: [ :from_me, :emoji ] } },
+    { reactions: { methods: [ :from_me, :emoji, :emoji_url ] } },
     { file_uploads: { methods: :filename } },
     { quoted_message: { include: { contact: { methods: :display_name }, file_uploads: { methods: :filename } }, methods: :from_me } }
   ].freeze
@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
 
     mark_as_read(channel) if page == 1
 
-    render json: messages.as_json(include: MESSAGE_INCLUDES, methods: [ :from_me, :reply_count, :platform ])
+    render json: with_emoji(with_mentions(messages.as_json(include: MESSAGE_INCLUDES, methods: [ :from_me, :reply_count, :platform ])))
   end
 
   def new
@@ -42,7 +42,7 @@ class MessagesController < ApplicationController
 
     request.delete? ? channel.unreact(message, emoji) : channel.react(message, emoji)
 
-    render json: message.reactions.reload.includes(:contact, :message).as_json(methods: [ :from_me, :emoji ])
+    render json: message.reactions.reload.includes(:contact, :message).as_json(methods: [ :from_me, :emoji, :emoji_url ])
   end
 
   def replies
@@ -53,10 +53,36 @@ class MessagesController < ApplicationController
     # Merge message itself with its replies
     replies = [ message ] + replies
 
-    render json: replies.as_json(include: MESSAGE_INCLUDES, methods: [ :from_me, :platform ])
+    render json: with_emoji(with_mentions(replies.as_json(include: MESSAGE_INCLUDES, methods: [ :from_me, :platform ])))
   end
 
   private
+
+  # Slack :shortcodes: in the body, as emoji or (custom ones) image URLs.
+  def with_emoji(json)
+    json.each do |message|
+      next unless message["platform"] == "slack"
+
+      emoji = Slack::Emoji.in_text(message["body"])
+      message["emoji"] = emoji if emoji.any?
+    end
+  end
+
+  MENTION = /<[@#](\w+)/
+
+  # Slack writes mentions as <@U123> / <#C123>; give each message the names it needs,
+  # looked up in one query for the whole page. Mine are flagged so the app can highlight them.
+  def with_mentions(json)
+    ids = json.flat_map { |message| message["body"].to_s.scan(MENTION).flatten }.uniq
+    return json if ids.empty?
+
+    names = Contact.where(id: ids).pluck(:id, :name).to_h { |id, name| [ id, { name: name, me: Contact::MY_CONTACT_IDS.include?(id) } ] }
+      .merge(Channel.where(id: ids).pluck(:id, :name).to_h { |id, name| [ id, { name: name, me: false } ] })
+    json.each do |message|
+      mentioned = message["body"].to_s.scan(MENTION).flatten
+      message["mentions"] = names.slice(*mentioned) if mentioned.any?
+    end
+  end
 
   # A failed read receipt must not stop the chat from loading.
   def mark_as_read(channel)

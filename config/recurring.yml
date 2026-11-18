@@ -49,3 +49,9 @@ production:
     class: CountSentImapEmailsJob
     queue: default
     schedule: every 30 minutes
+
+  # Custom Slack emoji (:party_parrot:) change rarely; needs the emoji:read scope.
+  sync_slack_emoji:
+    class: SyncSlackEmojiJob
+    queue: default
+    schedule: every day at 4am Europe/Amsterdam
