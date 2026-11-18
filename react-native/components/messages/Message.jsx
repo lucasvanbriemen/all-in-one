@@ -1,8 +1,9 @@
-import {Image, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Animated, Image, PanResponder, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import FileUpload from './FileUpload';
+import {tick} from '../haptics';
 import {api} from '../api';
 import {format} from '../money/format';
 import {QUICK_REACTIONS, groupReactions} from './reactions';
@@ -10,6 +11,10 @@ import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
 const CAN_HOVER = Platform.OS === 'web' || Platform.OS === 'macos';
+// Touch screens reply WhatsApp-style: drag the bubble right past the threshold and let go.
+const SWIPE_ENABLED = Platform.OS === 'ios' || Platform.OS === 'android';
+const SWIPE_THRESHOLD = 60;
+const SWIPE_MAX = 90;
 
 // Memoized: a chat refresh keeps the older message objects, so only new ones re-render.
 export const Message = React.memo(function Message({message, showSender = false}) {
@@ -41,6 +46,40 @@ export const Message = React.memo(function Message({message, showSender = false}
     });
   }
 
+  const swipeX = useRef(new Animated.Value(0)).current;
+  const armed = useRef(false);
+  const replyRef = useRef(reply);
+  replyRef.current = reply;
+
+  const swipe = useMemo(() => PanResponder.create({
+    // Only claim clearly horizontal rightward drags, so vertical scrolling keeps working.
+    onMoveShouldSetPanResponder: (_, {dx, dy}) => dx > 10 && Math.abs(dx) > Math.abs(dy) * 2,
+    onPanResponderTerminationRequest: () => false,
+    onPanResponderMove: (_, {dx}) => {
+      // Follow the finger, then add resistance past the threshold.
+      const x = Math.max(0, dx);
+      // Tick once when crossing the threshold, either way, so you feel when letting go will reply.
+      if ((x >= SWIPE_THRESHOLD) !== armed.current) {
+        armed.current = x >= SWIPE_THRESHOLD;
+        if (armed.current) tick();
+      }
+      swipeX.setValue(x < SWIPE_THRESHOLD ? x : Math.min(SWIPE_MAX, SWIPE_THRESHOLD + (x - SWIPE_THRESHOLD) * 0.3));
+    },
+    onPanResponderRelease: (_, {dx}) => {
+      armed.current = false;
+      if (dx >= SWIPE_THRESHOLD) replyRef.current();
+      Animated.spring(swipeX, {toValue: 0, useNativeDriver: true, bounciness: 6}).start();
+    },
+    onPanResponderTerminate: () => {
+      armed.current = false;
+      Animated.spring(swipeX, {toValue: 0, useNativeDriver: true}).start();
+    },
+  }), [swipeX]);
+
+  const swipeable = SWIPE_ENABLED && canReply;
+  const arrowOpacity = swipeX.interpolate({inputRange: [0, 20, SWIPE_THRESHOLD], outputRange: [0, 0.3, 1], extrapolate: 'clamp'});
+  const arrowScale = swipeX.interpolate({inputRange: [0, SWIPE_THRESHOLD, SWIPE_THRESHOLD + 8], outputRange: [0.5, 1, 1.2], extrapolate: 'clamp'});
+
   // Choosing an emoji I already put on the message takes it back.
   function toggleReaction(emoji) {
     if (busy) return;
@@ -56,11 +95,21 @@ export const Message = React.memo(function Message({message, showSender = false}
   }
 
   return (
+    <Animated.View
+      {...(swipeable ? swipe.panHandlers : {})}
+      style={[styles.row, message.from_me && styles.rowFromMe, compact && styles.chatContainerSmall, {transform: [{translateX: swipeX}]}]}>
+
+    {swipeable && (
+      <Animated.View pointerEvents="none" style={[styles.swipeArrow, {opacity: arrowOpacity, transform: [{scale: arrowScale}]}]}>
+        <Text style={styles.swipeArrowText}>↩︎</Text>
+      </Animated.View>
+    )}
+
     <Pressable
       onLongPress={() => setPickerOpen(open => !open)}
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
-      style={[styles.chatContainer, message.from_me && styles.from_me, compact && styles.chatContainerSmall,]}>
+      style={[styles.chatContainer, message.from_me && styles.from_me]}>
 
       {showSender && !message.from_me && (
         <View style={styles.senderContainer}>
@@ -138,6 +187,7 @@ export const Message = React.memo(function Message({message, showSender = false}
       )}
 
     </Pressable>
+    </Animated.View>
   );
 });
 
@@ -163,14 +213,32 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
     color: colors.primary
   },
-  chatContainer: {
+  row: {
     marginTop: 16,
+    alignSelf: 'flex-start',
+    maxWidth: '75%',
+  },
+  rowFromMe: {
+    alignSelf: 'flex-end',
+  },
+  swipeArrow: {
+    position: 'absolute',
+    left: -40,
+    top: 0,
+    bottom: 0,
+    width: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  swipeArrowText: {
+    fontSize: 20,
+    color: colors.primary,
+  },
+  chatContainer: {
     ...glass(colors),
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 16,
-    alignSelf: 'flex-start',
-    maxWidth: '75%',
     position: 'relative',
     gap: 8,
   },
@@ -195,7 +263,6 @@ const createStyles = colors => StyleSheet.create({
   },
   from_me: {
     backgroundColor: colors.primaryContainer,
-    alignSelf: 'flex-end',
   },
   content: {
     color: colors.onSurface,

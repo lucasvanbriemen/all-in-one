@@ -147,6 +147,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     maxHeight: 160,
+    color: colors.onSurface
   },
   attachment: {
     flexDirection: 'row',
