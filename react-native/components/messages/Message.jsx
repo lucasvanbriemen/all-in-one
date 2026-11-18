@@ -3,6 +3,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {glass, useThemedStyles} from '../theme';
 
 import FileUpload from './FileUpload';
+import {RichText} from './RichText';
 import {tick} from '../haptics';
 import {api} from '../api';
 import {format} from '../money/format';
@@ -134,7 +135,7 @@ export const Message = React.memo(function Message({message, showSender = false}
       )}
 
       <View style={styles.body}>
-        <Text style={styles.content}>{message.body}</Text>
+        <RichText text={message.body} platform={message.platform} style={styles.content} />
       </View>
 
       {message.reply_count > 0 && (
@@ -246,9 +247,6 @@ const createStyles = colors => StyleSheet.create({
     maxWidth: '85%',
   },
   body: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-end',
     gap: 8,
   },
   replyCount: {
