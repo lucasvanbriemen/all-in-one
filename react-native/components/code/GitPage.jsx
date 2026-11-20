@@ -1,5 +1,5 @@
 import {Button, Pressable, StyleSheet, Text, View, Image} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {glass, useTheme, useThemedStyles} from '../theme';
 import { useApi } from '../useApi';
 
 import {useAppContext} from '../../context/AppContext';
@@ -7,6 +7,7 @@ import {useAppContext} from '../../context/AppContext';
 export function GitPage() {
   const { get, set } = useAppContext()
   const styles = useThemedStyles(createStyles);
+  const { scheme } = useTheme();
 
   const { data: organizations = [] } = useApi('/github/organizations')
 
@@ -15,6 +16,11 @@ export function GitPage() {
       <Text>Git Page</Text>
       {organizations.map(org => (
         <View key={org.id} style={styles.orgContainer}>
+          <Image
+            source={{uri: scheme === 'dark' ? org.banner_dark_url : org.banner_light_url}}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
           <Image source={{uri: org.avatar_url}} style={{width: 50, height: 50}} />
           <Text>{org.name}</Text>
           <Text>{org.description}</Text>
@@ -40,5 +46,6 @@ const createStyles = colors => StyleSheet.create({
     width: '33%',
     borderWidth: 1,
     borderColor: colors.outline,
+    overflow: 'hidden',
   },
 });
