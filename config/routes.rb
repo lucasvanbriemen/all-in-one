@@ -69,6 +69,7 @@ Rails.application.routes.draw do
 
   get "meta_data", to: "account#show"
 
+  get "/github/organizations", to: "github/organizations#index", as: :github_organizations
   get "/github/items", to: "github/items#index", as: :github_items
 
   get "/search", to: "search#index"
