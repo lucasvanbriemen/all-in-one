@@ -11,6 +11,11 @@ export function GitPage() {
 
   const { data: organizations = [] } = useApi('/github/organizations')
 
+  function itemDescription(item) {
+    let description = item.description || 'No description available';
+    return {text: description, hasDescription: !!item.description};
+  }
+
   return (
     <View>
       <Text>Git Page</Text>
@@ -27,7 +32,7 @@ export function GitPage() {
             
             <View>
               <Text style={styles.orgContainer.topContainer.title}>{org.name}</Text>
-              <Text style={styles.orgContainer.topContainer.subtitle}>{org.description}</Text>
+              <Text style={[styles.orgContainer.topContainer.subtitle, !itemDescription(org).hasDescription && styles.orgContainer.topContainer.subtitle.isPlaceholder]}>{itemDescription(org).text}</Text>
             </View>
           </View>
 
@@ -75,7 +80,12 @@ const createStyles = colors => StyleSheet.create({
       },
 
       subtitle: {
+        marginTop: 4,
         color: colors.onSurfaceVariant,
+
+        isPlaceholder: {
+          fontStyle: 'italic',
+        }
       }
     }
   },
