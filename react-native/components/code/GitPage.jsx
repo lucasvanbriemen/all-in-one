@@ -58,6 +58,8 @@ const createStyles = colors => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.outline,
     overflow: 'hidden',
+    flexDirection: 'column',
+    gap: 16,
     
     banner: {
       opacity: 0.5,
@@ -67,10 +69,11 @@ const createStyles = colors => StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      ...glass(colors),
+      ...glass(colors, { variant: 'tinted' }),
       borderRadius: 16,
       padding: 8,
-      width: 'fit-content',
+      paddingHorizontal: 16,
+      alignSelf: 'flex-start',
 
       avatar: {
         width: 50,
