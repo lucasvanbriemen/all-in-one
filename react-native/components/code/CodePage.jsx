@@ -177,6 +177,14 @@ export function CodePage() {
     [openFile],
   );
 
+  if (get("app.activeSidebarItem") == "git") {
+    return (
+      <View style={styles.fileTree}>
+        <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} mode={searching} onModeChange={setSearching} />
+      </View>
+    );
+  }
+
   return (
     <View ref={page} focusable enableFocusRing={false} style={styles.editor} onKeyDown={onKeyDown} keyDownEvents={KEY_DOWN_EVENTS}>
       <WorkaholicBadge />
