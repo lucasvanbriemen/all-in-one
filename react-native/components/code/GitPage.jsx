@@ -18,7 +18,7 @@ export function GitPage() {
         <View key={org.id} style={styles.orgContainer}>
           <Image
             source={{uri: scheme === 'dark' ? org.banner_dark_url : org.banner_light_url}}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, styles.orgContainer.banner]}
             resizeMode="cover"
           />
           <Image source={{uri: org.avatar_url}} style={{width: 50, height: 50}} />
@@ -47,5 +47,9 @@ const createStyles = colors => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.outline,
     overflow: 'hidden',
+    
+    banner: {
+      opacity: 0.5,
+    }
   },
 });
