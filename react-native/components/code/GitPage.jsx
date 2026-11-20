@@ -1,16 +1,20 @@
 import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
+import { useApi } from '../useApi';
 
 import {useAppContext} from '../../context/AppContext';
-
 
 export function GitPage() {
   const { get, set } = useAppContext()
 
+  const { data: organizations = [] } = useApi('/github/organizations')
+
   return (
     <View>
       <Text>Git Page</Text>
-      <Text>Test</Text>
+      {organizations.map(org => (
+        <Text key={org.id}>{org.name}</Text>
+      ))}
     </View>
   );
 }
