@@ -67,6 +67,10 @@ const createStyles = colors => StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
+      ...glass(colors),
+      borderRadius: 16,
+      padding: 8,
+      width: 'fit-content',
 
       avatar: {
         width: 50,
@@ -76,15 +80,17 @@ const createStyles = colors => StyleSheet.create({
 
       title: {
         color: colors.onSurface,
-        fontSize: 16,
+        fontSize: 18,
       },
 
       subtitle: {
         marginTop: 4,
+        fontSize: 16,
         color: colors.onSurfaceVariant,
 
         isPlaceholder: {
           fontStyle: 'italic',
+          opacity: 0.75,
         }
       }
     }
