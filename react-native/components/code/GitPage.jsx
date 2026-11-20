@@ -21,9 +21,15 @@ export function GitPage() {
             style={[StyleSheet.absoluteFill, styles.orgContainer.banner]}
             resizeMode="cover"
           />
-          <Image source={{uri: org.avatar_url}} style={{width: 50, height: 50}} />
-          <Text>{org.name}</Text>
-          <Text>{org.description}</Text>
+
+          <View style={styles.orgContainer.topContainer}>
+            <Image source={{uri: org.avatar_url}} style={styles.orgContainer.topContainer.avatar} />
+            
+            <View>
+              <Text style={styles.orgContainer.topContainer.title}>{org.name}</Text>
+              <Text style={styles.orgContainer.topContainer.subtitle}>{org.description}</Text>
+            </View>
+          </View>
 
           {org.repositories.map(repo => (
             <View key={repo.id}>
@@ -50,6 +56,27 @@ const createStyles = colors => StyleSheet.create({
     
     banner: {
       opacity: 0.5,
+    },
+
+    topContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+
+      avatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+      },
+
+      title: {
+        color: colors.onSurface,
+        fontSize: 16,
+      },
+
+      subtitle: {
+        color: colors.onSurfaceVariant,
+      }
     }
   },
 });
