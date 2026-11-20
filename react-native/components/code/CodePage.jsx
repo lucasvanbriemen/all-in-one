@@ -5,6 +5,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {CodeEditor} from '../CodeEditor';
 import {FileTree} from './FileTree';
 import {SearchSidebar} from './SearchSidebar';
+import {GitPage} from './GitPage';
 import {Terminal} from './Terminal';
 import {HiddenOrnament} from '../seasonal/Grinch';
 import {WorkaholicBadge} from '../seasonal/WorkaholicBadge';
@@ -177,12 +178,9 @@ export function CodePage() {
     [openFile],
   );
 
+
   if (get("app.activeSidebarItem") == "git") {
-    return (
-      <View style={styles.fileTree}>
-        <SearchSidebar onOpenFile={openFile} projectRoot={projectRoot} mode={searching} onModeChange={setSearching} />
-      </View>
-    );
+    return <GitPage />;
   }
 
   return (
