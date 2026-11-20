@@ -43,6 +43,16 @@ export function MessageInput({threadId = null}) {
     return () => input?.removeEventListener('paste', onPaste);
   }, []);
 
+  // The web textarea grows with its text (up to maxHeight) and shrinks back after sending.
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const input = inputRef.current;
+    if (!input?.style) return;
+    input.style.height = 'auto';
+    const border = input.offsetHeight - input.clientHeight;
+    input.style.height = `${Math.min(input.scrollHeight + border, 160)}px`;
+  }, [text]);
+
   // A reply picked in another chat (or the thread pane) doesn't belong to this input.
   const replyTo = get("messages.replyTo");
   const quote = !threadId && replyTo?.channel === activeChannel ? replyTo : null;
@@ -123,6 +133,18 @@ export function MessageInput({threadId = null}) {
             onPaste: event => {
               const file = event.nativeEvent.dataTransfer?.files?.find(item => item.type?.startsWith('image/'));
               if (file) pasteImage(file);
+            },
+          } : {})}
+          {...(Platform.OS === 'web' ? {
+            multiline: true,
+            rows: 1,
+            // Enter sends, Shift+Enter adds a newline, like Slack. Skipped mid-IME so
+            // confirming a Japanese/Chinese composition doesn't send half a word.
+            onKeyPress: event => {
+              const {key, shiftKey, isComposing} = event.nativeEvent;
+              if (key !== 'Enter' || shiftKey || isComposing) return;
+              event.preventDefault();
+              sendMessage();
             },
           } : {})}
           // Enter sends and the input keeps focus, like WhatsApp/Slack.
