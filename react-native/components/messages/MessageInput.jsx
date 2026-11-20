@@ -16,6 +16,7 @@ export function MessageInput({threadId = null}) {
   const {get, set} = useAppContext();
   const activeChannel = get("messages.activeChannel") ?? "";
   const inputRef = useRef(null);
+  const sending = useRef(false);
   const [attachmentError, setAttachmentError] = useState(null);
 
   async function pasteImage(file) {
@@ -42,6 +43,16 @@ export function MessageInput({threadId = null}) {
     return () => input?.removeEventListener('paste', onPaste);
   }, []);
 
+  // The web textarea grows with its text (up to maxHeight) and shrinks back after sending.
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const input = inputRef.current;
+    if (!input?.style) return;
+    input.style.height = 'auto';
+    const border = input.offsetHeight - input.clientHeight;
+    input.style.height = `${Math.min(input.scrollHeight + border, 160)}px`;
+  }, [text]);
+
   // A reply picked in another chat (or the thread pane) doesn't belong to this input.
   const replyTo = get("messages.replyTo");
   const quote = !threadId && replyTo?.channel === activeChannel ? replyTo : null;
@@ -59,6 +70,11 @@ export function MessageInput({threadId = null}) {
   }
 
   function sendMessage() {
+    // Enter on an empty box shouldn't post an empty message.
+    // Holding or double-tapping Enter shouldn't send the same message twice.
+    if ((!text.trim() && !attachment) || sending.current) return;
+    sending.current = true;
+
     const request = attachment
       ? api.upload(`/channels/${activeChannel}/files`, {file: attachment.file || {uri: attachment.uri, name: attachment.name, type: attachment.type}, text: text || null, thread_id: threadId, quote_id: quote?.id})
       : api.post(`/channels/${activeChannel}/messages`, {text, thread_id: threadId, quote_id: quote?.id});
@@ -72,7 +88,7 @@ export function MessageInput({threadId = null}) {
       setText("");
       setAttachment(null);
       if (quote) set("messages.replyTo", null);
-    })
+    }).finally(() => { sending.current = false; })
   }
 
   return (
@@ -111,12 +127,30 @@ export function MessageInput({threadId = null}) {
         <TextInput ref={inputRef} style={styles.input}
           {...(Platform.OS === 'macos' ? {
             multiline: true,
+            // Enter sends, Shift+Enter still adds a newline (it doesn't match this key event).
+            submitKeyEvents: [{key: 'Enter'}],
             pastedTypes: ['image', 'fileUrl', 'string'],
             onPaste: event => {
               const file = event.nativeEvent.dataTransfer?.files?.find(item => item.type?.startsWith('image/'));
               if (file) pasteImage(file);
             },
           } : {})}
+          {...(Platform.OS === 'web' ? {
+            multiline: true,
+            rows: 1,
+            // Enter sends, Shift+Enter adds a newline, like Slack. Skipped mid-IME so
+            // confirming a Japanese/Chinese composition doesn't send half a word.
+            onKeyPress: event => {
+              const {key, shiftKey, isComposing} = event.nativeEvent;
+              if (key !== 'Enter' || shiftKey || isComposing) return;
+              event.preventDefault();
+              sendMessage();
+            },
+          } : {})}
+          // Enter sends and the input keeps focus, like WhatsApp/Slack.
+          onSubmitEditing={sendMessage}
+          submitBehavior="submit"
+          returnKeyType="send"
           placeholder={attachment ? "Add a comment..." : "Type a message..."} value={text} onChangeText={value => {
           setText(value);
           // Type "hohoho" for a blizzard (the web build also listens document-wide).

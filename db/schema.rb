@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_07_144246) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_18_210000) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -254,6 +254,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_07_144246) do
     t.string "email", null: false
     t.string "name"
     t.index ["email"], name: "sender_email_email_unique", unique: true
+  end
+
+  create_table "slack_emojis", primary_key: "name", id: :string, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "whatsapp_connections", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

@@ -10,4 +10,9 @@ class MessageReaction < ApplicationRecord
   def emoji
     message.is_a?(Slack::Message) ? Slack::Emoji.to_unicode(reaction) : reaction
   end
+
+  # Custom Slack emoji (:party_parrot:) are images; the app shows this instead of the :name:.
+  def emoji_url
+    Slack::Emoji.url(reaction) if message.is_a?(Slack::Message)
+  end
 end
