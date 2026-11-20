@@ -1,4 +1,4 @@
-import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Button, Pressable, StyleSheet, Text, View, Image} from 'react-native';
 import {glass, useThemedStyles} from '../theme';
 import { useApi } from '../useApi';
 
@@ -14,10 +14,15 @@ export function GitPage() {
       <Text>Git Page</Text>
       {organizations.map(org => (
         <View key={org.id}>
+          <Image source={{uri: org.avatar_url}} style={{width: 50, height: 50}} />
           <Text>{org.name}</Text>
+          <Text>{org.description}</Text>
 
           {org.repositories.map(repo => (
-            <Text key={repo.id}>- {repo.name}</Text>
+            <View key={repo.id}>
+              <Text>- {repo.name}</Text>
+              <Text>{repo.description}</Text>
+            </View>
           ))}
         </View>
       ))}
