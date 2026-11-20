@@ -13,7 +13,13 @@ export function GitPage() {
     <View>
       <Text>Git Page</Text>
       {organizations.map(org => (
-        <Text key={org.id}>{org.name}</Text>
+        <View key={org.id}>
+          <Text>{org.name}</Text>
+
+          {org.repositories.map(repo => (
+            <Text key={repo.id}>- {repo.name}</Text>
+          ))}
+        </View>
       ))}
     </View>
   );
