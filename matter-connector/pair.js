@@ -1,9 +1,7 @@
-import { Environment, Logger } from "@matter/main";
+import { Environment } from "@matter/main";
 import { GeneralCommissioning } from "@matter/main/clusters";
 import { ManualPairingCodeCodec } from "@matter/main/types";
 import { CommissioningController } from "@project-chip/matter.js";
-
-Logger.level = "error";
 
 const code = process.argv[2]?.replace(/\D/g, "");
 
@@ -18,7 +16,7 @@ const controller = new CommissioningController({
 await controller.start();
 
 const { shortDiscriminator, passcode } = ManualPairingCodeCodec.decode(code);
-const nodeId = await controller.commissionNode({
+await controller.commissionNode({
   commissioning: {
     regulatoryLocation: GeneralCommissioning.RegulatoryLocationType.IndoorOutdoor,
     regulatoryCountryCode: "NL",
