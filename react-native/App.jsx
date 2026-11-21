@@ -22,6 +22,7 @@ import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
+import {LightsPage} from './components/lights/LightsPage';
 import {SearchModal} from './components/home/SearchModal';
 import {useThemedStyles} from './components/theme';
 
@@ -32,6 +33,7 @@ const APPLICATIONS = {
   music: MusicPage,
   money: MoneyPage,
   messages: MessagesPage,
+  lights: LightsPage,
 };
 
 export default function App() {
