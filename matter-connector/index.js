@@ -40,7 +40,7 @@ server.listen(PORT, () => {
 });
 
 function mainData(res) {
-  jsonResponse(res, 200, { message: "Hello, World!" });
+  jsonResponse(res, 200, { hello: "lamp!" });
 }
 
 function notFound(res) {
