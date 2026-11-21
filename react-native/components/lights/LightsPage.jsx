@@ -27,7 +27,7 @@ export function LightsPage() {
   const commit = changes => {
     const next = {...light, ...changes};
     setLight(next);
-    api.lights.update({
+    api.post("/lights/change", {
       hex: hsvToHex(next.hue, next.saturation),
       brightness: next.brightness,
     });
