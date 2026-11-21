@@ -5,7 +5,8 @@ module Config
     email: MailboxConfig::GROUPS,
     music: MusicConfig::GROUPS,
     money: MoneyConfig::GROUPS,
-    messages: MessagesConfig::GROUPS
+    messages: MessagesConfig::GROUPS,
+    lights: LightsConfig::GROUPS
   }.freeze
 
   ALLOWED_PLATFORMS = {
@@ -14,6 +15,7 @@ module Config
     email: MailboxConfig::ALLOWED_PLATFORMS,
     music: MusicConfig::ALLOWED_PLATFORMS,
     money: MoneyConfig::ALLOWED_PLATFORMS,
-    messages: MessagesConfig::ALLOWED_PLATFORMS
+    messages: MessagesConfig::ALLOWED_PLATFORMS,
+    lights: LightsConfig::ALLOWED_PLATFORMS
   }.freeze
 end
