@@ -9,7 +9,7 @@ module Lights
       uri = URI.join(BASE_URL, "change")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.path, { "Content-Type" => "application/json" })
-      request.body = { hex_color: hex, brightness: brightness }.to_json
+      request.body = { hex: hex, brightness: brightness }.to_json
       http.request(request)
     end
   end
