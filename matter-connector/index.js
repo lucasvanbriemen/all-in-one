@@ -73,7 +73,9 @@ async function statusData(res) {
   const isTurnedOn = await onOff.getOnOffAttribute();
   const brightness = await level.getCurrentLevelAttribute();
 
-  const currentColor = await color.getEnhancedCurrentHueAttribute();
+  let currentColor = await color.getEnhancedCurrentHueAttribute();
+  currentColor = currentColor / 65535 * 360;  // Convert from 0-65535 to 0-360 degrees
+
   const howCloseToWhite = await color.getCurrentSaturationAttribute();
 
   const currentHex = colorUtils.hueAndSaturationToHex(currentColor, howCloseToWhite);
