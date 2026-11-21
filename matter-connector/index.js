@@ -1,5 +1,6 @@
 import http from "node:http";
 import { onOff, level, color, EVEN_IF_OFF } from "./lamp.js"
+import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
 
@@ -74,7 +75,10 @@ async function statusData(res) {
 
   const currentColor = await color.getEnhancedCurrentHueAttribute();
   const howCloseToWhite = await color.getCurrentSaturationAttribute();
-  jsonResponse(res, 200, { status: "ok", isTurnedOn, brightness, currentColor, howCloseToWhite });
+
+  const currentHex = colorUtils.hueAndSaturationToHex(currentColor, howCloseToWhite);
+
+  jsonResponse(res, 200, { status: "ok", isTurnedOn, brightness, currentHex });
 }
 
 async function changeData(req, res) {
@@ -87,16 +91,17 @@ async function changeData(req, res) {
   const isTurnedOn = await onOff.getOnOffAttribute();
 
   let brightness = data.brightness;
-  let hue = data.hue;
-  let howCloseToWhite = data.howCloseToWhite;
+  let hex = data.hex;
+
+  let { hue, saturation } = colorUtils.hexToHueAndSaturation(hex);
 
   // If a lamp is off with a diffrent color saved, it starts from there and tradulay transitions to the new color when turning on
   // This leads to weird color transition, so we set it to the wanted color immediately when turning on, so transition feels smooth
   if (!isTurnedOn) {
-    await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 0, ...EVEN_IF_OFF });
+    await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: saturation, transitionTime: 0, ...EVEN_IF_OFF });
   }
 
-  await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 5, ...EVEN_IF_OFF });
+  await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: saturation, transitionTime: 5, ...EVEN_IF_OFF });
   await level.moveToLevelWithOnOff({ level: brightness, transitionTime: 5, ...EVEN_IF_OFF });
 
   jsonResponse(res, 200, { status: "ok" });
