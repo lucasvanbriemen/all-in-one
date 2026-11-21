@@ -17,7 +17,7 @@ await level.moveToLevelWithOnOff({ level: 0, transitionTime: 5, ...EVEN_IF_OFF }
 await wait(1500);
 
 await level.moveToLevelWithOnOff({ level: 254, transitionTime: 5, ...EVEN_IF_OFF });
-await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((0 / 360) * 65535), saturation: 0, transitionTime: 5, ...EVEN_IF_OFF });
+await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((120 / 360) * 65535), saturation: 150, transitionTime: 5, ...EVEN_IF_OFF });
 
 
 
