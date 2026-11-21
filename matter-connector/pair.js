@@ -6,7 +6,7 @@ import { CommissioningController } from "@project-chip/matter.js";
 const code = process.argv[2]?.replace(/\D/g, "");
 
 const env = Environment.default;
-env.vars.set("storage.path", new URL("./matter-storage", import.meta.url).pathname);
+env.vars.set("storage.path", new URL("./storage", import.meta.url).pathname);
 
 const controller = new CommissioningController({
   environment: { environment: env, id: "aio" },
@@ -28,6 +28,5 @@ await controller.commissionNode({
   passcode,
 });
 
-console.log("paired");
 await controller.close();
 process.exit(0);

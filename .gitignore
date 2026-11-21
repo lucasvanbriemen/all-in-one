@@ -59,3 +59,4 @@ config/*.pem
 
 /matter-connector/node_modules
 /matter-connector/.env
+/matter-connector/storage
