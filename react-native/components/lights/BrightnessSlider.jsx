@@ -7,8 +7,9 @@ import {svgId} from './color';
 const HEIGHT = 32;
 const THUMB = 26;
 const MIN = 1;
+const MAX = 254;
 
-// Brightness 1-100, drawn as a track fading from black to the picked colour.
+// Brightness 1-254, drawn as a track fading from black to the picked colour.
 export function BrightnessSlider({value, color, onChange, onChangeEnd, onDragStart, onDragEnd}) {
   const gradientId = svgId(useId());
   const [width, setWidth] = useState(0);
@@ -19,7 +20,7 @@ export function BrightnessSlider({value, color, onChange, onChangeEnd, onDragSta
 
   const pick = x => {
     const fraction = Math.min(Math.max((x - HEIGHT / 2) / usable, 0), 1);
-    return Math.round(MIN + fraction * (100 - MIN));
+    return Math.round(MIN + fraction * (MAX - MIN));
   };
 
   const handleGrant = event => {
