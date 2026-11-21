@@ -47,6 +47,12 @@ server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
 
+process.on("SIGINT", async () => {
+  await disconnect();
+  process.exit(0);
+});
+
+
 function mainData(res) {
   jsonResponse(res, 200, { hello: "lamp!" });
 }
