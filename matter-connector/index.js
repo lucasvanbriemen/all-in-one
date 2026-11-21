@@ -1,11 +1,12 @@
 import http from "node:http";
-import { onOff, level, color, EVEN_IF_OFF, disconnect } from "./lamp.js"
+import { lamps, EVEN_IF_OFF, disconnect } from "./lamp.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
 
-let pendingChanges = null;
-let isBusy = false;
+// Each lamp gets its own queue, so a slow lamp doesn't hold up the others.
+// queues[lampId] = { pendingChanges, isBusy }
+const queues = {};
 const MAX_PENDING_CHANGES = 10;
 
 const ROUTES = [
@@ -13,14 +14,14 @@ const ROUTES = [
     path: "/",
     method: "GET",
     handler: (req, res) => {
-      mainData(res);
+      jsonResponse(res, 200, { lamps: Object.keys(lamps) });
     }
   },
   {
     path: "/status",
     method: "GET",
     handler: (req, res) => {
-      statusData(res);
+      statusData(req, res);
     }
   },
   {
@@ -65,39 +66,49 @@ process.on("SIGINT", async () => {
 });
 
 
-function mainData(res) {
-  jsonResponse(res, 200, { hello: "lamp!" });
-}
-
 function notFound(res) {
   jsonResponse(res, 404, { error: "Not Found" });
 }
 
-function addPendingChanges(incomingChange) {
-  pendingChanges = { ...pendingChanges, ...incomingChange };
+function addPendingChanges(lampId, incomingChange) {
+  const queue = queues[lampId] ??= { pendingChanges: null, isBusy: false };
+  queue.pendingChanges = { ...queue.pendingChanges, ...incomingChange };
 
   // Limit the number of pending changes to avoid memory issues
-  if (Object.keys(pendingChanges).length > MAX_PENDING_CHANGES) {
-    pendingChanges = Object.fromEntries(Object.entries(pendingChanges).slice(-MAX_PENDING_CHANGES));
+  if (Object.keys(queue.pendingChanges).length > MAX_PENDING_CHANGES) {
+    queue.pendingChanges = Object.fromEntries(Object.entries(queue.pendingChanges).slice(-MAX_PENDING_CHANGES));
   }
 
-  if (!isBusy) {
-    applyPending();
+  if (!queue.isBusy) {
+    applyPending(lampId);
   }
 }
 
-async function statusData(res) {
-  const isTurnedOn = await onOff.getOnOffAttribute();
-  const brightness = await level.getCurrentLevelAttribute();
+async function lampStatus(lamp) {
+  const isTurnedOn = await lamp.onOff.getOnOffAttribute();
+  const brightness = await lamp.level.getCurrentLevelAttribute();
 
-  let currentColor = await color.getEnhancedCurrentHueAttribute();
+  let currentColor = await lamp.color.getEnhancedCurrentHueAttribute();
   currentColor = currentColor / 65535 * 360;  // Convert from 0-65535 to 0-360 degrees
 
-  const howCloseToWhite = await color.getCurrentSaturationAttribute();
+  const howCloseToWhite = await lamp.color.getCurrentSaturationAttribute();
 
   const currentHex = colorUtils.hueAndSaturationToHex(currentColor, howCloseToWhite);
 
-  jsonResponse(res, 200, { status: "ok", isTurnedOn, brightness, currentHex });
+  return { id: lamp.id, isTurnedOn, brightness, currentHex };
+}
+
+// GET /status?id=<lampId> returns one lamp, GET /status returns all of them.
+async function statusData(req, res) {
+  const id = new URL(req.url, "http://localhost").searchParams.get("id");
+
+  if (id) {
+    if (!lamps[id]) return jsonResponse(res, 404, { error: `Unknown lamp ${id}` });
+    return jsonResponse(res, 200, { status: "ok", ...(await lampStatus(lamps[id])) });
+  }
+
+  const all = await Promise.all(Object.values(lamps).map(lampStatus));
+  jsonResponse(res, 200, { status: "ok", lamps: all });
 }
 
 async function changeData(req, res) {
@@ -108,21 +119,36 @@ async function changeData(req, res) {
 
   let data = JSON.parse(Buffer.concat(body).toString());
 
-  addPendingChanges({ brightness: data.brightness, hex: data.hex });
-  jsonResponse(res, 202, { status: "queued" });
-}
-
-async function applyPending() {
-  isBusy = true;
-  while (pendingChanges) {
-    const change = pendingChanges;
-    pendingChanges = null;
-    await applyChange(change);
+  // Send { id } to target one lamp; leave it out to change all lamps at once.
+  if (data.id && !lamps[data.id]) {
+    return jsonResponse(res, 404, { error: `Unknown lamp ${data.id}` });
   }
-  isBusy = false;
+  const targetIds = data.id ? [data.id] : Object.keys(lamps);
+
+  for (const lampId of targetIds) {
+    addPendingChanges(lampId, { brightness: data.brightness, hex: data.hex });
+  }
+  jsonResponse(res, 202, { status: "queued", lamps: targetIds });
 }
 
-async function applyChange(change) { 
+async function applyPending(lampId) {
+  const queue = queues[lampId];
+  queue.isBusy = true;
+  try {
+    while (queue.pendingChanges) {
+      const change = queue.pendingChanges;
+      queue.pendingChanges = null;
+      await applyChange(lamps[lampId], change);
+    }
+  } catch (error) {
+    console.error(`Failed to update lamp ${lampId}:`, error.message);
+  } finally {
+    queue.isBusy = false;
+  }
+}
+
+async function applyChange(lamp, change) {
+  const { onOff, level, color } = lamp;
   const isTurnedOn = await onOff.getOnOffAttribute();
 
   let brightness = change.brightness;
