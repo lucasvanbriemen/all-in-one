@@ -5,6 +5,7 @@ import {BrightnessSlider} from './BrightnessSlider';
 import {ColorWheel} from './ColorWheel';
 import {hsvToHex} from './color';
 import {useBottomInset} from '../useCompactLayout';
+import {api} from '../api';
 import {glass, useThemedStyles} from '../theme';
 
 const MAX_WHEEL = 320;
@@ -26,7 +27,10 @@ export function LightsPage() {
   const commit = changes => {
     const next = {...light, ...changes};
     setLight(next);
-    // TODO: send `next` ({hue, saturation, brightness}) to the lamp.
+    api.lights.update({
+      hex: hsvToHex(next.hue, next.saturation),
+      brightness: next.brightness,
+    });
   };
 
   return (
