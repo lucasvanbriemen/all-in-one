@@ -1,4 +1,5 @@
 import http from "node:http";
+import { onOff } from "./lamp.js"
 
 const PORT = 4003;
 
@@ -8,6 +9,13 @@ const ROUTES = [
     method: "GET",
     handler: (req, res) => {
       mainData(res);
+    }
+  },
+  {
+    path: "/status",
+    method: "GET",
+    handler: (req, res) => {
+      statusData(res);
     }
   },
   {
@@ -45,4 +53,9 @@ function mainData(res) {
 
 function notFound(res) {
   jsonResponse(res, 404, { error: "Not Found" });
+}
+
+async function statusData(res) {
+  const isTurnedOn = await onOff.getOnOffAttribute();
+  jsonResponse(res, 200, { status: "ok", isTurnedOn });
 }
