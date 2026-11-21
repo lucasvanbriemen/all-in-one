@@ -90,6 +90,8 @@ async function changeData(req, res) {
   let hue = data.hue;
   let howCloseToWhite = data.howCloseToWhite;
 
+  // If a lamp is off with a diffrent color saved, it starts from there and tradulay transitions to the new color when turning on
+  // This leads to weird color transition, so we set it to the wanted color immediately when turning on, so transition feels smooth
   if (!isTurnedOn) {
     await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 0, ...EVEN_IF_OFF });
   }
