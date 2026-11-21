@@ -3,8 +3,10 @@ import { onOff, level, color, EVEN_IF_OFF, disconnect } from "./lamp.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
+
 let pendingChanges = null;
 let isBusy = false;
+const MAX_PENDING_CHANGES = 10;
 
 const ROUTES = [
   {
@@ -73,6 +75,12 @@ function notFound(res) {
 
 function addPendingChanges(incomingChange) {
   pendingChanges = { ...pendingChanges, ...incomingChange };
+
+  // Limit the number of pending changes to avoid memory issues
+  if (Object.keys(pendingChanges).length > MAX_PENDING_CHANGES) {
+    pendingChanges = Object.fromEntries(Object.entries(pendingChanges).slice(-MAX_PENDING_CHANGES));
+  }
+
   if (!isBusy) {
     applyPending();
   }
