@@ -1,8 +1,10 @@
 import http from "node:http";
-import { onOff, level, color, EVEN_IF_OFF } from "./lamp.js"
+import { onOff, level, color, EVEN_IF_OFF, disconnect } from "./lamp.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
+let pendingChanges = null;
+let isBusy = false;
 
 const ROUTES = [
   {
@@ -69,6 +71,13 @@ function notFound(res) {
   jsonResponse(res, 404, { error: "Not Found" });
 }
 
+function addPendingChanges(incomingChange) {
+  pendingChanges = { ...pendingChanges, ...incomingChange };
+  if (!isBusy) {
+    applyPending();
+  }
+}
+
 async function statusData(res) {
   const isTurnedOn = await onOff.getOnOffAttribute();
   const brightness = await level.getCurrentLevelAttribute();
@@ -88,12 +97,28 @@ async function changeData(req, res) {
   for await (const chunk of req) {
     body.push(chunk);
   }
-  const data = JSON.parse(Buffer.concat(body).toString());
 
+  let data = JSON.parse(Buffer.concat(body).toString());
+
+  addPendingChanges({ brightness: data.brightness, hex: data.hex });
+  jsonResponse(res, 202, { status: "queued" });
+}
+
+async function applyPending() {
+  isBusy = true;
+  while (pendingChanges) {
+    const change = pendingChanges;
+    pendingChanges = null;
+    await applyChange(change);
+  }
+  isBusy = false;
+}
+
+async function applyChange(change) { 
   const isTurnedOn = await onOff.getOnOffAttribute();
 
-  let brightness = data.brightness;
-  let hex = data.hex;
+  let brightness = change.brightness;
+  let hex = change.hex;
 
   let { hue, saturation } = colorUtils.hexToHueAndSaturation(hex);
 
@@ -105,6 +130,4 @@ async function changeData(req, res) {
 
   await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: saturation, transitionTime: 5, ...EVEN_IF_OFF });
   await level.moveToLevelWithOnOff({ level: brightness, transitionTime: 5, ...EVEN_IF_OFF });
-
-  jsonResponse(res, 200, { status: "ok" });
 }
