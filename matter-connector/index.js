@@ -19,6 +19,13 @@ const ROUTES = [
     }
   },
   {
+    path: "/change",
+    method: "POST",
+    handler: (req, res) => {
+      changeData(req, res);
+    }
+  },
+  {
     path: "*",
     method: "GET",
     handler: (req, res) => {
@@ -68,4 +75,8 @@ async function statusData(res) {
   const currentColor = await color.getEnhancedCurrentHueAttribute();
   const howCloseToWhite = await color.getCurrentSaturationAttribute();
   jsonResponse(res, 200, { status: "ok", isTurnedOn, brightness, currentColor, howCloseToWhite });
+}
+
+async function changeData(req, res) {
+  jsonResponse(res, 200, { status: "ok" });
 }
