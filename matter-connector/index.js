@@ -35,6 +35,10 @@ const server = http.createServer((req, res) => {
   }
 });
 
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}/`);
+});
+
 function mainData(res) {
   jsonResponse(res, 200, { message: "Hello, World!" });
 }
@@ -42,7 +46,3 @@ function mainData(res) {
 function notFound(res) {
   jsonResponse(res, 404, { error: "Not Found" });
 }
-
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
-});
