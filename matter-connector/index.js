@@ -90,6 +90,10 @@ async function changeData(req, res) {
   let hue = data.hue;
   let howCloseToWhite = data.howCloseToWhite;
 
+  if (!isTurnedOn) {
+    await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 0, ...EVEN_IF_OFF });
+  }
+
   await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 5, ...EVEN_IF_OFF });
   await level.moveToLevelWithOnOff({ level: brightness, transitionTime: 5, ...EVEN_IF_OFF });
 
