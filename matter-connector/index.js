@@ -2,14 +2,18 @@ import http from "node:http";
 
 const PORT = 4003;
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
+function jsonResponse(res, status, data) {
+  res.writeHead(status, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(data));
+}
 
+const server = http.createServer((req, res) => {
   const path = new URL(req.url, "http://localhost").pathname;
+
   if (path === "/") {
-    res.end("Hello, World!\n");
+    jsonResponse(res, 200, { message: "Hello, World!" });
   } else {
-    res.end("Not Found\n");
+    jsonResponse(res, 404, { error: "Not Found" });
   }
 });
 
