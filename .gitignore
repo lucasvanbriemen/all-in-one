@@ -56,3 +56,6 @@ config/*.pem
 /storage/whatsapp/
 /whatsapp-connector/node_modules
 /whatsapp-connector/.env
+
+/matter-connector/node_modules
+/matter-connector/.env
