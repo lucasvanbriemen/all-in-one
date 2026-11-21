@@ -1,5 +1,6 @@
 import { Environment, Logger } from "@matter/main";
-import { OnOff, LevelControl, ColorControl } from "@matter/main/clusters";
+import { OnOff, LevelControl, ColorControl, GeneralCommissioning } from "@matter/main/clusters";
+import { ManualPairingCodeCodec } from "@matter/main/types";
 import { CommissioningController } from "@project-chip/matter.js";
 
 Logger.level = "error";
@@ -35,17 +36,10 @@ async function connectNode(nodeId) {
 // One node (a bridge, a multi-zone strip) can expose several lights, so the endpoint is part of the id.
 export const lamps = {};
 
-const results = await Promise.allSettled(controller.getCommissionedNodes().map(connectNode));
-
-results.forEach((result, i) => {
-  const nodeId = controller.getCommissionedNodes()[i];
-  if (result.status === "rejected") {
-    console.warn(`Skipping node ${nodeId}: ${result.reason.message}`);
-    return;
-  }
-
-  const lights = result.value.getDevices().filter(d => d.getClusterClient(ColorControl.Complete));
-  for (const light of lights) {
+// Adds every colour light on a connected node to `lamps`, and returns their ids.
+function addNodeLamps(nodeId, node) {
+  const lights = node.getDevices().filter(d => d.getClusterClient(ColorControl.Complete));
+  return lights.map(light => {
     const id = `${nodeId}-${light.number}`;
     lamps[id] = {
       id,
@@ -53,7 +47,20 @@ results.forEach((result, i) => {
       level: light.getClusterClient(LevelControl.Complete),
       color: light.getClusterClient(ColorControl.Complete),
     };
+    return id;
+  });
+}
+
+const nodeIds = controller.getCommissionedNodes();
+const results = await Promise.allSettled(nodeIds.map(connectNode));
+
+results.forEach((result, i) => {
+  const nodeId = nodeIds[i];
+  if (result.status === "rejected") {
+    console.warn(`Skipping node ${nodeId}: ${result.reason.message}`);
+    return;
   }
+  addNodeLamps(nodeId, result.value);
 });
 
 console.log(`Found ${Object.keys(lamps).length} lamp(s): ${Object.keys(lamps).join(", ")}`);
@@ -63,6 +70,28 @@ export const EVEN_IF_OFF = {
   optionsMask: { executeIfOff: true },
   optionsOverride: { executeIfOff: true },
 };
+
+// Pairs a new device using its 11-digit manual pairing code (dashes/spaces are fine),
+// connects to it, and adds its lights to `lamps` right away. Returns the new lamp ids.
+export async function pair(rawCode) {
+  const code = String(rawCode ?? "").replace(/\D/g, "");
+  const { shortDiscriminator, passcode } = ManualPairingCodeCodec.decode(code);
+
+  const nodeId = await controller.commissionNode({
+    commissioning: {
+      regulatoryLocation: GeneralCommissioning.RegulatoryLocationType.IndoorOutdoor,
+      regulatoryCountryCode: "NL",
+    },
+    discovery: {
+      identifierData: { shortDiscriminator },
+      discoveryCapabilities: { onIpNetwork: true },
+    },
+    passcode,
+  });
+
+  const node = await connectNode(nodeId);
+  return { nodeId: String(nodeId), lamps: addNodeLamps(nodeId, node) };
+}
 
 export async function disconnect() {
   await controller.close();

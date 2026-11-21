@@ -1,5 +1,5 @@
 import http from "node:http";
-import { lamps, EVEN_IF_OFF, disconnect } from "./lamp.js"
+import { lamps, EVEN_IF_OFF, disconnect, pair } from "./lamp.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
@@ -29,6 +29,13 @@ const ROUTES = [
     method: "POST",
     handler: (req, res) => {
       changeData(req, res);
+    }
+  },
+  {
+    path: "/pair",
+    method: "GET",
+    handler: (req, res) => {
+      pairData(req, res);
     }
   },
   {
@@ -109,6 +116,20 @@ async function statusData(req, res) {
 
   const all = await Promise.all(Object.values(lamps).map(lampStatus));
   jsonResponse(res, 200, { status: "ok", lamps: all });
+}
+
+// GET /pair?code=<manual pairing code>. Takes 10-60s while the device is commissioned.
+async function pairData(req, res) {
+  const code = new URL(req.url, "http://localhost").searchParams.get("code");
+  if (!code) return jsonResponse(res, 400, { error: "Missing ?code=" });
+
+  try {
+    const result = await pair(code);
+    jsonResponse(res, 200, { status: "paired", ...result });
+  } catch (error) {
+    console.error("Pairing failed:", error.message);
+    jsonResponse(res, 500, { error: `Pairing failed: ${error.message}` });
+  }
 }
 
 async function changeData(req, res) {
