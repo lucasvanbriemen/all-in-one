@@ -1,51 +1,111 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {GiftBudget} from '../seasonal/GiftBudget';
-import {HiddenOrnament} from '../seasonal/Grinch';
-import {Stat} from '../home/Stat';
-import {useApi} from '../useApi';
-import {format} from './format';
-import {useBottomInset, useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
+import {BrightnessSlider} from './BrightnessSlider';
+import {ColorWheel} from './ColorWheel';
+import {hsvToHex} from './color';
+import {useBottomInset} from '../useCompactLayout';
+import {glass, useThemedStyles} from '../theme';
+
+const MAX_WHEEL = 320;
 
 export function LightsPage() {
-  const compact = useCompactLayout();
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
-  const money = useApi('/money').data;
-  const statisics = money?.data ?? [];
-  const recurring = money?.recurring ?? [];
+  const [cardWidth, setCardWidth] = useState(0);
+  // Off while dragging the wheel or slider, or the page scrolls along.
+  const [dragging, setDragging] = useState(false);
+  const [light, setLight] = useState({hue: 40, saturation: 0.4, brightness: 80});
+
+  const color = hsvToHex(light.hue, light.saturation);
+  const wheelSize = Math.min(cardWidth - 32, MAX_WHEEL);
+
+  const update = changes => setLight(current => ({...current, ...changes}));
+
+  // Called once a drag ends, so the lamp isn't flooded with requests.
+  const commit = changes => {
+    const next = {...light, ...changes};
+    setLight(next);
+    // TODO: send `next` ({hue, saturation, brightness}) to the lamp.
+  };
 
   return (
-    <View style={styles.content}>
-      <View style={[styles.statsContainer, compact && styles.compactStats]}>
-        {statisics && statisics?.map((data, index) => (
-          <Stat key={index} value={format.money(data.value)} label={data.label} attentionLevel={data.attentionLevel}/>
-        ))}
-      </View>
+    <ScrollView scrollEnabled={!dragging} contentContainerStyle={[styles.content, {paddingBottom: bottomInset + 16}]}>
+      <View style={styles.card} onLayout={event => setCardWidth(event.nativeEvent.layout.width)}>
+        <View style={styles.header}>
+          <View style={[styles.swatch, {backgroundColor: color, opacity: 0.2 + 0.8 * (light.brightness / 100)}]} />
+          <Text style={styles.title}>Colour</Text>
+          <Text style={styles.caption}>{color.toUpperCase()}</Text>
+        </View>
 
-      <ScrollView contentContainerStyle={{paddingBottom: bottomInset}}>
-        <GiftBudget />
-        {recurring && recurring?.map((data, index) => (
-          <View>
-            <Text>{data.counterparty}: {format.money(data.amount)}</Text>
+        {wheelSize > 0 ? (
+          <View style={styles.wheel}>
+            <ColorWheel
+              size={wheelSize}
+              hue={light.hue}
+              saturation={light.saturation}
+              onChange={update}
+              onChangeEnd={commit}
+              onDragStart={() => setDragging(true)}
+              onDragEnd={() => setDragging(false)}
+            />
           </View>
-        ))}
-        <HiddenOrnament spot="money" style={{alignSelf: 'flex-start', margin: 16}} />
-      </ScrollView>
-    </View>
+        ) : null}
+
+        <View style={styles.header}>
+          <Text style={styles.title}>Brightness</Text>
+          <Text style={styles.caption}>{light.brightness}%</Text>
+        </View>
+
+        <BrightnessSlider
+          value={light.brightness}
+          color={color}
+          onChange={brightness => update({brightness})}
+          onChangeEnd={brightness => commit({brightness})}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={() => setDragging(false)}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
-  compactStats: { flexWrap: 'wrap', gap: 8 },
   content: {
-    flex: 1,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 16,
     paddingTop: 16,
+    alignItems: 'center',
+  },
+  card: {
+    ...glass(colors),
+    width: '100%',
+    maxWidth: 420,
+    padding: 16,
+    borderRadius: 16,
+    gap: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  swatch: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  title: {
+    flex: 1,
+    color: colors.onSurface,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  caption: {
+    color: colors.outline,
+    fontSize: 14,
+    fontVariant: ['tabular-nums'],
+  },
+  wheel: {
+    alignItems: 'center',
+    paddingVertical: 8,
   },
 });
