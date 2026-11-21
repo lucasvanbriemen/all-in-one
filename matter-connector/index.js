@@ -1,5 +1,5 @@
 import http from "node:http";
-import { onOff, level, color } from "./lamp.js"
+import { onOff, level, color, EVEN_IF_OFF } from "./lamp.js"
 
 const PORT = 4003;
 
@@ -78,5 +78,20 @@ async function statusData(res) {
 }
 
 async function changeData(req, res) {
+  const body = [];
+  for await (const chunk of req) {
+    body.push(chunk);
+  }
+  const data = JSON.parse(Buffer.concat(body).toString());
+
+  const isTurnedOn = await onOff.getOnOffAttribute();
+
+  let brightness = data.brightness;
+  let colorData = data.color;
+  let howCloseToWhite = data.howCloseToWhite;
+
+  await color.enhancedMoveToHueAndSaturation({ enhancedHue: colorData, saturation: howCloseToWhite, transitionTime: 5, ...EVEN_IF_OFF });
+  await level.moveToLevelWithOnOff({ level: brightness, transitionTime: 5, ...EVEN_IF_OFF });
+
   jsonResponse(res, 200, { status: "ok" });
 }
