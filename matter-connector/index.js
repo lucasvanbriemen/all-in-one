@@ -87,10 +87,10 @@ async function changeData(req, res) {
   const isTurnedOn = await onOff.getOnOffAttribute();
 
   let brightness = data.brightness;
-  let colorData = data.color;
+  let hue = data.hue;
   let howCloseToWhite = data.howCloseToWhite;
 
-  await color.enhancedMoveToHueAndSaturation({ enhancedHue: colorData, saturation: howCloseToWhite, transitionTime: 5, ...EVEN_IF_OFF });
+  await color.enhancedMoveToHueAndSaturation({ enhancedHue: Math.round((hue / 360) * 65535), saturation: howCloseToWhite, transitionTime: 5, ...EVEN_IF_OFF });
   await level.moveToLevelWithOnOff({ level: brightness, transitionTime: 5, ...EVEN_IF_OFF });
 
   jsonResponse(res, 200, { status: "ok" });
