@@ -40,7 +40,7 @@ export function LightsPage() {
     <ScrollView scrollEnabled={!dragging} contentContainerStyle={[styles.content, {paddingBottom: bottomInset + 16}]}>
       <Text>Scenes:</Text>
       {lightMetadata.data?.scenes?.map(scene => (
-        <Pressable key={scene.name} onPress={() => api.post("/lights/apply_scene", { scene: scene.name })}>
+        <Pressable key={scene.name} onPress={() => api.post("/lights/scenes", { scene: scene.name })}>
           <Text key={scene.name}>{scene.name}</Text>
         </Pressable>
       ))}
