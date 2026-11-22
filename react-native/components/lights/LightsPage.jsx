@@ -1,8 +1,10 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {LightCard} from './LightCard';
-import {hexToHsv, hsvToHex} from './color';
+import {LightsPanel} from './LightsPanel';
+import Svg, {Defs, LinearGradient, Rect, Stop} from 'react-native-svg';
+
+import {hexToHsv, hsvToHex, svgId} from './color';
 import {useBottomInset} from '../useCompactLayout';
 import {api} from '../api';
 import {useApi} from '../useApi';
@@ -35,6 +37,7 @@ export function LightsPage() {
   const [dragging, setDragging] = useState(false);
   const [states, setStates] = useState({});
   const [activeScene, setActiveScene] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   // Lamps the user has touched this session; a late status response won't overwrite them.
   const touched = useRef(new Set());
   const send = useLiveSender();
@@ -122,54 +125,87 @@ export function LightsPage() {
         {scenes.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Scenes</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scenes}>
+            <View style={styles.tiles}>
               {scenes.map(scene => (
-                <SceneChip
+                <SceneTile
                   key={scene.name}
                   scene={scene}
                   active={activeScene === scene.name}
                   onPress={() => applyScene(scene)}
                 />
               ))}
-            </ScrollView>
+            </View>
           </View>
         ) : null}
 
-        <View style={styles.grid}>
-          {lights.map(light => (
-            <LightCard
-              key={light.id}
-              name={light.name}
-              light={stateOf(light.id)}
-              reachable={!!light.status}
-              onChange={(changes, options) => changeLight(light.id, changes, options)}
-              onPowerToggle={() => togglePower(light.id)}
+        {lights.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Lamps</Text>
+            <LightsPanel
+              lights={lights.map(light => ({...light, reachable: !!light.status, state: stateOf(light.id)}))}
+              selectedId={selectedId ?? lights[0].id}
+              onSelect={setSelectedId}
+              onChange={changeLight}
+              onPowerToggle={togglePower}
               onDraggingChange={setDragging}
             />
-          ))}
-        </View>
+          </View>
+        ) : null}
       </View>
     </ScrollView>
   );
 }
 
-function SceneChip({scene, active, onPress}) {
+// A big tile filled with the scene's colours, so you can see what you'll get.
+function SceneTile({scene, active, onPress}) {
   const styles = useThemedStyles(createStyles);
-  const colors = Object.values(scene.lights ?? {}).map(settings => settings.hex);
+  const gradientId = svgId(useId());
+  const shadeId = svgId(useId());
+  const [size, setSize] = useState({width: 0, height: 0});
+  const sceneColors = Object.values(scene.lights ?? {}).map(settings => settings.hex);
+  const stops = sceneColors.length > 1 ? sceneColors : [sceneColors[0] ?? '#888888', sceneColors[0] ?? '#888888'];
+  const lampCount = sceneColors.length;
 
   return (
     <Pressable
       onPress={onPress}
-      style={({pressed}) => [styles.chip, active && styles.chipActive, pressed && styles.pressed]}>
-      <View style={styles.chipDots}>
-        {colors.map((hex, index) => (
-          <View
-            key={`${hex}-${index}`}
-            style={[styles.chipDot, {backgroundColor: hex, marginLeft: index === 0 ? 0 : -7, zIndex: colors.length - index}]}
-          />
-        ))}
+      accessibilityRole="button"
+      accessibilityState={{selected: active}}
+      onLayout={event => {
+        const {width, height} = event.nativeEvent.layout;
+        setSize({width, height});
+      }}
+      style={({pressed}) => [styles.tile, active && styles.tileActive, pressed && styles.pressed]}>
+      {/* Sized to the measured tile: macOS ignores percentage sizes on <Svg>. */}
+      {size.width > 0 ? (
+        <Svg style={StyleSheet.absoluteFill} width={size.width} height={size.height} pointerEvents="none">
+          <Defs>
+            <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+              {stops.map((hex, index) => (
+                <Stop key={index} offset={index / (stops.length - 1)} stopColor={hex} />
+              ))}
+            </LinearGradient>
+            {/* Darkens the bottom so the white name stays readable on bright colours. */}
+            <LinearGradient id={shadeId} x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0.35" stopColor="#000000" stopOpacity={0} />
+              <Stop offset="1" stopColor="#000000" stopOpacity={0.45} />
+            </LinearGradient>
+          </Defs>
+          <Rect x={0} y={0} width={size.width} height={size.height} fill={`url(#${gradientId})`} />
+          <Rect x={0} y={0} width={size.width} height={size.height} fill={`url(#${shadeId})`} />
+        </Svg>
+      ) : null}
+
+      {active ? (
+        <View style={styles.tileCheck}>
+          <Text style={styles.tileCheckMark}>✓</Text>
+        </View>
+      ) : null}
+
+      <View style={styles.tileText}>
+        <Text style={styles.tileName} numberOfLines={1}>{scene.name}</Text>
+        <Text style={styles.tileMeta}>{lampCount === 1 ? '1 lamp' : `${lampCount} lamps`}</Text>
       </View>
-      <Text style={[styles.chipText, active && styles.chipTextActive]}>{scene.name}</Text>
     </Pressable>
   );
 }
@@ -248,49 +284,60 @@ const createStyles = colors => StyleSheet.create({
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
-  scenes: {
-    gap: 10,
-  },
-  chip: {
-    ...glass(colors),
+  tiles: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingLeft: 10,
-    paddingRight: 16,
-    paddingVertical: 9,
-    borderRadius: 999,
+    flexWrap: 'wrap',
+    gap: 12,
   },
-  chipActive: {
-    borderColor: colors.primary,
-    backgroundColor: withAlpha(colors.primary, 0.16),
-  },
-  chipDots: {
-    flexDirection: 'row',
-  },
-  chipDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+  tile: {
+    flexGrow: 1,
+    flexBasis: 200,
+    height: 112,
+    borderRadius: 20,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    padding: 16,
     borderWidth: 2,
-    borderColor: withAlpha(colors.surface, 0.9),
+    borderColor: 'transparent',
+    backgroundColor: withAlpha(colors.onSurface, 0.08),
   },
-  chipText: {
-    color: colors.onSurface,
-    fontSize: 14,
-    fontWeight: '600',
+  tileActive: {
+    borderColor: '#ffffff',
   },
-  chipTextActive: {
-    color: colors.primary,
+  tileText: {
+    gap: 1,
+  },
+  tileName: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: '700',
+    textShadowColor: 'rgba(0, 0, 0, 0.25)',
+    textShadowRadius: 4,
+    textShadowOffset: {width: 0, height: 1},
+  },
+  tileMeta: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  tileCheck: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tileCheckMark: {
+    color: '#000000',
+    fontSize: 13,
+    fontWeight: '800',
   },
   pressed: {
     opacity: 0.7,
     transform: [{scale: 0.97}],
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 16,
   },
 });
