@@ -3,6 +3,7 @@ class PushNotificationJob < ApplicationJob
 
   def perform(notification_id)
     notification = Notification.find(notification_id)
+    return if notification.silent
 
     DeviceToken.all.group_by(&:environment).each do |environment, devices|
       connection = Push::Apns.connection(environment)

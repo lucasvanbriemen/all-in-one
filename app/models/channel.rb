@@ -11,6 +11,15 @@ class Channel < ApplicationRecord
 
   FALL_BACK_NAME = "Unknown name"
 
+  # A hidden chat comes back to the list when someone writes in it.
+  def self.reappear(id)
+    where(id: id, dismissed: true).update_all(dismissed: false, updated_at: Time.current)
+  end
+
+  def muted
+    is_a?(Slack::Channel) && MessagesConfig::MUTED_SLACK_CHANNELS.include?(name)
+  end
+
   attr_writer :last_message
 
   # Everything the chat list renders, loaded in a fixed number of queries

@@ -87,6 +87,12 @@ export function ActiveChannel({isThread = false}) {
     }
   }
 
+  function restoreChannel() {
+    api.post(`/channels/${encodeURIComponent(activeChannel)}/dismiss`, {dismissed: false})
+      .then(() => setChannel(current => ({...current, dismissed: false})))
+      .catch(error => console.warn(`restoring ${activeChannel} failed`, error));
+  }
+
   function closeChannel() {
     setActiveChannel("");
     set("messages.activeChannel", "");
@@ -150,6 +156,14 @@ export function ActiveChannel({isThread = false}) {
       </ScrollView>
 
       <View style={[styles.additionalContent, { marginBottom: inputOffset }]}>
+        {channel?.dismissed && !isThread && (
+          <View style={styles.dismissedBar}>
+            <Text style={styles.dismissedText}>Hidden from your chat list</Text>
+            <Pressable onPress={restoreChannel} hitSlop={8}>
+              <Text style={styles.dismissedAction}>Show in list</Text>
+            </Pressable>
+          </View>
+        )}
         <MessageInput threadId={isThread ? get("messages.activeThread") : null} />
       </View>
     </View>
@@ -187,6 +201,23 @@ const createStyles = colors => StyleSheet.create({
   },
   additionalContent: {
     marginBottom: 16,
+  },
+  dismissedBar: {
+    ...glass(colors),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  dismissedText: {
+    color: colors.onSurfaceVariant,
+  },
+  dismissedAction: {
+    color: colors.primary,
+    fontWeight: '600',
   },
   channelDetails: {
     position: 'absolute',

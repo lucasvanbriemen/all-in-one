@@ -20,7 +20,7 @@ class Notification::Stack
   # notifications are unread: the groups, their newest few rows, their senders
   # and the channels they belong to.
   def self.unread(limit: 50, previews: PREVIEWS)
-    groups = Notification.unread.group(:source)
+    groups = Notification.unread.audible.group(:source)
       .order(Arel.sql("MAX(created_at) DESC"))
       .limit(limit)
       .pluck(:source, Arel.sql("COUNT(*)"), Arel.sql("MAX(created_at)"))

@@ -122,6 +122,7 @@ module Whatsapp
       # History sync replays old messages; only new ones are worth a notification.
       return if payload["from_me"] || !payload["live"]
 
+      Channel.reappear(chat)
       Notification.create!(
         title: payload["sender_name"],
         body: record.body,

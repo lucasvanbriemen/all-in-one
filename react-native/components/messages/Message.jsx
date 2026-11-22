@@ -10,6 +10,7 @@ import {format} from '../money/format';
 import {QUICK_REACTIONS, groupReactions} from './reactions';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
+import {Icon} from '../icons';
 
 const CAN_HOVER = Platform.OS === 'web' || Platform.OS === 'macos';
 // Touch screens reply WhatsApp-style: drag the bubble right past the threshold and let go.
@@ -151,7 +152,10 @@ export const Message = React.memo(function Message({message, showSender = false}
       )}
 
       <View style={styles.meta}>
-        <Text style={styles.meta_item}>{format.time(message.created_at)}</Text>
+        <View style={styles.timeRow}>
+          <Text style={styles.meta_item}>{format.time(message.created_at)}</Text>
+          {message.from_me && message.platform === 'whatsapp' && <DeliveryStatus status={message.status} styles={styles} />}
+        </View>
 
         <View style={styles.reactions}>
           {grouped.map(group => (
@@ -200,6 +204,17 @@ export const Message = React.memo(function Message({message, showSender = false}
     </Animated.View>
   );
 });
+
+// WhatsApp's ticks for my own messages. The connector passes Baileys' status through:
+// 0 error, 1 pending, 2 sent to the server, 3 delivered, 4 read, 5 played (voice notes).
+const STATUS_ICONS = {0: 'alert', 1: 'clock', 2: 'check', 3: 'check-double', 4: 'check-double', 5: 'check-double'};
+
+function DeliveryStatus({status, styles}) {
+  const name = STATUS_ICONS[status];
+  if (!name) return null;
+  const color = status === 0 ? styles.statusError.color : status >= 4 ? styles.statusRead.color : styles.status.color;
+  return <Icon name={name} size={14} color={color} />;
+}
 
 // What a quote shows: the text, or what kind of file it was.
 export function quotePreview(message) {
@@ -292,6 +307,20 @@ const createStyles = colors => StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 2,
     color: colors.onSurfaceVariant
+  },
+  timeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  status: {
+    color: colors.onSurfaceVariant,
+  },
+  statusRead: {
+    color: colors.primary,
+  },
+  statusError: {
+    color: colors.error,
   },
   reactions: {
     flexDirection: 'row',

@@ -99,18 +99,28 @@ class SlackController < ApplicationController
   def notify(event)
     contact = Slack::Contact.find_by(id: event["user"])
     return if contact.nil? || contact.is_me
-    return unless Slack::Channel.joined.exists?(id: event["channel"])
+    channel = Slack::Channel.joined.find_by(id: event["channel"])
+    return unless channel
 
+    pinged = pings_me?(event["text"])
+
+    # Thread replies only matter when they ping me or the thread is one I started or replied in.
     if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
       thread_id = "#{event["channel"]}-#{event["thread_ts"]}"
       in_thread = Slack::Message.where(id: thread_id).or(Slack::Message.where(thread_id: thread_id))
-      return unless in_thread.where(contact_id: Contact::MY_CONTACT_IDS).exists?
+      return unless pinged || in_thread.where(contact_id: Contact::MY_CONTACT_IDS).exists?
     end
 
+    Channel.reappear(channel.id)
     Notification.create!(
       title: contact.name,
       body: event["text"],
-      source: "messages.slack.#{event["channel"]}"
+      source: "messages.slack.#{event["channel"]}",
+      silent: channel.muted && !pinged
     )
+  end
+
+  def pings_me?(text)
+    Contact::MY_CONTACT_IDS.any? { |id| text.to_s.include?("<@#{id}>") }
   end
 end

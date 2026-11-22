@@ -15,6 +15,7 @@ import {HeartOutlineIcon} from './heartOutline';
 import {HomeIcon} from './home';
 import {LastIcon} from './last';
 import {NextIcon} from './next';
+import {PaperclipIcon} from './paperclip';
 import {PatheIcon} from './pathe';
 import {PauseIcon} from './pause';
 import {PlayIcon} from './play';
@@ -22,6 +23,7 @@ import {PlusIcon} from './plus';
 import React from 'react';
 import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
+import {SendIcon} from './send';
 import {StatsIcon} from './stats';
 import {WEATHER_ICONS} from './weather';
 import {WorkIcon} from './work';
@@ -59,6 +61,8 @@ const ICONS = {
   'check-double': CheckDoubleIcon,
   'plus': PlusIcon,
   clock: ClockIcon,
+  send: SendIcon,
+  paperclip: PaperclipIcon,
   alert: AlertIcon,
   ...WEATHER_ICONS,
 };

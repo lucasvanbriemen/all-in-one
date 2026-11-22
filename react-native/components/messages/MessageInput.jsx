@@ -91,6 +91,8 @@ export function MessageInput({threadId = null}) {
     }).finally(() => { sending.current = false; })
   }
 
+  const canSend = !!text.trim() || !!attachment;
+
   return (
     <View style={styles.container}>
       {quote && (
@@ -120,8 +122,9 @@ export function MessageInput({threadId = null}) {
       {attachmentError && <Text accessibilityRole="alert">{attachmentError}</Text>}
 
       <View style={styles.content}>
-        <Pressable onPress={pickAttachment}>
-          <Icon name="plus" size={24} color={styles.attachmentName.color} />
+        <Pressable onPress={pickAttachment} accessibilityLabel="Attach a file"
+          style={({pressed, hovered}) => [styles.iconButton, (pressed || hovered) && styles.iconButtonActive]}>
+          <Icon name="paperclip" size={20} color={styles.iconColor.color} />
         </Pressable>
 
         <TextInput ref={inputRef} style={styles.input}
@@ -157,8 +160,9 @@ export function MessageInput({threadId = null}) {
           if (isDecorated() && /hohoho$/i.test(value)) startBlizzard(10);
         }} />
 
-        <Pressable onPress={sendMessage} style={styles.sendButton}>
-          <Text>Send</Text>
+        <Pressable onPress={sendMessage} disabled={!canSend} accessibilityLabel="Send"
+          style={({pressed}) => [styles.sendButton, !canSend && styles.sendButtonIdle, pressed && styles.sendButtonPressed]}>
+          <Icon name="send" size={18} color={canSend ? styles.sendIcon.color : styles.iconColor.color} />
         </Pressable>
       </View>
     </View>
@@ -171,17 +175,53 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // Buttons stay on the last line while the input grows upward.
+    alignItems: 'flex-end',
     gap: 8,
   },
   input: {
     flex: 1,
+    ...glass(colors),
     borderWidth: 1,
-    borderColor: colors.secondary,
-    borderRadius: 8,
-    padding: 8,
+    borderColor: colors.outlineVariant,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    minHeight: 40,
     maxHeight: 160,
+    fontSize: 15,
     color: colors.onSurface,
+    ...(Platform.OS === 'web' ? {outlineStyle: 'none'} : {}),
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconButtonActive: {
+    ...glass(colors),
+  },
+  iconColor: {
+    color: colors.onSurfaceVariant,
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+  },
+  sendButtonIdle: {
+    ...glass(colors),
+  },
+  sendButtonPressed: {
+    opacity: 0.7,
+  },
+  sendIcon: {
+    color: colors.onPrimary,
   },
   attachment: {
     flexDirection: 'row',
