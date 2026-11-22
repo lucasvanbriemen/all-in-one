@@ -6,6 +6,7 @@ class SearchController < ApplicationController
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = matching_channels(@query)
     @emails = matching_emails(@query)
+    @pages = matching_pages(@query)
 
     @results = []
 
@@ -43,10 +44,34 @@ class SearchController < ApplicationController
       }
     }
 
+    @pages.each { |page|
+      @results << {
+        type: "page",
+        source: "#{page[:app]}.#{page[:path]}",
+        title: page[:name],
+        subtitle: page[:app].to_s.capitalize,
+        image_url: nil,
+        full_object: page
+      }
+    }
+
     render json: @results
   end
 
   private
+
+  # Every sidebar item of every app, matched on its own name or its app's name.
+  # The source "<app>.<path>" is what openSource navigates to.
+  def matching_pages(query)
+    needle = query.downcase
+    Config::CONFIG.flat_map { |app, groups|
+      groups
+        .select { |group| group[:path] && group[:name] }
+        .map { |group| { app: app, path: group[:path], name: group[:name] } }
+    }.select { |page|
+      page[:name].downcase.include?(needle) || page[:app].to_s.include?(needle)
+    }
+  end
 
   # Matching runs on the subject index alone, the 20 newest ids are picked, and
   # only then are their rows read. Reading rows any earlier pulls in the big
