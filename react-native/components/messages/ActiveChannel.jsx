@@ -126,7 +126,7 @@ export function ActiveChannel({isThread = false}) {
     <View style={styles.content}>
       {isCompact && (
         <View style={styles.channelDetails}>
-          <Pressable onPress={() => closeChannel()} style={styles.backButton}>
+          <Pressable onPress={() => (isThread ? set("messages.activeThread", null) : closeChannel())} style={styles.backButton}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Icon name={"chevron-left"} size={16} color={colors.onSurface} />
           </Pressable>
@@ -134,7 +134,7 @@ export function ActiveChannel({isThread = false}) {
           <View style={styles.channelInfo}>
             {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
             <Avatar uri={channel?.avatar_url} name={channel?.display_name} size={45} style={styles.avatar} />
-            <Text style={styles.channelInfo.name}>{channel?.display_name}</Text>
+            <Text style={styles.channelInfo.name} numberOfLines={1}>{isThread ? `Thread in ${channel?.display_name ?? ''}` : channel?.display_name}</Text>
           </View>
         </View>
       )}

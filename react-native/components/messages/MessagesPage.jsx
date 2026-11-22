@@ -12,6 +12,7 @@ export function MessagesPage() {
   const sidebarItem = get("app.activeSidebarItem") ?? "whatsapp";
   const styles = useThemedStyles(createStyles);
   const compact = useCompactLayout();
+  const thread = get("messages.activeThread");
 
   return (
     <View style={styles.content}>
@@ -24,12 +25,15 @@ export function MessagesPage() {
 
       {(compact && get("messages.activeChannel") || !compact) && (
         <View style={styles.activeChannelWrapper}>
-          <View style={styles.activeChannel}>
-            <ActiveChannel />
-          </View>
+          {/* A small screen has room for one pane: an open thread replaces its chat. */}
+          {!(compact && thread) && (
+            <View style={styles.activeChannel}>
+              <ActiveChannel />
+            </View>
+          )}
 
-          {get("messages.activeThread") && (
-            <View style={[styles.activeChannel, styles.activeChannelThread]}>
+          {thread && (
+            <View style={[styles.activeChannel, !compact && styles.activeChannelThread]}>
               <ActiveChannel isThread={true} />
             </View>
           )}
