@@ -6,7 +6,7 @@ import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
-export function NowPlayingBar() {
+export function NowPlayingBar({floating = false}) {
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
 
@@ -15,7 +15,7 @@ export function NowPlayingBar() {
   }
 
   return (
-    <Pressable style={styles.content} onPress={() => set('music.is-expanded', true)}>
+    <View style={[styles.content, floating && styles.floating]}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
 
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
@@ -46,7 +46,7 @@ export function NowPlayingBar() {
           <Icon name="next" size={24} color={styles.controlText.color} />
         </Pressable>
       </View>
-    </Pressable>
+    </View>
   );
 }
 
@@ -64,6 +64,13 @@ const createStyles = colors => StyleSheet.create({
     marginBottom: 8,
     position: 'relative',
     overflow: 'hidden',
+  },
+  floating: {
+    ...glass(colors, {variant: 'panel'}),
+    borderWidth: 1,
+    borderColor: colors.onSurfaceVariant,
+    borderTopColor: colors.onSurfaceVariant,
+    width: 400,
   },
   title: {
     fontSize: 16,

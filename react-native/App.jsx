@@ -126,7 +126,7 @@ function AppShell() {
                 const height = event.nativeEvent.layout.height;
                 set('app.bottomInset', height > 0 ? height + 16 : 0);
               }}>
-                <NowPlayingBar />
+                <NowPlayingBar floating />
               </View>
             )}
           </View>
@@ -168,7 +168,6 @@ const createStyles = colors => StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
-    width: 340,
   },
   content: {
     minWidth: 0,
