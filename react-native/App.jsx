@@ -1,5 +1,5 @@
 import {AppProvider, store, useAppContext} from './context/AppContext';
-import {Platform, StyleSheet, View} from 'react-native';
+import {AppState, Platform, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
@@ -68,15 +68,36 @@ function openSearch(set, get) {
   set('app.showSearch', !isOpen);
 }
 
-// Registers for notifications and requests permission on app launch
+// Registers for notifications and requests permission on app launch, and
+// keeps Notification Center in step with what is still unread.
 function PushBridge() {
-  const {set} = useAppContext();
+  const {get, set} = useAppContext();
+  const activeChannel = get('messages.activeChannel');
+  const selectedEmailId = get('email.selectedEmailId');
 
   useEffect(() => {
     const unsubscribe = push.subscribe(({source}) => openSource(set, source));
     push.requestPermission();
     return unsubscribe;
   }, [set]);
+
+  // On launch and every return to the foreground: things may have been read
+  // elsewhere (the Mac, the home screen) while the app was in the background.
+  useEffect(() => {
+    push.syncDelivered();
+    const sub = AppState.addEventListener('change', state => {
+      if (state === 'active') push.syncDelivered();
+    });
+    return () => sub.remove();
+  }, []);
+
+  // Opening a chat or email marks it read on the server (the messages/email
+  // fetch does that), so sync shortly after it has had time to land.
+  useEffect(() => {
+    if (!activeChannel && !selectedEmailId) return;
+    const timer = setTimeout(() => push.syncDelivered(), 1500);
+    return () => clearTimeout(timer);
+  }, [activeChannel, selectedEmailId]);
 
   return null;
 }

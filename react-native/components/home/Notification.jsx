@@ -5,7 +5,7 @@ import {glass, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
-import {openSource} from '../push';
+import {openSource, push} from '../push';
 import {useAppContext} from '../../context/AppContext';
 
 // Splits a source the same way openSource does: only the first two dots
@@ -38,6 +38,7 @@ export function NotificationStack({stack}) {
   async function dismiss() {
     setDismissed(true);
     await api.post('/notifications/mark_as_read', {source: stack.source});
+    push.syncDelivered();
   }
 
   function openStack() {
@@ -156,6 +157,7 @@ function MessageActions({channelId, onDone, styles}) {
 
   async function markChatAsRead() {
     await api.post(`/channels/${channel}/mark_as_read`);
+    push.syncDelivered();
     onDone();
   }
 
@@ -206,6 +208,7 @@ function MessageActions({channelId, onDone, styles}) {
 function EmailActions({emailId, onDone, styles}) {
   async function markEmailAsRead() {
     await api.post(`/emails/${emailId}/mark_as_read`);
+    push.syncDelivered();
     onDone();
   }
 

@@ -152,6 +152,23 @@ final class PushNotifications: RCTEventEmitter {
         }
     }
 
+    /// Removes every delivered notification whose `source` is not in
+    /// `unreadSources`, i.e. was read somewhere (in the app, on the Mac, on
+    /// the phone itself). Notifications without a source are left alone.
+    @objc func retainDelivered(_ unreadSources: [String]) {
+        let keep = Set(unreadSources)
+        let center = UNUserNotificationCenter.current()
+        center.getDeliveredNotifications { notifications in
+            let ids = notifications
+                .filter { note in
+                    guard let source = note.request.content.userInfo["source"] as? String else { return false }
+                    return !keep.contains(source)
+                }
+                .map { $0.request.identifier }
+            if !ids.isEmpty { center.removeDeliveredNotifications(withIdentifiers: ids) }
+        }
+    }
+
     private static func registerForRemote() {
         #if canImport(UIKit)
         UIApplication.shared.registerForRemoteNotifications()

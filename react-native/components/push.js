@@ -16,6 +16,15 @@ export const push = {
     NativeModules.PushNotifications?.clearDelivered?.(source);
   },
 
+  // Drops delivered notifications that are no longer unread on the server,
+  // however they got read (opened chat, home card, another device).
+  async syncDelivered() {
+    if (!NativeModules.PushNotifications?.retainDelivered) return;
+    const stacks = await api.getOrThrow('/notifications/stacks?limit=200').catch(() => null);
+    if (!Array.isArray(stacks)) return;
+    NativeModules.PushNotifications.retainDelivered(stacks.map(stack => stack.source));
+  },
+
   // `onOpen` receives the tapped notification's payload ({notification_id,
   // source}), including a tap that launched the app from cold.
   subscribe(onOpen) {

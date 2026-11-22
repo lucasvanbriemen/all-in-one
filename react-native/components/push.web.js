@@ -10,6 +10,10 @@ export const push = {
     return false;
   },
 
+  clearDelivered() {},
+
+  async syncDelivered() {},
+
   subscribe() {
     return () => {};
   },

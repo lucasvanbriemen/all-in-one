@@ -8,6 +8,7 @@ RCT_EXTERN_METHOD(requestPermission
                   : (RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(register)
 RCT_EXTERN_METHOD(clearDelivered : (NSString *)source)
+RCT_EXTERN_METHOD(retainDelivered : (NSArray<NSString *> *)unreadSources)
 RCT_EXTERN_METHOD(getToken
                   : (RCTPromiseResolveBlock)resolve rejecter
                   : (RCTPromiseRejectBlock)reject)
