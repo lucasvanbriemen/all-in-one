@@ -74,6 +74,7 @@ Rails.application.routes.draw do
 
   post "/lights/change", to: "lights#update", as: :lights
   get "/lights", to: "lights#index", as: :lights_index
+  post "/lights/scenes", to: "lights#apply_scene", as: :lights_scenes
 
   get "/search", to: "search#index"
 end

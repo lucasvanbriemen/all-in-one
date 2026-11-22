@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {BrightnessSlider} from './BrightnessSlider';
 import {ColorWheel} from './ColorWheel';
 import {hsvToHex} from './color';
 import {useBottomInset} from '../useCompactLayout';
 import {api} from '../api';
+import { useApi } from '../useApi';
 import {glass, useThemedStyles} from '../theme';
 
 const MAX_WHEEL = 320;
@@ -17,6 +18,8 @@ export function LightsPage() {
   // Off while dragging the wheel or slider, or the page scrolls along.
   const [dragging, setDragging] = useState(false);
   const [light, setLight] = useState({hue: 40, saturation: 0.4, brightness: 80});
+
+  const lightMetadata = useApi("/lights");
 
   const color = hsvToHex(light.hue, light.saturation);
   const wheelSize = Math.min(cardWidth - 32, MAX_WHEEL);
@@ -35,6 +38,13 @@ export function LightsPage() {
 
   return (
     <ScrollView scrollEnabled={!dragging} contentContainerStyle={[styles.content, {paddingBottom: bottomInset + 16}]}>
+      <Text>Scenes:</Text>
+      {lightMetadata.data?.scenes?.map(scene => (
+        <Pressable key={scene.name} onPress={() => api.post("/lights/apply_scene", { scene: scene.name })}>
+          <Text key={scene.name}>{scene.name}</Text>
+        </Pressable>
+      ))}
+
       <View style={styles.card} onLayout={event => setCardWidth(event.nativeEvent.layout.width)}>
         <View style={styles.header}>
           <View style={[styles.swatch, {backgroundColor: color, opacity: 0.2 + 0.8 * (light.brightness / 100)}]} />
