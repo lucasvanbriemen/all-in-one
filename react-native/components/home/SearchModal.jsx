@@ -21,6 +21,11 @@ function openResult(set, get, result) {
     return;
   }
 
+  if (result.type === 'page') {
+    openSource(set, result.source);
+    return;
+  }
+
   openSource(set, result.source);
 }
 
