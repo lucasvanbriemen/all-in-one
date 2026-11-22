@@ -66,10 +66,10 @@ const createStyles = colors => StyleSheet.create({
     overflow: 'hidden',
   },
   floating: {
-    ...glass(colors, {variant: 'panel'}),
-    borderWidth: 1,
-    borderColor: colors.onSurfaceVariant,
-    borderTopColor: colors.onSurfaceVariant,
+    ...glass(colors, {variant: 'tinted'}),
+    borderWidth: 2,
+    borderColor: colors.outlineVariant,
+    borderTopColor: colors.outlineVariant,
     width: 400,
   },
   title: {
