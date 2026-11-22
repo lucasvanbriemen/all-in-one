@@ -73,6 +73,7 @@ Rails.application.routes.draw do
   get "/github/items", to: "github/items#index", as: :github_items
 
   post "/lights/change", to: "lights#update", as: :lights
+  get "/lights", to: "lights#index", as: :lights_index
 
   get "/search", to: "search#index"
 end
