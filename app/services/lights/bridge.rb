@@ -10,8 +10,15 @@ module Lights
       uri = URI.join(BASE_URL, "change")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.path, { "Content-Type" => "application/json" })
-      request.body = { id: id, hex: hex, brightness: brightness }.compact.to_json
+      request.body = { id: id, hex: hex, brightness: brightness.to_i }.compact.to_json
       http.request(request)
+    end
+
+    def self.status
+      uri = URI.join(BASE_URL, "status")
+      response = Net::HTTP.start(uri.host, uri.port, open_timeout: 2, read_timeout: 4) { |http| http.get(uri.path) }
+
+      JSON.parse(response.body).fetch("lamps", [])
     end
 
     # Scenes are keyed by slug, the bridge by lamp id, so look up each light's id and change it separately.

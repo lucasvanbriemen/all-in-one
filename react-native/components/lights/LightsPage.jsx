@@ -1,125 +1,296 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {BrightnessSlider} from './BrightnessSlider';
-import {ColorWheel} from './ColorWheel';
-import {hsvToHex} from './color';
+import {LightCard} from './LightCard';
+import {hexToHsv, hsvToHex} from './color';
 import {useBottomInset} from '../useCompactLayout';
 import {api} from '../api';
-import { useApi } from '../useApi';
-import {glass, useThemedStyles} from '../theme';
+import {useApi} from '../useApi';
+import {glass, useThemedStyles, withAlpha} from '../theme';
 
-const MAX_WHEEL = 320;
+// While dragging, the lamp follows along at most this often. The bridge
+// coalesces queued changes per lamp, so it never falls behind.
+const LIVE_INTERVAL_MS = 180;
+
+const FALLBACK = {hue: 36, saturation: 0.5, brightness: 200, on: true};
+
+const fromStatus = status => ({
+  ...FALLBACK,
+  ...(hexToHsv(status.hex) ?? {}),
+  // Turning off drops the level to its minimum, so don't come back on at 1%.
+  brightness: status.on && status.brightness > 1 ? status.brightness : FALLBACK.brightness,
+  on: !!status.on,
+});
 
 export function LightsPage() {
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);
-  const [cardWidth, setCardWidth] = useState(0);
-  // Off while dragging the wheel or slider, or the page scrolls along.
+  const {data} = useApi('/lights');
+
+  // An older cached response had `lights` as an object; only trust the array shape.
+  const lights = Array.isArray(data?.lights) ? data.lights : [];
+  const scenes = data?.scenes ?? [];
+
+  // Off while dragging a wheel or slider, or the page scrolls along.
   const [dragging, setDragging] = useState(false);
-  const [light, setLight] = useState({hue: 40, saturation: 0.4, brightness: 80});
+  const [states, setStates] = useState({});
+  const [activeScene, setActiveScene] = useState(null);
+  // Lamps the user has touched this session; a late status response won't overwrite them.
+  const touched = useRef(new Set());
+  const send = useLiveSender();
 
-  const lightMetadata = useApi("/lights");
+  // Start each card from what the lamp is actually showing.
+  useEffect(() => {
+    setStates(current => {
+      const next = {...current};
+      lights.forEach(light => {
+        if (touched.current.has(light.id)) return;
+        next[light.id] = light.status ? fromStatus(light.status) : current[light.id] ?? FALLBACK;
+      });
+      return next;
+    });
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const color = hsvToHex(light.hue, light.saturation);
-  const wheelSize = Math.min(cardWidth - 32, MAX_WHEEL);
+  const stateOf = id => states[id] ?? FALLBACK;
 
-  const update = changes => setLight(current => ({...current, ...changes}));
+  const changeLight = (id, changes, {final = false} = {}) => {
+    touched.current.add(id);
+    setActiveScene(null);
+    // Any colour or brightness change also turns the lamp on.
+    const next = {...stateOf(id), ...changes, on: true};
+    setStates(current => ({...current, [id]: next}));
+    send(id, {hex: hsvToHex(next.hue, next.saturation), brightness: next.brightness}, final);
+  };
 
-  // Called once a drag ends, so the lamp isn't flooded with requests.
-  const commit = changes => {
-    const next = {...light, ...changes};
-    setLight(next);
-    api.post("/lights/change", {
-      hex: hsvToHex(next.hue, next.saturation),
-      brightness: next.brightness,
+  const togglePower = id => {
+    const current = stateOf(id);
+    if (current.on) {
+      touched.current.add(id);
+      setActiveScene(null);
+      setStates(all => ({...all, [id]: {...current, on: false}}));
+      send(id, {on: false, hex: hsvToHex(current.hue, current.saturation)}, true);
+    } else {
+      changeLight(id, {}, {final: true});
+    }
+  };
+
+  const anyOn = lights.some(light => stateOf(light.id).on);
+  const onCount = lights.filter(light => stateOf(light.id).on).length;
+
+  const toggleAll = () => {
+    lights.forEach(light => {
+      if (anyOn ? stateOf(light.id).on : true) togglePower(light.id);
+    });
+  };
+
+  const applyScene = scene => {
+    setActiveScene(scene.name);
+    api.post('/lights/scenes', {scene: scene.name});
+    setStates(current => {
+      const next = {...current};
+      lights.forEach(light => {
+        const settings = scene.lights?.[light.slug];
+        if (!settings) return;
+        touched.current.add(light.id);
+        next[light.id] = {...(hexToHsv(settings.hex) ?? FALLBACK), brightness: settings.brightness, on: true};
+      });
+      return next;
     });
   };
 
   return (
-    <ScrollView scrollEnabled={!dragging} contentContainerStyle={[styles.content, {paddingBottom: bottomInset + 16}]}>
-      <Text>Scenes:</Text>
-      {lightMetadata.data?.scenes?.map(scene => (
-        <Pressable key={scene.name} onPress={() => api.post("/lights/scenes", { scene: scene.name })}>
-          <Text key={scene.name}>{scene.name}</Text>
-        </Pressable>
-      ))}
-
-      <View style={styles.card} onLayout={event => setCardWidth(event.nativeEvent.layout.width)}>
-        <View style={styles.header}>
-          <View style={[styles.swatch, {backgroundColor: color, opacity: 0.2 + 0.8 * (light.brightness / 100)}]} />
-          <Text style={styles.title}>Colour</Text>
-          <Text style={styles.caption}>{color.toUpperCase()}</Text>
+    <ScrollView
+      scrollEnabled={!dragging}
+      contentContainerStyle={[styles.content, {paddingBottom: bottomInset + 24}]}>
+      <View style={styles.inner}>
+        <View style={styles.pageHeader}>
+          <View style={styles.pageHeaderText}>
+            <Text style={styles.pageTitle}>Lights</Text>
+            {lights.length > 0 ? (
+              <Text style={styles.pageSubtitle}>
+                {onCount === 0 ? 'All off' : `${onCount} of ${lights.length} on`}
+              </Text>
+            ) : null}
+          </View>
+          {lights.length > 0 ? (
+            <Pressable onPress={toggleAll} style={({pressed}) => [styles.allButton, pressed && styles.pressed]}>
+              <Text style={styles.allButtonText}>{anyOn ? 'All off' : 'All on'}</Text>
+            </Pressable>
+          ) : null}
         </View>
 
-        {wheelSize > 0 ? (
-          <View style={styles.wheel}>
-            <ColorWheel
-              size={wheelSize}
-              hue={light.hue}
-              saturation={light.saturation}
-              onChange={update}
-              onChangeEnd={commit}
-              onDragStart={() => setDragging(true)}
-              onDragEnd={() => setDragging(false)}
-            />
+        {scenes.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Scenes</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scenes}>
+              {scenes.map(scene => (
+                <SceneChip
+                  key={scene.name}
+                  scene={scene}
+                  active={activeScene === scene.name}
+                  onPress={() => applyScene(scene)}
+                />
+              ))}
+            </ScrollView>
           </View>
         ) : null}
 
-        <View style={styles.header}>
-          <Text style={styles.title}>Brightness</Text>
-          <Text style={styles.caption}>{light.brightness}%</Text>
+        <View style={styles.grid}>
+          {lights.map(light => (
+            <LightCard
+              key={light.id}
+              name={light.name}
+              light={stateOf(light.id)}
+              reachable={!!light.status}
+              onChange={(changes, options) => changeLight(light.id, changes, options)}
+              onPowerToggle={() => togglePower(light.id)}
+              onDraggingChange={setDragging}
+            />
+          ))}
         </View>
-
-        <BrightnessSlider
-          value={light.brightness}
-          color={color}
-          onChange={brightness => update({brightness})}
-          onChangeEnd={brightness => commit({brightness})}
-          onDragStart={() => setDragging(true)}
-          onDragEnd={() => setDragging(false)}
-        />
       </View>
     </ScrollView>
   );
 }
 
+function SceneChip({scene, active, onPress}) {
+  const styles = useThemedStyles(createStyles);
+  const colors = Object.values(scene.lights ?? {}).map(settings => settings.hex);
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({pressed}) => [styles.chip, active && styles.chipActive, pressed && styles.pressed]}>
+      <View style={styles.chipDots}>
+        {colors.map((hex, index) => (
+          <View
+            key={`${hex}-${index}`}
+            style={[styles.chipDot, {backgroundColor: hex, marginLeft: index === 0 ? 0 : -7, zIndex: colors.length - index}]}
+          />
+        ))}
+      </View>
+      <Text style={[styles.chipText, active && styles.chipTextActive]}>{scene.name}</Text>
+    </Pressable>
+  );
+}
+
+// Sends lamp changes, throttled per lamp while dragging; `final` sends right away.
+function useLiveSender() {
+  const lamps = useRef({}); // id -> {last, timer, pending}
+
+  useEffect(() => () => Object.values(lamps.current).forEach(lamp => clearTimeout(lamp.timer)), []);
+
+  return useCallback((id, payload, final) => {
+    const lamp = (lamps.current[id] ??= {last: 0, timer: null, pending: null});
+    lamp.pending = payload;
+
+    const flush = () => {
+      clearTimeout(lamp.timer);
+      lamp.timer = null;
+      if (!lamp.pending) return;
+      api.post('/lights/change', {id, ...lamp.pending});
+      lamp.pending = null;
+      lamp.last = Date.now();
+    };
+
+    const wait = LIVE_INTERVAL_MS - (Date.now() - lamp.last);
+    if (final || wait <= 0) flush();
+    else if (!lamp.timer) lamp.timer = setTimeout(flush, wait);
+  }, []);
+}
+
 const createStyles = colors => StyleSheet.create({
   content: {
-    paddingTop: 16,
+    paddingTop: 20,
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
-  card: {
-    ...glass(colors),
+  inner: {
     width: '100%',
-    maxWidth: 420,
-    padding: 16,
-    borderRadius: 16,
-    gap: 16,
+    maxWidth: 920,
+    gap: 22,
   },
-  header: {
+  pageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pageHeaderText: {
+    flex: 1,
+    gap: 2,
+  },
+  pageTitle: {
+    color: colors.onSurface,
+    fontSize: 28,
+    fontWeight: '700',
+  },
+  pageSubtitle: {
+    color: colors.outline,
+    fontSize: 14,
+  },
+  allButton: {
+    ...glass(colors, {variant: 'subtle'}),
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+  },
+  allButtonText: {
+    color: colors.onSurface,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  section: {
+    gap: 10,
+  },
+  sectionTitle: {
+    color: colors.outline,
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  scenes: {
+    gap: 10,
+  },
+  chip: {
+    ...glass(colors),
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    paddingLeft: 10,
+    paddingRight: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
   },
-  swatch: {
+  chipActive: {
+    borderColor: colors.primary,
+    backgroundColor: withAlpha(colors.primary, 0.16),
+  },
+  chipDots: {
+    flexDirection: 'row',
+  },
+  chipDot: {
     width: 20,
     height: 20,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: withAlpha(colors.surface, 0.9),
   },
-  title: {
-    flex: 1,
+  chipText: {
     color: colors.onSurface,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  caption: {
-    color: colors.outline,
     fontSize: 14,
-    fontVariant: ['tabular-nums'],
+    fontWeight: '600',
   },
-  wheel: {
-    alignItems: 'center',
-    paddingVertical: 8,
+  chipTextActive: {
+    color: colors.primary,
+  },
+  pressed: {
+    opacity: 0.7,
+    transform: [{scale: 0.97}],
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 16,
   },
 });

@@ -1,14 +1,28 @@
 class LightsController < ApplicationController
   def index
-    all_lights = LightsConfig::LIGHTS_NAMES
-    all_scenes = LightsConfig::SCENES
-    render json: { lights: all_lights, scenes: all_scenes }
+    statuses = Lights::Bridge.status.to_h { |lamp| [ lamp["id"], lamp ] }
+
+    lights = LightsConfig::LIGHTS_NAMES.map do |id, light|
+      status = statuses[id]
+      {
+        id: id,
+        name: light[:name],
+        slug: light[:slug],
+        status: {
+          on: status["isTurnedOn"],
+          brightness: status["brightness"],
+          hex: status["currentHex"]
+        }
+      }
+    end
+
+    render json: { lights: lights, scenes: LightsConfig::SCENES }
   end
 
   def update
     hex = params[:hex]
-    brightness = params[:brightness] || 254
-    Lights::Bridge.change(hex, brightness: brightness)
+    brightness = (params[:on] == false) ? 0 : (params[:brightness] || 254)
+    Lights::Bridge.change(hex, brightness: brightness, id: params[:id].presence)
     render json: { success: true }
   end
 
