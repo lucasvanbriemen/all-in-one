@@ -78,4 +78,5 @@ Rails.application.routes.draw do
   post "/lights/scenes", to: "lights#apply_scene", as: :lights_scenes
 
   get "/search", to: "search#index"
+  post "/search/picks", to: "search_picks#create"
 end

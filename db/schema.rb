@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_22_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_23_100000) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -247,6 +247,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_22_120000) do
     t.text "description"
     t.datetime "remind_at"
     t.boolean "completed", default: false
+  end
+
+  create_table "search_picks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "query", null: false
+    t.string "source", null: false
+    t.text "result", size: :long, null: false, collation: "utf8mb4_bin"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_search_picks_on_created_at"
+    t.check_constraint "json_valid(`result`)", name: "result"
   end
 
   create_table "senders", id: { type: :bigint, unsigned: true }, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|

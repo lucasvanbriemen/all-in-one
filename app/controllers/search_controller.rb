@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   def index
     @query = params[:query].to_s.strip
-    return render json: [] if @query.empty?
+    return render json: SearchPick.recent_results if @query.empty?
 
     @liked_songs = Music::LikedSongMatcher.new.match(@query)
     @channels = matching_channels(@query)
@@ -55,10 +55,21 @@ class SearchController < ApplicationController
       }
     }
 
-    render json: @results
+    render json: boost_picked(@results)
   end
 
   private
+
+  # Results opened before for a similar query go first, most-picked on top;
+  # everything else keeps its order. sort_by isn't stable, hence the index.
+  def boost_picked(results)
+    scores = SearchPick.scores_for(@query)
+    return results if scores.empty?
+
+    results.each_with_index
+      .sort_by { |result, index| [ -scores[result[:source]], index ] }
+      .map(&:first)
+  end
 
   # Every sidebar item of every app, matched on its own name or its app's name.
   # The source "<app>.<path>" is what openSource navigates to.

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useMemo, useRef} from 'react';
 import {StyleSheet, View, Text, TextInput, ScrollView, Image, Pressable} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {glass, useThemedStyles} from '../theme';
@@ -12,21 +12,48 @@ import {useCompactLayout} from '../useCompactLayout';
 
 import {useAppContext} from '../../context/AppContext';
 
-function openResult(set, get, result) {
+const KEY_DOWN_EVENTS = [{key: 'ArrowUp'}, {key: 'ArrowDown'}, {key: 'Escape'}];
+
+// Moving the list under a resting mouse fires hover on whatever row lands under
+// it; for this long after an arrow key, hover doesn't move the focus.
+const HOVER_AFTER_KEY_MS = 300;
+
+function openResult(set, get, result, query) {
   if (!result) return;
   set('app.showSearch', false);
+
+  // Remembered so this query (and ones like it) puts this result first next time,
+  // and an empty search lists it under recents. Fire-and-forget.
+  api.post('/search/picks', {query, result}).catch(() => {});
 
   if (result.type === 'liked_song') {
     player.play(result.full_object, set, get);
     return;
   }
 
-  if (result.type === 'page') {
-    openSource(set, result.source);
-    return;
-  }
-
   openSource(set, result.source);
+}
+
+// Keeps showing the last results while a newer query is on its way, narrowed to
+// what still matches what's typed, so the list never blanks or jumps while typing.
+// The server's answer replaces them (in its own order) once it lands.
+function useSearchResults(searchQuery) {
+  const debouncedSearchQuery = useDebouncedValue(searchQuery);
+  const {data} = useApi(`/search?query=${encodeURIComponent(debouncedSearchQuery.trim())}`);
+  const [received, setReceived] = useState({query: null, results: []});
+
+  useEffect(() => {
+    if (Array.isArray(data)) setReceived({query: debouncedSearchQuery, results: data});
+  }, [data]);
+
+  return useMemo(() => {
+    if (received.query === searchQuery) return received.results;
+
+    const needle = searchQuery.trim().toLowerCase();
+    return received.results.filter(result =>
+      `${result.title || ''} ${result.subtitle || ''}`.toLowerCase().includes(needle)
+    );
+  }, [received, searchQuery]);
 }
 
 export function SearchModal() {
@@ -34,31 +61,54 @@ export function SearchModal() {
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';
-  const debouncedSearchQuery = useDebouncedValue(searchQuery);
-  const {data} = useApi(`/search?query=${encodeURIComponent(debouncedSearchQuery)}`);
+  const results = useSearchResults(searchQuery);
 
   const compact = useCompactLayout();
   const insets = useSafeAreaInsets();
-  const results = debouncedSearchQuery.length > 0 && Array.isArray(data) ? data : [];
 
   const [focusedResultIndex, setFocusedResultIndex] = useState(0);
-  const [focusedResult, setFocusedResult] = useState(null);
+  const focusedResult = results[focusedResultIndex] || null;
 
-  useEffect(() => setFocusedResultIndex(0), [debouncedSearchQuery]);
-  useEffect(() => setFocusedResult(results[focusedResultIndex] || null), [focusedResultIndex, results]);
+  useEffect(() => setFocusedResultIndex(0), [searchQuery]);
+  useEffect(() => setFocusedResultIndex(i => Math.min(i, Math.max(results.length - 1, 0))), [results.length]);
+
+  // Keeps the focused row in view as the arrow keys move past the visible ones.
+  const scrollRef = useRef(null);
+  const scrollY = useRef(0);
+  const viewportHeight = useRef(0);
+  const rowLayouts = useRef({});
+  const lastKeyAt = useRef(0);
+
+  useEffect(() => {
+    const row = rowLayouts.current[focusedResultIndex];
+    if (!row || !scrollRef.current) return;
+
+    if (row.y < scrollY.current) {
+      scrollRef.current.scrollTo({y: row.y, animated: true});
+    } else if (row.y + row.height > scrollY.current + viewportHeight.current) {
+      scrollRef.current.scrollTo({y: row.y + row.height - viewportHeight.current, animated: true});
+    }
+  }, [focusedResultIndex]);
+
+  const close = () => set('app.showSearch', false);
+  const pick = result => openResult(set, get, result, searchQuery.trim());
 
   const handleKeyDown = e => {
     const key = e.nativeEvent.key;
     if (key === 'ArrowDown') {
+      lastKeyAt.current = Date.now();
       setFocusedResultIndex(i => Math.max(0, Math.min(i + 1, results.length - 1)));
     } else if (key === 'ArrowUp') {
+      lastKeyAt.current = Date.now();
       setFocusedResultIndex(i => Math.max(i - 1, 0));
+    } else if (key === 'Escape') {
+      close();
     }
   };
 
-  const openFocusedResult = () => {
-    const result = results[focusedResultIndex];
-    openResult(set, get, result);
+  const handleHover = index => {
+    if (Date.now() - lastKeyAt.current < HOVER_AFTER_KEY_MS) return;
+    setFocusedResultIndex(index);
   };
 
   if (!open) return null;
@@ -69,15 +119,15 @@ export function SearchModal() {
     return (
       <View style={[styles.mobileSheet, {paddingTop: insets.top + 12, paddingBottom: insets.bottom}]}>
         <View style={styles.mobileHeader}>
-          <TextInput style={styles.mobileInput} autoFocus={true} placeholder="Search..." placeholderTextColor={styles.resultSubtitle.color} value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onSubmitEditing={openFocusedResult} returnKeyType="search" autoCorrect={false} autoCapitalize="none" clearButtonMode="while-editing" />
-          <Pressable onPress={() => set('app.showSearch', false)} hitSlop={8}>
+          <TextInput style={styles.mobileInput} autoFocus={true} placeholder="Search..." placeholderTextColor={styles.resultSubtitle.color} value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onSubmitEditing={() => pick(results[0])} returnKeyType="search" autoCorrect={false} autoCapitalize="none" clearButtonMode="while-editing" />
+          <Pressable onPress={close} hitSlop={8}>
             <Text style={styles.cancel}>Cancel</Text>
           </Pressable>
         </View>
 
         <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.mobileResults}>
           {results.map((result, index) => (
-            <Pressable key={index} onPress={() => openResult(set, get, result)} style={({pressed}) => [styles.result, index % 2 === 0 && styles.resultEven, pressed && styles.resultFocused]}>
+            <Pressable key={result.source || index} onPress={() => pick(result)} style={({pressed}) => [styles.result, index % 2 === 0 && styles.resultEven, pressed && styles.resultFocused]}>
               <Image source={{ uri: result.image_url }} style={styles.resultImage} />
               <View style={styles.textWrapper}>
                 <Text style={styles.resultTitle} numberOfLines={1}>{result.title}</Text>
@@ -93,20 +143,34 @@ export function SearchModal() {
   return (
     <View style={styles.backdrop}>
       <View style={styles.modal}>
-        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={[{key: 'ArrowUp'}, {key: 'ArrowDown'}]} onSubmitEditing={openFocusedResult} />
+        <TextInput style={styles.input} autoFocus={true} placeholder="Search..." value={searchQuery} onChangeText={text => set('app.searchQuery', text)} onKeyDown={handleKeyDown} keyDownEvents={KEY_DOWN_EVENTS} onSubmitEditing={() => pick(focusedResult)} />
 
         <View style={styles.resultsContainer}>
           <View style={styles.results}>
-            <ScrollView> 
-              {results.map((result, index) => (
-                <View key={index} style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focusedResultIndex === index && styles.resultFocused]}>
-                  <Image source={{ uri: result.image_url }} style={styles.resultImage} />
-                  <View style={styles.textWrapper}>
-                    <Text style={[styles.resultTitle, focusedResultIndex === index && styles.resultFocused]}>{result.title}</Text>
-                    <Text style={[styles.resultSubtitle, focusedResultIndex === index && styles.resultFocused]}>{result.subtitle}</Text>
-                  </View>
-                </View>
-              ))}
+            <ScrollView
+              ref={scrollRef}
+              onScroll={e => { scrollY.current = e.nativeEvent.contentOffset.y; }}
+              scrollEventThrottle={16}
+              onLayout={e => { viewportHeight.current = e.nativeEvent.layout.height; }}
+            >
+              {results.map((result, index) => {
+                const focused = focusedResultIndex === index;
+                return (
+                  <Pressable
+                    key={result.source || index}
+                    onPress={() => pick(result)}
+                    onHoverIn={() => handleHover(index)}
+                    onLayout={e => { rowLayouts.current[index] = e.nativeEvent.layout; }}
+                    style={[styles.result, index % 2 === 0 ? styles.resultEven : styles.resultOdd, focused && styles.resultFocused]}
+                  >
+                    <Image source={{ uri: result.image_url }} style={styles.resultImage} />
+                    <View style={styles.textWrapper}>
+                      <Text style={[styles.resultTitle, focused && styles.resultFocused]}>{result.title}</Text>
+                      <Text style={[styles.resultSubtitle, focused && styles.resultFocused]}>{result.subtitle}</Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
             </ScrollView>
           </View>
 
