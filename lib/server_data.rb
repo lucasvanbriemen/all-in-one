@@ -89,6 +89,12 @@ module ServerData
         value: workers_alive,
         importance_level: workers_alive.to_i.zero? ? "high" : "low",
         should_show: workers_alive&.zero?
+      },
+      {
+        label: "Lamp Pi problem",
+        value: lamp_pi_problem,
+        importance_level: lamp_pi_problem.present? ? "high" : "low",
+        should_show: lamp_pi_problem.present?
       }
     ]
   end
@@ -204,6 +210,18 @@ module ServerData
         .where(kind: "Worker")
         .where("last_heartbeat_at > ?", SolidQueue.process_alive_threshold.ago)
         .count
+    end
+  end
+
+  def lamp_pi_problem
+    Rails.cache.fetch("server_data/lamp_pi_problem", expires_in: 1.minute) do
+      uri = URI.join(Lights::Bridge::BASE_URL, "status")
+      response = Net::HTTP.start(uri.host, uri.port, open_timeout: 2, read_timeout: 4) { |http| http.get(uri.path) }
+      response.is_a?(Net::HTTPSuccess) ? nil : "bridge answered #{response.code}"
+    rescue Errno::ECONNREFUSED
+      "Pi is up, but lamp-bridge isn't running"
+    rescue StandardError
+      "Pi unreachable (offline or ZeroTier down)"
     end
   end
 
