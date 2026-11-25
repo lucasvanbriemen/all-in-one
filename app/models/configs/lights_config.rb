@@ -6,8 +6,7 @@ module LightsConfig
     }
   ].freeze
 
-  # ALLOWED_PLATFORMS = [ "web", "macOS", "iOS" ].freeze
-  ALLOWED_PLATFORMS = [].freeze
+  ALLOWED_PLATFORMS = [ "web", "macOS", "iOS" ].freeze
 
   LIGHTS_NAMES = {
     "1-1" => {
