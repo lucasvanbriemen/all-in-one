@@ -105,7 +105,6 @@ async function lampStatus(lamp) {
   return { id: lamp.id, isTurnedOn, brightness, currentHex };
 }
 
-// GET /status?id=<lampId> returns one lamp, GET /status returns all of them.
 async function statusData(req, res) {
   const id = new URL(req.url, "http://localhost").searchParams.get("id");
 
