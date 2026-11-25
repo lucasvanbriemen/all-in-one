@@ -8,45 +8,27 @@ module LightsConfig
 
   ALLOWED_PLATFORMS = [ "web", "macOS", "iOS" ].freeze
 
-  LIGHTS_NAMES = {
-    "1-1" => {
-      name: "Bedroom Light",
-      slug: "bed",
-      room: "Bedroom"
+  ROOMS = {
+    "bedroom" => {
+      name: "Bedroom",
+      slug: "bedroom",
+      lights: [ "bed" ]
     },
-    "2-1" => {
-      name: "Living Room Light",
+    "living-room" => {
+      name: "Living Room",
       slug: "living-room",
-      room: "Living Room"
+      lights: [ "living-room" ]
     }
   }.freeze
 
-  SCENES = [
-    {
-      name: "Relax",
-      lights: {
-        "living-room": {
-          hex: "#18FF08",
-          brightness: 100
-        },
-        "bed": {
-          hex: "#FFAA00",
-          brightness: 80
-        }
-      }
+  LIGHTS_NAMES = {
+    "1-1" => {
+      name: "Bedroom Light",
+      slug: "bed"
     },
-    {
-      name: "Focus",
-      lights: {
-        "living-room": {
-          hex: "#00AAFF",
-          brightness: 90
-        },
-        "bed": {
-          hex: "#FF5500",
-          brightness: 70
-        }
-      }
+    "2-1" => {
+      name: "Living Room Light",
+      slug: "living-room"
     }
-  ]
+  }.freeze
 end
