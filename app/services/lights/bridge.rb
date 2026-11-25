@@ -4,7 +4,6 @@ module Lights
   class Bridge
     BASE_URL = "http://10.167.192.213:4003/" # ZeroTier IP to the raspberry pi running the lights bridge
 
-    # Leave id out to change all lamps at once.
     def self.change(hex, brightness: 254, id: nil)
       # Send a post request to /change
       uri = URI.join(BASE_URL, "change")
@@ -18,7 +17,7 @@ module Lights
       uri = URI.join(BASE_URL, "status")
       response = Net::HTTP.start(uri.host, uri.port, open_timeout: 2, read_timeout: 4) { |http| http.get(uri.path) }
 
-      JSON.parse(response.body).fetch("lamps", [])
+      JSON.parse(response.body).fetch("devices", [])
     end
 
     # Scenes are keyed by slug, the bridge by lamp id, so look up each light's id and change it separately.

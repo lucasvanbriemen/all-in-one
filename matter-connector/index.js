@@ -1,5 +1,5 @@
 import http from "node:http";
-import { lamps, EVEN_IF_OFF, disconnect, pair } from "./devices.js"
+import { devices, EVEN_IF_OFF, disconnect, pair } from "./devices.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
@@ -14,7 +14,7 @@ const ROUTES = [
     path: "/",
     method: "GET",
     handler: (req, res) => {
-      jsonResponse(res, 200, { lamps: Object.keys(lamps) });
+      jsonResponse(res, 200, { devices: Object.keys(devices) });
     }
   },
   {
@@ -91,7 +91,7 @@ function addPendingChanges(lampId, incomingChange) {
   }
 }
 
-async function lampStatus(lamp) {
+async function devicestatus(lamp) {
   const isTurnedOn = await lamp.onOff.getOnOffAttribute();
   const brightness = await lamp.level.getCurrentLevelAttribute();
 
@@ -109,12 +109,12 @@ async function statusData(req, res) {
   const id = new URL(req.url, "http://localhost").searchParams.get("id");
 
   if (id) {
-    if (!lamps[id]) return jsonResponse(res, 404, { error: `Unknown lamp ${id}` });
-    return jsonResponse(res, 200, { status: "ok", ...(await lampStatus(lamps[id])) });
+    if (!devices[id]) return jsonResponse(res, 404, { error: `Unknown lamp ${id}` });
+    return jsonResponse(res, 200, { status: "ok", ...(await devicestatus(devices[id])) });
   }
 
-  const all = await Promise.all(Object.values(lamps).map(lampStatus));
-  jsonResponse(res, 200, { status: "ok", lamps: all });
+  const all = await Promise.all(Object.values(devices).map(devicestatus));
+  jsonResponse(res, 200, { status: "ok", devices: all });
 }
 
 // GET /pair?code=<manual pairing code>. Takes 10-60s while the device is commissioned.
@@ -139,16 +139,16 @@ async function changeData(req, res) {
 
   let data = JSON.parse(Buffer.concat(body).toString());
 
-  // Send { id } to target one lamp; leave it out to change all lamps at once.
-  if (data.id && !lamps[data.id]) {
+  // Send { id } to target one lamp; leave it out to change all devices at once.
+  if (data.id && !devices[data.id]) {
     return jsonResponse(res, 404, { error: `Unknown lamp ${data.id}` });
   }
-  const targetIds = data.id ? [data.id] : Object.keys(lamps);
+  const targetIds = data.id ? [data.id] : Object.keys(devices);
 
   for (const lampId of targetIds) {
     addPendingChanges(lampId, { brightness: data.brightness, hex: data.hex });
   }
-  jsonResponse(res, 202, { status: "queued", lamps: targetIds });
+  jsonResponse(res, 202, { status: "queued", devices: targetIds });
 }
 
 async function applyPending(lampId) {
@@ -158,7 +158,7 @@ async function applyPending(lampId) {
     while (queue.pendingChanges) {
       const change = queue.pendingChanges;
       queue.pendingChanges = null;
-      await applyChange(lamps[lampId], change);
+      await applyChange(devices[lampId], change);
     }
   } catch (error) {
     console.error(`Failed to update lamp ${lampId}:`, error.message);

@@ -34,19 +34,19 @@ async function connectNode(nodeId) {
 
 // All controllable lights, keyed by "<nodeId>-<endpoint>".
 // One node (a bridge, a multi-zone strip) can expose several lights, so the endpoint is part of the id.
-export const lamps = {};
+export const devices = {};
 
-function addNodeLamps(nodeId, node) {
+function addNodedevices(nodeId, node) {
   const devices = node.getDevices()
   return devices.map(device => {
-    const id = `${nodeId}-${light.number}`;
-    const type = typeOfDevice(light);
-    lamps[id] = {
+    const id = `${nodeId}-${device.number}`;
+    const type = typeOfDevice(device);
+    devices[id] = {
       id,
       type,
-      onOff: light.getClusterClient(OnOff.Complete),
-      level: light.getClusterClient(LevelControl.Complete),
-      color: light.getClusterClient(ColorControl.Complete),
+      onOff: device.getClusterClient(OnOff.Complete),
+      level: device.getClusterClient(LevelControl.Complete),
+      color: device.getClusterClient(ColorControl.Complete),
       state: {}
     };
     return id;
@@ -62,10 +62,10 @@ results.forEach((result, i) => {
     console.warn(`Skipping node ${nodeId}: ${result.reason.message}`);
     return;
   }
-  addNodeLamps(nodeId, result.value);
+  addNodedevices(nodeId, result.value);
 });
 
-console.log(`Found ${Object.keys(lamps).length} lamp(s): ${Object.keys(lamps).join(", ")}`);
+console.log(`Found ${Object.keys(devices).length} lamp(s): ${Object.keys(devices).join(", ")}`);
 
 // Add this to colour and brightness commands so they also work while the lamp is off.
 export const EVEN_IF_OFF = {
@@ -74,7 +74,7 @@ export const EVEN_IF_OFF = {
 };
 
 // Pairs a new device using its 11-digit manual pairing code (dashes/spaces are fine),
-// connects to it, and adds its lights to `lamps` right away. Returns the new lamp ids.
+// connects to it, and adds its lights to `devices` right away. Returns the new lamp ids.
 export async function pair(rawCode) {
   const code = String(rawCode ?? "").replace(/\D/g, "");
   const { shortDiscriminator, passcode } = ManualPairingCodeCodec.decode(code);
@@ -92,7 +92,7 @@ export async function pair(rawCode) {
   });
 
   const node = await connectNode(nodeId);
-  return { nodeId: String(nodeId), lamps: addNodeLamps(nodeId, node) };
+  return { nodeId: String(nodeId), devices: addNodedevices(nodeId, node) };
 }
 
 export async function disconnect() {
