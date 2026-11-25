@@ -16,6 +16,11 @@ module MessagesConfig
   # A message that pings me still notifies as usual.
   MUTED_SLACK_CHANNELS = [
     "frontend",
-    "development"
+    "development",
+    "til",
+    "ai",
+    "ai_dev",
+    "feature-request-sales",
+    "watercoolertalk"
   ].freeze
 end
