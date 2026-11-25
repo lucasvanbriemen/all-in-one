@@ -77,6 +77,7 @@ Rails.application.routes.draw do
   get "/lights", to: "lights#index", as: :lights_index
   post "/lights/scenes", to: "lights#apply_scene", as: :lights_scenes
   post "/lights/events", to: "lights/events#create", as: :lights_events
+  post "/phone/events", to: "phone_events#create", as: :phone_events
 
   get "/search", to: "search#index"
   post "/search/picks", to: "search_picks#create"
