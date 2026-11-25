@@ -1,7 +1,8 @@
 import { Environment, Logger } from "@matter/main";
-import { OnOff, LevelControl, ColorControl, GeneralCommissioning, BooleanState } from "@matter/main/clusters";
+import { GeneralCommissioning } from "@matter/main/clusters";
 import { ManualPairingCodeCodec } from "@matter/main/types";
 import { CommissioningController } from "@project-chip/matter.js";
+import { Device } from "./device.js";
 
 Logger.level = "error";
 
@@ -32,38 +33,31 @@ async function connectNode(nodeId) {
   return node;
 }
 
-// All controllable lights, keyed by "<nodeId>-<endpoint>".
-// One node (a bridge, a multi-zone strip) can expose several lights, so the endpoint is part of the id.
+// All paired devices, keyed by Device#id ("<nodeId>-<endpoint>").
 export const devices = {};
 
-function addNodedevices(nodeId, node) {
-  const allDevices = node.getDevices()
-  return allDevices.map(device => {
-    const id = `${nodeId}-${device.number}`;
-    const type = typeOfDevice(device);
-    devices[id] = {
-      id,
-      type,
-      onOff: device.getClusterClient(OnOff.Complete),
-      level: device.getClusterClient(LevelControl.Complete),
-      color: device.getClusterClient(ColorControl.Complete),
-      state: {}
-    };
-    return id;
-  });
+async function addNodedevices(nodeId, node) {
+  const ids = [];
+  for (const endpoint of node.getDevices()) {
+    const device = new Device(nodeId, endpoint);
+    devices[device.id] = device;
+    await device.trackState();
+    ids.push(device.id);
+  }
+  return ids;
 }
 
 const nodeIds = controller.getCommissionedNodes();
 const results = await Promise.allSettled(nodeIds.map(connectNode));
 
-results.forEach((result, i) => {
+for (const [i, result] of results.entries()) {
   const nodeId = nodeIds[i];
   if (result.status === "rejected") {
     console.warn(`Skipping node ${nodeId}: ${result.reason.message}`);
-    return;
+    continue;
   }
-  addNodedevices(nodeId, result.value);
-});
+  await addNodedevices(nodeId, result.value);
+}
 
 console.log(`Found ${Object.keys(devices).length} lamp(s): ${Object.keys(devices).join(", ")}`);
 
@@ -92,16 +86,10 @@ export async function pair(rawCode) {
   });
 
   const node = await connectNode(nodeId);
-  return { nodeId: String(nodeId), devices: addNodedevices(nodeId, node) };
+  return { nodeId: String(nodeId), devices: await addNodedevices(nodeId, node) };
 }
 
 export async function disconnect() {
   await controller.close();
 }
 
-function typeOfDevice(endpoint) {
-  const color = endpoint.getClusterClient(ColorControl.Complete);
-  if (color?.supportedFeatures.hueSaturation) return "color_light";
-  if (color?.supportedFeatures.colorTemperature) return "white_light";
-  if (endpoint.getClusterClient(BooleanState.Complete)) return "contact_sensor";
-}

@@ -91,30 +91,15 @@ function addPendingChanges(lampId, incomingChange) {
   }
 }
 
-async function devicestatus(lamp) {
-  const isTurnedOn = await lamp.onOff.getOnOffAttribute();
-  const brightness = await lamp.level.getCurrentLevelAttribute();
-
-  let currentColor = await lamp.color.getEnhancedCurrentHueAttribute();
-  currentColor = currentColor / 65535 * 360;  // Convert from 0-65535 to 0-360 degrees
-
-  const howCloseToWhite = await lamp.color.getCurrentSaturationAttribute();
-
-  const currentHex = colorUtils.hueAndSaturationToHex(currentColor, howCloseToWhite);
-
-  return { id: lamp.id, isTurnedOn, brightness, currentHex };
-}
-
-async function statusData(req, res) {
+function statusData(req, res) {
   const id = new URL(req.url, "http://localhost").searchParams.get("id");
 
   if (id) {
     if (!devices[id]) return jsonResponse(res, 404, { error: `Unknown lamp ${id}` });
-    return jsonResponse(res, 200, { status: "ok", ...(await devicestatus(devices[id])) });
+    return jsonResponse(res, 200, { status: "ok", ...devices[id].toJSON() });
   }
 
-  const all = await Promise.all(Object.values(devices).map(devicestatus));
-  jsonResponse(res, 200, { status: "ok", devices: all });
+  jsonResponse(res, 200, { status: "ok", devices: Object.values(devices) });
 }
 
 // GET /pair?code=<manual pairing code>. Takes 10-60s while the device is commissioned.
