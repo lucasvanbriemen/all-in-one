@@ -1,5 +1,5 @@
 import { Environment, Logger } from "@matter/main";
-import { OnOff, LevelControl, ColorControl, GeneralCommissioning } from "@matter/main/clusters";
+import { OnOff, LevelControl, ColorControl, GeneralCommissioning, BooleanState } from "@matter/main/clusters";
 import { ManualPairingCodeCodec } from "@matter/main/types";
 import { CommissioningController } from "@project-chip/matter.js";
 
@@ -95,4 +95,11 @@ export async function pair(rawCode) {
 
 export async function disconnect() {
   await controller.close();
+}
+
+function typeOfDevice(device) {
+  const color = endpoint.getClusterClient(ColorControl.Complete);
+  if (color?.supportedFeatures.hueSaturation) return "color_light";
+  if (color?.supportedFeatures.colorTemperature) return "white_light";
+  if (endpoint.getClusterClient(BooleanState.Complete)) return "contact_sensor";
 }
