@@ -37,8 +37,8 @@ async function connectNode(nodeId) {
 export const devices = {};
 
 function addNodedevices(nodeId, node) {
-  const devices = node.getDevices()
-  return devices.map(device => {
+  const allDevices = node.getDevices()
+  return allDevices.map(device => {
     const id = `${nodeId}-${device.number}`;
     const type = typeOfDevice(device);
     devices[id] = {
