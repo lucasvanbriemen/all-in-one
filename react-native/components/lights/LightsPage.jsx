@@ -8,7 +8,7 @@ import {useApi} from '../useApi';
 // The previous version (colour wheel, white wheel, scenes) is in git: 8f711b2.
 export function LightsPage() {
   const styles = useThemedStyles(createStyles);
-  const rooms = useApi('/lights');
+  const rooms = useApi('/lights').data?.rooms || {}
 
   return (
     <View style={styles.root}>
