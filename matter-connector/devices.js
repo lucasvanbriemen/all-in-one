@@ -41,11 +41,14 @@ function addNodeLamps(nodeId, node) {
   const lights = node.getDevices().filter(d => d.getClusterClient(ColorControl.Complete));
   return lights.map(light => {
     const id = `${nodeId}-${light.number}`;
+    const type = typeOfDevice(light);
     lamps[id] = {
       id,
+      type,
       onOff: light.getClusterClient(OnOff.Complete),
       level: light.getClusterClient(LevelControl.Complete),
       color: light.getClusterClient(ColorControl.Complete),
+      state: {}
     };
     return id;
   });
@@ -97,7 +100,7 @@ export async function disconnect() {
   await controller.close();
 }
 
-function typeOfDevice(device) {
+function typeOfDevice(endpoint) {
   const color = endpoint.getClusterClient(ColorControl.Complete);
   if (color?.supportedFeatures.hueSaturation) return "color_light";
   if (color?.supportedFeatures.colorTemperature) return "white_light";

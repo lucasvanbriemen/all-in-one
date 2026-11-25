@@ -1,5 +1,5 @@
 import http from "node:http";
-import { lamps, EVEN_IF_OFF, disconnect, pair } from "./lamp.js"
+import { lamps, EVEN_IF_OFF, disconnect, pair } from "./devices.js"
 import { colorUtils } from "./colors.js"
 
 const PORT = 4003;
