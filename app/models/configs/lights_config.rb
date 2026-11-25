@@ -21,6 +21,29 @@ module LightsConfig
     }
   }.freeze
 
+  SCENES = [
+    {
+      name: "sleep",
+      room: "bedroom",
+      lights: {
+        "bed" => {
+          hex: "#FFD700",
+          brightness: 80
+        }
+      }
+    },
+    {
+      name: "wake",
+      room: "bedroom",
+      lights: {
+        "bed" => {
+          hex: "#FFFFFF",
+          brightness: 254
+        }
+      }
+    }
+  ].freeze
+
   LIGHTS_NAMES = {
     "1-1" => {
       name: "Bedroom Light",
