@@ -36,10 +36,9 @@ async function connectNode(nodeId) {
 // One node (a bridge, a multi-zone strip) can expose several lights, so the endpoint is part of the id.
 export const lamps = {};
 
-// Adds every colour light on a connected node to `lamps`, and returns their ids.
 function addNodeLamps(nodeId, node) {
-  const lights = node.getDevices().filter(d => d.getClusterClient(ColorControl.Complete));
-  return lights.map(light => {
+  const devices = node.getDevices()
+  return devices.map(device => {
     const id = `${nodeId}-${light.number}`;
     const type = typeOfDevice(light);
     lamps[id] = {
