@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_23_100000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_25_120000) do
   create_table "alarms", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -132,6 +132,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_23_100000) do
     t.index ["last_message_at"], name: "index_conversations_on_last_message_at"
     t.index ["provider", "external_id"], name: "index_conversations_on_provider_and_external_id", unique: true
     t.index ["slack_connection_id"], name: "index_conversations_on_slack_connection_id"
+  end
+
+  create_table "device_events", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "device_id", null: false
+    t.string "device_type"
+    t.string "attribute_name", null: false
+    t.text "value", size: :long, collation: "utf8mb4_bin"
+    t.boolean "snapshot", default: false, null: false
+    t.datetime "occurred_at", null: false
+    t.datetime "created_at", null: false
+    t.check_constraint "json_valid(`value`)", name: "value"
   end
 
   create_table "device_tokens", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

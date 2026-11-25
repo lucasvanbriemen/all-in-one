@@ -3,6 +3,7 @@ import { GeneralCommissioning } from "@matter/main/clusters";
 import { ManualPairingCodeCodec } from "@matter/main/types";
 import { CommissioningController } from "@project-chip/matter.js";
 import { Device } from "./device.js";
+import { recordEvent, recordSnapshot } from "./events.js";
 
 Logger.level = "error";
 
@@ -42,6 +43,8 @@ async function addNodedevices(nodeId, node) {
     const device = new Device(nodeId, endpoint);
     devices[device.id] = device;
     await device.trackState();
+    recordSnapshot(device);
+    device.onChange = recordEvent;
     ids.push(device.id);
   }
   return ids;
