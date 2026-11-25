@@ -1,27 +1,6 @@
 class LightsController < ApplicationController
   def index
-    statuses = DeviceEvent
-      .where(device_id: LightsConfig::LIGHTS_NAMES.keys)
-      .select("device_id, attribute_name, value")
-      .where("id IN (SELECT MAX(id) FROM device_events GROUP BY device_id, attribute_name)")
-      .group_by(&:device_id)
-
-
-    lights = LightsConfig::LIGHTS_NAMES.map do |id, light|
-      status = statuses[id]
-      {
-        id: id,
-        name: light[:name],
-        slug: light[:slug],
-        status: {
-          on: status&.find { |e| e.attribute_name == "isTurnedOn" }&.value,
-          brightness: status&.find { |e| e.attribute_name == "brightness" }&.value,
-          hex: status&.find { |e| e.attribute_name == "currentHex" }&.value
-        }
-      }
-    end
-
-    render json: { lights: lights, scenes: LightsConfig::SCENES }
+    render json: { rooms: LightsConfig::ROOMS }
   end
 
   def update
