@@ -11,11 +11,13 @@ module LightsConfig
   LIGHTS_NAMES = {
     "1-1" => {
       name: "Bedroom Light",
-      slug: "bed"
+      slug: "bed",
+      room: "Bedroom"
     },
     "2-1" => {
       name: "Living Room Light",
-      slug: "living-room"
+      slug: "living-room",
+      room: "Living Room"
     }
   }.freeze
 
