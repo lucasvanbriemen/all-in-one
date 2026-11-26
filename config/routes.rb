@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   post "/music/:id/toggle-liked", to: "music#toggle_favorite", as: :toggle_music_favorite
   post "/notifications/:id/mark_as_read", to: "notification#update", as: :mark_notification_as_read
   post "/device_tokens", to: "device_tokens#create", as: :device_tokens
+  post "/device_tokens/:id/active", to: "device_tokens#active", as: :active_device_token, constraints: { id: /[^\/]+/ }
   delete "/device_tokens/:id", to: "device_tokens#destroy", as: :device_token, constraints: { id: /[^\/]+/ }
 
   post "/slack/webhook", to: "slack#create", as: :slack_webhook

@@ -81,6 +81,8 @@ function PushBridge() {
     return unsubscribe;
   }, [set]);
 
+  useEffect(() => push.startPresence(), []);
+
   // On launch and every return to the foreground: things may have been read
   // elsewhere (the Mac, the home screen) while the app was in the background.
   useEffect(() => {

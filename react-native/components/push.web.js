@@ -17,4 +17,8 @@ export const push = {
   subscribe() {
     return () => {};
   },
+
+  startPresence() {
+    return () => {};
+  },
 };

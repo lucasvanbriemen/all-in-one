@@ -48,10 +48,14 @@ final class PushNotifications: RCTEventEmitter {
     }
 
     static var apsEnvironment: String {
-        let candidates = ["embedded.mobileprovision", "embedded.provisionprofile"]
-        for name in candidates {
-            guard let url = Bundle.main.url(forResource: name, withExtension: nil),
-                  let data = try? Data(contentsOf: url),
+        // iOS keeps the profile at the bundle root, macOS in Contents/ (not
+        // Resources/, so Bundle.url(forResource:) never finds it there).
+        let candidates = [
+            Bundle.main.bundleURL.appendingPathComponent("embedded.mobileprovision"),
+            Bundle.main.bundleURL.appendingPathComponent("Contents/embedded.provisionprofile"),
+        ]
+        for url in candidates {
+            guard let data = try? Data(contentsOf: url),
                   let text = String(data: data, encoding: .isoLatin1),
                   let start = text.range(of: "<plist"),
                   let end = text.range(of: "</plist>") else { continue }
@@ -167,6 +171,21 @@ final class PushNotifications: RCTEventEmitter {
                 .map { $0.request.identifier }
             if !ids.isEmpty { center.removeDeliveredNotifications(withIdentifiers: ids) }
         }
+    }
+
+    /// Seconds since the last keyboard/mouse input anywhere on the Mac (keeps
+    /// counting while the screen is locked). Used to tell the server the
+    /// computer is in use, so pushes go here instead of to the phone. Always
+    /// nil on iOS.
+    @objc func idleSeconds(_ resolve: @escaping RCTPromiseResolveBlock,
+                           rejecter reject: @escaping RCTPromiseRejectBlock) {
+        #if canImport(UIKit)
+        resolve(nil)
+        #else
+        // ~0 is "any event type" (kCGAnyInputEventType).
+        let anyInput = CGEventType(rawValue: ~0)!
+        resolve(CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: anyInput))
+        #endif
     }
 
     private static func registerForRemote() {

@@ -11,6 +11,12 @@ class DeviceTokensController < ApplicationController
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+  # Heartbeat from the Mac app while the computer is in use.
+  def active
+    updated = DeviceToken.where(token: params[:id]).update_all(last_active_at: Time.current)
+    head(updated.zero? ? :not_found : :no_content)
+  end
+
   def destroy
     DeviceToken.where(token: params[:id]).destroy_all
     head :no_content
