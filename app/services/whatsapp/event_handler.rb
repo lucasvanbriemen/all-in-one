@@ -125,7 +125,7 @@ module Whatsapp
       Channel.reappear(chat)
       Notification.create!(
         title: payload["sender_name"],
-        body: record.body,
+        body: RichText.to_plain(record.body, platform: "whatsapp"),
         source: "messages.whatsapp.#{chat}"
       )
     end

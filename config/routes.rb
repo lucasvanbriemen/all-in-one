@@ -51,6 +51,10 @@ Rails.application.routes.draw do
   post "/channels/:id/messages/:message_id/reactions", to: "messages#react", as: :channel_message_reactions, constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
   delete "/channels/:id/messages/:message_id/reactions", to: "messages#react", constraints: { id: /[^\/]+/, message_id: /[^\/]+/ }
   post "/channels/:id/files", to: "messages#upload", as: :channel_files_create, constraints: { id: /[^\/]+/ }
+  post "/channels/:id/gifs", to: "gifs#create", as: :channel_gifs_create, constraints: { id: /[^\/]+/ }
+  get "/gifs", to: "gifs#index", as: :gifs
+  get "/slack/emoji", to: "slack#emoji", as: :slack_emoji
+  get "/slack/contacts", to: "slack#contacts", as: :slack_contacts
   get "/file/:id", to: "files#show", as: :file
 
   post "/whatsapp/webhook", to: "whatsapp/webhooks#create", as: :whatsapp_webhook

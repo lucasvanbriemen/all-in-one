@@ -698,12 +698,13 @@ export const bridge = {
 
       case 'POST /send-media': {
         if (!requireOpen()) return;
-        const {to, data, mimetype, filename, caption, quote} = await bridge.readJson(request);
+        const {to, data, mimetype, filename, caption, quote, gif} = await bridge.readJson(request);
         if (!to || !data || !mimetype) return reply(400, {error: 'to, data and mimetype are required'});
         const buffer = Buffer.from(data, 'base64');
         // Only JPEG/PNG and MP4 show inline for every recipient; anything else goes as a file.
         const content = /^image\/(jpeg|png)$/.test(mimetype) ? {image: buffer, mimetype, caption}
-          : mimetype === 'video/mp4' ? {video: buffer, mimetype, caption}
+          // gifPlayback makes WhatsApp loop it silently, the way it shows GIFs.
+          : mimetype === 'video/mp4' ? {video: buffer, mimetype, caption, gifPlayback: Boolean(gif)}
           : {document: buffer, mimetype, fileName: filename || 'file', caption};
         const sent = await sock.sendMessage(toJid(to), content, {quoted: bridge.quotedOf(to, quote)});
         return reply(200, {id: sent.key.id, chat: normalize(sent.key.remoteJid), sent_at: new Date(Number(sent.messageTimestamp) * 1000).toISOString()});

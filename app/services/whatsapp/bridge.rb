@@ -25,7 +25,7 @@ module Whatsapp
 
     def self.pair(phone = nil) = post("/pair", phone: phone)
     def self.send_text(to:, text:, quote: nil, mentions: nil) = post("/send", to: to, text: text, quote: quote, mentions: mentions)
-    def self.send_media(to:, data:, mimetype:, filename: nil, caption: nil, quote: nil) = post("/send-media", to: to, data: Base64.strict_encode64(data), mimetype: mimetype, filename: filename, caption: caption, quote: quote)
+    def self.send_media(to:, data:, mimetype:, filename: nil, caption: nil, quote: nil, gif: false) = post("/send-media", to: to, data: Base64.strict_encode64(data), mimetype: mimetype, filename: filename, caption: caption, quote: quote, gif: gif)
 
     def self.react(chat:, id:, from_me:, participant: nil, emoji: nil) = post("/react", chat: chat, id: id, from_me: from_me, participant: participant, emoji: emoji.to_s)
 

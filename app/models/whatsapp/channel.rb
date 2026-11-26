@@ -31,8 +31,8 @@ module Whatsapp
       Bridge.send_text(to: id, text: text, quote: quote_for(quote_id))
     end
 
-    def upload(file, text: nil, quote_id: nil, **)
-      Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id))
+    def upload(file, text: nil, quote_id: nil, gif: false, **)
+      Bridge.send_media(to: id, data: file.read, mimetype: file.content_type, filename: file.original_filename, caption: text, quote: quote_for(quote_id), gif: gif)
     end
 
     # WhatsApp keeps one reaction per person, so a new emoji replaces the old one and nil takes it back.

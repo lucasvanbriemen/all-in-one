@@ -8,7 +8,8 @@ class DownloadSlackFilesJob < ApplicationJob
     FileUtils.mkdir_p(FILES_DIR)
 
     files.each do |file|
-      next if message.file_uploads.exists?(external_id: file["id"])
+      # Files we can't see (a forward from a channel we're not in) come without a URL.
+      next if file["url_private"].blank? || message.file_uploads.exists?(external_id: file["id"])
 
       id = SecureRandom.uuid
       path = FILES_DIR.join("#{id}#{File.extname(file["name"].to_s)}").to_s

@@ -1,6 +1,16 @@
 class SlackController < ApplicationController
   skip_before_action :require_login, only: [ :create ]
 
+  # Every emoji the composer can autocomplete: standard ones as the emoji itself, custom ones as image URLs.
+  def emoji
+    render json: Slack::Emoji::ALL.merge(Slack::Emoji::NAMES).merge(Slack::CustomEmoji.urls) { |_name, standard, _custom| standard }
+  end
+
+  # The people the composer can @mention.
+  def contacts
+    render json: Slack::Contact.where(is_active: true).where.not(name: [ nil, "" ]).order(:name).as_json(only: %i[id name avatar_url])
+  end
+
   def create
     token = request.headers["Authorization"]&.split(" ")&.last
     unless token.present? && ActiveSupport::SecurityUtils.secure_compare(token, ENV["SERVER_API_KEY"])
@@ -16,14 +26,15 @@ class SlackController < ApplicationController
       message = Slack::Message.find_or_create_by!(id: "#{event["channel"]}-#{event["ts"]}") do |message|
         message.channel_id = event["channel"]
         message.contact_id = event["user"]
-        message.body = event["text"]
+        message.body = Slack::Message.body_from(event)
         message.thread_id = "#{event["channel"]}-#{event["thread_ts"]}" if event["thread_ts"].present? && event["thread_ts"] != event["ts"]
       end
-      DownloadSlackFilesJob.perform_later(message.id, event["files"]) if event["files"].present?
+      files = Slack::Message.files_from(event)
+      DownloadSlackFilesJob.perform_later(message.id, files) if files.any?
     end
 
     if event&.dig("type") == "message" && event["subtype"] == "message_changed"
-      Slack::Message.find_by(id: "#{event["channel"]}-#{event["message"]["ts"]}")&.update!(body: event["message"]["text"])
+      Slack::Message.find_by(id: "#{event["channel"]}-#{event["message"]["ts"]}")&.update!(body: Slack::Message.body_from(event["message"]))
     end
 
     if event&.dig("type") == "message" && event["subtype"] == "message_deleted"
@@ -72,7 +83,7 @@ class SlackController < ApplicationController
       )
     end
 
-    notify(event) if new_message?(event)
+    notify(event, message) if new_message?(event)
 
     channel_id = changed_channel_id(event)
     MessagesChannel.chat_changed(channel_id, platform: "slack") if channel_id.present?
@@ -96,7 +107,7 @@ class SlackController < ApplicationController
     event&.dig("type") == "message" && (event["subtype"].blank? || event["subtype"] == "file_share")
   end
 
-  def notify(event)
+  def notify(event, message)
     contact = Slack::Contact.find_by(id: event["user"])
     return if contact.nil? || contact.is_me
     channel = Slack::Channel.joined.find_by(id: event["channel"])
@@ -114,7 +125,7 @@ class SlackController < ApplicationController
     Channel.reappear(channel.id)
     Notification.create!(
       title: contact.name,
-      body: event["text"],
+      body: RichText.to_plain(message.body, platform: "slack"),
       source: "messages.slack.#{event["channel"]}",
       silent: channel.muted && !pinged
     )

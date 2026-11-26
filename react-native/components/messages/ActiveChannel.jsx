@@ -164,7 +164,8 @@ export function ActiveChannel({isThread = false}) {
             </Pressable>
           </View>
         )}
-        <MessageInput threadId={isThread ? get("messages.activeThread") : null} />
+        <MessageInput threadId={isThread ? get("messages.activeThread") : null}
+          platform={channel.type ? (channel.type === 'Slack::Channel' ? 'slack' : 'whatsapp') : null} />
       </View>
     </View>
   );
