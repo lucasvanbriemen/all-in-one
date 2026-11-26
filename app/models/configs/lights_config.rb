@@ -6,7 +6,8 @@ module LightsConfig
     }
   ].freeze
 
-  ALLOWED_PLATFORMS = [ "web", "macOS", "iOS" ].freeze
+  # ALLOWED_PLATFORMS = [ "web", "macOS", "iOS" ].freeze
+  ALLOWED_PLATFORMS = [].freeze
 
   ROOMS = {
     "bedroom" => {
