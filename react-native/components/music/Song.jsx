@@ -1,5 +1,5 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useTheme, useThemedStyles} from '../theme';
+import {surfaceStyle, useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
@@ -72,7 +72,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   evenBackground: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   textContainer: {
     flex: 1,
@@ -80,7 +80,7 @@ const createStyles = colors => StyleSheet.create({
   likeButton: {
     padding: 8,
     borderRadius: 8,
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   isLiked: {
     backgroundColor: colors.secondary,

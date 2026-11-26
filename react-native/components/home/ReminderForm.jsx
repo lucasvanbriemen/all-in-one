@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 
@@ -40,7 +40,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     color: colors.onSurface,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
   },
   placeholder: {color: colors.outline},
   button: {

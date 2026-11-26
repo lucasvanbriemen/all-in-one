@@ -227,7 +227,7 @@ function terminalHtml(theme) {
       #terminal { padding: 8px; box-sizing: border-box; }
 
       /* xterm fills the viewport with #000 so that on macOS the scrollbar is
-         drawn fully opaque. The panel is glass, so the scrollbar loses. */
+         drawn fully opaque. The panel should show through, so the scrollbar loses. */
       .xterm .xterm-viewport { background-color: transparent !important; }
 
       /* WebKit rings the focused element in the system accent colour, and

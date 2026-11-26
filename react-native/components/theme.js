@@ -58,8 +58,8 @@ function resolve(colors, scheme) {
     ]),
   );
 
-  // Not a colour: lets `glass()` and the window pick light/dark recipes
-  // without every caller threading `useColorScheme()` through.
+  // Not a colour: lets components pick light/dark specifics without
+  // threading `useColorScheme()` through.
   resolved.scheme = scheme;
 
   return resolved;
@@ -101,17 +101,16 @@ export function useThemedStyles(createStyles) {
  *
  * The endpoint hands back CSS colour strings — `rgb(17 19 24)`, and for the
  * `-8`/`-12` steps `rgb(170 199 255 / 0.92)`. React Native renders both, but
- * neither can be dimmed without taking it apart first. This is what keeps the
- * translucent surfaces on the shared palette instead of the hardcoded
- * `rgba(255, 255, 255, 0.16)` tints the glass used to be built from: only the
- * *opacity* is a design constant, the colour always comes from the theme.
+ * neither can be dimmed without taking it apart first. This keeps faint
+ * fills and hairlines on the shared palette: only the *opacity* is a design
+ * constant, the colour always comes from the theme.
  *
  * Any alpha already on the token is multiplied through rather than discarded.
  */
 export function withAlpha(color, alpha) {
   if (!color) {
     // useTheme() is empty until the fetch lands; a missing colour must not
-    // become an opaque black fill over the window's blur.
+    // become an opaque black fill over the sidebar's blur.
     return 'transparent';
   }
 
@@ -128,123 +127,39 @@ export function withAlpha(color, alpha) {
 }
 
 /**
- * Only `panel` is actually see-through: it is the window layer (sidebar and
- * content area) sitting on the window's blur. Everything placed on a panel —
- * `surface` cards and `subtle` nested rows — is a flat, faint lift of the
- * foreground colour, not a second layer of glass. Stacking glass on glass is
- * what made the wallpaper bleed into every card and flattened the hierarchy.
+ * Solid surface levels per semantic variant. There is no translucency left in
+ * these: on macOS the only see-through part of the app is the window's
+ * sidebar material (see TransparentWindow.jsx), and everything inside the
+ * opaque content card separates itself by stepping up the palette's surface
+ * levels. iOS has no backdrop at all and keeps its own, flatter steps.
  *
- * `highlight: null` drops the bright top edge; the border is one even hairline.
- * `iosTone` is the solid fill used on iOS, which has no backdrop.
- *
- * `light` overrides a recipe in light mode. The base numbers were tuned in
- * dark mode, where a lift of `onSurface` (near-white) reads as elevation.
- * In light mode `onSurface` is near-black, so the same lift makes cards
- * *darker* than the panel — sunken smudges. Light UIs show elevation the
- * other way round: a whiter card plus a soft shadow.
+ * `surface` is a card, `subtle` a region nested in one, `tinted` carries
+ * status colour (usually with a `tone` override), `accent` and
+ * `primaryContainer` are for controls and highlighted items.
  */
-const GLASS_VARIANTS = {
-  panel: {
-    tone: 'surface', tint: 0.7,
-    borderTone: 'onSurface', border: 0.08, highlight: null,
-    iosTone: 'surface',
-    light: {tint: 0.4, border: 0.06},
-  },
-  surface: {
-    tone: 'onSurface', tint: 0.045,
-    borderTone: 'onSurface', border: 0.07, highlight: null,
-    iosTone: 'surfaceAt2',
-    light: {
-      tone: 'surfaceAt1', tint: 0.4, border: 0.09,
-      shadow: {opacity: 0.05, radius: 6, offsetY: 1},
-    },
-  },
-  subtle: {
-    tone: 'onSurface', tint: 0.03,
-    borderTone: 'onSurface', border: 0.05, highlight: null,
-    iosTone: 'surfaceAt1',
-    light: {tint: 0.04},
-  },
-  tinted: {
-    tone: 'surfaceAt1',
-    tint: 0.52,
-    border: 0.65,
-    highlight: 0.28,
-    useToneForBorder: true,
-  },
-  accent: {
-    tone: 'primary',
-    tint: 0.82,
-    border: 0.9,
-    highlight: 0.5,
-    useToneForBorder: true
-  },
-  primaryContainer: {
-    tone: 'primaryContainer',
-    tint: 0.82,
-    border: 0.9,
-    highlight: 0.5,
-    useToneForBorder: true
-  },
+const SURFACE_VARIANTS = {
+  surface: {ios: 'surfaceAt2', mac: 'surfaceAt3'},
+  subtle: {ios: 'surfaceAt1', mac: 'surfaceAt4'},
+  tinted: {ios: 'surfaceAt1', mac: 'surfaceAt1'},
+  accent: {ios: 'primary', mac: 'primary'},
+  primaryContainer: {ios: 'primaryContainer', mac: 'primaryContainer'},
 };
 
 /**
- * Shared glass materials. Callers choose a semantic variant instead of tuning
- * unrelated alpha values until one backdrop happens to look right.
- *
- * `surface` is the normal panel, `subtle` separates nested regions, `tinted`
- * carries status colour, and `accent` gives interactive controls enough colour
- * and depth to read as enabled while remaining translucent.
+ * Background style for a variant, or for an explicit palette `tone`.
+ * Borders are zeroed so callers that add a `borderWidth` of their own still
+ * get a matching colour.
  */
-export function glass(colors, options = {}) {
+export function surfaceStyle(colors, options = {}) {
   const {variant = 'surface'} = options;
-  const base = GLASS_VARIANTS[variant] ?? GLASS_VARIANTS.surface;
-  const recipe = colors.scheme === 'light' && base.light
-    ? {...base, ...base.light}
-    : base;
+  const levels = SURFACE_VARIANTS[variant] ?? SURFACE_VARIANTS.surface;
+  const tone = options.tone ?? (Platform.OS === 'ios' ? levels.ios : levels.mac);
+  const backgroundColor = colors[tone] ?? colors.surface;
 
-  // iOS has no AppKit backdrop. Separate regions with solid surface levels
-  // instead of translucent fills and a simulated reflection along the top.
-  if (Platform.OS === 'ios') {
-    const tone = options.tone ?? recipe.iosTone ?? recipe.tone;
-    const backgroundColor = colors[tone] ?? colors.surface;
-    return {
-      backgroundColor,
-      borderWidth: 0,
-      borderColor: backgroundColor,
-      borderTopColor: backgroundColor,
-    };
-  }
-
-  const tone = options.tone ?? recipe.tone;
-  const tint = options.tint ?? recipe.tint;
-  const border = options.border ?? recipe.border;
-  const highlight = options.highlight ?? recipe.highlight;
-  const borderTone = options.borderTone
-    ?? recipe.borderTone
-    ?? (recipe.useToneForBorder ? tone : 'outline');
-
-  // A specular reflection stays light in both colour schemes. Callers can
-  // opt into a palette token when the material needs a coloured edge.
-  const highlightColor = options.highlightTone
-    ? colors[options.highlightTone]
-    : 'rgb(255 255 255)';
-
-  const borderColor = withAlpha(colors[borderTone], border);
-
-  const style = {
-    backgroundColor: withAlpha(colors[tone], tint),
-    borderWidth: 1,
-    borderColor,
-    borderTopColor: highlight == null ? borderColor : withAlpha(highlightColor, highlight),
+  return {
+    backgroundColor,
+    borderWidth: 0,
+    borderColor: backgroundColor,
+    borderTopColor: backgroundColor,
   };
-
-  if (recipe.shadow) {
-    style.shadowColor = 'rgb(0 0 0)';
-    style.shadowOpacity = recipe.shadow.opacity;
-    style.shadowRadius = recipe.shadow.radius;
-    style.shadowOffset = {width: 0, height: recipe.shadow.offsetY};
-  }
-
-  return style;
 }

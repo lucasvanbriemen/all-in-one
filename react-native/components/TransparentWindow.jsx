@@ -1,5 +1,5 @@
 import {StyleSheet, UIManager, View, requireNativeComponent} from 'react-native';
-import {glass, useTheme} from './theme';
+import {useTheme} from './theme';
 
 import React from 'react';
 
@@ -12,9 +12,7 @@ import React from 'react';
  * already set up for it: AppDelegate clears `opaque`, the background colour and
  * the titlebar, so there is nothing opaque between this view and the desktop.
  *
- * On the web build (and if the native module ever fails to register) there is
- * no NSVisualEffectView, so this degrades to a plain translucent fill — tinted
- * from the palette, so it still tracks light/dark.
+ * The web build has its own TransparentWindow.web.jsx with a solid fill.
  */
 const NATIVE_NAME = 'VisualEffectBackground';
 
@@ -30,65 +28,35 @@ const NativeVisualEffect = hasNativeBlur
   : null;
 
 /**
- * Material used for the window itself, per appearance. Changing this only
- * needs a Metro reload — the native side reads it as a prop.
+ * The window's backdrop. The `sidebar` material is what Finder, Mail and
+ * Notes use; the opaque content card (App.jsx) covers most of it, so the
+ * desktop only shows through the sidebar and the thin margin around the card.
+ * Changing the material only needs a Metro reload — the native side reads it
+ * as a prop.
  *
- * Light mode uses `hudWindow` too: the lighter vibrancy materials
- * (`sidebar`, `popover`, …) already add a lot of white themselves, so a
- * panel tint stacked on them made the window read as nearly opaque.
+ * Without the native module (iOS) there is nothing to blend with, so the
+ * window is a plain surface.
  */
-const WINDOW_MATERIAL = {dark: 'hudWindow', light: 'hudWindow'};
+const WINDOW_MATERIAL = 'sidebar';
 
 export function TransparentWindow({children}) {
   const colors = useTheme();
 
+  if (!NativeVisualEffect) {
+    return (
+      <View style={[styles.root, {backgroundColor: colors.surface}]}>
+        {children}
+      </View>
+    );
+  }
+
   return (
     <View style={styles.root}>
-      {NativeVisualEffect ? (
-        <NativeVisualEffect
-          materialName={WINDOW_MATERIAL[colors.scheme] ?? WINDOW_MATERIAL.dark}
-          blendsBehindWindow
-          style={StyleSheet.absoluteFill}
-        />
-      ) : (
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              backgroundColor: glass(colors, {variant: 'panel'}).backgroundColor,
-            },
-          ]}
-          pointerEvents="none"
-        />
-      )}
-      {children}
-    </View>
-  );
-}
-
-/**
- * Panels deliberately do NOT get their own NSVisualEffectView by default.
- *
- * SwiftUI layered `.ultraThinMaterial` over the window's `.hudWindow` blur.
- * Reproducing that with a second AppKit material stacks two blurs, and every
- * available material is heavier than `.ultraThinMaterial` — the panel ends up
- * noticeably more opaque than the original. Letting the window's existing blur
- * show through and adding only a palette-derived tint is both closer to the
- * SwiftUI look and strictly more transparent.
- *
- * Pass `material="underWindowBackground"` to opt a single panel back into a
- * real second blur.
- */
-export function GlassPanel({children, style, material = null, ...rest}) {
-  return (
-    <View style={[styles.panel, style]} {...rest}>
-      {material && NativeVisualEffect ? (
-        <NativeVisualEffect
-          materialName={material}
-          blendsBehindWindow={false}
-          style={StyleSheet.absoluteFill}
-        />
-      ) : null}
+      <NativeVisualEffect
+        materialName={WINDOW_MATERIAL}
+        blendsBehindWindow
+        style={StyleSheet.absoluteFill}
+      />
       {children}
     </View>
   );
@@ -97,10 +65,5 @@ export function GlassPanel({children, style, material = null, ...rest}) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-  },
-  panel: {
-    // The material is an absolutely-filled child, so a `borderRadius` passed
-    // in through `style` only rounds the corners if the fill is clipped.
-    overflow: 'hidden',
   },
 });

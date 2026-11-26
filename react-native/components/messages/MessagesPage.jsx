@@ -1,5 +1,5 @@
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
@@ -45,7 +45,7 @@ export function MessagesPage() {
 
 const createStyles = colors => StyleSheet.create({
   activeChannelThread: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     flex: 3,
   },
   content: {

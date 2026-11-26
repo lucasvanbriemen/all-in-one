@@ -2,7 +2,7 @@ import {Animated, Platform, Pressable, StyleSheet, Text, View} from 'react-nativ
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Svg, {Defs, RadialGradient, Rect, Stop} from 'react-native-svg';
 import {dismissToast, startBlizzard, useSeasonalState} from './store';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {FireplaceBackdrop} from './Fireplace';
 import {Fireworks} from './Fireworks';
@@ -200,7 +200,7 @@ const createStyles = colors =>
       alignItems: 'center',
       padding: 16,
       borderRadius: 16,
-      ...glass(colors, {variant: 'primaryContainer'}),
+      ...surfaceStyle(colors, {variant: 'primaryContainer'}),
     },
     toastEmoji: {fontSize: 30},
     toastText: {flexShrink: 1, gap: 4},

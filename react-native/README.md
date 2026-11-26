@@ -333,7 +333,7 @@ by "node_modules/react-native-web/dist/index.js"
 The runtime guard described above doesn't help here: Rollup resolves imports
 statically, so it fails before any guard executes. `vite.config.js` is already set up
 to resolve a `.web.jsx` override ahead of the native file — the fix is to add
-`components/TransparentWindow.web.jsx` exporting `TransparentWindow` and `GlassPanel`
+`components/TransparentWindow.web.jsx` exporting `TransparentWindow`
 without touching `requireNativeComponent`. That file has never existed.
 
 **Phone layout is macOS-shaped.** `App.jsx` hardcodes a 48pt top inset to clear the

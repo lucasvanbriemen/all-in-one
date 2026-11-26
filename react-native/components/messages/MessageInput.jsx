@@ -1,7 +1,7 @@
 import {api} from '../api';
 import {Image, Platform, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {mediaPicker} from '../mediaPicker';
@@ -181,7 +181,7 @@ const createStyles = colors => StyleSheet.create({
   },
   input: {
     flex: 1,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderWidth: 1,
     borderColor: colors.outlineVariant,
     borderRadius: 20,
@@ -201,7 +201,7 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
   },
   iconButtonActive: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   iconColor: {
     color: colors.onSurfaceVariant,
@@ -215,7 +215,7 @@ const createStyles = colors => StyleSheet.create({
     backgroundColor: colors.primary,
   },
   sendButtonIdle: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   sendButtonPressed: {
     opacity: 0.7,
@@ -229,7 +229,7 @@ const createStyles = colors => StyleSheet.create({
     gap: 12,
     padding: 8,
     borderRadius: 12,
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   quote: {
     flexDirection: 'row',
@@ -239,7 +239,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 12,
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   quoteText: {
     flex: 1,

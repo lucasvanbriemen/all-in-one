@@ -1,7 +1,7 @@
 import {ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {CategoryGroup, createStyles as createMoneyStyles} from '../money/UncategorizedTransactions';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
@@ -221,7 +221,7 @@ function EmailActions({emailId, onDone, styles}) {
 
 const createStyles = colors => StyleSheet.create({
   notification: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     padding: 16,
     borderRadius: 16,
     marginBottom: 8,

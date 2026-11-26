@@ -1,7 +1,7 @@
 import {BASE_URL, api} from '../api';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 import {Icon} from '../icons';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
@@ -203,7 +203,7 @@ const createStyles = colors => StyleSheet.create({
     marginBottom: 16,
   },
   dismissedBar: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -246,7 +246,7 @@ const createStyles = colors => StyleSheet.create({
   },
   chatContainer: {
     marginTop: 8,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     padding: 16,
     borderRadius: 16,
     flexDirection: 'row',
@@ -259,7 +259,7 @@ const createStyles = colors => StyleSheet.create({
     marginRight: 16,
   },
   unreadChat: {
-    ...glass(colors, {variant: 'primaryContainer'}),
+    ...surfaceStyle(colors, {variant: 'primaryContainer'}),
 
     borderColor: colors.primary,
     borderTopColor: colors.primary,

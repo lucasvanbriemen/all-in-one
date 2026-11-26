@@ -1,6 +1,6 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 import {format} from './format';
@@ -156,7 +156,7 @@ function newestFirst(a, b) {
 export const createStyles = colors => StyleSheet.create({
   card: {
     flex: 1,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     padding: 16,
     borderRadius: 16,
   },
@@ -193,7 +193,7 @@ export const createStyles = colors => StyleSheet.create({
     color: colors.onSurfaceVariant,
   },
   transaction: {
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     padding: 12,
     borderRadius: 12,
     marginBottom: 8,

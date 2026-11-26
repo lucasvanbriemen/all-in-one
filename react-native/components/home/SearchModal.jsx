@@ -1,7 +1,7 @@
 import {useState, useEffect, useMemo, useRef} from 'react';
 import {StyleSheet, View, Text, TextInput, ScrollView, Image, Pressable} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
 import {useDebouncedValue} from './debouncedValue';

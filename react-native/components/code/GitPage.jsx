@@ -1,5 +1,5 @@
 import {Button, Pressable, StyleSheet, Text, View, Image} from 'react-native';
-import {glass, useTheme, useThemedStyles} from '../theme';
+import {surfaceStyle, useTheme, useThemedStyles} from '../theme';
 import { useApi } from '../useApi';
 
 import {useAppContext} from '../../context/AppContext';
@@ -69,7 +69,7 @@ const createStyles = colors => StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      ...glass(colors, { variant: 'tinted' }),
+      ...surfaceStyle(colors, { variant: 'tinted' }),
       borderRadius: 16,
       padding: 8,
       paddingHorizontal: 16,

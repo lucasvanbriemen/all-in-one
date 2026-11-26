@@ -1,6 +1,6 @@
 import {Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {hideYearInReview, playEffect, setPersisted, showYearInReview, usePersisted, useSeasonalState} from './store';
 
 import {SnowCap} from './SnowCap';
@@ -188,7 +188,7 @@ export function YearInReview() {
 const createStyles = colors =>
   StyleSheet.create({
     card: {
-      ...glass(colors),
+      ...surfaceStyle(colors),
       borderRadius: 16,
       padding: 12,
       flex: 2,
@@ -210,7 +210,7 @@ const createStyles = colors =>
       borderRadius: 8,
       alignItems: 'center',
       justifyContent: 'center',
-      ...glass(colors, {variant: 'subtle'}),
+      ...surfaceStyle(colors, {variant: 'subtle'}),
     },
     behindEmoji: {fontSize: 20},
     leaf: {
@@ -246,7 +246,7 @@ const createStyles = colors =>
       borderRadius: 24,
       gap: 10,
       alignItems: 'center',
-      ...glass(colors, {variant: 'surface'}),
+      ...surfaceStyle(colors, {variant: 'surface'}),
       backgroundColor: colors.surface ?? '#111318',
     },
     reviewEmoji: {fontSize: 52},
@@ -258,10 +258,10 @@ const createStyles = colors =>
       padding: 14,
       borderRadius: 16,
       alignItems: 'center',
-      ...glass(colors, {variant: 'subtle'}),
+      ...surfaceStyle(colors, {variant: 'subtle'}),
     },
     reviewValue: {fontSize: 26, fontWeight: 'bold', color: colors.primary},
     reviewLabel: {fontSize: 13, color: colors.onSurfaceVariant, textAlign: 'center'},
-    reviewClose: {marginTop: 16, paddingVertical: 10, paddingHorizontal: 18, borderRadius: 100, ...glass(colors, {variant: 'accent'})},
+    reviewClose: {marginTop: 16, paddingVertical: 10, paddingHorizontal: 18, borderRadius: 100, ...surfaceStyle(colors, {variant: 'accent'})},
     reviewCloseText: {color: colors.onPrimary, fontWeight: '600'},
   });

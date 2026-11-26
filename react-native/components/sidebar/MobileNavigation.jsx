@@ -1,6 +1,6 @@
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { glass, useThemedStyles } from '../theme';
+import { surfaceStyle, useThemedStyles } from '../theme';
 
 import {NavigationBlur} from './NavigationBlur';
 import { api } from '../api';
@@ -113,6 +113,6 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  selected: { ...glass(colors, { variant: 'accent' }) },
+  selected: { ...surfaceStyle(colors, { variant: 'accent' }) },
   selectedText: { color: colors.onPrimary },
 });

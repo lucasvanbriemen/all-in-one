@@ -1,5 +1,5 @@
 import {Animated, Easing, Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useEffect, useRef} from 'react';
 
 import {NowPlayingCard} from './NowPlayingCard';
@@ -42,6 +42,6 @@ const createStyles = colors => StyleSheet.create({
     paddingBottom: 32,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
   },
 });

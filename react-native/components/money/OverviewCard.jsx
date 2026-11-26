@@ -1,6 +1,6 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 import {format} from './format';
@@ -151,7 +151,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.outline,
   },
   content: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     padding: 16,
     borderRadius: 16,
     flex: 1,
@@ -163,7 +163,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
   },
   rowEven: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   title: {
     color: colors.onSurfaceVariant,
@@ -178,7 +178,7 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
   },
   overlay: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',

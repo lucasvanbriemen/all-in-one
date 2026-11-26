@@ -16,8 +16,8 @@ export const XTERM_FIT_VERSION = '0.10.0';
 export const XTERM_FIT_CDN = `https://cdn.jsdelivr.net/npm/@xterm/addon-fit@${XTERM_FIT_VERSION}`;
 
 export const TERMINAL_OPTIONS = {
-  // The panel is glass over the window's blur, so the terminal has to be
-  // allowed not to paint its own background. Without this xterm fills every
+  // The terminal shows the panel behind it rather than painting its own
+  // background, so it has to be allowed transparency. Without this xterm fills every
   // cell with the theme's background colour whatever its alpha says.
   allowTransparency: true,
   fontFamily: 'Menlo, Monaco, "SF Mono", monospace',

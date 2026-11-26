@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
@@ -31,7 +31,7 @@ export function ReminderCard() {
 const createStyles = colors => StyleSheet.create({
   reminders: {
     flex: 0,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     padding: 16,
     borderRadius: 16,
   },

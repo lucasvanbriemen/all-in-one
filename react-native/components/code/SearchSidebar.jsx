@@ -1,5 +1,5 @@
 import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {fileSystem} from '../fileSystem';
@@ -94,7 +94,7 @@ export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
 
 const createStyles = colors => StyleSheet.create({
   editor: {
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     marginBottom: 16,
     marginTop: 16,
     padding: 16,
@@ -104,13 +104,13 @@ const createStyles = colors => StyleSheet.create({
   input: {
     padding: 8,
     borderRadius: 8,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
   },
   searchOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     gap: 8,
     borderRadius: 100,
     padding: 8,
@@ -137,7 +137,7 @@ const createStyles = colors => StyleSheet.create({
   },
   resultContainer: {
     marginVertical: 8,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     padding: 8,
     borderRadius: 8,
     gap: 4,

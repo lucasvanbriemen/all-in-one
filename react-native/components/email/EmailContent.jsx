@@ -1,6 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {EmailBody} from './EmailBody';
 import {api} from '../api';
@@ -78,7 +78,7 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'flex-start',
     padding: 16,
     borderRadius: 16,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
   },
   senderImage: {
     width: 40,

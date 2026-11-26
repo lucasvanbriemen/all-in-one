@@ -1,5 +1,5 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {player} from './player';
@@ -38,7 +38,7 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     padding: 16,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 16,
     marginVertical: 16,
     flexDirection: 'row',

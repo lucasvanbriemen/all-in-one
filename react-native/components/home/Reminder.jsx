@@ -1,5 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
@@ -30,7 +30,7 @@ export function Reminder({reminder, onComplete}) {
 
 const createStyles = colors => StyleSheet.create({
   reminder: {
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     padding: 12,
     borderRadius: 12,
     flexDirection: 'row',

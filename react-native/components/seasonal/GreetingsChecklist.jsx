@@ -1,6 +1,6 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {onEffect} from './store';
 import {useAppContext} from '../../context/AppContext';
@@ -62,7 +62,7 @@ export function GreetingsChecklist() {
 const createStyles = colors =>
   StyleSheet.create({
     card: {
-      ...glass(colors, {variant: 'tinted', tone: 'primaryContainer'}),
+      ...surfaceStyle(colors, {variant: 'tinted', tone: 'primaryContainer'}),
       borderRadius: 16,
       padding: 12,
       marginTop: 16,

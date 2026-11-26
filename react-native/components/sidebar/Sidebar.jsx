@@ -1,10 +1,11 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import {glass, useTheme, useThemedStyles} from '../theme';
+import {useTheme, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {LogoIcon} from '../icons';
 import {Platform} from 'react-native';
 import {SidebarApplication} from './SidebarApplication';
+import {SidebarNowPlaying} from '../music/SidebarNowPlaying';
 import {SantaHat} from '../seasonal/SantaHat';
 import {SnowCap} from '../seasonal/SnowCap';
 import {api} from '../api';
@@ -37,9 +38,9 @@ export function Sidebar() {
     // The negative margin plus padding leaves room above the panel for the
     // seasonal snow drift, which the clipping would otherwise cut off.
     <View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
-      <View style={[styles.sidebar]}>
+      <View style={styles.sidebar}>
         <SnowCap maxHeight={11} inset={8} />
-        <View style={[styles.row]}>
+        <View style={styles.row}>
           <View>
             <LogoIcon size={24} color={primary} />
             <SantaHat size={24} />
@@ -47,38 +48,46 @@ export function Sidebar() {
           <Text style={styles.name}>All in One</Text>
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
           {Object.entries(items).map(([key, item]) => (
             <SidebarApplication key={key + item.app} item={item} app={key} />
           ))}
         </ScrollView>
+
+        <SidebarNowPlaying />
       </View>
     </View>
   );
 }
 
 const createStyles = colors => StyleSheet.create({
+  // Full height with no fill of its own: the window's `sidebar` material
+  // (TransparentWindow) shows through. The top padding clears the traffic
+  // lights.
   sidebar: {
-    padding: 16,
-    ...glass(colors, {variant: 'panel'}),
-    borderRadius: 16,
+    flex: 1,
+    paddingTop: 44,
+    paddingHorizontal: 12,
     flexDirection: 'column',
-    gap: 16,
+    gap: 8,
   },
   row: {
-    paddingVertical: 16,
-    borderRadius: 100,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
   name: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 600,
     color: colors.onSurface,
-    marginLeft: 8,
+  },
+  scroll: {
+    flex: 1,
   },
   scrollView: {
-    gap: 16,
+    gap: 12,
+    paddingBottom: 16,
   },
 });

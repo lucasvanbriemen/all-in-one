@@ -1,7 +1,7 @@
 import {Animated, Easing, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import Svg, {Circle, Path, Rect} from 'react-native-svg';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {grinchKey, ornamentSpots, useSeason} from './useSeason';
 import {getPersisted, playEffect, setPersisted, showToast} from './store';
 import {useBottomInset} from '../useCompactLayout';
@@ -103,7 +103,7 @@ const createStyles = colors =>
       padding: 16,
       borderRadius: 16,
       gap: 6,
-      ...glass(colors, {variant: 'tinted', tone: 'errorContainer'}),
+      ...surfaceStyle(colors, {variant: 'tinted', tone: 'errorContainer'}),
       zIndex: 30,
     },
     title: {fontSize: 16, fontWeight: 'bold', color: colors.onSurface},

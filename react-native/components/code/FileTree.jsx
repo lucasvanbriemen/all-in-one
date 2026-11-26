@@ -1,5 +1,5 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
@@ -118,7 +118,7 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
   },
   editor: {
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     marginBottom: 16,
     marginTop: 16,
     padding: 16,

@@ -1,6 +1,6 @@
 import {Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {useAppContext} from '../../context/AppContext';
 import {Avatar} from './Avatar';
@@ -52,7 +52,7 @@ export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
 
 const createStyles = colors => StyleSheet.create({
   hide: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -63,7 +63,7 @@ const createStyles = colors => StyleSheet.create({
   },
   channelItem: {
     padding: 16,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 16,
     marginTop: 8,
     flexDirection: 'row',

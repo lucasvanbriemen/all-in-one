@@ -1,5 +1,5 @@
 import {Image, Pressable, StyleSheet, Text, View, ScrollView} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {player} from './player';
@@ -81,7 +81,7 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     paddingHorizontal: 16,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 16,
     gap: 16,
 
@@ -112,11 +112,11 @@ const createStyles = colors => StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    ...glass(colors, {variant: 'accent'}),
+    ...surfaceStyle(colors, {variant: 'accent'}),
     borderRadius: 100,
   },
   controlInactive: {
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     borderRadius: 100,
   },
   controlInactiveText: {

@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle, Defs, G, LinearGradient, Path, Rect, Stop} from 'react-native-svg';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {SnowCap} from './SnowCap';
 import {useSeasonalData} from './data';
@@ -116,7 +116,7 @@ export function ChristmasTreeCard() {
 const createStyles = colors =>
   StyleSheet.create({
     card: {
-      ...glass(colors),
+      ...surfaceStyle(colors),
       borderRadius: 16,
       padding: 12,
       flexDirection: 'row',

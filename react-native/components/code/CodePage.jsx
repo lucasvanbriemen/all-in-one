@@ -1,5 +1,5 @@
 import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
@@ -281,7 +281,7 @@ const createStyles = colors => StyleSheet.create({
   },
   openedFile: {
     padding: 8,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
     borderRadius: 90,
     opacity: 0.75,
   },
@@ -330,7 +330,7 @@ const createStyles = colors => StyleSheet.create({
     // The emulator inside draws to the edges, so the panel's own rounding has
     // to clip it — otherwise the scrollback runs out over the corners.
     overflow: 'hidden',
-    ...glass(colors, {variant: 'subtle'})
+    ...surfaceStyle(colors, {variant: 'subtle'})
   },
   openedFileText: {
     color: colors.onSurface,

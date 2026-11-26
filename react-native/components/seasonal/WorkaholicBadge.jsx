@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {useSeason} from './useSeason';
@@ -36,7 +36,7 @@ const createStyles = colors =>
       paddingHorizontal: 12,
       borderRadius: 100,
       zIndex: 10,
-      ...glass(colors, {variant: 'tinted', tone: 'errorContainer'}),
+      ...surfaceStyle(colors, {variant: 'tinted', tone: 'errorContainer'}),
     },
     text: {fontSize: 13, fontWeight: '600', color: colors.onSurface},
   });

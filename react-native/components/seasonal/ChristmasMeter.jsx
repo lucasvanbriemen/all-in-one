@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
 import {boostMode, cycleBoost, effectiveShare} from './christmasMusic';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {phaseOf} from './season';
@@ -51,7 +51,7 @@ const createStyles = colors =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 100,
-      ...glass(colors, {variant: 'subtle'}),
+      ...surfaceStyle(colors, {variant: 'subtle'}),
     },
     label: {fontSize: 13, color: colors.onSurfaceVariant},
     over: {fontSize: 13, color: colors.outline},

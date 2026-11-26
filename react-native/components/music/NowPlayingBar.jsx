@@ -1,12 +1,12 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
-export function NowPlayingBar({floating = false}) {
+export function NowPlayingBar() {
   const styles = useThemedStyles(createStyles);
   const {get, set} = useAppContext();
 
@@ -15,7 +15,7 @@ export function NowPlayingBar({floating = false}) {
   }
 
   return (
-    <View style={[styles.content, floating && styles.floating]}>
+    <View style={styles.content}>
       {NavigationBlur != null && <NavigationBlur pointerEvents="none" style={StyleSheet.absoluteFill} />}
 
       <Image source={{uri: get('music.now-playing.image_url') ?? 'https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk='}} style={styles.image} />
@@ -65,13 +65,6 @@ const createStyles = colors => StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
-  floating: {
-    ...glass(colors, {variant: 'tinted'}),
-    borderWidth: 2,
-    borderColor: colors.outlineVariant,
-    borderTopColor: colors.outlineVariant,
-    width: 400,
-  },
   title: {
     fontSize: 16,
     color: colors.onSurface,
@@ -93,7 +86,7 @@ const createStyles = colors => StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    ...glass(colors, {variant: 'accent'}),
+    ...surfaceStyle(colors, {variant: 'accent'}),
     borderRadius: 100,
   },
   controlPressed: {

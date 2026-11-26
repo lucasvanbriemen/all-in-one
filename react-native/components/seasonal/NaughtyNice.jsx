@@ -1,5 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {SnowCap} from './SnowCap';
@@ -65,7 +65,7 @@ const EMPTY = new Set();
 const createStyles = colors =>
   StyleSheet.create({
     card: {
-      ...glass(colors),
+      ...surfaceStyle(colors),
       borderRadius: 16,
       padding: 12,
       flexDirection: 'row',

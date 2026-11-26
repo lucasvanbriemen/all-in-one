@@ -1,7 +1,7 @@
 import {Animated, Easing, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import Svg, {Path, Rect} from 'react-native-svg';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 import {setPersisted, usePersisted} from './store';
 
 import {SnowCap} from './SnowCap';
@@ -109,7 +109,7 @@ export function GiftBudget() {
 const createStyles = colors =>
   StyleSheet.create({
     card: {
-      ...glass(colors),
+      ...surfaceStyle(colors),
       borderRadius: 16,
       padding: 16,
       marginTop: 16,

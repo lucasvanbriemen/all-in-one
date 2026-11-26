@@ -1,6 +1,6 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 export function EmailListItem({item, coal = false, isSelected, onPress}) {
   const styles = useThemedStyles(createStyles);
@@ -32,13 +32,13 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginTop: 8,
-    ...glass(colors, {variant: 'subtle'}),
+    ...surfaceStyle(colors, {variant: 'subtle'}),
   },
   cardHovered: {
-    ...glass(colors, {tone: "surfaceAt3"}),
+    ...surfaceStyle(colors, {tone: "surfaceAt3"}),
   },
   cardSelected: {
-    ...glass(colors, {tone: "primaryContainer"}),
+    ...surfaceStyle(colors, {tone: "primaryContainer"}),
     borderColor: colors.primary,
     borderTopColor: colors.primary,
     borderWidth: 2,

@@ -1,6 +1,6 @@
 import {Animated, Image, PanResponder, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {glass, useThemedStyles} from '../theme';
+import {surfaceStyle, useThemedStyles} from '../theme';
 
 import FileUpload from './FileUpload';
 import {RichText} from './RichText';
@@ -260,7 +260,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.primary,
   },
   chatContainer: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 16,
@@ -302,7 +302,7 @@ const createStyles = colors => StyleSheet.create({
   meta_item: {
     flexDirection: 'row',
     gap: 4,
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 2,
@@ -328,7 +328,7 @@ const createStyles = colors => StyleSheet.create({
     gap: 4,
   },
   reaction: {
-    ...glass(colors),
+    ...surfaceStyle(colors),
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -357,7 +357,7 @@ const createStyles = colors => StyleSheet.create({
     gap: 4,
     padding: 4,
     borderRadius: 16,
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   pickerItem: {
     borderRadius: 12,
@@ -379,7 +379,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    ...glass(colors),
+    ...surfaceStyle(colors),
   },
   quoteSender: {
     color: colors.primary,
