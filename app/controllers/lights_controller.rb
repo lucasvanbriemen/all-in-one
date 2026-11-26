@@ -1,6 +1,16 @@
 class LightsController < ApplicationController
   def index
-    render json: { rooms: LightsConfig::ROOMS }
+    statuses = DeviceEvent.latest_states
+    ids_by_slug = LightsConfig::LIGHTS_NAMES.to_h { |id, light| [ light[:slug], id ] }
+
+    rooms = LightsConfig::ROOMS.map do |slug, room|
+      room.merge(
+        scenes: LightsConfig::SCENES.select { |scene| scene[:room] == slug },
+        lights: room[:lights].map { |light_slug| light_json(ids_by_slug[light_slug], statuses) }
+      )
+    end
+
+    render json: rooms
   end
 
   def update
@@ -18,5 +28,21 @@ class LightsController < ApplicationController
     responses = Lights::Bridge.apply_scene(scene)
     success = responses.all? { |response| response.is_a?(Net::HTTPSuccess) }
     render json: { success: success }, status: success ? :ok : :bad_gateway
+  end
+
+  def light_json(id, statuses)
+    light = LightsConfig::LIGHTS_NAMES.fetch(id)
+    status = statuses[id].presence
+
+    {
+      id: id,
+      name: light[:name],
+      slug: light[:slug],
+      status: status && {
+        on: status["isTurnedOn"],
+        brightness: status["brightness"],
+        hex: status["currentHex"]
+      }
+    }
   end
 end
