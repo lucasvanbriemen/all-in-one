@@ -132,6 +132,7 @@ function AppShell() {
           )}
         </SafeAreaView>
       </SeasonalRoot>
+
       <SearchModal />
     </TransparentWindow>
   );
