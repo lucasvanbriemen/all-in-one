@@ -14,7 +14,9 @@ import {HeartIcon} from './heart';
 import {HeartOutlineIcon} from './heartOutline';
 import {HomeIcon} from './home';
 import {LastIcon} from './last';
+import {LightsIcon} from './lights';
 import {NextIcon} from './next';
+import {OverviewIcon} from './overview';
 import {PaperclipIcon} from './paperclip';
 import {PatheIcon} from './pathe';
 import {PauseIcon} from './pause';
@@ -24,8 +26,11 @@ import React from 'react';
 import {RepeatIcon} from './repeat';
 import {SearchIcon} from './search';
 import {SendIcon} from './send';
+import {SlackIcon} from './slack';
+import {SongsIcon} from './songs';
 import {StatsIcon} from './stats';
 import {WEATHER_ICONS} from './weather';
+import {WhatsappIcon} from './whatsapp';
 import {WorkIcon} from './work';
 
 export {LogoIcon} from './logo';
@@ -42,6 +47,11 @@ const ICONS = {
   git: GithubIcon,
   pathe: PatheIcon,
   code: CodeIcon,
+  songs: SongsIcon,
+  overview: OverviewIcon,
+  whatsapp: WhatsappIcon,
+  slack: SlackIcon,
+  lights: LightsIcon,
   cross: CrossIcon,
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,
