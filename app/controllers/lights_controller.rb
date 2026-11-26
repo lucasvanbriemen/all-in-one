@@ -20,12 +20,20 @@ class LightsController < ApplicationController
     render json: { success: true }
   end
 
+  def update_room
+    slug = params[:slug]
+    should_turn_on = params[:on] != false
+    brightness = should_turn_on ? (params[:brightness] || 254) : 0
+    Lights::Bridge.change(nil, brightness: brightness, room_slug: slug)
+    render json: { success: true }
+  end
+
   def apply_scene
     scene_name = params[:scene]
     scene = LightsConfig::SCENES.find { |s| s[:name] == scene_name }
 
     Lights::Bridge.apply_scene(scene)
-    render :ok
+    render json: { success: true }
   end
 
   def light_json(id, statuses)

@@ -76,6 +76,8 @@ Rails.application.routes.draw do
   post "/lights/change", to: "lights#update", as: :lights
   get "/lights", to: "lights#index", as: :lights_index
   post "/lights/scenes", to: "lights#apply_scene", as: :lights_scenes
+  post "/lights/rooms", to: "lights#update_room", as: :lights_rooms
+
   post "/lights/events", to: "lights/events#create", as: :lights_events
   post "/phone/events", to: "phone_events#create", as: :phone_events
 
