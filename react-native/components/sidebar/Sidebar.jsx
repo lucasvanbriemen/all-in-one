@@ -61,9 +61,6 @@ export function Sidebar() {
 }
 
 const createStyles = colors => StyleSheet.create({
-  // Full height with no fill of its own: the window's `sidebar` material
-  // (TransparentWindow) shows through. The top padding clears the traffic
-  // lights.
   sidebar: {
     flex: 1,
     paddingTop: 16,
