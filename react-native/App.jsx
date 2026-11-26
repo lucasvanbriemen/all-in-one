@@ -17,7 +17,6 @@ import {Sidebar} from './components/sidebar/Sidebar';
 import {SnowCap} from './components/seasonal/SnowCap';
 import {StringLights} from './components/seasonal/StringLights';
 import {TransparentWindow} from './components/TransparentWindow';
-import {Toolbar} from './components/Toolbar';
 import {withAlpha} from './components/theme';
 import {player} from './components/music/player';
 import {openSource, push} from './components/push';
@@ -119,7 +118,6 @@ function AppShell() {
 
           <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
             {!compact && <SnowCap maxHeight={14} inset={18} />}
-            {!compact && <Toolbar />}
             <ActiveApplication />
             <StringLights />
           </View>
@@ -163,6 +161,7 @@ const createStyles = colors => StyleSheet.create({
     minWidth: 0,
     flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 16,
     marginVertical: 8,
     marginRight: 8,
     borderRadius: 12,
