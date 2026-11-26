@@ -11,7 +11,7 @@ class ChannelsController < ApplicationController
 
   def show
     channel = Channel.find(params[:id])
-    render json: channel, methods: [ :display_name, :last_message, :muted ], include: :contact
+    render json: channel, methods: [ :display_name, :last_message, :muted, :channel_type ], include: :contact
   end
 
   # Takes a chat out of the list (or puts it back); search still finds it.
