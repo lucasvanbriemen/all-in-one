@@ -66,7 +66,7 @@ const createStyles = colors => StyleSheet.create({
   // lights.
   sidebar: {
     flex: 1,
-    paddingTop: 44,
+    paddingTop: 16,
     paddingHorizontal: 12,
     flexDirection: 'column',
     gap: 8,
