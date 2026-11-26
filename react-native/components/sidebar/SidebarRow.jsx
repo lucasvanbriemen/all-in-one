@@ -44,7 +44,7 @@ const createStyles = colors => StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: colors.onSurface,
+    color: colors.onSurfaceVariant,
     flexShrink: 0,
   },
   labelSelected: {
