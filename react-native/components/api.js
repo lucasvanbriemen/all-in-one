@@ -1,8 +1,8 @@
 import {Platform} from 'react-native';
 import secrets from './secerts.json';
 
-// export const BASE_URL = "http://localhost:3000";
-export const BASE_URL = "https://aio.ltvb.nl";
+export const BASE_URL = "http://localhost:3000";
+// export const BASE_URL = "https://aio.ltvb.nl";
 
 export const api = {
   get defaultHeaders() {

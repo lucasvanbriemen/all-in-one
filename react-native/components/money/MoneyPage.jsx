@@ -1,6 +1,7 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import {DrivingPage} from './DrivingPage';
 import {GiftBudget} from '../seasonal/GiftBudget';
 import {HiddenOrnament} from '../seasonal/Grinch';
 import {Stat} from '../home/Stat';
@@ -8,8 +9,16 @@ import {useApi} from '../useApi';
 import {format} from './format';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
 import {useThemedStyles} from '../theme';
+import {useAppContext} from '../../context/AppContext';
 
 export function MoneyPage() {
+  const {get} = useAppContext();
+  if (get('app.activeSidebarItem') === 'driving') return <DrivingPage />;
+
+  return <MoneyOverview />;
+}
+
+function MoneyOverview() {
   const compact = useCompactLayout();
   const bottomInset = useBottomInset();
   const styles = useThemedStyles(createStyles);

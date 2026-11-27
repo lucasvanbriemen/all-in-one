@@ -1,4 +1,5 @@
 import {AlertIcon} from './alert';
+import {CarIcon} from './car';
 import {CheckDoubleIcon} from './checkDouble';
 import {CheckIcon} from './check';
 import {ChevronDown} from './chevronDown';
@@ -52,6 +53,7 @@ const ICONS = {
   whatsapp: WhatsappIcon,
   slack: SlackIcon,
   lights: LightsIcon,
+  driving: CarIcon,
   cross: CrossIcon,
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,

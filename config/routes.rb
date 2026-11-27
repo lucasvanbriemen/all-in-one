@@ -85,6 +85,7 @@ Rails.application.routes.draw do
 
   post "/lights/events", to: "lights/events#create", as: :lights_events
   post "/phone/events", to: "phone_events#create", as: :phone_events
+  get "/driving", to: "driving#index", as: :driving
 
   get "/search", to: "search#index"
   post "/search/picks", to: "search_picks#create"

@@ -57,7 +57,6 @@ export function GifPicker({onPick, onClose}) {
             {gifs.length === 0 && <Text style={styles.hint}>No GIFs found.</Text>}
           </ScrollView>
         )}
-      <Text style={styles.attribution}>Powered by GIPHY</Text>
     </View>
   );
 }

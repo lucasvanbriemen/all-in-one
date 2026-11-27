@@ -3,6 +3,10 @@ module MoneyConfig
     {
       path: "overview",
       name: "Overview"
+    },
+    {
+      path: "driving",
+      name: "Driving"
     }
   ].freeze
 
