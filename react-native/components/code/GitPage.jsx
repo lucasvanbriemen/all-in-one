@@ -18,7 +18,6 @@ export function GitPage() {
 
   return (
     <View>
-      <Text>Git Page</Text>
       {organizations.map(org => (
         <View key={org.id} style={styles.orgContainer}>
           <Image
@@ -36,12 +35,14 @@ export function GitPage() {
             </View>
           </View>
 
-          {org.repositories.map(repo => (
-            <View key={repo.id}>
-              <Text>- {repo.name}</Text>
-              <Text>{repo.description}</Text>
-            </View>
-          ))}
+          <View style={styles.repoListing}>
+            {org.repositories.map(repo => (
+              <View key={repo.id} style={styles.repoListing.repoItem}>
+                <Text style={styles.repoListing.repoItem.title}>{repo.name}</Text>
+                <Text style={[!itemDescription(repo).hasDescription && styles.repoListing.repoItem.isPlaceholder]}>{itemDescription(repo).text}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       ))}
     </View>
@@ -95,6 +96,32 @@ const createStyles = colors => StyleSheet.create({
           fontStyle: 'italic',
           opacity: 0.75,
         }
+      }
+    }
+  },
+  repoListing: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+
+    repoItem: {
+      padding: 8,
+      borderRadius: 8,
+      backgroundColor: colors.surface,
+      gap: 8,
+
+      title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.onSurface,
+      },
+
+
+
+      isPlaceholder: {
+        fontStyle: 'italic',
+        opacity: 0.75,
       }
     }
   },
