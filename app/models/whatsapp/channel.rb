@@ -21,6 +21,9 @@ module Whatsapp
       @resolved_contact = contact || (Contact.find_by(lid: id) if id.end_with?("@lid"))
     end
 
+    # is_dm isn't kept in sync on every update; is_group_chat is.
+    def direct_chat? = !is_group_chat
+
     def display_name
       return "You" if id == Connection.me_jid
 

@@ -38,7 +38,10 @@ export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
 
       <View style={styles.channelItem.textContainer}>
         <Text style={[styles.channelItem.name, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]}>{channel.display_name}</Text>
-        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]} numberOfLines={1}>{channel.last_message?.body}</Text>
+        <Text style={[styles.channelItem.lastMessage, isSelected() && styles.channelItem.selected, channel.unread_count > 0 && styles.channelItem.unread]} numberOfLines={1}>
+          {channel.last_message_author && <Text style={styles.channelItem.author}>{channel.last_message_author}: </Text>}
+          {channel.last_message_preview}
+        </Text>
       </View>
 
       {((CAN_HOVER && hovered) || actionsOpen) && (
@@ -84,6 +87,10 @@ const createStyles = colors => StyleSheet.create({
       marginTop: 4,
       opacity: 0.7,
       color: colors.onSurface,
+    },
+
+    author: {
+      fontWeight: 600,
     },
 
     selected: {

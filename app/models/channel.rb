@@ -45,7 +45,7 @@ class Channel < ApplicationRecord
 
     newest = Message.top_level.where(channel_id: channels.map(&:id))
       .group(:channel_id).select("channel_id, MAX(created_at) AS newest_at")
-    messages = Message.top_level.includes(:file_uploads)
+    messages = Message.top_level.includes(:file_uploads, :contact)
       .joins("INNER JOIN (#{newest.to_sql}) newest ON newest.channel_id = messages.channel_id AND newest.newest_at = messages.created_at")
       .group_by(&:channel_id)
 
@@ -61,6 +61,19 @@ class Channel < ApplicationRecord
   def last_message_preview
     last_message&.preview
   end
+
+  # Who wrote the newest message, shown before the preview: "You", or in a
+  # group chat or channel the sender's first name. A one-on-one chat only marks your own.
+  def last_message_author
+    message = last_message
+    return if message&.contact.nil?
+    return "You" if message.from_me
+    return if direct_chat?
+
+    message.contact.display_name.to_s.split.first.presence
+  end
+
+  def direct_chat? = is_dm
 
   def unread_count
     Notification.unread.where("source LIKE ?", "messages.%.#{id}").count
