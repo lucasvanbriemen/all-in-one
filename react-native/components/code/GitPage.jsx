@@ -55,7 +55,7 @@ const createStyles = colors => StyleSheet.create({
     padding: 16,
     borderRadius: 32,
     backgroundColor: colors.surface,
-    width: '33%',
+    width: '50%',
     borderWidth: 1,
     borderColor: colors.outline,
     overflow: 'hidden',
@@ -106,9 +106,11 @@ const createStyles = colors => StyleSheet.create({
     gap: 8,
 
     repoItem: {
-      padding: 8,
-      borderRadius: 8,
+      padding: 16,
+      borderRadius: 16,
       backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.outline,
       gap: 8,
 
       title: {
@@ -116,8 +118,6 @@ const createStyles = colors => StyleSheet.create({
         fontWeight: 'bold',
         color: colors.onSurface,
       },
-
-
 
       isPlaceholder: {
         fontStyle: 'italic',
