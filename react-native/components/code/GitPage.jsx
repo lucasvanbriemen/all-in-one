@@ -70,11 +70,12 @@ const createStyles = colors => StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      ...surfaceStyle(colors, { variant: 'tinted' }),
+      backgroundColor: colors.surface,
       borderRadius: 16,
-      padding: 8,
-      paddingHorizontal: 16,
+      padding: 16,
       alignSelf: 'flex-start',
+      borderWidth: 1,
+      borderColor: colors.outline,
 
       avatar: {
         width: 50,
@@ -108,9 +109,9 @@ const createStyles = colors => StyleSheet.create({
     repoItem: {
       padding: 16,
       borderRadius: 16,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.surfaceAt2,
       borderWidth: 1,
-      borderColor: colors.outline,
+      borderColor: colors.outlineVariant,
       gap: 8,
 
       title: {
