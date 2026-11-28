@@ -1,4 +1,4 @@
-import {useColorScheme} from 'react-native';
+import {useColorScheme, Platform} from 'react-native';
 
 /**
  * Material 3 SchemeContent at medium contrast (0.5), generated with
@@ -78,6 +78,16 @@ const COLORS = {
   'surface-at-4': {dark: 'rgb(50 51 49)', light: 'rgb(222 221 218)'},
   'surface-at-5': {dark: 'rgb(61 62 60)', light: 'rgb(210 209 207)'},
 };
+
+export function colorWithTransparency(colorName = 'surface', alpha = 1) {
+
+  if (Platform.OS !== 'macos') {
+    return useColor(colorName);
+  }
+
+  const color = useColor(colorName);
+  return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+}
 
 export function useColor(colorName = 'surface') {
   const themeToApply = useColorScheme() ?? 'light';
