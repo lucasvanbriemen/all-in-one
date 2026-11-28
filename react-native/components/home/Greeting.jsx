@@ -28,7 +28,6 @@ export function Greeting() {
 
 const createStyles = colors => StyleSheet.create({
   content: {
-    paddingTop: 16,
     gap: 8,
   },
   greeting: {
