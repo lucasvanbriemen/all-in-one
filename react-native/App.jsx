@@ -11,7 +11,6 @@ import {MobileNavigation} from './components/sidebar/MobileNavigation';
 import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
-import {NowPlayingDrawer} from './components/music/NowPlayingDrawer';
 import {SeasonalRoot} from './components/seasonal/SeasonalRoot';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {SnowCap} from './components/seasonal/SnowCap';
