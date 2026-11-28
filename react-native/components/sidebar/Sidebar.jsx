@@ -19,12 +19,8 @@ export function Sidebar() {
     shouldBeVisible(allowed_platforms[app])
   );
 
-  const width = 240;
-
   return (
-    // The negative margin plus padding leaves room above the panel for the
-    // seasonal snow drift, which the clipping would otherwise cut off.
-    <View style={{width, overflow: 'hidden'}}>
+    <View style={{width: 240, overflow: 'hidden'}}>
       <View style={styles.sidebar}>
         <View style={styles.row}>
           <View>
