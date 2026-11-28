@@ -106,10 +106,10 @@ function AppShell() {
   const compact = useCompactLayout();
 
   return (
-    <SafeAreaView style={[styles.appWrapper]}>
+    <SafeAreaView style={styles.appWrapper}>
       {!compact && <Sidebar />}
 
-      <View style={[styles.activeApp, compact && styles.activeAppCompact]}>
+      <View style={styles.activeApp}>
         <ActiveApplication />
       </View>
 
@@ -139,9 +139,5 @@ const createStyles = () => StyleSheet.create({
     backgroundColor: useColor('surface'),
     padding: 16,
     borderRadius: 16,
-  },
-  activeAppCompact: {
-    flex: 1,
-    borderRadius: 0
-  },
+  }
 });
