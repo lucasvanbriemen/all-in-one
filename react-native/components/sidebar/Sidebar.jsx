@@ -5,8 +5,6 @@ import {LogoIcon} from '../icons';
 import {Platform} from 'react-native';
 import {SidebarApplication} from './SidebarApplication';
 import {SidebarNowPlaying} from '../music/SidebarNowPlaying';
-import {SantaHat} from '../seasonal/SantaHat';
-import {SnowCap} from '../seasonal/SnowCap';
 import {api} from '../api';
 
 export function Sidebar() {
@@ -36,11 +34,9 @@ export function Sidebar() {
     // seasonal snow drift, which the clipping would otherwise cut off.
     <View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
       <View style={styles.sidebar}>
-        <SnowCap maxHeight={11} inset={8} />
         <View style={styles.row}>
           <View>
             <LogoIcon size={24} color="red" />
-            <SantaHat size={24} />
           </View>
           <Text style={styles.name}>All in One</Text>
         </View>
