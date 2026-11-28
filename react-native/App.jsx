@@ -18,7 +18,7 @@ import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
 import {LightsPage} from './components/lights/LightsPage';
 import {SearchModal} from './components/home/SearchModal';
-import {colorWithTransparency} from './components/theme';
+import {colorWithTransparency, useColor} from './components/theme';
 
 const APPLICATIONS = {
   email: EmailPage,
@@ -109,7 +109,7 @@ function AppShell() {
     <SafeAreaView style={[styles.appWrapper]}>
       {!compact && <Sidebar />}
 
-      <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
+      <View style={[styles.activeApp, compact && styles.activeAppCompact]}>
         <ActiveApplication />
       </View>
 
@@ -131,24 +131,17 @@ const createStyles = () => StyleSheet.create({
   appWrapper: {
     flex: 1,
     flexDirection: 'row',
+    padding: 16,
     backgroundColor: colorWithTransparency('surface', 0.25),
   },
-  compactContent: {
-    paddingHorizontal: 12,
-    minHeight: 0,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-  },
-  // Opaque, inset, rounded content card on the sidebar material; the blur
-  // shows in the thin margin around it.
-  content: {
-    minWidth: 0,
+  activeApp: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    marginVertical: 8,
-    marginRight: 8,
-    borderRadius: 12,
-    borderWidth: 1,
+    backgroundColor: useColor('surface'),
+    padding: 16,
+    borderRadius: 16,
+  },
+  activeAppCompact: {
+    flex: 1,
+    borderRadius: 0
   },
 });
