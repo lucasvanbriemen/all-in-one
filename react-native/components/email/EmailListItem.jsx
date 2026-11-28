@@ -1,9 +1,8 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 export function EmailListItem({item, coal = false, isSelected, onPress}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [hovered, setHovered] = useState(false);
 
   return (

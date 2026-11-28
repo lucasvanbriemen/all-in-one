@@ -1,7 +1,6 @@
 import {useState, useEffect, useMemo, useRef} from 'react';
 import {StyleSheet, View, Text, TextInput, ScrollView, Image, Pressable} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {useApi} from '../useApi';
 import {openSource} from '../push';
 import {useDebouncedValue} from './debouncedValue';
@@ -57,7 +56,7 @@ function useSearchResults(searchQuery) {
 }
 
 export function SearchModal() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {get, set} = useAppContext();
   const open = get('app.showSearch') === true;
   const searchQuery = get('app.searchQuery') || '';

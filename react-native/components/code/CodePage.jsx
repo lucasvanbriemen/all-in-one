@@ -1,5 +1,4 @@
 import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {CodeEditor} from '../CodeEditor';
@@ -28,7 +27,7 @@ const KEY_DOWN_EVENTS = [
 export function CodePage() {
   const { get, set } = useAppContext()
 
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [source, setSource] = useState('// some comment\n');
   const [currentFile, setCurrentFile] = useState(null);
   // Where the editor should put the cursor once the file is shown. Set by a

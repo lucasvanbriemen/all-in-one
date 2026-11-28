@@ -78,11 +78,7 @@ const ANSI = {
 /** xterm parses `#rgb`, `#rrggbb(aa)` and comma-form `rgb()` — nothing else. */
 const TRANSPARENT = '#00000000';
 
-/**
- * `useTheme()` is empty until the palette lands, and a terminal has to be
- * legible on its first frame. Written in the palette's own notation rather
- * than as hex, because `withAlpha` takes these apart by their numbers.
- */
+
 const FALLBACK = {
   dark: {onSurface: 'rgb(226 226 233)', primary: 'rgb(170 199 255)', onPrimary: 'rgb(11 48 95)', outline: 'rgb(142 144 153)'},
   light: {onSurface: 'rgb(25 28 32)', primary: 'rgb(65 94 145)', onPrimary: 'rgb(255 255 255)', outline: 'rgb(116 119 127)'},

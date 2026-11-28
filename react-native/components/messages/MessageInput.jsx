@@ -1,7 +1,6 @@
 import {api} from '../api';
 import {Image, Platform, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {GifPicker} from './GifPicker';
@@ -13,7 +12,7 @@ import {playEffect, startBlizzard} from '../seasonal/store';
 
 // platform is "slack", "whatsapp", or null while the channel is still loading.
 export function MessageInput({threadId = null, platform = null}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [text, setText] = useState("");
   const [attachment, setAttachment] = useState(null);
   const {get, set} = useAppContext();

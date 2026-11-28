@@ -1,5 +1,4 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {useThemedStyles} from '../theme';
 
 import {NotificationStack} from './Notification';
 import {NowPlayingCard} from '../music/NowPlayingCard';
@@ -17,7 +16,7 @@ import {useCompactLayout} from '../useCompactLayout';
 
 export function HomePage() {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const serverData = useApi('/server_data').data;
   const notificationStacks = useApi('/notifications/stacks').data;
   const season = useSeason();

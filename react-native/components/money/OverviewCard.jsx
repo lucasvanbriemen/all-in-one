@@ -1,6 +1,5 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 import {format} from './format';
@@ -8,7 +7,7 @@ import {useCompactLayout} from '../useCompactLayout';
 
 export function OverviewCard() {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [overview, setOverview] = useState([]);
   const [shouldShowNumbers, setShouldShowNumbers] = useState(false);
 

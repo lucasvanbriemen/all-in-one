@@ -23,7 +23,7 @@ import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
 import {LightsPage} from './components/lights/LightsPage';
 import {SearchModal} from './components/home/SearchModal';
-import {useThemedStyles} from './components/theme';
+import { useColor } from './components/theme';
 
 const APPLICATIONS = {
   email: EmailPage,
@@ -107,7 +107,7 @@ function AppShell() {
   const {get, set} = useAppContext();
 
 
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const ActiveApplication = APPLICATIONS[get("app.activeApp") || "home"];
   const compact = useCompactLayout();
 
@@ -139,7 +139,7 @@ function AppShell() {
   );
 }
 
-const createStyles = colors => StyleSheet.create({
+const createStyles = () => StyleSheet.create({
   // No gutters around the sidebar; the content card brings its own margin.
   appWrapper: {
     flex: 1,
@@ -168,7 +168,5 @@ const createStyles = colors => StyleSheet.create({
     marginRight: 8,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: withAlpha(colors.onSurface, 0.08),
-    backgroundColor: colors.surface,
   },
 });

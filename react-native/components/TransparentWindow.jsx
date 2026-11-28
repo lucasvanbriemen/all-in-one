@@ -1,5 +1,4 @@
 import {StyleSheet, UIManager, View, requireNativeComponent} from 'react-native';
-import {useTheme} from './theme';
 
 import React from 'react';
 
@@ -40,8 +39,6 @@ const NativeVisualEffect = hasNativeBlur
 const WINDOW_MATERIAL = 'sidebar';
 
 export function TransparentWindow({children}) {
-  const colors = useTheme();
-
   if (!NativeVisualEffect) {
     return (
       <View style={[styles.root, {backgroundColor: colors.surface}]}>

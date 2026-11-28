@@ -1,5 +1,4 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useTheme, useThemedStyles, withAlpha} from '../theme';
 
 import {Icon} from '../icons';
 import {player} from './player';
@@ -11,8 +10,7 @@ import {useAppContext} from '../../context/AppContext';
  * containers: a faint see-through lift on the sidebar material.
  */
 export function SidebarNowPlaying() {
-  const styles = useThemedStyles(createStyles);
-  const {onSurface} = useTheme();
+  const styles = createStyles();
   const {get, set} = useAppContext();
 
   const title = get('music.now-playing.title');

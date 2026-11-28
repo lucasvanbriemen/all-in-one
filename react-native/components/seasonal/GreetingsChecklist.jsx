@@ -1,6 +1,6 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
+import {surfaceStyle, dStyles} from '../theme';
 
 import {onEffect} from './store';
 import {useAppContext} from '../../context/AppContext';
@@ -13,7 +13,7 @@ import {useSeasonalData} from './data';
  * send them something festive.
  */
 export function GreetingsChecklist() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {decorated, phase} = useSeason();
   const {set, get} = useAppContext();
   const enabled = decorated && phase === 'christmas';

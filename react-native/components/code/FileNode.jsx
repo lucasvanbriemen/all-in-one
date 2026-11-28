@@ -7,10 +7,9 @@ import {fileSystem} from '../fileSystem';
 import {showNewEntryMenu} from './showNewEntryMenu';
 import {sortFiles} from './sortFiles';
 import {useState} from 'react';
-import {useThemedStyles} from '../theme';
 
 export function FileNode({projectRoot, folder, onOpenFile, onChanged, itemsDeep}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [children, setChildren] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [newEntryKind, setNewEntryKind] = useState(null);

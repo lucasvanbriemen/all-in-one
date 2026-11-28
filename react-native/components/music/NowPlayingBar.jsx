@@ -1,5 +1,4 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
@@ -7,7 +6,7 @@ import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 
 export function NowPlayingBar() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {get, set} = useAppContext();
 
   if (!get('music.now-playing.title')) {

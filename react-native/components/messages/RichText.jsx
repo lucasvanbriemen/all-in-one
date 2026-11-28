@@ -1,6 +1,5 @@
 import {Image, Linking, Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {useThemedStyles, withAlpha} from '../theme';
 
 const MONO = Platform.select({ios: 'Menlo', macos: 'Menlo', default: 'monospace'});
 
@@ -129,7 +128,7 @@ function blocks(text) {
 }
 
 export function RichText({text, platform, mentions, emoji, style}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   if (!text) return null;
 
   // Like Slack, a message of just one to three emoji shows them large.

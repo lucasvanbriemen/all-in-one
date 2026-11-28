@@ -5,10 +5,9 @@ import { useApi } from '../useApi';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 
 export function LikedSongs({compact, limit}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const isCompact = useCompactLayout() || compact;
   const bottomInset = useBottomInset();
 

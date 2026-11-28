@@ -1,6 +1,5 @@
 import {useApi} from '../useApi';
 import {ScrollView, StyleSheet} from 'react-native';
-import {useThemedStyles} from '../theme';
 import {useBottomInset} from '../useCompactLayout';
 
 import {ChannelListItem} from './ChannelListItem';
@@ -9,7 +8,7 @@ import {useChannel} from '../cable';
 
 export function ChannelListing({type}) {
   const bottomInset = useBottomInset();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {data, refresh} = useApi(`/channels?type=${type}`);
   const channels = data || [];
 

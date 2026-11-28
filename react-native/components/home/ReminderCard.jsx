@@ -1,5 +1,4 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Reminder} from './Reminder';
 import {ReminderForm} from './ReminderForm';
@@ -7,7 +6,7 @@ import {SnowCap} from '../seasonal/SnowCap';
 import { useApi } from "../useApi";
 
 export function ReminderCard() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {data, refresh} = useApi('/reminders');
   const reminders = Array.isArray(data) ? data : [];
 

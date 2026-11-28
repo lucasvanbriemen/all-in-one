@@ -1,6 +1,5 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {useThemedStyles} from '../theme';
 
 function initials(name) {
   const words = (name || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim().split(/\s+/).filter(Boolean);
@@ -11,7 +10,7 @@ function initials(name) {
 
 // The avatar route answers 404 for chats without a picture, so a failed load falls back to initials too.
 export const Avatar = React.memo(function Avatar({uri, name, size = 32, style}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [failedUri, setFailedUri] = useState(null);
   const shape = {width: size, height: size, borderRadius: size / 2};
 

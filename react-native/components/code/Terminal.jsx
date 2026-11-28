@@ -5,7 +5,6 @@ import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {fileSystem} from '../fileSystem';
 import {useColorScheme} from 'react-native';
-import {useTheme} from '../theme';
 
 /**
  * xterm.js, hosted in a WebView, over a pty on the file server.
@@ -22,7 +21,6 @@ import {useTheme} from '../theme';
  * So the page is the screen and the keyboard, and nothing else.
  */
 export function Terminal({projectRoot, onSearch, onClose, style}) {
-  const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
 
   const webView = useRef(null);

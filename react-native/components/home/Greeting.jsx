@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import { StyleSheet, Text, View} from 'react-native';
-import { useThemedStyles} from '../theme';
 
 import {NewYearCountdown} from '../seasonal/Countdowns';
 import {useSeason} from '../seasonal/useSeason';
@@ -9,7 +8,7 @@ import { useApi } from "../useApi";
 import {greeting} from './greeting';
 
 export function Greeting() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const season = useSeason();
   const currentWeather = useApi('/weather').data;
   const date = new Date();

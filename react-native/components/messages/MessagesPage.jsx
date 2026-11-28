@@ -1,5 +1,4 @@
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {ActiveChannel} from './ActiveChannel';
 import {ChannelListing} from './ChannelListing';
@@ -10,7 +9,7 @@ import {useAppContext} from '../../context/AppContext';
 export function MessagesPage() {
   const {get} = useAppContext();
   const sidebarItem = get("app.activeSidebarItem") ?? "whatsapp";
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const compact = useCompactLayout();
   const thread = get("messages.activeThread");
 

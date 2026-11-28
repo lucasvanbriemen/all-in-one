@@ -1,7 +1,6 @@
 import {BASE_URL, api} from '../api';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {useBottomInset, useCompactLayout, useKeyboardHeight} from '../useCompactLayout';
 import {Icon} from '../icons';
 import {NavigationBlur} from '../sidebar/NavigationBlur';
@@ -19,14 +18,14 @@ const channelCache = new Map();
 const chatKey = (get, isThread, channel) => (isThread ? `${channel}/thread/${get("messages.activeThread")}` : channel);
 
 export function ActiveChannel({isThread = false}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {set, get} = useAppContext();
   const [messages, setMessages] = useState(() => chatCache.get(chatKey(get, isThread, get("messages.activeChannel") ?? "")) ?? []);
   const [channel, setChannel] = useState(() => channelCache.get(get("messages.activeChannel") ?? "") ?? {});
   const isCompact = useCompactLayout();
   const bottomInset = useBottomInset();
   const keyboardHeight = useKeyboardHeight();
-  const colors = useThemedStyles(c => c);
+  const colors = {};
   const inputOffset = keyboardHeight > 0 ? keyboardHeight + 8 : bottomInset;
 
   // Keep the chat pinned to the newest message while the user is at the bottom

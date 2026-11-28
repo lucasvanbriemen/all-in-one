@@ -2,10 +2,9 @@ import {Image, Linking, Pressable, ScrollView, StyleSheet, Text, View} from 'rea
 import React, {useEffect, useState} from 'react';
 
 import {BASE_URL} from '../api';
-import {useThemedStyles} from '../theme';
 
 export default function FileUpload({file}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const uri = `${BASE_URL}/file/${file.id}`;
   const isImage = file.mimetype?.startsWith('image/');
   const [aspectRatio, setAspectRatio] = useState(4 / 3);

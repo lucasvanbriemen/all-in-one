@@ -8,7 +8,6 @@ import {Stat} from '../home/Stat';
 import {useApi} from '../useApi';
 import {format} from './format';
 import {useBottomInset, useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 import {useAppContext} from '../../context/AppContext';
 
 export function MoneyPage() {
@@ -21,7 +20,7 @@ export function MoneyPage() {
 function MoneyOverview() {
   const compact = useCompactLayout();
   const bottomInset = useBottomInset();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const money = useApi('/money').data;
   const statisics = money?.data ?? [];
   const recurring = money?.recurring ?? [];

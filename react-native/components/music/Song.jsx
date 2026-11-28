@@ -1,5 +1,4 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useTheme, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
@@ -7,8 +6,7 @@ import {useCompactLayout} from '../useCompactLayout';
 import {useState} from 'react';
 
 export function Song({song, isEven, onClick, rightLabel = null, compact}) {
-  const colors = useTheme();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [isLiked, setIsLiked] = useState(song.is_liked);
 
   const isCompact = useCompactLayout() || compact;

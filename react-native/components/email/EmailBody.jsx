@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
-import {useThemedStyles} from '../theme';
 
 /**
  * Renders an email's HTML in a web view.
@@ -12,7 +11,7 @@ import {useThemedStyles} from '../theme';
  * frame and a sandboxed one.
  */
 export function EmailBody({detail}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   return (
     <WebView

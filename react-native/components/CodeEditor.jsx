@@ -13,8 +13,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, useColorScheme} from 'react-native';
 
 import {WebView} from 'react-native-webview';
-import {useTheme} from './theme';
-import {useThemedStyles} from './theme';
 
 /**
  * Monaco, hosted in a WebView.
@@ -40,9 +38,8 @@ export function CodeEditor({
 }) {
   const webView = useRef(null);
   const [loaded, setLoaded] = useState(false);
-  const colors = useTheme();
   const scheme = useColorScheme() ?? 'light';
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   // Monaco owns the buffers once it is up, so the document is built exactly
   // once. A `source` that changed identity on re-render would reload the frame

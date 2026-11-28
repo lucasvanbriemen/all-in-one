@@ -1,7 +1,6 @@
 import {ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {CategoryGroup, createStyles as createMoneyStyles} from '../money/UncategorizedTransactions';
 import React, {useEffect, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
@@ -21,7 +20,7 @@ const EXPANDABLE = ['transactions', 'messages', 'email'];
 // All unread notifications of one source (a chat, an email, a transaction) as
 // a single card: the newest on top, a few more when expanded.
 export function NotificationStack({stack}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {set} = useAppContext();
 
   const [dismissed, setDismissed] = useState(false);
@@ -116,7 +115,7 @@ function senderSummary(senders) {
 
 // The same category chips as the Uncategorized card. Categorizing dismisses the notification.
 function TransactionActions({transactionId, onDone, styles}) {
-  const moneyStyles = useThemedStyles(createMoneyStyles);
+  const moneyStyles = createMoneyStyles();
   const [state, setState] = useState(null);
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle, Line} from 'react-native-svg';
-import {surfaceStyle, useTheme, useThemedStyles} from '../theme';
 import secrets from '../secerts.json';
 
 // Points closer than this (in degrees, ~300 m) count as the same spot, so GPS
@@ -80,8 +79,7 @@ function project(segments, width, height) {
 }
 
 export function DrivingMap({trips}) {
-  const colors = useTheme();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [selected, setSelected] = useState(null);
   const [width, setWidth] = useState(0);
 

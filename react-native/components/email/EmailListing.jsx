@@ -8,13 +8,12 @@ import { RefreshControl } from 'react-native';
 import {useApi} from '../useApi';
 import {useAppContext} from '../../context/AppContext';
 import {useBottomInset} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 
 export function EmailListing() {
   const { get, set } = useAppContext();
   const {data, refresh} = useApi(`/email/` + get('app.activeSidebarItem'));
   const emails = data?.emails || [];
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [emailRefreshing, setEmailRefreshing] = useState(false);
   const bottomInset = useBottomInset();
   const naughty = useNaughtySenders();

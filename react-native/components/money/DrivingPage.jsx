@@ -1,6 +1,4 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { surfaceStyle, useThemedStyles } from '../theme';
 
 import { DrivingMap } from './DrivingMap';
 import { Stat } from '../home/Stat';
@@ -13,7 +11,7 @@ import { useBottomInset, useCompactLayout } from '../useCompactLayout';
 export function DrivingPage() {
   const compact = useCompactLayout();
   const bottomInset = useBottomInset();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const data = useApi('/driving').data;
 
   const months = data?.months ?? [];

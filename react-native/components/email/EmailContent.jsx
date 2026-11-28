@@ -1,13 +1,12 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {EmailBody} from './EmailBody';
 import {api} from '../api';
 import {useAppContext} from '../../context/AppContext';
 
 export function EmailContent() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [detail, setDetail] = useState(null);
   const { get } = useAppContext();
   const emailId = get('email.selectedEmailId');

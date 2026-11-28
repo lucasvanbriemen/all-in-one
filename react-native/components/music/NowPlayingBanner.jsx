@@ -1,14 +1,11 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
-import React from 'react';
-import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
 
 export function NowPlayingBanner() {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const { get } = useAppContext();
 
   return (

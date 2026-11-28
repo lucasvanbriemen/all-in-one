@@ -1,12 +1,11 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {api} from '../api';
 import {format} from "../money/format";
 
 export function Reminder({reminder, onComplete}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   async function complete() {
     await api.post(`/reminders/${reminder.id}`);

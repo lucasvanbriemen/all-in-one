@@ -1,11 +1,10 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 
 export function ReminderForm({onCreate}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 

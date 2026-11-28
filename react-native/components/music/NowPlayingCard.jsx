@@ -1,5 +1,4 @@
 import {Image, Pressable, StyleSheet, Text, View, ScrollView} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {Icon} from '../icons';
 import {player} from './player';
@@ -9,7 +8,7 @@ import {useAppContext} from '../../context/AppContext';
 import {LikedSongs} from './LikedSongs';
 
 export function NowPlayingCard() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {get, set} = useAppContext();
 
   return (

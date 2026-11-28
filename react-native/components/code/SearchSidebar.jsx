@@ -1,5 +1,4 @@
 import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {fileSystem} from '../fileSystem';
@@ -8,7 +7,7 @@ import {useRef} from 'react';
 // `mode` is 'files' or 'code' when a shortcut opened the sidebar, and null
 // when it was opened from the sidebar itself or closed with Escape.
 export function SearchSidebar({onOpenFile, projectRoot, mode, onModeChange}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const inputRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,7 +1,6 @@
 import {Animated, Easing, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import Svg, {Path, Rect} from 'react-native-svg';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {setPersisted, usePersisted} from './store';
 
 import {SnowCap} from './SnowCap';
@@ -15,7 +14,7 @@ import {useSeasonalData} from './data';
  * of who still needs one.
  */
 export function GiftBudget() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {phase, year} = useSeason();
   const enabled = phase === 'pre' || phase === 'advent' || phase === 'christmas';
   const [gifts] = useSeasonalData('/seasonal/gifts', enabled);

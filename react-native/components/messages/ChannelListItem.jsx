@@ -1,6 +1,5 @@
 import {Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {useAppContext} from '../../context/AppContext';
 import {Avatar} from './Avatar';
@@ -9,7 +8,7 @@ import {api} from '../api';
 const CAN_HOVER = Platform.OS === 'web' || Platform.OS === 'macos';
 
 export const ChannelListItem = React.memo(function ChannelListItem({channel}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const {get, set} = useAppContext();
   const [hovered, setHovered] = useState(false);

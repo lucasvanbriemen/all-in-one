@@ -4,7 +4,6 @@ import React from 'react';
 import {Stat} from '../home/Stat';
 import {daysUntil} from './season';
 import {useSeason} from './useSeason';
-import {useThemedStyles} from '../theme';
 
 /** A tile in Home's stat row: days to Christmas, then to the new year. */
 export function CountdownStat() {
@@ -36,7 +35,7 @@ export function CountdownStat() {
  * hands over to the fireworks (see SeasonalRoot).
  */
 export function NewYearCountdown() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {date, phase} = useSeason(1000);
   if (phase !== 'nye') return null;
 

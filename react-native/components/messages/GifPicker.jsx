@@ -1,6 +1,5 @@
 import {ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 import {Icon} from '../icons';
@@ -9,7 +8,7 @@ const TILE_HEIGHT = 100;
 
 // Trending GIFs until something is typed; picking one sends it straight away.
 export function GifPicker({onPick, onClose}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [query, setQuery] = useState('');
   const [gifs, setGifs] = useState(null);
   const [error, setError] = useState(null);

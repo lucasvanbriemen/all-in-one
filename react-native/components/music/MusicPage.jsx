@@ -5,10 +5,9 @@ import {SearchSongs} from './SearchSongs';
 import {Statistics} from './Statistics';
 import {HiddenOrnament} from '../seasonal/Grinch';
 import {useAppContext} from '../../context/AppContext';
-import {useThemedStyles} from '../theme';
 
 export function MusicPage() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const {get} = useAppContext();
 

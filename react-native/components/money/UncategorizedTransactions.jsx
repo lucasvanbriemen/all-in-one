@@ -1,6 +1,5 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {api} from '../api';
 import {format} from './format';
@@ -9,7 +8,7 @@ import {format} from './format';
 // as a one-tap suggestion; tapping the row opens every category, with an
 // option to label the other open transactions from that merchant too.
 export function UncategorizedTransactions() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [transactions, setTransactions] = useState(null);
   const [categories, setCategories] = useState({budget: [], other: []});
   const [expandedId, setExpandedId] = useState(null);

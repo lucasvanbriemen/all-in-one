@@ -2,7 +2,6 @@ import {StyleSheet, TextInput, View} from 'react-native';
 
 import {FileIcon} from '../icons/FileIcon';
 import {useState} from 'react';
-import {useThemedStyles} from '../theme';
 
 /**
  * The inline name field that appears in the tree after "New file" or
@@ -10,7 +9,7 @@ import {useThemedStyles} from '../theme';
  * Enter, cancels on Escape, blur, or an empty name.
  */
 export function NewEntryInput({kind, initialName = '', onSubmit, onCancel}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [name, setName] = useState(initialName);
 
   function submit() {

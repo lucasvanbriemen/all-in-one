@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { surfaceStyle, useThemedStyles } from '../theme';
 
 import React from 'react';
 import { useCompactLayout } from '../useCompactLayout';
@@ -7,7 +6,7 @@ import { SnowCap } from '../seasonal/SnowCap';
 
 export function Stat({value, label, attentionLevel = "low"}) {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const attentionStyle = {
     low: styles.lowContainer,

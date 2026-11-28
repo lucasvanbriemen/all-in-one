@@ -1,13 +1,10 @@
 import {Button, Pressable, StyleSheet, Text, View, Image} from 'react-native';
-import {surfaceStyle, useTheme, useThemedStyles} from '../theme';
 import { useApi } from '../useApi';
 
 import {useAppContext} from '../../context/AppContext';
 
 export function GitPage() {
   const { get, set } = useAppContext()
-  const styles = useThemedStyles(createStyles);
-  const { scheme } = useTheme();
 
   const { data: organizations = [] } = useApi('/github/organizations')
 

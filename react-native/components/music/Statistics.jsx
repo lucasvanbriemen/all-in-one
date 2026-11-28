@@ -6,11 +6,10 @@ import {useApi} from '../useApi';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 import {format} from '../money/format';
 
 export function Statistics() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const isCompact = useCompactLayout();
 
   const {get, set} = useAppContext();

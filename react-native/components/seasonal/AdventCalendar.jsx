@@ -1,6 +1,5 @@
 import {Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {hideYearInReview, playEffect, setPersisted, showYearInReview, usePersisted, useSeasonalState} from './store';
 
 import {SnowCap} from './SnowCap';
@@ -18,7 +17,7 @@ import {useSeasonalData} from './data';
  * phone is open on the Mac too.
  */
 export function AdventCalendar() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const compact = useCompactLayout();
   const {phase, year} = useSeason();
   const {get, set} = useAppContext();
@@ -149,7 +148,7 @@ function Door({day, door, locked, isOpen, selected, onPress, styles}) {
  * Rendered by the seasonal overlay so it sits over everything.
  */
 export function YearInReview() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const door = useSeasonalState(s => s.yearInReview);
   const appear = useMemo(() => new Animated.Value(0), []);
 

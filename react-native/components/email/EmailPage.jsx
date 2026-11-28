@@ -5,11 +5,10 @@ import {EmailContent} from './EmailContent';
 import {EmailListing} from './EmailListing';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 
 export function EmailPage() {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   // `selection` is the sidebar's mailbox path; which email is open within that
   // mailbox is local to this page.
   const { get, set } = useAppContext();

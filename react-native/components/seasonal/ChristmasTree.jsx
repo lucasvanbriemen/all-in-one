@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle, Defs, G, LinearGradient, Path, Rect, Stop} from 'react-native-svg';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import {SnowCap} from './SnowCap';
 import {useSeasonalData} from './data';
@@ -86,7 +85,7 @@ export function TreeDrawing({ornaments = 0, lights = 0, star = false, size = 160
 }
 
 export function ChristmasTreeCard() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [tree] = useSeasonalData('/seasonal/tree');
   const ornaments = tree?.ornaments ?? 0;
   const lights = tree?.lights ?? 0;

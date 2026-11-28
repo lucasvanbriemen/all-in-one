@@ -1,6 +1,5 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
 import {boostMode, cycleBoost, effectiveShare} from './christmasMusic';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {phaseOf} from './season';
@@ -16,7 +15,7 @@ const MODE_LABELS = {auto: '', more: ' · turned up', max: ' · all in', off: ' 
  * for today only. The day after Boxing Day it says goodbye.
  */
 export function ChristmasMeter() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {date} = useSeason();
   const {get} = useAppContext();
   // Subscribing re-renders the meter when the boost changes.

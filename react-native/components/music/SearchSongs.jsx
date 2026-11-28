@@ -6,10 +6,9 @@ import {api} from '../api';
 import {player} from './player';
 import {useAppContext} from '../../context/AppContext';
 import {useCompactLayout} from '../useCompactLayout';
-import {useThemedStyles} from '../theme';
 
 export function SearchSongs() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const isCompact = useCompactLayout();
 

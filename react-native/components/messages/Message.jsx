@@ -1,6 +1,5 @@
 import {Animated, Image, PanResponder, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import FileUpload from './FileUpload';
 import {RichText} from './RichText';
@@ -21,7 +20,7 @@ const SWIPE_MAX = 90;
 // Memoized: a chat refresh keeps the older message objects, so only new ones re-render.
 export const Message = React.memo(function Message({message, showSender = false}) {
   const compact = useCompactLayout();
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {get, set} = useAppContext();
   const [reactions, setReactions] = useState(message.reactions || []);
   const [pickerOpen, setPickerOpen] = useState(false);

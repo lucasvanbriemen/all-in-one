@@ -1,5 +1,4 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {FileNode} from './FileNode';
@@ -10,7 +9,7 @@ import {showNewEntryMenu} from './showNewEntryMenu';
 import {sortFiles} from './sortFiles';
 
 export function FileTree({currentFile, onOpenFile, onSave, projectRoot, setProjectRoot, openedFiles, setOpenedFiles}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [files, setFiles] = useState([]);
   // 'file' | 'folder' while the root-level name field is showing.
   const [newEntryKind, setNewEntryKind] = useState(null);
