@@ -12,7 +12,6 @@ import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
 import {Sidebar} from './components/sidebar/Sidebar';
-import {SnowCap} from './components/seasonal/SnowCap';
 import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
