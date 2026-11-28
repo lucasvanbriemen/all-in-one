@@ -104,33 +104,29 @@ function PushBridge() {
 function AppShell() {
   const {get, set} = useAppContext();
 
-
   const styles = createStyles();
   const ActiveApplication = APPLICATIONS[get("app.activeApp") || "home"];
   const compact = useCompactLayout();
 
   return (
     <TransparentWindow>
-      <SeasonalRoot>
-        <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
-          {!compact && <Sidebar />}
+      <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
+        {!compact && <Sidebar />}
 
-          <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
-            {!compact && <SnowCap maxHeight={14} inset={18} />}
-            <ActiveApplication />
-            <StringLights />
-          </View>
+        <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
+          {!compact && <SnowCap maxHeight={14} inset={18} />}
+          <ActiveApplication />
+        </View>
 
-          {compact && (
-            <>
-              <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
-                <NowPlayingBar />
-                <MobileNavigation />
-              </View>
-            </>
-          )}
-        </SafeAreaView>
-      </SeasonalRoot>
+        {compact && (
+          <>
+            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
+              <NowPlayingBar />
+              <MobileNavigation />
+            </View>
+          </>
+        )}
+      </SafeAreaView>
 
       <SearchModal />
     </TransparentWindow>
