@@ -5,6 +5,19 @@
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
+// Private CoreGraphics (SkyLight) call that blurs whatever is behind a
+// non-opaque window — the one iTerm2 and Alacritty use for adjustable window
+// blur. Not App Store-safe and could change in a macOS update; if it ever
+// stops working the window is just clear (with the tint from
+// TransparentWindow.jsx), not broken.
+extern "C" int CGSMainConnectionID(void);
+extern "C" int CGSSetWindowBackgroundBlurRadius(int connection, uint32_t windowNumber, int radius);
+
+// How strongly the desktop behind the window is blurred, in points. Lower is
+// clearer glass. Never set 0: per iTerm2 that can permanently disable blur for
+// the window. The tint on top lives in TransparentWindow.jsx.
+static const int WindowBlurRadius = 30;
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -23,10 +36,9 @@
 
   [super applicationDidFinishLaunching:notification];
 
-  // RCTAppDelegate builds a standard titled, opaque window. SwiftUI got this
-  // from `.windowStyle(.hiddenTitleBar)` plus the visual-effect background;
-  // in AppKit it has to be set by hand. Without this the window paints its own
-  // opaque backdrop and NSVisualEffectView has nothing to blend with.
+  // RCTAppDelegate builds a standard titled, opaque window. For the glass look
+  // it has to be clear, with the content running under a transparent
+  // titlebar; otherwise the window paints its own opaque backdrop.
   NSWindow *window = self.window;
   window.styleMask |= NSWindowStyleMaskFullSizeContentView;
   window.titlebarAppearsTransparent = YES;
@@ -34,10 +46,14 @@
   window.opaque = NO;
   window.backgroundColor = [NSColor clearColor];
 
-  // The React root view is opaque by default, which would sit on top of the
-  // blur. Clearing it lets `.behindWindow` reach the desktop.
+  // The React root view is opaque too. On macOS it *draws* its
+  // `backgroundColor` (RN sets it to windowBackgroundColor), so clearing the
+  // layer colour alone isn't enough — the window then shows solid cream.
   window.contentView.wantsLayer = YES;
   window.contentView.layer.backgroundColor = [NSColor clearColor].CGColor;
+  [(id)window.contentView setBackgroundColor:[NSColor clearColor]];
+
+  CGSSetWindowBackgroundBlurRadius(CGSMainConnectionID(), (uint32_t)window.windowNumber, WindowBlurRadius);
 
   // Closing the window (red button / ⌘W) only hides it, so the React tree, the
   // loaded data and the audio player stay alive and reopening is instant.

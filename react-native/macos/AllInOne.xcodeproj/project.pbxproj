@@ -12,8 +12,6 @@
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		5D1D14C5615BDE89677704A5 /* SidecarServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */; };
-		79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */; };
-		990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */; };
 		9C56D442527F143851522FDA /* libPods-AllInOne-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7A7A288CDBC43DC190B35 /* libPods-AllInOne-macOS.a */; };
 		A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */; };
 		A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */; };
@@ -33,7 +31,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VisualEffectBackgroundManager.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* AllInOne.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllInOne.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17ABD8ECD90521D405E4146A /* Pods-AllInOne-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllInOne-macOS.debug.xcconfig"; path = "Target Support Files/Pods-AllInOne-macOS/Pods-AllInOne-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		261EC1AB6F033A60773A3AC4 /* SidecarServer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SidecarServer.h; sourceTree = "<group>"; };
@@ -65,7 +62,6 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F9AEE3B0229BDE171BFD0BFD /* SidecarServer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SidecarServer.m; sourceTree = "<group>"; };
 		FA8B636D4C8DC87B5ACBABB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectBackground.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,8 +103,6 @@
 				514201562437B4B40078DB4F /* Info.plist */,
 				514201572437B4B40078DB4F /* main.m */,
 				514201592437B4B40078DB4F /* AllInOne.entitlements */,
-				FE8FD93628865810AA46B7E5 /* VisualEffectBackground.swift */,
-				0A039A6F4B75D1F3775D06AD /* VisualEffectBackgroundManager.m */,
 				A1B2C3D4000100FDA0DE0001 /* FolderPicker.swift */,
 				A1B2C3D4000200FDA0DE0002 /* FolderPicker.m */,
 				A1B2C3D4000500FDA0DE0005 /* ContextMenu.swift */,
@@ -409,8 +403,6 @@
 			files = (
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
-				79FCEEF07207716C27E9DF30 /* VisualEffectBackground.swift in Sources */,
-				990171D020C0C38C9607F68E /* VisualEffectBackgroundManager.m in Sources */,
 				A1B2C3D4000300FDA0DE0003 /* FolderPicker.swift in Sources */,
 				A1B2C3D4000400FDA0DE0004 /* FolderPicker.m in Sources */,
 				A1B2C3D4000700FDA0DE0007 /* ContextMenu.swift in Sources */,
