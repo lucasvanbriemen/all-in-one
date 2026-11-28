@@ -7,7 +7,7 @@ import {SidebarApplication} from './SidebarApplication';
 import {SidebarNowPlaying} from '../music/SidebarNowPlaying';
 import {api} from '../api';
 
-function shouldBeVisable(item) {
+function shouldBeVisible(item) {
   const currentPlatform = Platform.OS.toLowerCase();
 
   const platforms = (item.allowed_platforms || []).map(p => p.toLowerCase());
@@ -15,22 +15,12 @@ function shouldBeVisable(item) {
 }
 
 export function Sidebar() {
-  const [items, setItems] = useState([]);
+  const {config = {}, allowed_platforms = {}} = useApi('/meta_data').data || {};
+  const items = Object.entries(config).filter(([app]) =>
+    shouldBeVisible({allowed_platforms: allowed_platforms[app]})
+  );
 
   const width = 240;
-
-  useEffect(() => {
-    api.get('/meta_data').then(data => {
-      const allowedApps = {};
-      for (const app in data.config) {
-        if (shouldBeVisable({allowed_platforms: data.allowed_platforms[app]})) {
-          allowedApps[app] = data.config[app];
-        }
-      }
-
-      setItems(allowedApps);
-    })
-  }, []);
 
   return (
     // The negative margin plus padding leaves room above the panel for the
