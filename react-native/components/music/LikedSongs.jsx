@@ -36,22 +36,18 @@ const createStyles = colors => StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.onSurface
   },
   subheading: {
     fontSize: 16,
-    color: colors.onSurfaceVariant,
     marginVertical: 8
   },
   playAllButton: {
-    backgroundColor: colors.primaryContainer,
     padding: 12,
     borderRadius: 100,
     alignItems: 'center',
     marginVertical: 16,
  },
   playAllButtonText: {
-    color: colors.onPrimaryContainer,
     fontWeight: 'bold',
   },
   details: {

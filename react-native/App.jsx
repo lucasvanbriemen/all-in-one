@@ -16,14 +16,12 @@ import {Sidebar} from './components/sidebar/Sidebar';
 import {SnowCap} from './components/seasonal/SnowCap';
 import {StringLights} from './components/seasonal/StringLights';
 import {TransparentWindow} from './components/TransparentWindow';
-import {withAlpha} from './components/theme';
 import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
 import {LightsPage} from './components/lights/LightsPage';
 import {SearchModal} from './components/home/SearchModal';
-import { useColor } from './components/theme';
 
 const APPLICATIONS = {
   email: EmailPage,

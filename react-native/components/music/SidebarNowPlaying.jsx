@@ -64,8 +64,6 @@ const createStyles = colors => StyleSheet.create({
     marginBottom: 12,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: withAlpha(colors.onSurface, 0.07),
-    backgroundColor: withAlpha(colors.onSurface, 0.05),
   },
   info: {
     flex: 1,
@@ -80,7 +78,6 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 6,
   },
   artworkEmpty: {
-    backgroundColor: withAlpha(colors.onSurface, 0.1),
   },
   text: {
     flex: 1,
@@ -89,11 +86,9 @@ const createStyles = colors => StyleSheet.create({
   title: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.onSurface,
   },
   artist: {
     fontSize: 11,
-    color: colors.onSurfaceVariant,
   },
   control: {
     width: 30,
@@ -103,6 +98,5 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
   },
   controlPressed: {
-    backgroundColor: withAlpha(colors.onSurface, 0.1),
   },
 });

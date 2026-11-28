@@ -30,7 +30,6 @@ export function ReminderCard() {
 const createStyles = colors => StyleSheet.create({
   reminders: {
     flex: 0,
-    backgroundColor: colors.surfaceAt2,
     padding: 16,
     borderRadius: 16,
   },
@@ -38,10 +37,8 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: colors.onSurface,
   },
   noReminders: {
     fontStyle: 'italic',
-    color: colors.onSurfaceVariant,
   }
 });

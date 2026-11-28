@@ -121,7 +121,6 @@ const createStyles = colors => StyleSheet.create({
   track: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.outlineVariant,
     overflow: 'visible',
   },
   fill: {
@@ -129,13 +128,10 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 4,
   },
   fillOnTrack: {
-    backgroundColor: colors.success,
   },
   fillAhead: {
-    backgroundColor: colors.warning,
   },
   fillOver: {
-    backgroundColor: colors.error,
   },
   marker: {
     position: 'absolute',
@@ -143,14 +139,11 @@ const createStyles = colors => StyleSheet.create({
     width: 2,
     height: 14,
     marginLeft: -1,
-    backgroundColor: colors.onSurface,
   },
   caption: {
     fontSize: 12,
-    color: colors.outline,
   },
   content: {
-    backgroundColor: colors.surfaceAt2,
     padding: 16,
     borderRadius: 16,
     flex: 1,
@@ -162,28 +155,22 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
   },
   rowEven: {
-    ...surfaceStyle(colors),
   },
   title: {
-    color: colors.onSurfaceVariant,
     fontSize: 16,
   },
   number: {
-    color: colors.onSurface,
     fontSize: 16,
   },
   titleHighlight: {
-    color: colors.primary,
     fontWeight: 'bold',
   },
   overlay: {
-    backgroundColor: colors.surfaceAt2,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   overlayText: {
-    color: colors.onSurface,
     fontSize: 18,
     fontWeight: 'bold',
   },

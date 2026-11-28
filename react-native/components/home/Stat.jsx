@@ -27,17 +27,13 @@ const createStyles = colors => StyleSheet.create({
   compact: { flexBasis: '45%', flexGrow: 1, padding: 12 },
   compactLabel: { fontSize: 16 },
   mediumContainer: {
-    ...surfaceStyle(colors, {variant: 'tinted', tone: 'warningContainer'}),
     borderWidth: 2,
   },
   highContainer: {
-    ...surfaceStyle(colors, {variant: 'tinted', tone: 'errorContainer'}),
     borderWidth: 2,
   },
   content: {
-    backgroundColor: colors.surfaceAt2,
     borderWidth: 2,
-    borderColor: colors.outlineVariant,
     padding: 16,
     borderRadius: 16,
     flex: 1,
@@ -45,10 +41,8 @@ const createStyles = colors => StyleSheet.create({
   value: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: colors.onSurfaceVariant,
   },
   label: {
     fontSize: 24,
-    color: colors.outline,
   },
 });

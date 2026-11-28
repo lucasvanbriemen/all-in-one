@@ -302,13 +302,10 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
   },
   terminalTabActive: {
-    backgroundColor: colors.primaryContainer,
   },
   terminalTabText: {
-    color: colors.onSurface,
   },
   terminalTabActiveText: {
-    color: colors.onPrimaryContainer,
   },
   terminalPanes: {
     flex: 1,
@@ -332,7 +329,6 @@ const createStyles = colors => StyleSheet.create({
     ...surfaceStyle(colors, {variant: 'subtle'})
   },
   openedFileText: {
-    color: colors.onSurface,
   },
   openedFileActiveText: {
     color: colors.onPrimaryContainer,
@@ -344,7 +340,6 @@ const createStyles = colors => StyleSheet.create({
   },
   noProjectRootText: {
     fontSize: 32,
-    color: colors.onSurfaceVariant,
     textAlign: 'center',
     fontWeight: 'bold',
     opacity: 0.75,

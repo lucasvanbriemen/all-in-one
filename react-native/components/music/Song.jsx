@@ -58,11 +58,9 @@ const createStyles = colors => StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: colors.onSurface,
   },
   artist: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
   },
   image: {
     width: 32,
@@ -70,7 +68,6 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   evenBackground: {
-    backgroundColor: colors.surfaceAt4,
   },
   textContainer: {
     flex: 1,
@@ -78,10 +75,8 @@ const createStyles = colors => StyleSheet.create({
   likeButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: colors.surfaceAt1,
   },
   isLiked: {
-    backgroundColor: colors.secondary,
   },
   pressable: {
     flex: 1,
@@ -91,6 +86,5 @@ const createStyles = colors => StyleSheet.create({
   },
   rightLabel: {
     fontSize: 14,
-    color: colors.outline,
   },
 });

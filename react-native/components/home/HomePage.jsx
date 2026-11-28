@@ -95,7 +95,6 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginTop: 16,
-    color: colors.onSurface
   },
   moneyColumn: {
     flex: 1,
@@ -105,11 +104,9 @@ const createStyles = colors => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: colors.onSurface,
   },
   empty: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
   },
   mainContent: {
     flex: 1,

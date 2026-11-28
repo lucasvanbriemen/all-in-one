@@ -220,15 +220,12 @@ function EmailActions({emailId, onDone, styles}) {
 
 const createStyles = colors => StyleSheet.create({
   notification: {
-    backgroundColor: colors.surfaceAt2,
     padding: 16,
     borderRadius: 16,
     marginBottom: 8,
   },
   notificationExpanded: {
     borderWidth: 1,
-    borderColor: colors.primary,
-    borderTopColor: colors.primary,
   },
   row: {
     flexDirection: 'row',
@@ -246,7 +243,6 @@ const createStyles = colors => StyleSheet.create({
     flexShrink: 1,
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.onSurface,
   },
   badge: {
     minWidth: 22,
@@ -254,23 +250,18 @@ const createStyles = colors => StyleSheet.create({
     paddingVertical: 1,
     borderRadius: 11,
     alignItems: 'center',
-    backgroundColor: colors.primaryContainer,
   },
   badgeText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: colors.onPrimaryContainer,
   },
   sender: {
     fontWeight: '600',
-    color: colors.onSurface,
   },
   body: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
   },
   accent: {
-    color: colors.primary,
   },
   actions: {
     marginTop: 12,
@@ -281,11 +272,9 @@ const createStyles = colors => StyleSheet.create({
   },
   hint: {
     fontSize: 13,
-    color: colors.outline,
   },
   error: {
     fontSize: 13,
-    color: colors.error,
   },
   replyRow: {
     flexDirection: 'row',
@@ -295,28 +284,22 @@ const createStyles = colors => StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.outline,
     borderRadius: 8,
     padding: 8,
-    color: colors.onSurface,
   },
   button: {
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    backgroundColor: colors.surfaceVariant,
   },
   buttonText: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
   },
   primaryButton: {
-    backgroundColor: colors.primaryContainer,
   },
   primaryButtonText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.onPrimaryContainer,
   },
 });

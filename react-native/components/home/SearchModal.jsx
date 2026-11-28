@@ -264,8 +264,6 @@ const createStyles = colors => StyleSheet.create({
     borderBottomRightRadius: 16,
   },
   modal: {
-    backgroundColor: colors.surfaceAt3,
-    boxShadow: '0 0 190px 160px rgba(0,0,0,0.5)',
     margin: 20,
     width: '50%',
     height: '50%',
@@ -274,8 +272,6 @@ const createStyles = colors => StyleSheet.create({
 
   input: {
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
-    color: colors.onSurface,
     borderRadius: 32,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
@@ -294,22 +290,16 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   resultEven: {
-    backgroundColor: colors.surfaceAt2,
   },
   resultFocused: {
-    backgroundColor: colors.primaryContainer,
-    color: colors.onPrimaryContainer,
   },
   resultTitle: {
     fontWeight: 'bold',
-    color: colors.onSurface,
   },
   resultSubtitle: {
-    color: colors.outline,
   },
   mobileSheet: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.surfaceAt3,
     paddingHorizontal: 12,
   },
   mobileHeader: {
@@ -321,15 +311,12 @@ const createStyles = colors => StyleSheet.create({
   mobileInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
-    color: colors.onSurface,
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
   },
   cancel: {
-    color: colors.primary,
     fontSize: 16,
   },
   mobileResults: {

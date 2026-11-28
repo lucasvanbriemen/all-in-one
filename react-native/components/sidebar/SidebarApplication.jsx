@@ -32,8 +32,6 @@ const createStyles = colors => StyleSheet.create({
   // On the translucent sidebar an opaque card would block the blur, so the
   // group is a faint see-through lift instead of a solid surface level.
   appWrapper: {
-    backgroundColor: withAlpha(colors.onSurface, 0.05),
-    borderColor: withAlpha(colors.onSurface, 0.07),
     borderWidth: 1,
     padding: 8,
     borderRadius: 16,

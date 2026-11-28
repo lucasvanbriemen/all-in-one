@@ -38,17 +38,14 @@ const createStyles = colors => StyleSheet.create({
     padding: 8,
     flex: 1,
     borderRadius: 8,
-    color: colors.onSurface,
-    backgroundColor: colors.surfaceAt1,
   },
-  placeholder: {color: colors.outline},
+  placeholder: {
+  },
   button: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 100,
-    backgroundColor: colors.primaryContainer,
   },
   buttonText: {
-    color: colors.onPrimaryContainer,
   },
 });

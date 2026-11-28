@@ -194,7 +194,6 @@ const createStyles = colors => StyleSheet.create({
   mention: {
     color: colors.primary,
     fontWeight: '600',
-    backgroundColor: withAlpha(colors.primary, 0.12),
   },
   // Slack marks mentions of you in yellow; the warning tone is the theme's yellow.
   mentionMe: {
@@ -208,10 +207,8 @@ const createStyles = colors => StyleSheet.create({
   inlineCode: {
     fontFamily: MONO,
     fontSize: 13,
-    backgroundColor: withAlpha(colors.onSurface, 0.1),
   },
   codeBlock: {
-    backgroundColor: withAlpha(colors.onSurface, 0.08),
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 6,

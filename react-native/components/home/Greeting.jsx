@@ -34,11 +34,9 @@ const createStyles = colors => StyleSheet.create({
   greeting: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: colors.onSurface
   },
   date: {
     fontSize: 14,
-    color: colors.outline
   },
   decorated: {
     marginTop: 16,

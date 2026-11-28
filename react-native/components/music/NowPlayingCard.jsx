@@ -80,8 +80,6 @@ const createStyles = colors => StyleSheet.create({
   },
   content: {
     paddingHorizontal: 16,
-    ...surfaceStyle(colors),
-    backgroundColor: colors.surfaceAt2,
     borderRadius: 16,
     gap: 16,
 
@@ -91,11 +89,9 @@ const createStyles = colors => StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: colors.onSurface,
   },
   artist: {
     fontSize: 16,
-    color: colors.onSurfaceVariant,
   },
   image: {
     width: 75,
@@ -112,17 +108,13 @@ const createStyles = colors => StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    ...surfaceStyle(colors, {variant: 'accent'}),
     borderRadius: 100,
   },
   controlInactive: {
-    ...surfaceStyle(colors, {variant: 'subtle'}),
     borderRadius: 100,
   },
   controlInactiveText: {
-    color: colors.onSurfaceVariant,
   },
   controlText: {
-    color: colors.onPrimaryContainer,
   },
 });

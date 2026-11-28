@@ -11,7 +11,6 @@ import {api} from '../api';
 
 export function Sidebar() {
   const [items, setItems] = useState([]);
-  const styles = createStyles();
 
   const width = 240;
 
@@ -40,7 +39,7 @@ export function Sidebar() {
         <SnowCap maxHeight={11} inset={8} />
         <View style={styles.row}>
           <View>
-            <LogoIcon size={24} color={primary} />
+            <LogoIcon size={24} color="red" />
             <SantaHat size={24} />
           </View>
           <Text style={styles.name}>All in One</Text>
@@ -58,7 +57,7 @@ export function Sidebar() {
   );
 }
 
-const createStyles = colors => StyleSheet.create({
+const styles = StyleSheet.create({
   sidebar: {
     flex: 1,
     paddingTop: 16,
@@ -76,7 +75,6 @@ const createStyles = colors => StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: 600,
-    color: colors.onSurface,
   },
   scroll: {
     flex: 1,
