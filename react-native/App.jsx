@@ -11,11 +11,8 @@ import {MobileNavigation} from './components/sidebar/MobileNavigation';
 import {MoneyPage} from './components/money/MoneyPage';
 import {MusicPage} from './components/music/MusicPage';
 import {NowPlayingBar} from './components/music/NowPlayingBar';
-import {SeasonalRoot} from './components/seasonal/SeasonalRoot';
 import {Sidebar} from './components/sidebar/Sidebar';
 import {SnowCap} from './components/seasonal/SnowCap';
-import {StringLights} from './components/seasonal/StringLights';
-import {TransparentWindow} from './components/TransparentWindow';
 import {player} from './components/music/player';
 import {openSource, push} from './components/push';
 import {useCompactLayout} from './components/useCompactLayout';
@@ -109,35 +106,33 @@ function AppShell() {
   const compact = useCompactLayout();
 
   return (
-    <TransparentWindow>
-      <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
-        {!compact && <Sidebar />}
+    <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
+      {!compact && <Sidebar />}
 
-        <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
-          {!compact && <SnowCap maxHeight={14} inset={18} />}
-          <ActiveApplication />
-        </View>
+      <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
+        <ActiveApplication />
+      </View>
 
-        {compact && (
-          <>
-            <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
-              <NowPlayingBar />
-              <MobileNavigation />
-            </View>
-          </>
-        )}
-      </SafeAreaView>
+      {compact && (
+        <>
+          <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
+            <NowPlayingBar />
+            <MobileNavigation />
+          </View>
+        </>
+      )}
 
-      <SearchModal />
-    </TransparentWindow>
+    <SearchModal />
+
+    </SafeAreaView>
   );
 }
 
 const createStyles = () => StyleSheet.create({
-  // No gutters around the sidebar; the content card brings its own margin.
   appWrapper: {
     flex: 1,
     flexDirection: 'row',
+    backgroundColor: 'red',
   },
   // On iOS SafeAreaView already adds the notch/status-bar inset on top of this
   // padding; the extra 48 only clears the transparent titlebar on macOS/web.
