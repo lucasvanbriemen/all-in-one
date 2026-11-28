@@ -1,5 +1,4 @@
-import {Platform, useColorScheme} from 'react-native';
-import {useMemo} from 'react';
+import {useColorScheme} from 'react-native';
 
 /**
  * Material 3 SchemeContent at medium contrast (0.5), generated with
@@ -14,7 +13,7 @@ import {useMemo} from 'react';
  * success (#00897B, teal) is an unharmonized custom colour so it stays
  * distinct from the greens; warning (#F9A825) is harmonized toward the seed.
  */
-const customColors = {
+const COLORS = {
   'primary': {dark: 'rgb(198 228 200)', light: 'rgb(34 60 40)'},
   'on-primary': {dark: 'rgb(17 43 25)', light: 'rgb(255 255 255)'},
   'primary-container': {dark: 'rgb(123 152 127)', light: 'rgb(72 99 77)'},
@@ -58,76 +57,11 @@ const customColors = {
   'surface-at-3': {dark: 'rgb(39 40 39)', light: 'rgb(233 232 230)'},
   'surface-at-4': {dark: 'rgb(50 51 49)', light: 'rgb(222 221 218)'},
   'surface-at-5': {dark: 'rgb(61 62 60)', light: 'rgb(210 209 207)'},
-  // starred: {dark: 'rgb(238 222 108)', light: 'rgb(248 255 38)'},
 };
 
-/** `on-surface` / `surface-at-1` are awkward to read off an object literal. */
-function camelize(name) {
-  return name.replace(/-(.)/g, (_, character) => character.toUpperCase());
-}
-
-function resolve(colors, scheme) {
-  const resolved = Object.fromEntries(
-    Object.entries(colors).map(([name, value]) => [
-      camelize(name),
-      value[scheme],
-    ]),
-  );
-
-  // Not a colour: lets components pick light/dark specifics without
-  // threading `useColorScheme()` through.
-  resolved.scheme = scheme;
-
-  return resolved;
-}
-
-export function useTheme() {
-  const scheme = useColorScheme() ?? 'light';
-
-  return useMemo(() => resolve(customColors, scheme), [scheme]);
-}
-
-export function useThemedStyles(createStyles) {
-  const colors = useTheme();
-
-  return useMemo(() => createStyles(colors), [createStyles, colors]);
-}
-
-export function withAlpha(color, alpha) {
-  if (!color) {
-    return 'transparent';
-  }
-
-  const parts = String(color).match(/[\d.]+/g);
-
-  if (!parts || parts.length < 3) {
-    return color;
-  }
-
-  const [red, green, blue] = parts;
-  const existing = parts.length > 3 ? Number(parts[3]) : 1;
-
-  return `rgba(${red}, ${green}, ${blue}, ${alpha * existing})`;
-}
-
-const SURFACE_VARIANTS = {
-  surface: {ios: 'surfaceAt2', mac: 'surfaceAt3'},
-  subtle: {ios: 'surfaceAt1', mac: 'surfaceAt4'},
-  tinted: {ios: 'surfaceAt1', mac: 'surfaceAt1'},
-  accent: {ios: 'primaryContainer', mac: 'primaryContainer'},
-  primaryContainer: {ios: 'primaryContainer', mac: 'primaryContainer'},
-};
-
-export function surfaceStyle(colors, options = {}) {
-  const {variant = 'surface'} = options;
-  const levels = SURFACE_VARIANTS[variant] ?? SURFACE_VARIANTS.surface;
-  const tone = options.tone ?? (Platform.OS === 'ios' ? levels.ios : levels.mac);
-  const backgroundColor = colors[tone] ?? colors.surface;
-
-  return {
-    backgroundColor,
-    borderWidth: 0,
-    borderColor: backgroundColor,
-    borderTopColor: backgroundColor,
-  };
+export function useColor(colorName = 'surface') {
+  const themeToApply = useColorScheme() ?? 'light';
+  
+  const colorConfig = COLORS[colorName];
+  return colorConfig[themeToApply];
 }
