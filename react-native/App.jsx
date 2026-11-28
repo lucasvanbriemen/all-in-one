@@ -106,7 +106,7 @@ function AppShell() {
   const compact = useCompactLayout();
 
   return (
-    <SafeAreaView style={[styles.appWrapper, compact && styles.compactWrapper, compact && styles.edgeWrapper]}>
+    <SafeAreaView style={[styles.appWrapper]}>
       {!compact && <Sidebar />}
 
       <View style={[styles.content, compact && styles.compactContent, compact && styles.edgeContent]}>
