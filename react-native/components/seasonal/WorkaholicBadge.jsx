@@ -1,5 +1,4 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {useSeason} from './useSeason';
@@ -14,7 +13,7 @@ const DAYS = {
 
 /** Shows up on the Code page on the days you really shouldn't be on it. */
 export function WorkaholicBadge() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {date, decorated} = useSeason();
   const text = decorated && DAYS[`${date.getMonth()}-${date.getDate()}`];
   if (!text) return null;

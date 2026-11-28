@@ -1,5 +1,4 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import {useTheme, useThemedStyles} from '../theme';
 import {useEffect, useState} from 'react';
 
 import {LogoIcon} from '../icons';
@@ -12,8 +11,7 @@ import {api} from '../api';
 
 export function Sidebar() {
   const [items, setItems] = useState([]);
-  const styles = useThemedStyles(createStyles);
-  const {primary} = useTheme();
+  const styles = createStyles();
 
   const width = 240;
 

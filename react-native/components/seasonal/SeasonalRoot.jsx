@@ -2,7 +2,7 @@ import {Animated, Platform, Pressable, StyleSheet, Text, View} from 'react-nativ
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Svg, {Defs, RadialGradient, Rect, Stop} from 'react-native-svg';
 import {dismissToast, startBlizzard, useSeasonalState} from './store';
-import {surfaceStyle, useThemedStyles} from '../theme';
+import {surfaceStyle, } from '../theme';
 
 import {FireplaceBackdrop} from './Fireplace';
 import {Fireworks} from './Fireworks';
@@ -124,7 +124,7 @@ function CozyGlow({size}) {
 }
 
 function Toast() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const toast = useSeasonalState(s => s.toast);
   const compact = useCompactLayout();
   const appear = useMemo(() => new Animated.Value(0), []);

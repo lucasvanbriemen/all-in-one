@@ -1,7 +1,6 @@
 import {Animated, Easing, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import Svg, {Circle, Path, Rect} from 'react-native-svg';
-import {surfaceStyle, useThemedStyles} from '../theme';
 import {grinchKey, ornamentSpots, useSeason} from './useSeason';
 import {getPersisted, playEffect, setPersisted, showToast} from './store';
 import {useBottomInset} from '../useCompactLayout';
@@ -12,7 +11,7 @@ import {useBottomInset} from '../useCompactLayout';
  * all and it comes back, with fireworks.
  */
 export function GrinchNote() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {grinchActive, year} = useSeason();
   const bottomInset = useBottomInset();
   if (!grinchActive) return null;

@@ -1,5 +1,4 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {surfaceStyle, useThemedStyles} from '../theme';
 
 import React from 'react';
 import {SnowCap} from './SnowCap';
@@ -12,7 +11,7 @@ import {useSeason} from './useSeason';
  * Black Friday and Christmas promo mail. Nice: the people you actually talk to.
  */
 export function NaughtyNiceCard() {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const {set} = useAppContext();
   const [list] = useSeasonalData('/seasonal/naughty_nice');
 

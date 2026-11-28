@@ -1,6 +1,6 @@
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { surfaceStyle, useThemedStyles } from '../theme';
+import { surfaceStyle, dStyles } from '../theme';
 
 import {NavigationBlur} from './NavigationBlur';
 import { api } from '../api';
@@ -14,7 +14,7 @@ export function MobileNavigation() {
 
   const currentPlatform = Platform.OS;
 
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
   const [config, setConfig] = useState({});
   useEffect(() => {
     api.get('/meta_data').then(data => {

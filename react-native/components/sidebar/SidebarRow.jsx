@@ -1,5 +1,4 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
-import {useTheme, useThemedStyles} from '../theme';
 import {useAppContext} from '../../context/AppContext';
 
 import {Icon} from '../icons';
@@ -14,8 +13,7 @@ function onPress(row, set, app) {
 }
 
 export function SidebarRow({row, app}) {
-  const styles = useThemedStyles(createStyles);
-  const {onPrimaryContainer, onSurface} = useTheme();
+  const styles = createStyles();
   const {get, set} = useAppContext();
 
   return (

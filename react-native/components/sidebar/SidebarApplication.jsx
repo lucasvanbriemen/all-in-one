@@ -1,10 +1,9 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {useThemedStyles, withAlpha} from '../theme';
 
 import {SidebarRow} from './SidebarRow';
 
 export function SidebarApplication({item, app}) {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   return (
     <View style={styles.appWrapper}>
