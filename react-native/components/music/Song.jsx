@@ -30,7 +30,7 @@ export function Song({song, isEven, onClick, rightLabel = null, compact}) {
 
       {!rightLabel && (
         <Pressable style={[styles.likeButton, isLiked && styles.isLiked]} onPress={toggleLike}>
-          <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? colors.onSecondary : colors.onSurfaceVariant} />
+          <Icon name={isLiked ? "heart" : "heart-outline"} size={16} color={isLiked ? "red" : "red"} />
         </Pressable>
       )}
       {rightLabel && (

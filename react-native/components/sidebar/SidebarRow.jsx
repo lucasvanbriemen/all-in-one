@@ -18,7 +18,7 @@ export function SidebarRow({row, app}) {
 
   return (
     <Pressable onPress={() => onPress(row, set, app)} style={[styles.row, isSelected(row, get, app) && styles.selectedRow]}>
-      <Icon name={row.path} size={16} color={isSelected(row, get, app) ? onPrimaryContainer : onSurface} />
+      <Icon name={row.path} size={16} color={isSelected(row, get, app) ? "red" : "red"} />
       <Text numberOfLines={1} style={[styles.label, isSelected(row, get, app) && styles.labelSelected]}>
         {row.name}
       </Text>
@@ -34,18 +34,13 @@ const createStyles = colors => StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     borderWidth: 2,
-    borderColor: 'transparent',
   },
   selectedRow: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primaryContainer,
   },
   label: {
     fontSize: 14,
-    color: colors.onSurfaceVariant,
     flexShrink: 0,
   },
   labelSelected: {
-    color: colors.onPrimaryContainer
   },
 });
