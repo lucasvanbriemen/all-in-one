@@ -7,6 +7,13 @@ import {SidebarApplication} from './SidebarApplication';
 import {SidebarNowPlaying} from '../music/SidebarNowPlaying';
 import {api} from '../api';
 
+function shouldBeVisable(item) {
+  const currentPlatform = Platform.OS.toLowerCase();
+
+  const platforms = (item.allowed_platforms || []).map(p => p.toLowerCase());
+  return platforms.includes(currentPlatform);
+}
+
 export function Sidebar() {
   const [items, setItems] = useState([]);
 
@@ -14,13 +21,9 @@ export function Sidebar() {
 
   useEffect(() => {
     api.get('/meta_data').then(data => {
-      const currentPlatform = Platform.OS.toLowerCase();
-
-      // Keep only the apps allowed on the current platform
       const allowedApps = {};
       for (const app in data.config) {
-        const platforms = (data.allowed_platforms[app] || []).map(p => p.toLowerCase());
-        if (platforms.includes(currentPlatform)) {
+        if (shouldBeVisable({allowed_platforms: data.allowed_platforms[app]})) {
           allowedApps[app] = data.config[app];
         }
       }
