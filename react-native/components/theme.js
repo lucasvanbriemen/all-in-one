@@ -16,42 +16,62 @@ import {useColorScheme} from 'react-native';
 const COLORS = {
   'primary': {dark: 'rgb(198 228 200)', light: 'rgb(34 60 40)'},
   'on-primary': {dark: 'rgb(17 43 25)', light: 'rgb(255 255 255)'},
+
   'primary-container': {dark: 'rgb(123 152 127)', light: 'rgb(72 99 77)'},
   'on-primary-container': {dark: 'rgb(0 0 0)', light: 'rgb(255 255 255)'},
+
   'secondary': {dark: 'rgb(211 223 213)', light: 'rgb(46 57 50)'},
   'on-secondary': {dark: 'rgb(30 40 34)', light: 'rgb(255 255 255)'},
+
   'secondary-container': {dark: 'rgb(136 148 139)', light: 'rgb(100 112 104)'},
   'on-secondary-container': {dark: 'rgb(0 0 0)', light: 'rgb(255 255 255)'},
+
   'tertiary': {dark: 'rgb(200 223 247)', light: 'rgb(34 56 75)'},
   'on-tertiary': {dark: 'rgb(16 40 57)', light: 'rgb(255 255 255)'},
+
   'tertiary-container': {dark: 'rgb(125 147 169)', light: 'rgb(73 95 115)'},
   'on-tertiary-container': {dark: 'rgb(0 0 0)', light: 'rgb(255 255 255)'},
+
   'error': {dark: 'rgb(255 210 204)', light: 'rgb(116 0 6)'},
   'on-error': {dark: 'rgb(84 0 3)', light: 'rgb(255 255 255)'},
+
   'error-container': {dark: 'rgb(255 84 73)', light: 'rgb(207 44 39)'},
   'on-error-container': {dark: 'rgb(0 0 0)', light: 'rgb(255 255 255)'},
+
   'success': {dark: 'rgb(112 216 200)', light: 'rgb(0 107 95)'},
   'on-success': {dark: 'rgb(0 55 49)', light: 'rgb(255 255 255)'},
+
   'success-container': {dark: 'rgb(0 80 72)', light: 'rgb(141 245 228)'},
   'on-success-container': {dark: 'rgb(141 245 228)', light: 'rgb(0 32 28)'},
+
   'warning': {dark: 'rgb(244 191 42)', light: 'rgb(119 90 0)'},
   'on-warning': {dark: 'rgb(63 46 0)', light: 'rgb(255 255 255)'},
+
   'warning-container': {dark: 'rgb(90 67 0)', light: 'rgb(255 223 153)'},
   'on-warning-container': {dark: 'rgb(255 223 153)', light: 'rgb(37 26 0)'},
+
   'surface-tint': {dark: 'rgb(176 206 179)', light: 'rgb(74 101 79)'},
+
   'background': {dark: 'rgb(18 20 19)', light: 'rgb(251 249 247)'},
   'on-background': {dark: 'rgb(227 226 224)', light: 'rgb(27 28 27)'},
+
   'surface': {dark: 'rgb(18 20 19)', light: 'rgb(251 249 247)'},
   'on-surface': {dark: 'rgb(255 255 255)', light: 'rgb(16 17 16)'},
+
   'surface-variant': {dark: 'rgb(68 72 69)', light: 'rgb(225 227 223)'},
   'on-surface-variant': {dark: 'rgb(219 221 217)', light: 'rgb(52 55 52)'},
+
   'outline': {dark: 'rgb(176 179 175)', light: 'rgb(80 83 80)'},
   'outline-variant': {dark: 'rgb(142 145 141)', light: 'rgb(107 110 106)'},
+
   'shadow': {dark: 'rgb(0 0 0)', light: 'rgb(0 0 0)'},
   'scrim': {dark: 'rgb(0 0 0)', light: 'rgb(0 0 0)'},
+
   'inverse-surface': {dark: 'rgb(227 226 224)', light: 'rgb(48 49 47)'},
   'inverse-on-surface': {dark: 'rgb(41 42 41)', light: 'rgb(242 240 238)'},
+
   'inverse-primary': {dark: 'rgb(52 78 57)', light: 'rgb(176 206 179)'},
+
   'surface-at-1': {dark: 'rgb(7 8 7)', light: 'rgb(255 255 255)'},
   'surface-at-2': {dark: 'rgb(29 30 29)', light: 'rgb(245 243 241)'},
   'surface-at-3': {dark: 'rgb(39 40 39)', light: 'rgb(233 232 230)'},
