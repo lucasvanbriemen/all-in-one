@@ -32,7 +32,7 @@ export function Sidebar() {
   return (
     // The negative margin plus padding leaves room above the panel for the
     // seasonal snow drift, which the clipping would otherwise cut off.
-    <View style={{width, overflow: 'hidden', marginTop: -14, paddingTop: 14}}>
+    <View style={{width, overflow: 'hidden'}}>
       <View style={styles.sidebar}>
         <View style={styles.row}>
           <View>
