@@ -66,11 +66,9 @@ const createStyles = colors => StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: colors.onSurface,
   },
   artist: {
     fontSize: 11,
-    color: colors.onSurfaceVariant,
   },
   image: {
     width: 32,
@@ -85,7 +83,6 @@ const createStyles = colors => StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    ...surfaceStyle(colors, {variant: 'accent'}),
     borderRadius: 100,
   },
   controlPressed: {
@@ -93,6 +90,5 @@ const createStyles = colors => StyleSheet.create({
     transform: [{scale: 0.96}],
   },
   controlText: {
-    color: colors.onPrimaryContainer,
   },
 });

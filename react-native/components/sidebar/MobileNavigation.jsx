@@ -99,7 +99,7 @@ const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 48,
   },
-  sectionText: { color: colors.onSurfaceVariant, fontSize: 14 },
+  sectionText: { fontSize: 14 },
   tab: {
     flex: 1,
     minHeight: 48,
@@ -109,10 +109,7 @@ const createStyles = colors => StyleSheet.create({
     paddingHorizontal: 8,
   },
   tabText: {
-    color: colors.onSurfaceVariant,
     fontSize: 14,
     fontWeight: '600',
   },
-  selected: { ...surfaceStyle(colors, { variant: 'accent' }) },
-  selectedText: { color: colors.onPrimaryContainer },
 });

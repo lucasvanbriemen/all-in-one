@@ -133,12 +133,6 @@ const createStyles = () => StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: colorWithTransparency('surface', 0.25),
   },
-  // On iOS SafeAreaView already adds the notch/status-bar inset on top of this
-  // padding; the extra 48 only clears the transparent titlebar on macOS/web.
-  edgeWrapper: {padding: 0, paddingTop: Platform.OS === 'ios' ? 0 : 48, gap: 0},
-  // Compact (iOS, narrow windows) keeps content edge to edge and see-through.
-  edgeContent: {paddingTop: 0, paddingBottom: 0, paddingHorizontal: 16, borderRadius: 0, marginVertical: 0, marginRight: 0},
-  compactWrapper: { flexDirection: 'column', padding: 8, gap: 8 },
   compactContent: {
     paddingHorizontal: 12,
     minHeight: 0,
