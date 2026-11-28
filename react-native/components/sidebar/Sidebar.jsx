@@ -1,23 +1,22 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import {useEffect, useState} from 'react';
 
 import {LogoIcon} from '../icons';
 import {Platform} from 'react-native';
 import {SidebarApplication} from './SidebarApplication';
 import {SidebarNowPlaying} from '../music/SidebarNowPlaying';
-import {api} from '../api';
+import {useApi} from '../useApi';
 
-function shouldBeVisible(item) {
+function shouldBeVisible(allowedPlatforms) {
   const currentPlatform = Platform.OS.toLowerCase();
 
-  const platforms = (item.allowed_platforms || []).map(p => p.toLowerCase());
+  const platforms = (allowedPlatforms || []).map(p => p.toLowerCase());
   return platforms.includes(currentPlatform);
 }
 
 export function Sidebar() {
   const {config = {}, allowed_platforms = {}} = useApi('/meta_data').data || {};
   const items = Object.entries(config).filter(([app]) =>
-    shouldBeVisible({allowed_platforms: allowed_platforms[app]})
+    shouldBeVisible(allowed_platforms[app])
   );
 
   const width = 240;
@@ -35,7 +34,7 @@ export function Sidebar() {
         </View>
 
         <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
-          {Object.entries(items).map(([key, item]) => (
+          {items.map(([key, item]) => (
             <SidebarApplication key={key + item.app} item={item} app={key} />
           ))}
         </ScrollView>
