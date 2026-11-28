@@ -122,8 +122,7 @@ function AppShell() {
         </>
       )}
 
-    <SearchModal />
-
+      <SearchModal />
     </SafeAreaView>
   );
 }
