@@ -18,6 +18,7 @@ import {useCompactLayout} from './components/useCompactLayout';
 import {useKeyCommand} from './components/useKeyCommand';
 import {LightsPage} from './components/lights/LightsPage';
 import {SearchModal} from './components/home/SearchModal';
+import {colorWithTransparency} from './components/theme';
 
 const APPLICATIONS = {
   email: EmailPage,
@@ -130,7 +131,7 @@ const createStyles = () => StyleSheet.create({
   appWrapper: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'red',
+    backgroundColor: colorWithTransparency('surface', 0.25),
   },
   // On iOS SafeAreaView already adds the notch/status-bar inset on top of this
   // padding; the extra 48 only clears the transparent titlebar on macOS/web.

@@ -86,7 +86,8 @@ export function colorWithTransparency(colorName = 'surface', alpha = 1) {
   }
 
   const color = useColor(colorName);
-  return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+  const [r, g, b] = color.match(/\d+/g);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 export function useColor(colorName = 'surface') {
