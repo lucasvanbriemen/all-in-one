@@ -1,20 +1,6 @@
 import {Platform, useColorScheme} from 'react-native';
 import {useEffect, useMemo, useState} from 'react';
 
-/**
- * Shared palette.
- *
- * The colors come from the same endpoint the web apps theme themselves with
- * (`objects/theme.js` in ui-components), so this app can't drift from the
- * rest of the suite. That file writes the values into CSS custom properties;
- * React Native has no cascade, so components read them through `useTheme()`.
- *
- * This replaces the AppKit `PlatformColor` mapping that used to live in
- * `theme.native.js` — matching the shared palette is worth more than tracking
- * the user's macOS accent color, and one file now covers both builds.
- */
-const THEME_URL = 'https://components.lucasvanbriemen.nl/api/colors';
-
 const APPLY_CUSTOM_COLORS = true;
 
 /**
@@ -118,15 +104,7 @@ let palettePromise;
 let loadedColors = null;
 
 function loadColors() {
-  palettePromise ??= fetch(THEME_URL)
-    .then(response => response.json())
-    .catch(() => ({}))
-    .then(fetched => {
-      loadedColors = APPLY_CUSTOM_COLORS ? {...fetched, ...customColors, ...alphaSteps(customColors)} : fetched;
-      return loadedColors;
-    });
-
-  return palettePromise;
+    return APPLY_CUSTOM_COLORS
 }
 
 function resolve(colors, scheme) {
@@ -153,17 +131,7 @@ export function useTheme() {
       return;
     }
 
-    let cancelled = false;
-
-    loadColors().then(fetched => {
-      if (!cancelled) {
-        setColors(fetched);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
+    setColors(loadColors())
   }, []);
 
   return useMemo(() => resolve(colors, scheme), [colors, scheme]);
