@@ -1,11 +1,7 @@
 import {Platform, useColorScheme} from 'react-native';
-import {useEffect, useMemo, useState} from 'react';
-
-const APPLY_CUSTOM_COLORS = true;
+import {useMemo} from 'react';
 
 /**
- * Same escape hatch as the web version: applied on top of the fetched set.
- *
  * Material 3 SchemeContent at medium contrast (0.5), generated with
  * material-color-utilities from the two wall paints as palette sources, with
  * no hand-pinned roles:
@@ -65,46 +61,9 @@ const customColors = {
   // starred: {dark: 'rgb(238 222 108)', light: 'rgb(248 255 38)'},
 };
 
-/**
- * The endpoint also serves `-8` / `-12` steps of every colour (at 0.92 and
- * 0.88 alpha). Derive them for the overrides too, or they would keep the
- * suite's blue.
- */
-function alphaSteps(colors) {
-  const steps = {};
-
-  for (const [name, value] of Object.entries(colors)) {
-    for (const [suffix, alpha] of [['-8', 0.92], ['-12', 0.88]]) {
-      steps[name + suffix] = {
-        dark: value.dark.replace(')', ` / ${alpha})`),
-        light: value.light.replace(')', ` / ${alpha})`),
-      };
-    }
-  }
-
-  return steps;
-}
-
 /** `on-surface` / `surface-at-1` are awkward to read off an object literal. */
 function camelize(name) {
   return name.replace(/-(.)/g, (_, character) => character.toUpperCase());
-}
-
-/**
- * One request per launch, shared by every component that themes itself. The
- * palette is static per deploy, so there is nothing to invalidate.
- */
-let palettePromise;
-
-/**
- * The palette once it has landed. Components mounted after that start from
- * it, instead of rendering colourless first and re-rendering when the
- * (already resolved) promise calls back.
- */
-let loadedColors = null;
-
-function loadColors() {
-    return APPLY_CUSTOM_COLORS
 }
 
 function resolve(colors, scheme) {
@@ -124,17 +83,8 @@ function resolve(colors, scheme) {
 
 export function useTheme() {
   const scheme = useColorScheme() ?? 'light';
-  const [colors, setColors] = useState(() => loadedColors ?? {});
 
-  useEffect(() => {
-    if (loadedColors) {
-      return;
-    }
-
-    setColors(loadColors())
-  }, []);
-
-  return useMemo(() => resolve(colors, scheme), [colors, scheme]);
+  return useMemo(() => resolve(customColors, scheme), [scheme]);
 }
 
 export function useThemedStyles(createStyles) {
