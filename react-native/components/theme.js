@@ -93,21 +93,8 @@ export function useThemedStyles(createStyles) {
   return useMemo(() => createStyles(colors), [createStyles, colors]);
 }
 
-/**
- * Makes a palette colour translucent.
- *
- * The endpoint hands back CSS colour strings — `rgb(17 19 24)`, and for the
- * `-8`/`-12` steps `rgb(170 199 255 / 0.92)`. React Native renders both, but
- * neither can be dimmed without taking it apart first. This keeps faint
- * fills and hairlines on the shared palette: only the *opacity* is a design
- * constant, the colour always comes from the theme.
- *
- * Any alpha already on the token is multiplied through rather than discarded.
- */
 export function withAlpha(color, alpha) {
   if (!color) {
-    // useTheme() is empty until the fetch lands; a missing colour must not
-    // become an opaque black fill over the sidebar's blur.
     return 'transparent';
   }
 
@@ -123,17 +110,6 @@ export function withAlpha(color, alpha) {
   return `rgba(${red}, ${green}, ${blue}, ${alpha * existing})`;
 }
 
-/**
- * Solid surface levels per semantic variant. There is no translucency left in
- * these: on macOS the only see-through part of the app is the window's
- * sidebar material (see TransparentWindow.jsx), and everything inside the
- * opaque content card separates itself by stepping up the palette's surface
- * levels. iOS has no backdrop at all and keeps its own, flatter steps.
- *
- * `surface` is a card, `subtle` a region nested in one, `tinted` carries
- * status colour (usually with a `tone` override), `accent` and
- * `primaryContainer` are for controls and highlighted items.
- */
 const SURFACE_VARIANTS = {
   surface: {ios: 'surfaceAt2', mac: 'surfaceAt3'},
   subtle: {ios: 'surfaceAt1', mac: 'surfaceAt4'},
@@ -142,11 +118,6 @@ const SURFACE_VARIANTS = {
   primaryContainer: {ios: 'primaryContainer', mac: 'primaryContainer'},
 };
 
-/**
- * Background style for a variant, or for an explicit palette `tone`.
- * Borders are zeroed so callers that add a `borderWidth` of their own still
- * get a matching colour.
- */
 export function surfaceStyle(colors, options = {}) {
   const {variant = 'surface'} = options;
   const levels = SURFACE_VARIANTS[variant] ?? SURFACE_VARIANTS.surface;
