@@ -100,12 +100,12 @@ const createStyles = colors => StyleSheet.create({
   noProjectRootRow: {
     borderRadius: 16,
     padding: 16,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noProjectRootRowText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
     textAlign: 'center',
   },
   openFoler: {

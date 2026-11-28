@@ -267,7 +267,7 @@ const createStyles = colors => StyleSheet.create({
     borderWidth: 2,
   },
   activeChat: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
     borderWidth: 2,
   },
   chatName: {
@@ -275,7 +275,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurface,
   },
   activeChatName: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   loadMore: {
     textAlign: 'center',

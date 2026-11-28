@@ -36,7 +36,9 @@ const createStyles = colors => StyleSheet.create({
     borderWidth: 2,
   },
   content: {
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt2,
+    borderWidth: 2,
+    borderColor: colors.outlineVariant,
     padding: 16,
     borderRadius: 16,
     flex: 1,

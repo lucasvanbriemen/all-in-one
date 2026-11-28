@@ -114,5 +114,5 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: '600',
   },
   selected: { ...surfaceStyle(colors, { variant: 'accent' }) },
-  selectedText: { color: colors.onPrimary },
+  selectedText: { color: colors.onPrimaryContainer },
 });

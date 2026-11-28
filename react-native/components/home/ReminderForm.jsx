@@ -40,16 +40,16 @@ const createStyles = colors => StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     color: colors.onSurface,
-    ...surfaceStyle(colors, {variant: 'subtle'}),
+    backgroundColor: colors.surfaceAt1,
   },
   placeholder: {color: colors.outline},
   button: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 100,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   buttonText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
 });

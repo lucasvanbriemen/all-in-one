@@ -82,6 +82,7 @@ const createStyles = colors => StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt2,
     borderRadius: 16,
     gap: 16,
 
@@ -123,6 +124,6 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurfaceVariant,
   },
   controlText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
 });

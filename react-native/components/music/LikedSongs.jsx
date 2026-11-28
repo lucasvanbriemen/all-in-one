@@ -45,14 +45,14 @@ const createStyles = colors => StyleSheet.create({
     marginVertical: 8
   },
   playAllButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
     padding: 12,
     borderRadius: 100,
     alignItems: 'center',
     marginVertical: 16,
  },
   playAllButtonText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
     fontWeight: 'bold',
   },
   details: {

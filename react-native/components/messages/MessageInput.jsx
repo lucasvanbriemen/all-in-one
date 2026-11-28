@@ -332,7 +332,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   sendButtonIdle: {
     ...surfaceStyle(colors),
@@ -341,7 +341,7 @@ const createStyles = colors => StyleSheet.create({
     opacity: 0.7,
   },
   sendIcon: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   attachment: {
     flexDirection: 'row',

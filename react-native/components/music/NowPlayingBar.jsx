@@ -94,6 +94,6 @@ const createStyles = colors => StyleSheet.create({
     transform: [{scale: 0.96}],
   },
   controlText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
 });

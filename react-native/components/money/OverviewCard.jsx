@@ -151,7 +151,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.outline,
   },
   content: {
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt2,
     padding: 16,
     borderRadius: 16,
     flex: 1,
@@ -178,13 +178,13 @@ const createStyles = colors => StyleSheet.create({
     fontWeight: 'bold',
   },
   overlay: {
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt2,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   overlayText: {
-    color: 'white',
+    color: colors.onSurface,
     fontSize: 18,
     fontWeight: 'bold',
   },

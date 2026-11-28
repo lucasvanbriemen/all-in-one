@@ -128,8 +128,8 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurface,
   },
   highlight: {
-    backgroundColor: colors.primary,
-    color: colors.onPrimary,
+    backgroundColor: colors.primaryContainer,
+    color: colors.onPrimaryContainer,
   },
   resultTextSmall: {
     fontSize: 12,
@@ -143,13 +143,13 @@ const createStyles = colors => StyleSheet.create({
     gap: 4,
   },
   activeSearchOption: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   searchOptionText: {
     textAlign: 'center',
     color: colors.onSurface,
   },
   activeSearchOptionText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
 });

@@ -286,7 +286,7 @@ const createStyles = colors => StyleSheet.create({
     opacity: 0.75,
   },
   openedFileActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
     opacity: 1,
   },
   fileTree: {
@@ -303,13 +303,13 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 8,
   },
   terminalTabActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   terminalTabText: {
     color: colors.onSurface,
   },
   terminalTabActiveText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   terminalPanes: {
     flex: 1,
@@ -336,7 +336,7 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurface,
   },
   openedFileActiveText: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   noProjectRoot: {
     flex: 1,

@@ -263,5 +263,5 @@ const createStyles = colors =>
     reviewValue: {fontSize: 26, fontWeight: 'bold', color: colors.primary},
     reviewLabel: {fontSize: 13, color: colors.onSurfaceVariant, textAlign: 'center'},
     reviewClose: {marginTop: 16, paddingVertical: 10, paddingHorizontal: 18, borderRadius: 100, ...surfaceStyle(colors, {variant: 'accent'})},
-    reviewCloseText: {color: colors.onPrimary, fontWeight: '600'},
+    reviewCloseText: {color: colors.onPrimaryContainer, fontWeight: '600'},
   });

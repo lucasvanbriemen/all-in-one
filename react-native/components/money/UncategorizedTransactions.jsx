@@ -256,14 +256,14 @@ export const createStyles = colors => StyleSheet.create({
     backgroundColor: colors.surfaceVariant,
   },
   chipSuggested: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   chipText: {
     fontSize: 13,
     color: colors.onSurfaceVariant,
   },
   chipTextSuggested: {
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
     fontWeight: 'bold',
   },
   checkboxRow: {
@@ -281,13 +281,13 @@ export const createStyles = colors => StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
+    borderColor: colors.primaryContainer,
   },
   checkmark: {
     fontSize: 12,
     lineHeight: 14,
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   checkboxLabel: {
     flex: 1,

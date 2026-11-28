@@ -221,7 +221,7 @@ function EmailActions({emailId, onDone, styles}) {
 
 const createStyles = colors => StyleSheet.create({
   notification: {
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt2,
     padding: 16,
     borderRadius: 16,
     marginBottom: 8,
@@ -255,12 +255,12 @@ const createStyles = colors => StyleSheet.create({
     paddingVertical: 1,
     borderRadius: 11,
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   badgeText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
   sender: {
     fontWeight: '600',
@@ -313,11 +313,11 @@ const createStyles = colors => StyleSheet.create({
     color: colors.onSurfaceVariant,
   },
   primaryButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryContainer,
   },
   primaryButtonText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.onPrimary,
+    color: colors.onPrimaryContainer,
   },
 });

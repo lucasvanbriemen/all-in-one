@@ -72,7 +72,7 @@ const createStyles = colors => StyleSheet.create({
     borderRadius: 16,
   },
   evenBackground: {
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt4,
   },
   textContainer: {
     flex: 1,
@@ -80,7 +80,7 @@ const createStyles = colors => StyleSheet.create({
   likeButton: {
     padding: 8,
     borderRadius: 8,
-    ...surfaceStyle(colors),
+    backgroundColor: colors.surfaceAt1,
   },
   isLiked: {
     backgroundColor: colors.secondary,
