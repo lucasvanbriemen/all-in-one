@@ -115,7 +115,7 @@ function AppShell() {
 
       {compact && (
         <>
-          <View style={{position: 'absolute', bottom: 12, left: 12, right: 12}} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
+          <View style={styles.mobileNavigation} onLayout={event => set('app.bottomInset', event.nativeEvent.layout.height + 8)}>
             <NowPlayingBar />
             <MobileNavigation />
           </View>
@@ -139,5 +139,11 @@ const createStyles = () => StyleSheet.create({
     backgroundColor: useColor('surface'),
     padding: 16,
     borderRadius: 16,
+  },
+  mobileNavigation: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    right: 12,
   }
 });
